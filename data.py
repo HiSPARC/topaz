@@ -8,36 +8,34 @@ from paths import paths
 from testlist import get_tests
 
 
-def download(storage, group, start, ended):
+def download(storage, test):
     """ Download data from the tijdtest stations
 
     This will download data in the given date range from both the swap and
     reference station into storage.
 
     """
+    print 'tt_data: Downloading data for test %d: %s' % (test.id, test.group)
+    download_data(storage, '/refr/t%d' % test.id, 95, test.start, test.end)
+    download_data(storage, '/swap/t%d' % test.id, 94, test.start, test.end)
 
-    print 'tt_data: Downloading data for %s' % group
-    download_data(storage, '/refr/' + group, 95, start, ended)
-    download_data(storage, '/swap/' + group, 94, start, ended)
 
-
-def check_downloaded(storage, group, start, ended):
-    """ Check if any data already exists in group for the given date range
+def check_downloaded(storage, test):
+    """ Check if any data already exists in node for the given date range
 
     This will simply look if there are any entries in the events table in the
-    node 'group' that fall within the given date range (start-ended).
+    node 'id' that fall within the given date range (start-end).
 
     If there is already data, it will return True, otherwise False
 
     """
+    start = calendar.timegm(test.start)
+    ended = calendar.timegm(test.end)
 
-    start = calendar.timegm(start)
-    ended = calendar.timegm(ended)
+    refr = storage.getNode('/refr/t%d' % test.id + '/events')
+    swap = storage.getNode('/swap/t%d' % test.id + '/events')
 
-    refr = storage.getNode('/refr/' + group + '/events')
-    swap = storage.getNode('/swap/' + group + '/events')
-
-    query = '(timestamp >= start) & (timestamp =< ended)'
+    query = '(timestamp >= start) & (timestamp =< end)'
     swap_inrange = swap.readWhere(query)
     refr_inrange = refr.readWhere(query)
 
@@ -47,28 +45,28 @@ def check_downloaded(storage, group, start, ended):
         return False
 
 
-def append_new(test=None):
+def append_new(id=None):
     """ Add and download a new test to the storage
 
     Check if the data for test is already downloaded, if it is not add a new
-    group for it and download the data into it.
+    node for it and download the data into it.
 
     """
-
     added = "tt_data: No new data to be added"
     with tables.openFile(paths('tt_data'), 'a') as data:
-        if test:
+        if id:
             try:
-                data.getNode('/swap/' + test[0], 'events')
+                data.getNode('/swap/t%d' % id, 'events')
             except tables.NoSuchNodeError:
-                download(data, test[0], dt(test[1]), dt(test[2]))
+                test = get_tests(id=id)
+                download(data, test[0])
                 added = "tt_data: Added new data"
         else:
-            for test in get_tests(subset='ALL', unique=False):
+            for test in get_tests(unique=False):
                 try:
-                    data.getNode('/swap/' + test.group, 'events')
+                    data.getNode('/swap/t%d' % test.id, 'events')
                 except tables.NoSuchNodeError:
-                    download(data, test.group, test.start, test.end)
+                    download(data, test)
                     added = "tt_data: Added new data"
 
     print added
@@ -80,7 +78,6 @@ def download_all():
     If a datafile exists, it will be overwritten
 
     """
-
     with tables.openFile(paths('tt_data'), 'w'):
         pass
     append_new()

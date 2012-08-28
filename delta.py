@@ -13,7 +13,7 @@ class DeltaVal(tables.IsDescription):
     delta = tables.FloatCol()           # float (double-precision)
 
 
-def calculate(data, group):
+def calculate(data, id):
     """ Calculate the deltas for a test
 
     The deltas are calculated by subtracting the timestamp of the reference
@@ -23,9 +23,8 @@ def calculate(data, group):
     This returns a list of ext_timestamps and deltas.
 
     """
-
     coincidences, timestamps = search(data,
-                                      ['/refr/' + group, '/swap/' + group],
+                                      ['/refr/t%d' % id, '/swap/t%d' % id],
                                       window=400)
     deltas = []
     ext_timestamps = []
@@ -46,19 +45,18 @@ def calculate(data, group):
     return ext_timestamps, deltas
 
 
-def store(group):
+def store(id):
     """ Stores the calculated deltas and timestamps in storage
 
     """
-
     warnings.simplefilter('ignore', tables.NaturalNameWarning)
 
-    print 'tt_delta: Storing deltas for %s' % group
+    print 'tt_delta: Storing deltas for test %s' % id
     with tables.openFile(paths('tt_data'), 'r') as data, \
          tables.openFile(paths('tt_delta'), 'a') as deltas:
-        table = deltas.createTable("/" + group, 'delta', DeltaVal,
+        table = deltas.createTable('/t%d' % id, 'delta', DeltaVal,
                                    createparents=True)
-        ext_timestamps, deltas = calculate(data, group)
+        ext_timestamps, deltas = calculate(data, id)
         delta_row = table.row
         for ext_timestamp, delta in itertools.izip(ext_timestamps, deltas):
             delta_row['ext_timestamp'] = ext_timestamp
@@ -69,25 +67,24 @@ def store(group):
     return ext_timestamps, deltas
 
 
-def append_new(group=None):
+def append_new(id=None):
     """ Add new deltas to the storage
 
     """
-
     added = "tt_delta: No new deltas to be added"
     with tables.openFile(paths('tt_delta'), 'a') as deltas:
-        if group:
+        if id:
             try:
-                deltas.getNode("/" + group, 'delta')
+                deltas.getNode('/t%d' % id, 'delta')
             except tables.NoSuchNodeError:
-                store(group)
+                store(id)
                 added = "tt_delta: Added new deltas"
         else:
-            for group in get_tests(subset='ALL', part="group", unique=True):
+            for id in get_tests(part="id", unique=True):
                 try:
-                    deltas.getNode("/" + group, 'delta')
+                    deltas.getNode('/t%d' % id, 'delta')
                 except tables.NoSuchNodeError:
-                    store(group)
+                    store(id)
                     added = "tt_delta: Added new deltas"
 
     print added
@@ -97,26 +94,24 @@ def store_all():
     """" Get the average delta per test for all tests
 
     """
-
     with tables.openFile(paths('tt_delta'), 'w'):
         pass
     append_new()
     print "tt_delta: Calculated deltas for entire Tijd Test"
 
 
-def get(group):
+def get(id):
     """ Get ext_timestamps and deltas from the storage
 
     """
-
-    if group in get_tests(subset='ALL', part='group'):
+    if id in get_tests(subset='ALL', part='id'):
         with tables.openFile(paths('tt_delta'), 'r') as delta_data:
             try:
-                delta_table = delta_data.getNode("/" + group, 'delta')
+                delta_table = delta_data.getNode('/t%d' % id, 'delta')
                 ext_timestamps = [row['ext_timestamp'] for row in delta_table]
                 deltas = [row['delta'] for row in delta_table]
             except tables.NoSuchNodeError:
-                ext_timestamps, deltas = store(group)
+                ext_timestamps, deltas = store(id)
     else:
         ext_timestamps = []
         deltas = []
