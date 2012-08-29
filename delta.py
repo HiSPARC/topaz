@@ -91,7 +91,7 @@ def append_new(id=None):
 
 
 def store_all():
-    """" Get the average delta per test for all tests
+    """" Calculate and store the deltas for all tests
 
     """
     with tables.openFile(paths('tt_delta'), 'w'):
@@ -104,7 +104,7 @@ def get(id):
     """ Get ext_timestamps and deltas from the storage
 
     """
-    if id in get_tests(subset='ALL', part='id'):
+    if id in get_tests(part='id'):
         with tables.openFile(paths('tt_delta'), 'r') as delta_data:
             try:
                 delta_table = delta_data.getNode('/t%d' % id, 'delta')
