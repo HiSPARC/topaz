@@ -11,9 +11,12 @@ def print_delta_results(ids):
     """ Prints the average delta, the standard deviation and length in days
 
     """
+    if type(ids) is int:
+        ids = [ids]
+
     for id in ids:
         ext_timestamps, deltas = get(id)
-        print "% 3d  %s % 7.2f  % 6.2f  % 4.2f" % (id,
+        print "    % 3d  %s  % 7.2f  % 6.2f  % 4.2f" % (id,
             get_tests(id=id, part='group')[0].ljust(13),
             round(np.average(deltas), 2), round(np.std(deltas), 2),
             (max(ext_timestamps) - min(ext_timestamps)) / 864e11)
@@ -23,6 +26,9 @@ def plot_delta_histogram(ids, **kwargs):
     """ Plot a histogram of the deltas
 
     """
+    if type(ids) is int:
+        ids = [ids]
+
     #Define Bins
     low = -200
     high = 200
@@ -57,6 +63,8 @@ def plot_delta_time(ids, **kwargs):
     """ Plot delta versus the timestamps
 
     """
+    if type(ids) is int:
+        ids = [ids]
 
     #Begin Figure
     with pp.PlotFig(ttex=False, kind='png') as plot:
