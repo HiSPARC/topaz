@@ -19,5 +19,7 @@ The following modules are included:
     start and end date and time are known
 
 """
-import analyseimport delta
-import dataimport testlist
+import analyse
+import delta
+import data
+import testlist
