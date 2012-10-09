@@ -72,6 +72,27 @@ def append_new(id=None):
     print added
 
 
+def get(id=None):
+    """
+
+    """
+    with tables.openFile(paths('tt_data'), 'a') as data:
+        if id:
+            try:
+                node = eval('data.root.swap.t%d' % id)
+            except tables.NoSuchNodeError:
+                node = None
+        else:
+            node = []
+            for test in get_tests(unique=False):
+                try:
+                    node.append(data.getNode('/swap/t%d' % test.id, 'events'))
+                except tables.NoSuchNodeError:
+                    node.append(None)
+
+    return node
+
+
 def download_all():
     """ Download data for all tests in the testlist
 
@@ -82,6 +103,22 @@ def download_all():
         pass
     append_new()
     print 'tt_data: Downloaded entire Tijd Test'
+
+
+def remove(id):
+    with tables.openFile(paths('tt_data'), 'a') as data:
+        try:
+            data.getNode('/swap/t%d' % id, 'delta')
+            data.removeNode('/swap/t%d' % id, recursive=True)
+            print "tt_data: Removed table /swap/t%d" % id
+        except tables.NoSuchNodeError:
+            print "tt_data: No such table in swap"
+        try:
+            data.getNode('/refr/t%d' % id, 'delta')
+            data.removeNode('/refr/t%d' % id, recursive=True)
+            print "tt_data: Removed table /refr/t%d" % id
+        except tables.NoSuchNodeError:
+            print "tt_data: No such table in refr"
 
 
 if __name__ == '__main__':

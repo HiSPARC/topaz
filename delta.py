@@ -120,5 +120,14 @@ def get(id):
     return ext_timestamps, deltas
 
 
+def remove(id):
+    with tables.openFile(paths('tt_delta'), 'a') as delta_data:
+        try:
+            delta_data.getNode('/t%d' % id, 'delta')
+            delta_data.removeNode('/t%d' % id, recursive=True)
+        except tables.NoSuchNodeError:
+            print "tt_delta: No such table"
+
+
 if __name__ == '__main__':
     append_new()
