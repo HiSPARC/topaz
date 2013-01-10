@@ -120,11 +120,23 @@ def get(id):
     return ext_timestamps, deltas
 
 
+def get_ids():
+    """ Get list of all test ids in the data file
+
+    """
+    with tables.openFile(paths('tt_delta'), 'r') as delta_data:
+        ids = [int(node._v_name[1:]) for node in delta_data.listNodes('/')]
+    ids.sort()
+
+    return ids
+
+
 def remove(id):
     with tables.openFile(paths('tt_delta'), 'a') as delta_data:
         try:
             delta_data.getNode('/t%d' % id, 'delta')
             delta_data.removeNode('/t%d' % id, recursive=True)
+            print "tt_delta: Removed table /t%d" % id
         except tables.NoSuchNodeError:
             print "tt_delta: No such table"
 

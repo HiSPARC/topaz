@@ -73,7 +73,7 @@ def append_new(id=None):
 
 
 def get(id=None):
-    """
+    """ Get the events node of a certain id
 
     """
     with tables.openFile(paths('tt_data'), 'a') as data:
@@ -93,6 +93,19 @@ def get(id=None):
     return node
 
 
+def get_ids():
+    """ Get list of all test ids in the data file
+
+    """
+    with tables.openFile(paths('tt_data'), 'r') as data:
+        ids_swap = [int(node._v_name[1:]) for node in data.listNodes('/swap/')]
+        ids_refr = [int(node._v_name[1:]) for node in data.listNodes('/refr/')]
+    ids_swap.sort()
+    ids_refr.sort()
+
+    return (ids_swap, ids_refr)
+
+
 def download_all():
     """ Download data for all tests in the testlist
 
@@ -108,13 +121,13 @@ def download_all():
 def remove(id):
     with tables.openFile(paths('tt_data'), 'a') as data:
         try:
-            data.getNode('/swap/t%d' % id, 'delta')
+            data.getNode('/swap/t%d' % id, 'events')
             data.removeNode('/swap/t%d' % id, recursive=True)
             print "tt_data: Removed table /swap/t%d" % id
         except tables.NoSuchNodeError:
             print "tt_data: No such table in swap"
         try:
-            data.getNode('/refr/t%d' % id, 'delta')
+            data.getNode('/refr/t%d' % id, 'events')
             data.removeNode('/refr/t%d' % id, recursive=True)
             print "tt_data: Removed table /refr/t%d" % id
         except tables.NoSuchNodeError:
