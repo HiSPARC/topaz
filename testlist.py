@@ -9,6 +9,10 @@ class Tijdtest():
         self.gps = gps
         self.trigger = trigger
         self.group = "/".join((hisparc, gps, trigger))
+        if note:
+            self.legend = "%03d %s/%s/%s+" % (id, hisparc, gps, trigger)
+        else:
+            self.legend = "%03d %s/%s/%s" % (id, hisparc, gps, trigger)
         self.start = dt(*start)
         self.end = dt(*end)
         self.time = (self.start, self.end)
@@ -23,15 +27,15 @@ def test_log():
 
     """
     tests = (
-        (  1, '083', '501', 'PMT2',  (2011,11,15, 15,52), (2011,11,16, 14,25), 'int250'),
-        (  2, '074', '501', 'PMT2',  (2011,11,16, 14,44), (2011,11,17, 15, 6), ''),
-        (  3, '074', '501', 'PMT2',  (2011,11,17, 15, 9), (2011,11,18, 14,49), 'sbgps100'),
-        (  4, '018', '501', 'PMT2',  (2011,11,18, 15,46), (2011,11,21,  7,25), ''),
-        (  5, '156', '501', 'PMT2',  (2011,11,21,  7,27), (2011,11,22,  9,14), 'slv018'),
-        (  6, '074', '501', 'EXT',   (2011,11,22,  9,30), (2011,11,23,  9,38), ''),
-        (  7, '050', '501', 'PMT2',  (2011,11,23, 10,58), (2011,11,23, 13,40), ''),
-        (  8, '050', '501', 'PMT2',  (2011,11,23, 13,41), (2011,11,23, 14,26), 'int250'),
-        (  9, '050', '501', 'EXT',   (2011,11,23, 14,28), (2011,11,23, 14,58), 'int250'),
+        ( 1 , '083', '501', 'PMT2',  (2011,11,15, 15,52), (2011,11,16, 14,25), 'int250'),
+        ( 2 , '074', '501', 'PMT2',  (2011,11,16, 14,44), (2011,11,17, 15, 6), ''),
+        ( 3 , '074', '501', 'PMT2',  (2011,11,17, 15, 9), (2011,11,18, 14,49), 'bgps100'),
+        ( 4 , '018', '501', 'PMT2',  (2011,11,18, 15,46), (2011,11,21,  7,25), ''),
+        ( 5 , '156', '501', 'PMT2',  (2011,11,21,  7,27), (2011,11,22,  9,14), 'mas018'),
+        ( 6 , '074', '501', 'EXT',   (2011,11,22,  9,30), (2011,11,23,  9,38), ''),
+        ( 7 , '050', '501', 'PMT2',  (2011,11,23, 10,58), (2011,11,23, 13,40), ''),
+        ( 8 , '050', '501', 'PMT2',  (2011,11,23, 13,41), (2011,11,23, 14,26), 'int250'),
+        ( 9 , '050', '501', 'EXT',   (2011,11,23, 14,28), (2011,11,23, 14,58), 'int250'),
         ( 10, '050', '501', 'PMT2',  (2011,11,23, 15, 0), (2011,11,24, 13,18), ''),
         ( 11, '065', '501', 'PMT2',  (2011,11,24, 13,24), (2011,11,25, 11,48), ''),
         ( 12, '176', '501', 'PMT2',  (2011,11,25, 12, 3), (2011,11,26, 14,47), ''),
@@ -62,11 +66,11 @@ def test_log():
         ( 37, '050', 'test', 'PMT2', (2012, 5,31, 14,24), (2012, 6, 4, 14, 0), ''),
         ( 38, '318', 'test', 'PMT2', (2012, 6,12, 15,13), (2012, 6,18, 15, 0), 'unmod'),
         ( 39, '301', 'test', 'PMT1', (2012, 7,17, 14,16), (2012, 7,18, 12,12), ''),
-        ( 40, '321', 'test', 'PMT1', (2012, 7,18, 12,16), (2012, 7,19, 13,32), 'slv301'),
+        ( 40, '321', 'test', 'PMT1', (2012, 7,18, 12,16), (2012, 7,19, 13,32), 'mas301'),
         ( 41, '301', 'test', 'EXT',  (2012, 7,19, 13,35), (2012, 7,23, 10, 0), ''),
-        ( 42, '328', 'test', 'PMT1', (2012, 7,24, 13,15), (2012, 7,28, 12,33), 'slv301'),
-        ( 43, '328', 'test', 'PMT2', (2012, 7,30,  9,13), (2012, 8, 7, 14,40), 'slv301 gpslost'),
-        ( 44, '328', 'test', 'PMT2', (2012, 8, 7, 14,45), (2012, 8,29, 13,35), 'slv301 sbgps##'),
+        ( 42, '328', 'test', 'PMT1', (2012, 7,24, 13,15), (2012, 7,28, 12,33), 'mas301'),
+        ( 43, '328', 'test', 'PMT2', (2012, 7,30,  9,13), (2012, 8, 7, 14,40), 'mas301 gpslost'),
+        ( 44, '328', 'test', 'PMT2', (2012, 8, 7, 14,45), (2012, 8,29, 13,35), 'mas301 bgps55'),
         ( 45, '344', 'test', 'PMT1', (2012, 8,29, 14, 0), (2012, 8,30, 12, 5), ''),
         ( 46, '318', 'test', 'PMT1', (2012, 8,30, 12,15), (2012, 8,31, 12, 5), ''),
         ( 47, '305', 'test', 'PMT1', (2012, 8,31, 12,15), (2012, 9, 3, 12,15), ''),
@@ -79,9 +83,21 @@ def test_log():
         ( 54, '345', 'test', 'PMT1', (2012, 9,12,  9, 5), (2012, 9,14, 13, 0), ''),
         ( 55, '352', 'test', 'PMT1', (2012, 9,14, 13,15), (2012, 9,17,  8,40), ''),
         ( 56, '353', 'test', 'PMT1', (2012, 9,18,  8,55), (2012, 9,19,  8,40), ''),
-        ( 57, '358', 'test', 'PMT1', (2012, 9,19,  8,55), (2012, 9,19, 13,40), ''),
-        ( 58, '099', 'test', 'PMT1', (2012, 9,19, 14,15), (2012, 9,23, 14, 0), ''),)
-
+        ( 57, '099', 'test', 'PMT1', (2012, 9,19, 14,15), (2012, 9,23, 14, 0), ''),
+        ( 58, '160', 'test', 'PMT1', (2012,12,12, 14,50), (2013, 1, 7, 12,50), ''),
+        ( 59, '160', 'test', 'PMT1', (2013, 1, 7, 13, 0), (2013, 1, 7, 14,30), '2high1'),
+        ( 60, '160', 'test', 'PMT2', (2013, 1, 7, 14,36), (2013, 1, 7, 14,55), '2high2'),
+        ( 61, '341', 'test', 'PMT1', (2013, 1, 9, 10, 0), (2013, 1, 9, 13,30), 'gpsrec85774017'),
+        ( 62, '341', 'test', 'PMT1', (2013, 1, 9, 14, 5), (2013, 1, 9, 14,30), 'gpsrec01417277'),
+        ( 63, '042', 'test', 'PMT2', (2013, 1, 9, 16,20), (2013, 1,10, 12,35), 'mas043 3high3 int500'),
+        ( 64, '042', 'test', 'PMT1', (2013, 1,10, 12,37), (2013, 1,10, 12,55), 'mas043 3high3'),
+        ( 65, '043', 'test', 'PMT1', (2013, 1,10, 12,57), (2013, 1,10, 13,17), 'slv042 3high2'),
+        ( 65, '341', 'test', 'PMT1', (2013, 1,10, 13,48), (2013, 1,10, 14, 0), 'gpsrec81408050'),
+        ( 66, '341', 'test', 'PMT1', (2013, 1,10, 14, 3), (2013, 1,10, 14,15), 'gpsrec01417271'),
+        ( 67, '341', 'test', 'PMT1', (2013, 1,10, 14,22), (2013, 1,10, 15, 0), 'gpsrec81407713'),
+        ( 68, '341', 'test', 'PMT1', (2013, 1,10, 15,13), (2013, 1,10, 15,25), 'sbgps204'),
+        ( 69, '341', 'test', 'PMT1', (2013, 1,17, 12,50), (2013, 1,17, 13,56), ''),
+        ( 70, '341', 'test', 'PMT1', (2013, 1,17, 13,58), (2013, 1,17, 14,42), 'noalmanac'))
     test_all = [Tijdtest(*test) for test in tests]
 
     return test_all
@@ -95,12 +111,15 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
     The HiSPARC box number, the GPS used and the trigger of the swapped box.
 
     Some special cases exist;
-    the pulse generator was set at a different interval (int#)
+    the pulse generator was set at an interval of # ms (int#)
     the reference used the external trigger (rext)
-    the GPS position of the reference was set incorrectly (rbgps)
-    the GPS position of the swap was set incorrectly (sbgps)
     the reference used the 501 gps (r501)
-    the swap was slave to master ### (slv###)
+    the GPS position of the reference was set incorrectly by # m (rbgps#)
+    the GPS position of the swap was set incorrectly by # m (sbgps#)
+    the swap was a slave connected to master # (slv###)
+    a longer gps cables was used for the swap box (longgps)
+    the PPS offset in DSPMon was set for the swap at # ns (ppsoff#)
+    the swap lost the GPS connection was lost during the test (gpslost)
 
     """
     #All tests from the TijdTest Log
@@ -111,7 +130,11 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
         test_list = test_all
     elif subset in ('PMT'):
         test_list = [test for test in test_all
-                     if ('PMT') in test.trigger]
+                     if ('PMT') in test.trigger and
+                        ('rext') not in test.note and
+                        ('bgps') not in test.note and
+                        ('ppsoff') not in test.note and
+                        ('longgps') not in test.note]
     elif subset in ('EXT'):
         test_list = [test for test in test_all
                      if ('EXT') in test.trigger or
@@ -120,6 +143,18 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
         test_list = [test for test in test_all
                      if ('test') in test.gps or
                         ('r501') in test.note]
+    elif subset in ('ownGPS'):
+        test_list = [test for test in test_all
+                     if (('test') in test.gps and
+                         ('r501') in test.note) or
+                        (('501') in test.gps and
+                         ('r501') not in test.note)]
+    elif subset in ('sameGPS'):
+        test_list = [test for test in test_all
+                     if (('test') in test.gps and
+                         ('r501') not in test.note) or
+                        (('501') in test.gps and
+                         ('r501') in test.note)]
     elif subset in ('Bad'):
         test_list = [test for test in test_all
                      if ('sbgps') in test.note or
@@ -164,20 +199,22 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
 
     #Get a part of the class
     if part in (None,): pass
-    elif part in ('id'): test_list = [test.id for test in test_list]
-    elif part in ('hisparc'): test_list = [test.hisparc for test in test_list]
-    elif part in ('trigger'): test_list = [test.trigger for test in test_list]
-    elif part in ('gps'): test_list = [test.gps for test in test_list]
-    elif part in ('group'): test_list = [test.group for test in test_list]
-    elif part in ('time'): test_list = [test.time for test in test_list]
-    elif part in ('start'): test_list = [test.start for test in test_list]
-    elif part in ('end'): test_list = [test.end for test in test_list]
-    elif part in ('note'): test_list = [test.note for test in test_list]
+    elif part in ('id',): test_list = [test.id for test in test_list]
+    elif part in ('hisparc',): test_list = [test.hisparc for test in test_list]
+    elif part in ('trigger',): test_list = [test.trigger for test in test_list]
+    elif part in ('gps',): test_list = [test.gps for test in test_list]
+    elif part in ('group',): test_list = [test.group for test in test_list]
+    elif part in ('legend',): test_list = [test.legend for test in test_list]
+    elif part in ('time',): test_list = [test.time for test in test_list]
+    elif part in ('start',): test_list = [test.start for test in test_list]
+    elif part in ('end',): test_list = [test.end for test in test_list]
+    elif part in ('note',): test_list = [test.note for test in test_list]
 
     if unique:
         test_list = sorted(set(test_list))
 
     return test_list
+
 
 if __name__ in ('__main__'):
     print ("Number of tests: %s (unique: %s)" %

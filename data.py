@@ -45,7 +45,7 @@ def check_downloaded(storage, test):
         return False
 
 
-def append_new(id=None):
+def append_new(id=None, path=None):
     """ Add and download a new test to the storage
 
     Check if the data for test is already downloaded, if it is not add a new
@@ -53,10 +53,12 @@ def append_new(id=None):
 
     """
     added = "tt_data: No new data to be added"
-    with tables.openFile(paths('tt_data'), 'a') as data:
+    if not path:
+        path = paths('tt_data')
+    with tables.openFile(path, 'a') as data_file:
         if id:
             try:
-                data.getNode('/swap/t%d' % id, 'events')
+                data_file.getNode('/swap/t%d' % id, 'events')
             except tables.NoSuchNodeError:
                 test = get_tests(id=id)
                 download(data, test[0])
@@ -64,7 +66,7 @@ def append_new(id=None):
         else:
             for test in get_tests(unique=False):
                 try:
-                    data.getNode('/swap/t%d' % test.id, 'events')
+                    data_file.getNode('/swap/t%d' % test.id, 'events')
                 except tables.NoSuchNodeError:
                     download(data, test)
                     added = "tt_data: Added new data"
@@ -72,63 +74,78 @@ def append_new(id=None):
     print added
 
 
-def get(id=None):
+def get(id=None, path=None):
     """ Get the events node of a certain id
 
     """
-    with tables.openFile(paths('tt_data'), 'a') as data:
+    if not path:
+        path = paths('tt_data')
+
+    with tables.openFile(path, 'a') as data_file:
         if id:
             try:
-                node = eval('data.root.swap.t%d' % id)
+                node = eval('data_file.root.swap.t%d' % id)
             except tables.NoSuchNodeError:
                 node = None
         else:
             node = []
             for test in get_tests(unique=False):
                 try:
-                    node.append(data.getNode('/swap/t%d' % test.id, 'events'))
+                    node.append(data_file.getNode('/swap/t%d' % test.id, 'events'))
                 except tables.NoSuchNodeError:
                     node.append(None)
 
     return node
 
 
-def get_ids():
+def get_ids(path=None):
     """ Get list of all test ids in the data file
 
     """
-    with tables.openFile(paths('tt_data'), 'r') as data:
-        ids_swap = [int(node._v_name[1:]) for node in data.listNodes('/swap/')]
-        ids_refr = [int(node._v_name[1:]) for node in data.listNodes('/refr/')]
+    if not path:
+        path = paths('tt_data')
+
+    with tables.openFile(path, 'r') as data_file:
+        ids_swap = [int(node._v_name[1:]) for node in data_file.listNodes('/swap/')]
+        ids_refr = [int(node._v_name[1:]) for node in data_file.listNodes('/refr/')]
     ids_swap.sort()
     ids_refr.sort()
 
     return (ids_swap, ids_refr)
 
 
-def download_all():
+def download_all(path=None):
     """ Download data for all tests in the testlist
 
     If a datafile exists, it will be overwritten
 
     """
-    with tables.openFile(paths('tt_data'), 'w'):
+    if not path:
+        path = paths('tt_data')
+
+    with tables.openFile(path, 'w'):
         pass
     append_new()
     print 'tt_data: Downloaded entire Tijd Test'
 
 
-def remove(id):
-    with tables.openFile(paths('tt_data'), 'a') as data:
+def remove(id, path=None):
+    """ Remove nodes with downloaded data for given ids
+
+    """
+    if not path:
+        path = paths('tt_data')
+
+    with tables.openFile(path, 'a') as data_file:
         try:
-            data.getNode('/swap/t%d' % id, 'events')
-            data.removeNode('/swap/t%d' % id, recursive=True)
+            data_file.getNode('/swap/t%d' % id, 'events')
+            data_file.removeNode('/swap/t%d' % id, recursive=True)
             print "tt_data: Removed table /swap/t%d" % id
         except tables.NoSuchNodeError:
             print "tt_data: No such table in swap"
         try:
-            data.getNode('/refr/t%d' % id, 'events')
-            data.removeNode('/refr/t%d' % id, recursive=True)
+            data_file.getNode('/refr/t%d' % id, 'events')
+            data_file.removeNode('/refr/t%d' % id, recursive=True)
             print "tt_data: Removed table /refr/t%d" % id
         except tables.NoSuchNodeError:
             print "tt_data: No such table in refr"
