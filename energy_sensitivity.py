@@ -1,8 +1,10 @@
 """Energy sensitivity Science Park"""
 
+from itertools import combinations
 import pylab as plt
 import numpy as np
 import tables
+import progressbar as pb
 
 import sapphire.clusters
 import sapphire.simulations
@@ -11,93 +13,103 @@ from sapphire.simulations.ldf import KascadeLdf
 from paths import paths
 
 class EnergySensitivity(object):
-    def main(self):
 
+    def __init__(self):
         # Detectors
         stations = [501, 502, 503, 504, 505, 506, 508, 509]
         self.cluster = sapphire.clusters.ScienceParkCluster(stations=stations)
 
         # Conditions
-        self.trig_threshold = 1.39 # density at detector for 50% detection probability
+        # self.trig_threshold = 1.39  # density at one detector for 50% detection probability
+        self.detection_probability = 0.5
         self.min_detectors = 2
-        self.min_stations = 1
+        self.min_stations = 4
 
         # Shower parameters
-        self.grid_points = 100000
-        self.max_radius = 600
+        self.ldf = KascadeLdf()
+        self.grid_points = 250000
+        self.max_radius = 1000
         self.min_energy = 1e13
         self.max_energy = 1e21
-        self.bisections = 5
-
-        # Results
-        self.results = []
+        self.start_energy = 1e17
+        self.bisections = 8
 
         # Throw showers in a regular grid around first station
         self.xx = np.linspace(-self.max_radius, self.max_radius, np.sqrt(self.grid_points))
         self.yy = np.linspace(-self.max_radius, self.max_radius, np.sqrt(self.grid_points))
 
-        for yc in self.yy:
-            result_row = []
-            for xc in self.xx:
-                # Slowly increase the energy, go to next when detected
-                for E in np.logspace(np.log10(self.min_energy),
-                                     np.log10(self.max_energy), 100):
-                    Ne = 10 ** (np.log10(E) - 15 + 4.8)
-                    self.ldf = KascadeLdf(Ne)
-                    if self.check_stations_with_triggers(xc, yc):
-                        result_row.append(E)
-                        break
-                    if E == self.max_energy:
-                        result_row.append(E)
-            self.results.append(result_row)
+    def main(self):
 
+        progress = pb.ProgressBar(widgets=[pb.Percentage(), pb.Bar(), pb.ETA()])
+
+        # Results
+        self.results = [[self.find_min_energy(xc, yc) for xc in self.xx] for yc in progress(self.yy)]
+
+        # Show results
         self.plot_scintillators_in_cluster()
         self.plot_energy_acceptance()
         self.draw_background_map()
 
-    def check_stations_with_triggers(self, x, y):
-        n_triggered = 0
+    def find_min_energy(self, xc, yc):
+        # Use bisection to get to the final energy quicker
+        E = self.start_energy
+        lo = self.min_energy
+        hi = self.max_energy
+        for _ in range(self.bisections):
+            Ne = 10 ** (np.log10(E) - 15 + 4.8)
+            cluster_densities = self.calculate_densities_for_cluster(xc, yc, Ne)
+            p_cluster = self.detection_probability_for_cluster(cluster_densities)
+            if p_cluster == self.detection_probability:
+                break
+            elif p_cluster < self.detection_probability:
+                lo = E
+            else:
+                hi = E
+            E = 10 ** ((np.log10(lo) + np.log10(hi)) / 2.0)
 
-        for station in self.cluster.stations:
-            densities = self.calculate_densities_for_station(station, x, y)
-            if self.check_station_has_triggered(densities):
-                n_triggered += 1
+        return E
 
-        if n_triggered >= self.min_stations:
-            enough_stations = True
-        else:
-            enough_stations = False
+    def detection_probability_for_cluster(self, cluster_densities):
+        p_stations = [self.detection_probability_for_station(station_densities)
+                      for station_densities in cluster_densities]
+        p_combinations = list(combinations(p_stations, self.min_stations))
+        p_station_combinations = [np.prod(p) for p in p_combinations]
+        p_cluster = sum(p_station_combinations)
 
-        return enough_stations
+        return p_cluster
 
-    def check_station_has_triggered(self, densities):
-        """Check if a given station would trigger for given shower"""
-        num_detectors_over_threshold = sum([True for u in densities
-                                            if u >= self.trig_threshold])
-        if num_detectors_over_threshold >= self.min_detectors:
-            has_triggered = True
-        else:
-            has_triggered = False
+    def detection_probability_for_station(self, station_densities):
+        p_detectors = [self.detection_probability_for_detector(density)
+                       for density in station_densities]
+        p_combinations = list(combinations(p_detectors, self.min_detectors))
+        p_detector_combinations = [np.prod(p) for p in p_combinations]
+        p_station = sum(p_detector_combinations)
 
-        return has_triggered
+        return p_station
 
-#     def calculate_minimum_density_for_station(self, x, y):
-#         densities = self.calculate_densities_for_station(station, x, y)
-#         return np.min(densities, axis=0)
+    def detection_probability_for_detector(self, detector_density):
+        p_detector = 1.0 - np.exp(- detector_density / 2.0)
 
-    def calculate_densities_for_station(self, station, x, y):
-        densities = []
-        for detector in station.detectors:
-            densities.append(self.calculate_densities_for_detector(detector, x, y))
-        return np.array(densities)
+        return p_detector
 
-    def calculate_densities_for_detector(self, detector, x, y):
+    def calculate_densities_for_cluster(self, x, y, Ne):
+        densities = [self.calculate_densities_for_station(station, x, y, Ne)
+                     for station in self.cluster.stations]
+
+        return densities
+
+    def calculate_densities_for_station(self, station, x, y, Ne):
+        densities = [self.calculate_densities_for_detector(detector, x, y, Ne)
+                     for detector in station.detectors]
+
+        return densities
+
+    def calculate_densities_for_detector(self, detector, x, y, Ne):
         x0, y0 = detector.get_xy_coordinates()
-
         r = np.sqrt((x - x0) ** 2 + (y - y0) ** 2)
+        density = self.ldf.get_ldf_value_for_size(r, Ne)
 
-        return self.ldf.calculate_ldf_value(r)
-
+        return density
 
     def plot_scintillators_in_cluster(self):
         # Draw station locations on a map
@@ -110,7 +122,6 @@ class EnergySensitivity(object):
 
     def plot_energy_acceptance(self):
         # Grid
-        plt.contour(self.xx, self.yy, self.results, np.logspace(13, 21, 25))
         C = plt.contour(self.xx, self.yy, self.results, np.logspace(13, 21, 25))
         plt.clabel(C, np.logspace(13, 21, 9), inline=1, fontsize=10, fmt='%.0e')
 
@@ -174,5 +185,7 @@ def generate_positions(self, N, max_r):
 if __name__=="__main__":
     plt.figure()
     sens = EnergySensitivity()
+#     sens.plot_scintillators_in_cluster()
+#     sens.draw_background_map()
     sens.main()
     plt.show()
