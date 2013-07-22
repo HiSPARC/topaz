@@ -111,13 +111,15 @@ class EnergySensitivity(object):
     def plot_energy_acceptance(self):
         # Grid
         plt.contour(self.xx, self.yy, self.results, np.logspace(13, 21, 25))
+        C = plt.contour(self.xx, self.yy, self.results, np.logspace(13, 21, 25))
+        plt.clabel(C, np.logspace(13, 21, 9), inline=1, fontsize=10, fmt='%.0e')
 
     def draw_background_map(self):
         # Draw Science Park Map on 1:1 scale (1 meter = 1 pixel)
         background = plt.imread("/Users/arne/Dropbox/hisparc/Code/topaz/backgrounds/"
-                                "ScienceParkMap_0.620.png")
+                                "ScienceParkMap_1.092.png")
         # determine pixel:meter ratio for different OSM zoom levels at Science Park..
-        bg_scale = 0.620
+        bg_scale = 1.092
         bg_width = background.shape[1] * bg_scale
         bg_height = background.shape[0] * bg_scale
         plt.imshow(background, aspect='equal', alpha=0.5,
@@ -170,6 +172,7 @@ def generate_positions(self, N, max_r):
 
 
 if __name__=="__main__":
+    plt.figure()
     sens = EnergySensitivity()
     sens.main()
     plt.show()
