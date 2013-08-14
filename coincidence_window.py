@@ -4,14 +4,11 @@ This script gets the number of found coincidences as a function of the
 coincidence window.
 
 """
-from itertools import combinations
-
 import matplotlib.pyplot as plt
 import tables
 import numpy
 
 from sapphire.api import Station, Network
-from sapphire.publicdb import download_data
 from sapphire.analysis import coincidences
 
 
@@ -27,6 +24,8 @@ def main():
     for window in windows:
         c, ts = coinc._search_coincidences(window=window)
         c_n.append(len(c))
+
+    data.close()
 
     plt.figure()
     plt.plot(numpy.log10(windows), c_n)
@@ -53,10 +52,6 @@ def coincidences_all_stations():
         if info.has_data(year=2013, month=8, day=1):
             cluster_groups.append(info.cluster.lower())
             station_ids.append(station['number'])
-            station_coords.append(info.location())
-
-    distances = distance_combinations(station_coords)
-    plot_station_distances(distances)
 
     group_name = 'All stations'
 
@@ -73,6 +68,7 @@ def coincidences_all_stations():
         except tables.NoSuchNodeError:
             print 'No events for: %s' % station_group
     find_n_coincidences(coinc, event_tables, group_name)
+    data.close()
 
 
 def coincidences_each_cluster():
@@ -90,12 +86,9 @@ def coincidences_each_cluster():
             if info.has_data(year=2013, month=8, day=1):
                 cluster_groups.append(info.cluster.lower())
                 station_ids.append(station['number'])
-                station_coords.append(info.location())
+
         if len(station_ids) <= 1:
             continue
-
-        distances = distance_combinations(station_coords)
-        plot_station_distances(distances)
 
         group_name = '%s Cluster' % cluster['name']
 
@@ -112,6 +105,7 @@ def coincidences_each_cluster():
             except tables.NoSuchNodeError:
                 print 'No events for: %s' % station_group
         find_n_coincidences(coinc, event_tables, group_name)
+        data.close()
 
 
 def find_n_coincidences(coinc, event_tables, group_name, plot=True):
@@ -158,39 +152,6 @@ def plot_coinc_window(windows, counts, group_name='', n_events=0, n_filtered=0):
     plt.ylim(ymin=0.1)
     plt.show()
 
-
-def Dns(Dm):
-    """Convert distance in meters to ns (light travel time)"""
-    c = 0.3  # m/ns (or km/us)
-    return Dm / c
-
-
-def plot_station_distances(distances):
-    fig = plt.figure()
-    ax1 = plt.subplot(111) # y-axis in m
-    plt.hist(distances)
-    plt.title('Distances between all combinations of 2 stations')
-    plt.xlabel('Distance (km)')
-    plt.ylabel('Occurance')
-    ax2 = plt.twiny() # x-axis in us
-    x1, x2 = ax1.get_xlim()
-    ax2.set_xlim(Dns(x1), Dns(x2))
-    plt.show()
-
-
-def distance_combinations(coordinates):
-    distances = [distance(s1, s2) for s1, s2 in combinations(coordinates, 2)]
-    return distances
-
-def distance(s1, s2):
-    R = 6371  # km Radius of earth
-    d_lat = numpy.radians(s2['latitude'] - s1['latitude'])
-    d_lon = numpy.radians(s2['longitude'] - s1['longitude'])
-    a = (numpy.sin(d_lat / 2) ** 2 + numpy.cos(numpy.radians(s1['latitude'])) *
-         numpy.cos(numpy.radians(s2['latitude'])) * numpy.sin(d_lon / 2) ** 2)
-    c = 2 * numpy.arctan2(numpy.sqrt(a), numpy.sqrt(1 - a))
-    distance = R * c
-    return distance
 
 if __name__ == '__main__':
 #    coincidences_each_cluster()
