@@ -4,6 +4,9 @@ This script gets the number of found coincidences as a function of the
 coincidence window.
 
 """
+import datetime
+import os
+
 import matplotlib.pyplot as plt
 import tables
 import numpy
@@ -12,53 +15,63 @@ from sapphire.api import Station, Network
 from sapphire.analysis import coincidences
 
 
-def main():
-    station_groups = ['/hisparc/cluster_amsterdam/station_%d' % u for u in STATIONS]
-
-    data = tables.openFile('/Volumes/Hyperdrive/Datastore/esd/2013/8/2013_8_1.h5', 'r')
-    coinc = coincidences.Coincidences(data, None, station_groups)
-
-    c_n = []
-    windows = 10 ** numpy.arange(1, 15, 0.5)
-
-    for window in windows:
-        c, ts = coinc._search_coincidences(window=window)
-        c_n.append(len(c))
-
-    data.close()
-
-    plt.figure()
-    plt.plot(numpy.log10(windows), c_n)
-    plt.annotate('Science Park Cluster\n'
-                 'Date: 2013-8-1\n'
-                 'Total number of events: %d\n' % len(ts), (0.2, 0.9), xycoords='axes fraction')
-    plt.title('Found coincidences versus coincidence window')
-    plt.xlabel('Coincidence window (10^x)')
-    plt.ylabel('Found coincidences')
-    plt.show()
-    return c_n, windows
+ESD_PATH = '/Users/arne/Datastore/esd'
 
 
 def coincidences_all_stations():
     network = Network()
-    station_ids = []
+    station_ids = [station['number'] for station in network.all_stations]
+    coincidences_stations(station_ids, group_name='All stations')
+
+
+def coincidences_each_cluster():
+    network = Network()
+    for cluster in network.all_clusters:
+        stations = network.stations(cluster=cluster['number'])
+        station_ids = [station['number'] for station in stations]
+        group_name = '%s cluster' % cluster['name']
+        coincidences_stations(station_ids, group_name=group_name)
+
+
+def coincidences_sciencepark():
+    network = Network()
+    stations = network.stations(subcluster=500)
+    station_ids = [station['number'] for station in stations]
+    group_name = 'Science Park subcluster'
+    coincidences_stations(station_ids, group_name=group_name)
+
+
+def coincidences_stations(station_ids, group_name='Specific stations',
+                          date=None):
+    if date is None:
+        date = datetime.date(2013, 8, 1)
+    stations_with_data = []
     station_coords = []
     cluster_groups = []
-    for station in network.all_stations:
+    for station_id in station_ids:
         try:
-            info = Station(station['number'])
+            info = Station(station_id)
         except:
             continue
-        if info.has_data(year=2013, month=8, day=1):
+        if info.has_data(year=date.year, month=date.month, day=date.day):
             cluster_groups.append(info.cluster.lower())
-            station_ids.append(station['number'])
+            stations_with_data.append(station_id)
 
-    group_name = 'All stations'
+    if len(stations_with_data) <= 1:
+        return
 
+    filepath = os.path.join(ESD_PATH, date.strftime('%Y/%-m/%Y_%-m_%-d.h5'))
+    data = tables.openFile(filepath, 'r')
+    coinc, event_tables = get_event_tables(data, cluster_groups, stations_with_data)
+    windows, counts, n_events, n_filtered = find_n_coincidences(coinc, event_tables)
+    plot_coinc_window(windows, counts, group_name, n_events, n_filtered, date)
+    data.close()
+
+
+def get_event_tables(data, cluster_groups, station_ids):
     station_groups = ['/hisparc/cluster_%s/station_%d' % (c, s)
                       for c, s in zip(cluster_groups, station_ids)]
 
-    data = tables.openFile('/Volumes/Hyperdrive/Datastore/esd/2013/8/2013_8_1.h5', 'r')
     coinc = coincidences.Coincidences(data, None, station_groups)
 
     event_tables = []
@@ -67,48 +80,11 @@ def coincidences_all_stations():
             event_tables.append(coinc.data.getNode(station_group, 'events'))
         except tables.NoSuchNodeError:
             print 'No events for: %s' % station_group
-    find_n_coincidences(coinc, event_tables, group_name)
-    data.close()
+
+    return coinc, event_tables
 
 
-def coincidences_each_cluster():
-    network = Network()
-    for cluster in network.all_clusters:
-        stations = network.stations(cluster=cluster['number'])
-        station_ids = []
-        station_coords = []
-        cluster_groups = []
-        for station in stations:
-            try:
-                info = Station(station['number'])
-            except:
-                continue
-            if info.has_data(year=2013, month=8, day=1):
-                cluster_groups.append(info.cluster.lower())
-                station_ids.append(station['number'])
-
-        if len(station_ids) <= 1:
-            continue
-
-        group_name = '%s Cluster' % cluster['name']
-
-        station_groups = ['/hisparc/cluster_%s/station_%d' % (c, s)
-                          for c, s in zip(cluster_groups, station_ids)]
-
-        data = tables.openFile('/Volumes/Hyperdrive/Datastore/esd/2013/8/2013_8_1.h5', 'r')
-        coinc = coincidences.Coincidences(data, None, station_groups)
-
-        event_tables = []
-        for station_group in coinc.station_groups:
-            try:
-                event_tables.append(coinc.data.getNode(station_group, 'events'))
-            except tables.NoSuchNodeError:
-                print 'No events for: %s' % station_group
-        find_n_coincidences(coinc, event_tables, group_name)
-        data.close()
-
-
-def find_n_coincidences(coinc, event_tables, group_name, plot=True):
+def find_n_coincidences(coinc, event_tables):
 
     timestamps = coinc._retrieve_timestamps(event_tables)
     ts_arr = numpy.array(timestamps, dtype='3u8')
@@ -132,18 +108,19 @@ def find_n_coincidences(coinc, event_tables, group_name, plot=True):
 
     if sum(counts) == 0:
         return
-    if plot:
-        plot_coinc_window(windows, counts, group_name, n_events, n_filtered)
+    else:
+        return windows, counts, n_events, n_filtered
 
 
-def plot_coinc_window(windows, counts, group_name='', n_events=0, n_filtered=0):
+def plot_coinc_window(windows, counts, group_name='', n_events=0, n_filtered=0,
+                      date=datetime.date.today()):
     plt.figure()
     plt.plot(numpy.log10(windows), counts)
     plt.annotate('%s\n'
-                 'Date: 2013-8-1\n'
+                 'Date: %s\n'
                  'Total n events: %d\n'
-                 'No self coincidence events: %d\n' %
-                 (group_name, n_events, n_filtered),
+                 'Without self coincidence: %d\n' %
+                 (group_name, date.isoformat(), n_events, n_filtered),
                  (0.05, 0.7), xycoords='axes fraction')
     plt.title('Found coincidences versus coincidence window')
     plt.xlabel('Coincidence window (10^x)')
@@ -154,8 +131,9 @@ def plot_coinc_window(windows, counts, group_name='', n_events=0, n_filtered=0):
 
 
 if __name__ == '__main__':
-#    coincidences_each_cluster()
-    coincidences_all_stations()
+    # coincidences_each_cluster()
+    # coincidences_all_stations()
+    coincidences_sciencepark()
 
 """
 Idea for faster cincidence finding
