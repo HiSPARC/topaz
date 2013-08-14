@@ -123,7 +123,7 @@ class EnergySensitivity(object):
     def plot_energy_acceptance(self):
         # Grid
         C = plt.contour(self.xx, self.yy, self.results, np.logspace(13, 21, 25))
-        plt.clabel(C, np.logspace(13, 21, 9), inline=1, fontsize=10, fmt='%.0e')
+        plt.clabel(C, np.logspace(13, 21, 9), inline=1, fontsize=8, fmt='%.0e')
 
     def draw_background_map(self):
         # Draw Science Park Map on 1:1 scale (1 meter = 1 pixel)
