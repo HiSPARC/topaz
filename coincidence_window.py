@@ -85,7 +85,6 @@ def get_event_tables(data, cluster_groups, station_ids):
 
 
 def find_n_coincidences(coinc, event_tables):
-
     timestamps = coinc._retrieve_timestamps(event_tables)
     ts_arr = numpy.array(timestamps, dtype='3u8')
     n_events = len(timestamps)
@@ -143,26 +142,5 @@ Idea for faster cincidence finding
 - Then find where difference between those that passed previous check
   also have less difference than window between next (idx+2) element
 - ...
-
-ts_arr = np.array(sorted_timestamps)
-
-
-def coinc_level(ts_arr, window):
-    n_coincidence = []
-    c_idx = np.where(ts_arr[:-1] - ts_arr[1:] > window)
-    tss = len(ts_arr)
-
-    while not len(c_idx[0]) == 0:
-        window *= 3
-        n_coincidence.append(c_idx)
-        c_idx = np.where(ts_arr[c_idx[0]] - ts_arr[c_idx[0] + 1] > window)
-
-    return c_idx
-
-def faculty(n):
-    if n == 1:
-        return 1
-    else:
-        return n * faculty(n-1)
 
 """
