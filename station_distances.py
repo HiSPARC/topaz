@@ -13,15 +13,25 @@ import numpy
 
 from sapphire.api import Station, Network
 
+def distances_sciencepark():
+    network = Network()
+    station_ids = [station['number'] for station in network.stations(subcluster=500)]
+    distances_stations(station_ids)
+
 
 def distances_all_stations():
     network = Network()
+    station_ids = [station['number'] for station in network.all_stations]
+    distances_stations(station_ids)
+
+
+def distances_stations(station_ids):
     station_coords = []
-    for station in network.all_stations:
+    for station_id in station_ids:
         try:
-            info = Station(station['number'])
+            info = Station(station_id)
         except:
-            print 'Failed for %d' % station['number']
+            print 'Failed for %d' % station_id
             continue
         station_coords.append(info.location())
 
@@ -69,4 +79,5 @@ def distance(s1, s2):
 
 
 if __name__ == '__main__':
+    distances_sciencepark()
     distances_all_stations()
