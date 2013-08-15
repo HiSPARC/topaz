@@ -3,6 +3,20 @@
 This script gets the number of found coincidences as a function of the
 coincidence window.
 
+TODO: Fix removal of coincidences. Currently this script filters
+'self-coindences' but by doing so also removes some potential
+coincidences at smaller windows. This is because if station n has 2
+events directly after eachother in the combined sorted timestamps list,
+the first of those two is removed. This removes the possibility of the
+event before that to have a coincidence with the removed event. Should
+be fixed by not removing events but adding extra condition that the
+stations are not equal in the where.
+
+TODO: Fix coincidences that are subsets. The number of coincidences
+should not keep increasing, because at some point one coincidence might
+contain another coincidences. e.g. 1, 3, 2 also includes 3, 2. This
+should perhaps be counted as only 1 coincidence.
+
 """
 import datetime
 import os
