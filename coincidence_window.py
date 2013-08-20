@@ -3,15 +3,6 @@
 This script gets the number of found coincidences as a function of the
 coincidence window.
 
-TODO: Fix removal of coincidences. Currently this script filters
-'self-coindences' but by doing so also removes some potential
-coincidences at smaller windows. This is because if station n has 2
-events directly after eachother in the combined sorted timestamps list,
-the first of those two is removed. This removes the possibility of the
-event before that to have a coincidence with the removed event. Should
-be fixed by not removing events but adding extra condition that the
-stations are not equal in the where.
-
 TODO: Fix coincidences that are subsets. The number of coincidences
 should not keep increasing, because at some point one coincidence might
 contain another coincidences. e.g. 1, 3, 2 also includes 3, 2. This
@@ -79,8 +70,8 @@ def coincidences_stations(station_ids, group_name='Specific stations',
     filepath = os.path.join(ESD_PATH, date.strftime('%Y/%-m/%Y_%-m_%-d.h5'))
     data = tables.openFile(filepath, 'r')
     coinc, event_tables = get_event_tables(data, cluster_groups, stations_with_data)
-    windows, counts, n_events, n_filtered = find_n_coincidences(coinc, event_tables)
-    plot_coinc_window(windows, counts, group_name, n_events, n_filtered, date)
+    windows, counts, n_events = find_n_coincidences(coinc, event_tables)
+    plot_coinc_window(windows, counts, group_name, n_events, date)
     data.close()
 
 
@@ -107,11 +98,9 @@ def find_n_coincidences(coinc, event_tables):
 
     del timestamps
 
-    same_station = numpy.where(ts_arr[:-1, 1] == ts_arr[1:, 1])[0]
-    ts_arr = numpy.delete(ts_arr, same_station, axis=0)
-    n_filtered = len(ts_arr)
-
     ts_diff = ts_arr[1:, 0] - ts_arr[:-1, 0]
+    not_same_station = ts_arr[1:, 1] != ts_arr[:-1, 1]
+    ts_diff = ts_diff[not_same_station]
 
     del ts_arr
 
@@ -122,10 +111,10 @@ def find_n_coincidences(coinc, event_tables):
     if sum(counts) == 0:
         return
     else:
-        return windows, counts, n_events, n_filtered
+        return windows, counts, n_events
 
 
-def plot_coinc_window(windows, counts, group_name='', n_events=0, n_filtered=0,
+def plot_coinc_window(windows, counts, group_name='', n_events=0,
                       date=datetime.date.today()):
     counts = numpy.array(counts)
     plt.figure()
@@ -136,9 +125,8 @@ def plot_coinc_window(windows, counts, group_name='', n_events=0, n_filtered=0,
     plt.xscale('log')
     plt.annotate('%s\n'
                  'Date: %s\n'
-                 'Total n events: %d\n'
-                 'Without self coincidence: %d\n' %
-                 (group_name, date.isoformat(), n_events, n_filtered),
+                 'Total n events: %d\n' %
+                 (group_name, date.isoformat(), n_events),
                  (0.05, 0.7), xycoords='axes fraction')
     plt.title('Found coincidences versus coincidence window')
     plt.ylabel('Found coincidences')
