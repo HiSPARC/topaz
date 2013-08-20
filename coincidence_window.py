@@ -22,6 +22,8 @@ import datetime
 import os
 
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+import matplotlib.gridspec as gridspec
 import tables
 import numpy
 
@@ -106,9 +108,7 @@ def find_n_coincidences(coinc, event_tables):
     del timestamps
 
     same_station = numpy.where(ts_arr[:-1, 1] == ts_arr[1:, 1])[0]
-    while len(same_station) > 0:
-        ts_arr = numpy.delete(ts_arr, same_station, axis=0)
-        same_station = numpy.where(ts_arr[:-1, 1] == ts_arr[1:, 1])[0]
+    ts_arr = numpy.delete(ts_arr, same_station, axis=0)
     n_filtered = len(ts_arr)
 
     ts_diff = ts_arr[1:, 0] - ts_arr[:-1, 0]
@@ -127,8 +127,13 @@ def find_n_coincidences(coinc, event_tables):
 
 def plot_coinc_window(windows, counts, group_name='', n_events=0, n_filtered=0,
                       date=datetime.date.today()):
+    counts = numpy.array(counts)
     plt.figure()
-    plt.plot(numpy.log10(windows), counts)
+    grid = gridspec.GridSpec(2, 1, height_ratios=[4, 1])
+    plt.subplot(grid[0])
+    plt.plot(windows, counts)
+    plt.yscale('log')
+    plt.xscale('log')
     plt.annotate('%s\n'
                  'Date: %s\n'
                  'Total n events: %d\n'
@@ -136,10 +141,19 @@ def plot_coinc_window(windows, counts, group_name='', n_events=0, n_filtered=0,
                  (group_name, date.isoformat(), n_events, n_filtered),
                  (0.05, 0.7), xycoords='axes fraction')
     plt.title('Found coincidences versus coincidence window')
-    plt.xlabel('Coincidence window (10^x)')
     plt.ylabel('Found coincidences')
+    plt.ylim(ymin=1)
+
+
+    plt.subplots_adjust(wspace=0, hspace=0)
+    plt.gca().xaxis.set_major_formatter(ticker.NullFormatter())
+    plt.subplot(grid[1])
+    plt.plot(windows[:-1], counts[1:] - counts[:-1])
+    plt.xlabel('Coincidence window (ns)')
+    plt.ylim(ymin=1)
     plt.yscale('log')
-    plt.ylim(ymin=0.1)
+    plt.xscale('log')
+
     plt.show()
 
 
