@@ -53,7 +53,6 @@ def coincidences_stations(station_ids, group_name='Specific stations',
     if date is None:
         date = datetime.date(2013, 8, 1)
     stations_with_data = []
-    station_coords = []
     cluster_groups = []
     for station_id in station_ids:
         try:
@@ -138,6 +137,7 @@ def plot_coinc_window(windows, counts, group_name='', n_events=0,
     plt.subplot(grid[1])
     plt.plot(windows[:-1], counts[1:] - counts[:-1])
     plt.xlabel('Coincidence window (ns)')
+    plt.gca().yaxis.tick_right()
     plt.ylim(ymin=1)
     plt.yscale('log')
     plt.xscale('log')
