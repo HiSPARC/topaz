@@ -10,7 +10,7 @@ The tijdtest project tries to determine:
 - if it is a constant offset, or changes over time
 - what influences the fluctuations in time offset
 - how the gps location is related
-- how the use of a different gps affects the offset
+- if the use of a different gps antenna and modules affects the offset
 - ...
 
 And finally it is meant to determine these time offsets for all HiSPARC boxes
