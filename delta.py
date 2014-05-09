@@ -25,7 +25,7 @@ def calculate(data, id):
     """
     coincidences, timestamps = search(data,
                                       ['/refr/t%d' % id, '/swap/t%d' % id],
-                                      window=800)
+                                      window=8000)
     deltas = []
     ext_timestamps = []
 
