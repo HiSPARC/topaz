@@ -20,7 +20,7 @@ Trigger both HIIMs by the same pulse generator, using the same (short)
 cable lengths.
 
 - Try triggering on external trigger, maybe let this run for a day (to
-  confirm David's earlier tests).
+  confirm David's earlier tests (Fokkema 2012 fig 2.22).
 - Try manually shifting the GPS position of one of the GPSs by 100
   meters and see what happens.
 - Try connecting a Slave to a Master and then triggering via the Slave.
@@ -28,7 +28,7 @@ cable lengths.
 - Measure the cable delays of those used for triggering
 
     - Connect to same pulse generator
-    - Conenct to same oscilloscope
+    - Connect to same oscilloscope
     - Swap cable/ports to find differences
 
 - Using a [GPSSource S14-A GPS
