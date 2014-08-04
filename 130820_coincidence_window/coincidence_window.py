@@ -22,7 +22,7 @@ from sapphire.api import Station, Network
 from sapphire.analysis import coincidences
 
 
-ESD_PATH = '/Users/arne/Datastore/esd'
+ESD_PATH = '/Volumes/Hyperdrive/Datastore/esd'
 
 
 def coincidences_all_stations():
@@ -146,8 +146,8 @@ def plot_coinc_window(windows, counts, group_name='', n_events=0,
 
 
 if __name__ == '__main__':
-    # coincidences_each_cluster()
-    # coincidences_all_stations()
+    coincidences_each_cluster()
+    coincidences_all_stations()
     coincidences_sciencepark()
 
 """

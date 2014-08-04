@@ -23,7 +23,7 @@ class EnergySensitivity(object):
         # self.trig_threshold = 1.39  # density at one detector for 50% detection probability
         self.detection_probability = 0.5
         self.min_detectors = 2
-        self.min_stations = 4
+        self.min_stations = 3
 
         # Shower parameters
         self.ldf = KascadeLdf()
@@ -137,6 +137,36 @@ class EnergySensitivity(object):
                    extent=[-bg_width, bg_width, -bg_height, bg_height])
 
 
+class SingleFourEnergySensitivity(EnergySensitivity):
+    def __init__(self):
+        super(SingleFourEnergySensitivity, self).__init__()
+
+        # Detectors
+        self.cluster = sapphire.clusters.SingleStation()
+
+        # Conditions
+        # self.trig_threshold = 1.39  # density at one detector for 50% detection probability
+        self.detection_probability = 0.5
+        self.min_detectors = 2
+        self.min_stations = 1
+
+
+class SingleTwoEnergySensitivity(SingleFourEnergySensitivity):
+    def __init__(self):
+        super(SingleTwoEnergySensitivity, self).__init__()
+
+        # Detectors
+        self.cluster = sapphire.clusters.SingleTwoDetectorStation()
+
+
+class SingleDiamondEnergySensitivity(SingleFourEnergySensitivity):
+    def __init__(self):
+        super(SingleDiamondEnergySensitivity, self).__init__()
+
+        # Detectors
+        self.cluster = sapphire.clusters.SingleDiamondStation()
+
+
 # for every shower location around science park get distaces to stations,
 # get detector densities from ldf
 # check minimum energy to be detected..
@@ -184,7 +214,7 @@ def generate_positions(self, N, max_r):
 
 if __name__=="__main__":
     plt.figure()
-    sens = EnergySensitivity()
+    sens = SingleFourEnergySensitivity()
 #     sens.plot_scintillators_in_cluster()
 #     sens.draw_background_map()
     sens.main()
