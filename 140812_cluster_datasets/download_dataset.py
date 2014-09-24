@@ -18,6 +18,7 @@ def download_sciencepark_dataset():
     start = (2010, 1)
     end = (2014, 8)
 
+    print "Downloading Science Park dataset."
     with tables.open_file('sciencepark_n2_100101_140801.h5', 'a') as data:
         for startdt, enddt in monthrange(start, end):
             download_coincidences(data, stations=stations, start=startdt,
@@ -37,6 +38,7 @@ def download_aarhus_dataset():
     start = (2012, 1)
     end = (2014, 8)
 
+    print "Downloading Aarhus dataset."
     with tables.open_file('aarhus_n2_120101_140801.h5', 'a') as data:
         for startdt, enddt in monthrange(start, end):
             download_coincidences(data, stations=stations, start=startdt,
@@ -57,7 +59,7 @@ def download_zaanlands_dataset():
     start = (2012, 6)
     end = (2014, 8)
 
-
+    print "Downloading Zaanlands dataset."
     with tables.open_file('zaanlands_n2_120601_140801.h5', 'a') as data:
         for startdt, enddt in monthrange(start, end):
             download_coincidences(data, stations=stations, start=startdt,
@@ -78,6 +80,7 @@ def download_twente_dataset():
     start = (2011, 8)
     end = (2014, 8)
 
+    print "Downloading Twente dataset."
     with tables.open_file('twente_n2_110801_140801.h5', 'a') as data:
         for startdt, enddt in monthrange(start, end):
             download_coincidences(data, stations=stations, start=startdt,
@@ -99,7 +102,30 @@ def download_eindhoven_dataset():
     start = (2011, 10)
     end = (2014, 8)
 
+    print "Downloading Eindhoven dataset."
     with tables.open_file('eindhoven_n2_111001_140801.h5', 'a') as data:
+        for startdt, enddt in monthrange(start, end):
+            download_coincidences(data, stations=stations, start=startdt,
+                                  end=enddt, n=2)
+
+
+def download_alphen_dataset():
+    """Download a dataset for analysis
+
+    This script downloads coincidence data from the Alphen ad Rijn stations.
+    Three 2-detector stations, on high schools forming a triangle.
+    Coincidences with at least 2 events in a coincidence are included.
+    This allows for determination of detector and station offsets.
+    These stations are far appart, so few coincidences are found that
+    include all three stations. Using a larger coincidence window may help.
+
+    """
+    stations = [3301, 3302, 3303]
+    start = (2010, 12)
+    end = (2014, 8)
+
+    print "Downloading Alphen ad Rijn dataset."
+    with tables.open_file('alphen_n2_101201_140801.h5', 'a') as data:
         for startdt, enddt in monthrange(start, end):
             download_coincidences(data, stations=stations, start=startdt,
                                   end=enddt, n=2)
@@ -146,7 +172,8 @@ def monthrange(start, stop):
 
 
 if __name__ == "__main__":
-    download_eindhoven_dataset()
+    download_alphen_dataset()
+    # download_eindhoven_dataset()
     # download_aarhus_dataset()
     # download_zaanlands_dataset()
     # download_twente_dataset()
