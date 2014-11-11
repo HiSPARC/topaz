@@ -21,7 +21,7 @@ def distances_sciencepark():
 
 def distances_all_stations():
     network = Network()
-    station_ids = [station['number'] for station in network.all_stations]
+    station_ids = [station for station in network.station_numbers()]
     distances_stations(station_ids)
 
 
