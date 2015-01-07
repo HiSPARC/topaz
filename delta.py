@@ -52,9 +52,9 @@ def store(id):
     warnings.simplefilter('ignore', tables.NaturalNameWarning)
 
     print 'tt_delta: Storing deltas for test %s' % id
-    with tables.openFile(paths('tt_data'), 'r') as data_file, \
-         tables.openFile(paths('tt_delta'), 'a') as delta_file:
-        table = delta_file.createTable('/t%d' % id, 'delta', DeltaVal,
+    with tables.open_file(paths('tt_data'), 'r') as data_file, \
+         tables.open_file(paths('tt_delta'), 'a') as delta_file:
+        table = delta_file.create_table('/t%d' % id, 'delta', DeltaVal,
                                        createparents=True)
         ext_timestamps, deltas = calculate(data_file, id)
         delta_row = table.row
@@ -72,17 +72,17 @@ def append_new(id=None):
 
     """
     added = "tt_delta: No new deltas to be added"
-    with tables.openFile(paths('tt_delta'), 'a') as delta_file:
+    with tables.open_file(paths('tt_delta'), 'a') as delta_file:
         if id:
             try:
-                delta_file.getNode('/t%d' % id, 'delta')
+                delta_file.get_node('/t%d' % id, 'delta')
             except tables.NoSuchNodeError:
                 store(id)
                 added = "tt_delta: Added new deltas"
         else:
             for id in get_tests(part="id", unique=True):
                 try:
-                    delta_file.getNode('/t%d' % id, 'delta')
+                    delta_file.get_node('/t%d' % id, 'delta')
                 except tables.NoSuchNodeError:
                     store(id)
                     added = "tt_delta: Added new deltas"
@@ -94,7 +94,7 @@ def store_all():
     """" Calculate and store the deltas for all tests
 
     """
-    with tables.openFile(paths('tt_delta'), 'w'):
+    with tables.open_file(paths('tt_delta'), 'w'):
         pass
     append_new()
     print "tt_delta: Calculated deltas for entire Tijd Test"
@@ -108,9 +108,9 @@ def get(id, path=None):
         path = paths('tt_delta')
 
     if id in get_tests(part='id'):
-        with tables.openFile(path, 'r') as delta_file:
+        with tables.open_file(path, 'r') as delta_file:
             try:
-                delta_table = delta_file.getNode('/t%d' % id, 'delta')
+                delta_table = delta_file.get_node('/t%d' % id, 'delta')
                 ext_timestamps = [row['ext_timestamp'] for row in delta_table]
                 deltas = [row['delta'] for row in delta_table]
             except tables.NoSuchNodeError:
@@ -127,18 +127,18 @@ def get_ids():
     """ Get list of all test ids in the data file
 
     """
-    with tables.openFile(paths('tt_delta'), 'r') as delta_file:
-        ids = [int(node._v_name[1:]) for node in delta_file.listNodes('/')]
+    with tables.open_file(paths('tt_delta'), 'r') as delta_file:
+        ids = [int(node._v_name[1:]) for node in delta_file.list_nodes('/')]
     ids.sort()
 
     return ids
 
 
 def remove(id):
-    with tables.openFile(paths('tt_delta'), 'a') as delta_file:
+    with tables.open_file(paths('tt_delta'), 'a') as delta_file:
         try:
-            delta_file.getNode('/t%d' % id, 'delta')
-            delta_file.removeNode('/t%d' % id, recursive=True)
+            delta_file.get_node('/t%d' % id, 'delta')
+            delta_file.remove_node('/t%d' % id, recursive=True)
             print "tt_delta: Removed table /t%d" % id
         except tables.NoSuchNodeError:
             print "tt_delta: No such table"

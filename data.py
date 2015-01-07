@@ -38,8 +38,8 @@ def check_downloaded(storage, test):
     swap = storage.get_node('/swap/t%d' % test.id + '/events')
 
     query = '(timestamp >= start) & (timestamp =< end)'
-    swap_inrange = swap.readWhere(query)
-    refr_inrange = refr.readWhere(query)
+    swap_inrange = swap.read_where(query)
+    refr_inrange = refr.read_where(query)
 
     if len(swap_inrange) or len(refr_inrange):
         return True
@@ -141,7 +141,7 @@ def remove(id, path=None):
     if not path:
         path = DATA_PATH
 
-    with tables.openFile(path, 'a') as data_file:
+    with tables.open_file(path, 'a') as data_file:
         try:
             data_file.get_node('/swap/t%d' % id, 'events')
             data_file.remove_node('/swap/t%d' % id, recursive=True)
