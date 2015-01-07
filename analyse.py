@@ -2,10 +2,10 @@ import numpy as np
 import pylab as plt
 
 import plot_pref as pp
-from paths import paths
 from testlist import get_tests
 from delta import get
-from helper import nanoseconds_from_ext_timestamp, timestamps_from_ext_timestamp
+from helper import (nanoseconds_from_ext_timestamp,
+                    timestamps_from_ext_timestamp)
 
 def print_delta_results(ids=None):
     """ Prints the average delta, the standard deviation and length in days
@@ -72,7 +72,7 @@ def plot_delta_test(ids, **kwargs):
         plt.ylim(0.0, 0.15)
 
         #Save Figure
-        plot.path = paths('tt_plot')
+        plot.path = 'plots/'
         if len(ids) == 1:
             plot.name = 'tt_delta_hist_%03d' % ids[0]
         elif kwargs.keys():
@@ -110,7 +110,7 @@ def plot_delta_histogram(ids, **kwargs):
         plt.ylim(0.0, 0.15)
 
         #Save Figure
-        plot.path = paths('tt_plot') + 'delta_histogram_alltests/'
+        plot.path = 'plots/' + 'delta_histogram_alltests/'
         if len(ids) == 1:
             plot.name = 'tt_delta_hist_%03d' % ids[0]
         elif kwargs.keys():
@@ -148,7 +148,7 @@ def plot_ns_histogram(ids, **kwargs):
 #         plt.ylim(.95e-9, 1.05e-9)
 
         #Save Figure
-        plot.path = paths('tt_plot') + 'nanos_histogram/'
+        plot.path = 'plots/' + 'nanos_histogram/'
         if len(ids) == 1:
             plot.name = 'tt_nanos_hist_%03d' % ids[0]
         elif kwargs.keys():
@@ -186,7 +186,7 @@ def plot_delta_time(ids, **kwargs):
 #               plot.axe.transData.transform((0, 0)))
 
         #Save Figure
-        plot.path = paths('tt_plot') + 'delta_time_alltests/'
+        plot.path = 'plots/' + 'delta_time_alltests/'
         if len(ids) == 1:
             plot.name = 'tt_delta_time_%03d' % ids[0]
         elif kwargs.keys():

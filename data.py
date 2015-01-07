@@ -2,10 +2,12 @@ from datetime import datetime as dt
 import calendar
 
 import tables
-from hisparc.publicdb import download_data
+from sapphire.esd import download_data
 
-from paths import paths
 from testlist import get_tests
+
+
+DATA_PATH = '/Users/arne/Datastore/tijdtest/tijdtest_data.h5'
 
 
 def download(storage, test):
@@ -32,8 +34,8 @@ def check_downloaded(storage, test):
     start = calendar.timegm(test.start)
     ended = calendar.timegm(test.end)
 
-    refr = storage.getNode('/refr/t%d' % test.id + '/events')
-    swap = storage.getNode('/swap/t%d' % test.id + '/events')
+    refr = storage.get_node('/refr/t%d' % test.id + '/events')
+    swap = storage.get_node('/swap/t%d' % test.id + '/events')
 
     query = '(timestamp >= start) & (timestamp =< end)'
     swap_inrange = swap.readWhere(query)
@@ -46,7 +48,7 @@ def check_downloaded(storage, test):
 
 
 def append_new(id=None, path=None):
-    """ Add and download a new test to the storage
+    """Download and add new test data to the storage
 
     Check if the data for test is already downloaded, if it is not add a new
     node for it and download the data into it.
@@ -54,11 +56,11 @@ def append_new(id=None, path=None):
     """
     added = "tt_data: No new data to be added"
     if not path:
-        path = paths('tt_data')
-    with tables.openFile(path, 'a') as data_file:
+        path = DATA_PATH
+    with tables.open_file(path, 'a') as data_file:
         if id:
             try:
-                data_file.getNode('/swap/t%d' % id, 'events')
+                data_file.get_node('/swap/t%d' % id, 'events')
             except tables.NoSuchNodeError:
                 test = get_tests(id=id)
                 download(data, test[0])
@@ -66,7 +68,7 @@ def append_new(id=None, path=None):
         else:
             for test in get_tests(unique=False):
                 try:
-                    data_file.getNode('/swap/t%d' % test.id, 'events')
+                    data_file.get_node('/swap/t%d' % test.id, 'events')
                 except tables.NoSuchNodeError:
                     download(data, test)
                     added = "tt_data: Added new data"
@@ -79,19 +81,20 @@ def get(id=None, path=None):
 
     """
     if not path:
-        path = paths('tt_data')
+        path = DATA_PATH
 
-    with tables.openFile(path, 'a') as data_file:
+    with tables.open_file(path, 'a') as data_file:
         if id:
             try:
-                node = eval('data_file.root.swap.t%d' % id)
+                node = data_file.get_node('/swap/t%d' % id, 'events')
             except tables.NoSuchNodeError:
                 node = None
         else:
             node = []
             for test in get_tests(unique=False):
                 try:
-                    node.append(data_file.getNode('/swap/t%d' % test.id, 'events'))
+                    node.append(data_file.get_node('/swap/t%d' % test.id,
+                                'events'))
                 except tables.NoSuchNodeError:
                     node.append(None)
 
@@ -103,11 +106,13 @@ def get_ids(path=None):
 
     """
     if not path:
-        path = paths('tt_data')
+        path = DATA_PATH
 
-    with tables.openFile(path, 'r') as data_file:
-        ids_swap = [int(node._v_name[1:]) for node in data_file.listNodes('/swap/')]
-        ids_refr = [int(node._v_name[1:]) for node in data_file.listNodes('/refr/')]
+    with tables.open_file(path, 'r') as data_file:
+        ids_swap = [int(node._v_name[1:])
+                    for node in data_file.list_nodes('/swap/')]
+        ids_refr = [int(node._v_name[1:])
+                    for node in data_file.list_nodes('/refr/')]
     ids_swap.sort()
     ids_refr.sort()
 
@@ -117,13 +122,13 @@ def get_ids(path=None):
 def download_all(path=None):
     """ Download data for all tests in the testlist
 
-    If a datafile exists, it will be overwritten
+    NOTE: If a datafile already exists, it will be overwritten
 
     """
     if not path:
-        path = paths('tt_data')
+        path = DATA_PATH
 
-    with tables.openFile(path, 'w'):
+    with tables.open_file(path, 'w'):
         pass
     append_new()
     print 'tt_data: Downloaded entire Tijd Test'
@@ -134,18 +139,18 @@ def remove(id, path=None):
 
     """
     if not path:
-        path = paths('tt_data')
+        path = DATA_PATH
 
     with tables.openFile(path, 'a') as data_file:
         try:
-            data_file.getNode('/swap/t%d' % id, 'events')
-            data_file.removeNode('/swap/t%d' % id, recursive=True)
+            data_file.get_node('/swap/t%d' % id, 'events')
+            data_file.remove_node('/swap/t%d' % id, recursive=True)
             print "tt_data: Removed table /swap/t%d" % id
         except tables.NoSuchNodeError:
             print "tt_data: No such table in swap"
         try:
-            data_file.getNode('/refr/t%d' % id, 'events')
-            data_file.removeNode('/refr/t%d' % id, recursive=True)
+            data_file.get_node('/refr/t%d' % id, 'events')
+            data_file.remove_node('/refr/t%d' % id, recursive=True)
             print "tt_data: Removed table /refr/t%d" % id
         except tables.NoSuchNodeError:
             print "tt_data: No such table in refr"

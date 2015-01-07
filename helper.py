@@ -8,7 +8,7 @@ def nanoseconds_from_ext_timestamp(ext_timestamp):
 
 
 def timestamps_from_ext_timestamp(ext_timestamp):
-    """ Get the nanosecond part of the ext_timestamp
+    """ Get the timestamp part of the ext_timestamp
 
     """
     timestamps = [ts / int(1e9) for ts in ext_timestamp]
