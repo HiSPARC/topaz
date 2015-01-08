@@ -7,7 +7,7 @@ import pylab as plt
 
 from paths import paths
 import plot_pref as pp
-from hisparc import publicdb
+from sapphire.esd import download_data
 from hisparc.analysis.coincidences import search_coincidences as search
 
 from testlist import Tijdtest
@@ -49,8 +49,8 @@ def download(storage, test):
 
     """
     print 'tt_data: Downloading data for test %d: %s' % (test.id, test.group)
-    publicdb.download_data(storage, '/refr/t%d' % test.id, 508, test.start, test.end)
-    publicdb.download_data(storage, '/swap/t%d' % test.id, int(test.gps), test.start, test.end)
+    download_data(storage, '/refr/t%d' % test.id, 508, test.start, test.end)
+    download_data(storage, '/swap/t%d' % test.id, int(test.gps), test.start, test.end)
 
 
 def download_data():

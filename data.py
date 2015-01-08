@@ -70,7 +70,7 @@ def append_new(id=None, path=None):
                 try:
                     data_file.get_node('/swap/t%d' % test.id, 'events')
                 except tables.NoSuchNodeError:
-                    download(data, test)
+                    download(data_file, test)
                     added = "tt_data: Added new data"
 
     print added
