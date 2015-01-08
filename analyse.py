@@ -130,8 +130,8 @@ def plot_ns_histogram(ids, **kwargs):
 
     #Define Bins
     low = 0
-    high = long(1e9)
-    bin_size = 1e6  # 1e7 = 10ms, 1e6 = 1 ms, 1e3 = 1 us
+    high = int(1e9)
+    bin_size = 5e6  # 1e7 = 10ms, 1e6 = 1 ms, 1e3 = 1 us
     bins = np.arange(low, high + bin_size, bin_size)
 
     #Begin Figure
@@ -147,7 +147,7 @@ def plot_ns_histogram(ids, **kwargs):
     plot.set_xlabel(r'nanosecond part of timestamp [ns]')
     plot.set_ylabel(r'p')
     plot.set_xlimits(0, 1e9)
-#         plt.ylim(.95e-9, 1.05e-9)
+    plot.set_ylimits(.95e-9, 1.05e-9)
 
     #Save Figure
     if len(ids) == 1:
@@ -192,7 +192,6 @@ def plot_delta_time(ids, **kwargs):
 
 
 if __name__ == '__main__':
-#
 #    all_groups = get_tests(part='group', subset='ALL')
 #    plot_delta_histogram(all_groups, name='ALL')
 #    pmt_groups = get_tests(part='group', subset='PMT')
@@ -214,7 +213,7 @@ if __name__ == '__main__':
     for id in ids[:2]:
         plot_ns_histogram(id)
         plot_delta_histogram([id])
-        plot_delta_time([id])
+#         plot_delta_time([id])
 
 #    083_groups = get_tests(part='group', hisparc='083', complement=False)
 #    plot_delta_histogram(083_groups)
