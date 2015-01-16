@@ -8,18 +8,22 @@ has a mean of 0 ns and a sigma of 2.7 ns.
 
 """
 import tables
-import matplotlib.pyplot as plt
+from artist import Plot
 from numpy import histogram, arange
 from scipy.optimize import curve_fit
 
 from sapphire.analysis.reconstructions import ReconstructESDCoincidences
 from sapphire.utils import gauss
+from sapphire.clusters import Station
 
 
 def determine_offset(dirrec, s_path):
     station_number = int(s_path.split('station_')[-1])
     station_group = dirrec.data.get_node(s_path)
-    offsets = [offset for offset in dirrec.determine_detector_timing_offsets(station_group)
+    o = (0, 0, 0)
+    station = Station(None, 0, o,
+                      detectors=[(o, 'UD'), (o, 'UD'), (o, 'LR'), (o, 'LR')])
+    offsets = [offset for offset in dirrec.determine_detector_timing_offsets(station, station_group)
                if offset != 0.0]
     return offsets
 
@@ -40,16 +44,23 @@ def fit_offsets(offsets):
     return x, y, popt
 
 
-def plot_fit(x, y, popt):
-    plt.step(x, y, where='mid')
-    plt.plot(x, gauss(x, *popt))
-    plt.show()
+def plot_fit(x, y, popt, graph):
+    graph.plot(x - 1.25, y, mark=None, use_steps=True)
+    fit_x = arange(min(x), max(x), 0.1)
+    graph.plot(fit_x, gauss(fit_x, *popt), mark=None, linestyle='gray')
 
 
 if __name__ == '__main__':
+    graph = Plot()
+
     data_path = '/Users/arne/Datastore/esd/2014/1/2014_1_1.h5'
     with tables.open_file(data_path, 'r') as data:
         offsets = determine_offsets(data)
     x, y, popt = fit_offsets(offsets)
     print 'sigma: ', popt[2]
-    plot_fit(x, y, popt)
+    print 'mean: ', popt[1]
+    plot_fit(x, y, popt, graph)
+
+    graph.set_ylabel('P')
+    graph.set_xlabel('$\Delta t$ [ns]')
+    graph.save_as_pdf('detector_offset_distribution')
