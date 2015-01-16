@@ -76,31 +76,6 @@ def append_new(id=None, path=None):
     print added
 
 
-def get(id=None, path=None):
-    """ Get the events node of a certain id
-
-    """
-    if not path:
-        path = DATA_PATH
-
-    with tables.open_file(path, 'a') as data_file:
-        if id:
-            try:
-                node = data_file.get_node('/swap/t%d' % id, 'events')
-            except tables.NoSuchNodeError:
-                node = None
-        else:
-            node = []
-            for test in get_tests(unique=False):
-                try:
-                    node.append(data_file.get_node('/swap/t%d' % test.id,
-                                'events'))
-                except tables.NoSuchNodeError:
-                    node.append(None)
-
-    return node
-
-
 def get_ids(path=None):
     """ Get list of all test ids in the data file
 
@@ -152,6 +127,28 @@ def remove(id, path=None):
             data_file.get_node('/refr/t%d' % id, 'events')
             data_file.remove_node('/refr/t%d' % id, recursive=True)
             print "tt_data: Removed table /refr/t%d" % id
+        except tables.NoSuchNodeError:
+            print "tt_data: No such table in refr"
+
+
+def reassign(old_id, new_id, path=None):
+    """ Reassign nodes by moving the table
+
+    """
+    if not path:
+        path = DATA_PATH
+
+    with tables.open_file(path, 'a') as data_file:
+        try:
+            data_file.get_node('/swap/t%d' % old_id, 'events')
+            data_file.rename_node('/swap/t%d' % old_id, 't%d' % new_id)
+            print "tt_data: Renamed table /swap/t%d to t%d" % (old_id, new_id)
+        except tables.NoSuchNodeError:
+            print "tt_data: No such table in swap"
+        try:
+            data_file.get_node('/refr/t%d' % old_id, 'events')
+            data_file.rename_node('/refr/t%d' % old_id, 't%d' % new_id)
+            print "tt_data: Renamed table /refr/t%d to t%d" % (old_id, new_id)
         except tables.NoSuchNodeError:
             print "tt_data: No such table in refr"
 

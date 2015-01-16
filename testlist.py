@@ -33,11 +33,11 @@ def test_log():
         ( 4 , '018', '501', 'PMT2',  (2011,11,18, 15,46), (2011,11,21,  7,25), ''),
         ( 5 , '156', '501', 'PMT2',  (2011,11,21,  7,27), (2011,11,22,  9,14), 'mas018'),
         ( 6 , '074', '501', 'EXT',   (2011,11,22,  9,30), (2011,11,23,  9,38), ''),
-        ( 7 , '050', '501', 'PMT2',  (2011,11,23, 10,58), (2011,11,23, 13,40), ''),
+        ( 7 , '050', '501', 'PMT2',  (2011,11,23, 10,58), (2011,11,23, 13,40), 'noalmanac'),
         ( 8 , '050', '501', 'PMT2',  (2011,11,23, 13,41), (2011,11,23, 14,26), 'int250'),
         ( 9 , '050', '501', 'EXT',   (2011,11,23, 14,28), (2011,11,23, 14,58), 'int250'),
         ( 10, '050', '501', 'PMT2',  (2011,11,23, 15, 0), (2011,11,24, 13,18), ''),
-        ( 11, '065', '501', 'PMT2',  (2011,11,24, 13,24), (2011,11,25, 11,48), ''),
+        ( 11, '065', '501', 'PMT2',  (2011,11,24, 13,24), (2011,11,25, 11,48), 'noalmanac'),
         ( 12, '176', '501', 'PMT2',  (2011,11,25, 12, 3), (2011,11,26, 14,47), ''),
         ( 13, '176', '501', 'PMT1',  (2011,11,26, 14,54), (2011,11,27, 14,22), ''),
         ( 14, '176', '501', 'EXT',   (2011,11,27, 14,26), (2011,11,28, 14,56), ''),
@@ -88,27 +88,40 @@ def test_log():
         ( 59, '160', 'test', 'PMT1', (2013, 1, 7, 13, 0), (2013, 1, 7, 14,30), '2high1'),
         ( 60, '160', 'test', 'PMT2', (2013, 1, 7, 14,36), (2013, 1, 7, 14,55), '2high2'),
         ( 61, '341', 'test', 'PMT1', (2013, 1, 9, 10, 0), (2013, 1, 9, 13,30), 'gpsrec85774017'),
-        ( 62, '341', 'test', 'PMT1', (2013, 1, 9, 14, 5), (2013, 1, 9, 14,30), 'gpsrec01417277'),
+        ( 62, '341', 'test', 'PMT1', (2013, 1, 9, 14, 5), (2013, 1, 9, 14,30), 'noalmanac gpsrec01417277'),
         ( 63, '042', 'test', 'PMT2', (2013, 1, 9, 16,20), (2013, 1,10, 12,35), 'mas043 3high3 int500'),
         ( 64, '042', 'test', 'PMT1', (2013, 1,10, 12,37), (2013, 1,10, 12,55), 'mas043 3high3'),
         ( 65, '043', 'test', 'PMT1', (2013, 1,10, 12,57), (2013, 1,10, 13,17), 'slv042 3high2'),
-        ( 65, '341', 'test', 'PMT1', (2013, 1,10, 13,48), (2013, 1,10, 14, 0), 'gpsrec81408050'),
-        ( 66, '341', 'test', 'PMT1', (2013, 1,10, 14, 3), (2013, 1,10, 14,15), 'gpsrec01417271'),
-        ( 67, '341', 'test', 'PMT1', (2013, 1,10, 14,22), (2013, 1,10, 15, 0), 'gpsrec81407713'),
-        ( 68, '341', 'test', 'PMT1', (2013, 1,10, 15,13), (2013, 1,10, 15,25), 'sbgps204'),
-        ( 69, '341', 'test', 'PMT1', (2013, 1,17, 12,50), (2013, 1,17, 13,56), ''),
-        ( 70, '341', 'test', 'PMT1', (2013, 1,17, 13,58), (2013, 1,17, 14,42), 'noalmanac'),
-        ( 71, '341', 'test', 'PMT1', (2013, 1,17, 14,44), (2013, 1,24, 11,49), 'noalmanac'),
-        ( 72, '322', 'test', 'PMT1', (2013,10,31, 11,03), (2013,10,31, 12,28), ''),
-        ( 73, '323', 'test', 'PMT1', (2013,10,31, 12,34), (2013,10,31, 14, 9), 'noalmanac'),
-        ( 74, '346', 'test', 'PMT1', (2013,10,31, 14,14), (2013,10,31, 14,48), 'noalmanac'),
-        ( 75, '343', 'test', 'PMT1', (2013,11, 4, 11,26), (2013,11, 4, 12,35), 'noalmanac lostconnection'),
-        ( 76, '303', 'test', 'PMT1', (2013,11, 4, 16,02), (2013,11, 5, 10, 6), ''),
-        ( 77, '307', 'test', 'PMT1', (2013,11, 5, 10,38), (2013,11, 5, 11,13), 'noalmanac'),
-        ( 78, '311', 'test', 'PMT1', (2013,11, 5, 11,34), (2013,11, 5, 12,10), 'noalmanac'),
-        ( 79, '313', 'test', 'PMT1', (2013,11, 5, 12,15), (2013,11, 5, 13, 7), 'noalmanac'),
-        ( 80, '343', 'test', 'PMT1', (2013,11, 5, 13,16), (2013,11, 5, 13,37), 'noalmanac'),
-        ( 81, '304', 'test', 'PMT1', (2013,11, 5, 13,43), (2013,11, 5, 14,26), 'noalmanac'))
+        ( 66, '341', 'test', 'PMT1', (2013, 1,10, 13,48), (2013, 1,10, 14, 0), 'gpsrec81408050'),
+        ( 67, '341', 'test', 'PMT1', (2013, 1,10, 14, 3), (2013, 1,10, 14,15), 'noalmanac gpsrec01417271'),
+        ( 68, '341', 'test', 'PMT1', (2013, 1,10, 14,22), (2013, 1,10, 15, 0), 'noalmanac gpsrec81407713'),
+        ( 69, '341', 'test', 'PMT1', (2013, 1,10, 15,13), (2013, 1,10, 15,25), 'sbgps204'),
+        ( 70, '341', 'test', 'PMT1', (2013, 1,17, 12,50), (2013, 1,17, 13,56), ''),
+        ( 71, '341', 'test', 'PMT1', (2013, 1,17, 13,58), (2013, 1,17, 14,42), 'noalmanac'),
+        ( 72, '341', 'test', 'PMT1', (2013, 1,17, 14,44), (2013, 1,24, 11,49), 'noalmanac'),
+        ( 73, '322', 'test', 'PMT1', (2013,10,31, 11,03), (2013,10,31, 12,28), ''),
+        ( 74, '323', 'test', 'PMT1', (2013,10,31, 12,34), (2013,10,31, 14, 9), 'noalmanac'),
+        ( 75, '346', 'test', 'PMT1', (2013,10,31, 14,14), (2013,10,31, 14,48), 'noalmanac'),
+#         ( 76, '343', 'test', 'PMT1', (2013,11, 4, 11,26), (2013,11, 4, 12,35), 'nodata'),
+        ( 77, '303', 'test', 'PMT1', (2013,11, 4, 16,02), (2013,11, 5, 10, 6), ''),
+        ( 78, '307', 'test', 'PMT1', (2013,11, 5, 10,38), (2013,11, 5, 11,13), 'noalmanac'),
+        ( 79, '311', 'test', 'PMT1', (2013,11, 5, 11,34), (2013,11, 5, 12,10), 'noalmanac'),
+        ( 80, '313', 'test', 'PMT1', (2013,11, 5, 12,15), (2013,11, 5, 13, 7), 'noalmanac'),
+        ( 81, '343', 'test', 'PMT1', (2013,11, 5, 13,16), (2013,11, 5, 13,37), ''),
+        ( 82, '304', 'test', 'PMT1', (2013,11, 5, 13,43), (2013,11, 5, 14,26), 'noalmanac'),
+        ( 83, '050', '501', 'PMT2',  (2011,11,23, 11, 5), (2011,11,23, 13,40), 'subset7'),
+        ( 84, '065', '501', 'PMT2',  (2011,11,24, 13,33), (2011,11,25, 11,48), 'subset11'),
+        ( 85, '341', 'test', 'PMT1', (2013, 1, 9, 14,20), (2013, 1, 9, 14,30), 'subset62 gpsrec01417277'),
+        ( 86, '341', 'test', 'PMT1', (2013, 1,10, 14,10), (2013, 1,10, 14,15), 'subset67 gpsrec01417271'),
+        ( 87, '341', 'test', 'PMT1', (2013, 1,10, 14,35), (2013, 1,10, 15, 0), 'subset68 gpsrec81407713'),
+        ( 88, '341', 'test', 'PMT1', (2013, 1,17, 14,10), (2013, 1,17, 14,42), 'subset71'),
+        ( 89, '341', 'test', 'PMT1', (2013, 1,17, 14,47), (2013, 1,24, 11,49), 'subset72'),
+        ( 90, '323', 'test', 'PMT1', (2013,10,31, 12,43), (2013,10,31, 14, 9), 'subset74'),
+        ( 91, '346', 'test', 'PMT1', (2013,10,31, 14,23), (2013,10,31, 14,48), 'subset75'),
+        ( 92, '307', 'test', 'PMT1', (2013,11, 5, 10,43), (2013,11, 5, 11,13), 'subset78'),
+        ( 93, '311', 'test', 'PMT1', (2013,11, 5, 11,40), (2013,11, 5, 12,10), 'subset79'),
+        ( 94, '313', 'test', 'PMT1', (2013,11, 5, 12,22), (2013,11, 5, 13, 7), 'subset80'),
+        ( 95, '304', 'test', 'PMT1', (2013,11, 5, 13,50), (2013,11, 5, 14,26), 'subset82'))
 
     test_all = [Tijdtest(*test) for test in tests]
 
@@ -116,7 +129,8 @@ def test_log():
 
 
 def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
-              note=None, subset='ALL', complement=True, part=None, unique=True):
+              note=None, subset='ALL', complement=False, part=None,
+              unique=True):
     """ Search available tests and return those that match request
 
     Tests can be retrieved based on their parameters.
@@ -129,9 +143,11 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
     the GPS position of the reference was set incorrectly by # m (rbgps#)
     the GPS position of the swap was set incorrectly by # m (sbgps#)
     the swap was a slave connected to master # (slv###)
-    a longer gps cables was used for the swap box (longgps)
+    a longer gps cable was used for the swap box (longgps)
     the PPS offset in DSPMon was set for the swap at # ns (ppsoff#)
     the swap lost the GPS connection was lost during the test (gpslost)
+    the swap started the test with a cold GPS, without almanac (noalmanac)
+    subset of another test to cut the part without almanac (subset##)
 
     """
     #All tests from the TijdTest Log
@@ -146,7 +162,8 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
                         ('rext') not in test.note and
                         ('bgps') not in test.note and
                         ('ppsoff') not in test.note and
-                        ('longgps') not in test.note]
+                        ('longgps') not in test.note and
+                        ('noalmanac') not in test.note]
     elif subset in ('EXT'):
         test_list = [test for test in test_all
                      if ('EXT') in test.trigger or
@@ -174,6 +191,16 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
     elif subset in ('SLV'):
         test_list = [test for test in test_all
                      if ('slv') in test.note]
+    elif subset in ('NoAlmanac'):
+        test_list = [test for test in test_all
+                     if ('noalmanac') in test.note]
+    elif subset in ('Good1'):
+        test_list = [test for test in test_all
+                     if test.id in [1, 2, 4, 10, 12, 15, 16, 17, 25, 84]]
+    elif subset in ('Good2'):
+        test_list = [test for test in test_all
+                     if test.id in [38, 39, 45, 47, 51, 52, 54, 55, 56, 57, 58,
+                                    73, 77, 81, 90, 91, 92, 93, 94, 95]]
     else:
         test_list = test_all
 
@@ -195,6 +222,14 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
                      for test in test_all
                      for ptest in test_list
                      if test.group == ptest.group]
+    elif complement and subset in ('NoAlmanac'):
+        for test in test_list:
+            print 'subset%d' % test.id
+        test_list = [test
+                     for test in test_all
+                     for ptest in test_list
+                     if 'subset%d' % ptest.id in test.note or
+                        test.id == ptest.id]
 
     if id:
         test_list = [test for test in test_list if id in [test.id]]
