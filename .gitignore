@@ -1,4 +1,5 @@
 *.pdf
+*.h5
 
 *.swp
 *.pyc
