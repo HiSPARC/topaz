@@ -108,4 +108,4 @@ if __name__ == '__main__':
     graph.plot([0, 5500], [0, 5500], mark=None)
     graph.set_xlabel('Sum individual LED pulseheights [mV]')
     graph.set_ylabel('Multiple-LED pulseheight [mV]')
-    graph.save_as_pdf('linearity_nikhef')
+    graph.save_as_pdf('linearity_nikhef_ph')

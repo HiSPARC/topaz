@@ -52,13 +52,14 @@ if __name__ == '__main__':
 
     graph = Plot()
     graph.scatter(sum_signals_pi, signals_pi)
-    graph.plot([0, 5500 * ratio], [0, 5500 * ratio], mark=None)
+    graph.plot([0, 100], [0, 100], mark=None)
     graph.set_xlabel('Sum individual LED pulseintegrals [nVs]')
     graph.set_ylabel('Multiple-LED pulseintegrals [nVs]')
     graph.save_as_pdf('linearity_senstech_pi')
 
     graph = Plot()
     graph.scatter(signals_pi, signals_ph)
+    graph.scatter(led_pi[1:], led_ph[1:])
     graph.plot([0, 5500 * ratio], [0, 5500], mark=None)
     graph.set_xlabel('Multiple-LED pulseintegrals [nVs]')
     graph.set_ylabel('Multiple-LED pulseheights [mV]')
