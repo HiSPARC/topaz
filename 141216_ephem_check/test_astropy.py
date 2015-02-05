@@ -1,7 +1,8 @@
 # Source:
 # https://github.com/astropy/astropy/blob/master/astropy/coordinates/tests/accuracy/test_altaz_icrs.py
 
-# Licensed under a 3-clause BSD style license - see LICENSE.rst
+# Licensed under a 3-clause BSD style license - see:
+# https://github.com/astropy/astropy/blob/master/licenses/LICENSE.rst
 """Accuracy tests for AltAz to ICRS coordinate transformations.
 
 We use "known good" examples computed with other coordinate libraries.
@@ -124,46 +125,7 @@ def test_against_jpl_horizons():
     assert distance < 1e4 * u.arcsec
 
 
-@pytest.mark.xfail
-def test_fk5_equinox_and_epoch_j2000_0_to_topocentric_observed():
-    """
-    http://phn.github.io/pytpm/conversions.html#fk5-equinox-and-epoch-j2000-0-to-topocentric-observed
-    """
-    # Observatory position for `kpno` from here:
-    # http://idlastro.gsfc.nasa.gov/ftp/pro/astro/observatory.pro
-    location = EarthLocation(lon=Angle('-111.598333d'),
-                             lat=Angle('31.956389d'),
-                             height=2093.093 * u.m)  # TODO: height correct?
-
-    obstime = Time('2010-01-01 12:00:00', scale='utc')
-    # relative_humidity = ?
-    # obswl = ?
-    altaz_frame = AltAz(obstime=obstime, location=location,
-                        temperature=0 * u.deg_C, pressure=0.781 * u.bar)
-
-    radec = SkyCoord('12h22m54.899s 15d49m20.57s', frame='fk5')
-
-    altaz_actual = radec.transform_to(altaz_frame)
-
-    altaz_expected = SkyCoord('264d55m06s 37d54m41s', frame='altaz')
-    # altaz_expected = SkyCoord('343.586827647d 15.7683070508d', frame='altaz')
-    # altaz_expected = SkyCoord('133.498195532d 22.0162383595d', frame='altaz')
-    distance = altaz_actual.separation(altaz_expected)
-    # print(altaz_actual)
-    # print(altaz_expected)
-    # print(distance)
-    """TODO: Current output is completely incorrect ... xfailing this test for now.
-
-    <SkyCoord (AltAz: obstime=2010-01-01 12:00:00.000, location=(-1994497.7199061865, -5037954.447348028, 3357437.2294832403) m, pressure=781.0 hPa, temperature=0.0 deg_C, relative_humidity=0, obswl=1.0 micron):00:00.000, location=(-1994497.7199061865, -5037954.447348028, 3357437.2294832403) m, pressure=781.0 hPa, temperature=0.0 deg_C, relative_humidity=0, obswl=1.0 micron): az=133.4869896371561 deg, alt=67.97857990957701 deg>
-    <SkyCoord (AltAz: obstime=None, location=None, pressure=0.0 hPa, temperature=0.0 deg_C, relative_humidity=0, obswl=1.0 micron): az=264.91833333333335 deg, alt=37.91138888888889 deg>
-    68d02m45.732s
-    """
-
-    assert distance < 1 * u.arcsec
-
-
 if __name__ == '__main__':
     test_against_hor2eq()
     test_against_pyephem()
     test_against_jpl_horizons()
-    test_fk5_equinox_and_epoch_j2000_0_to_topocentric_observed()
