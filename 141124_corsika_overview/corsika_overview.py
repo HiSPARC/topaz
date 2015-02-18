@@ -40,7 +40,7 @@ OVERVIEW = '/Users/arne/Datastore/CORSIKA/corsika_overview.h5'
 
 def plot_energy(energy):
     """Energies"""
-    bins = sorted(list(set(energy)))
+    bins = get_unique(energy)
     bins.append(bins[-1] * 10)
     counts, bins = numpy.histogram(energy, bins=bins)
     graph = artist.Plot(axis='semilogx')
@@ -54,7 +54,7 @@ def plot_energy(energy):
 
 def plot_zenith(zenith):
     """Zeniths"""
-    bins = sorted(list(set(zenith)))
+    bins = get_unique(zenith)
     bins.append(bins[-1] + bins[-1])
     counts, bins = numpy.histogram(zenith, bins=bins)
     graph = artist.Plot()
@@ -68,7 +68,7 @@ def plot_zenith(zenith):
 
 def plot_azimuth(azimuth):
     """Azimuths"""
-    bins = sorted(list(set(azimuth)))
+    bins = get_unique(azimuth)
     bins.append(bins[-1] + bins[-1])
     counts, bins = numpy.histogram(azimuth, bins=bins)
     graph = artist.Plot()
@@ -82,9 +82,9 @@ def plot_azimuth(azimuth):
 
 def plot_energy_zenith(energy, zenith, particle_id=None):
     """Energy, Zenith"""
-    e_bins = sorted(list(set(energy)))
+    e_bins = get_unique(energy)
     e_bins.append(e_bins[-1] * 10)
-    z_bins = sorted(list(set(zenith)))
+    z_bins = get_unique(zenith)
     z_bins.append(z_bins[-1] + (z_bins[-1] - z_bins[-2]))
     counts, e_bins, z_bins = numpy.histogram2d(energy, zenith, bins=[e_bins, z_bins])
     graph = artist.Plot() # axis='semilogx'
@@ -98,15 +98,6 @@ def plot_energy_zenith(energy, zenith, particle_id=None):
     else:
         graph.save_as_pdf('energy_zenith_%s' % name(particle_id))
 
-#
-# # Angles vs Energies
-# pyplot.figure()
-# pyplot.hist2d(sims['energy'], sims['theta'], bins=[e_bins, t_bins], cmap='binary')
-# pyplot.xlabel('Energy [log10(GeV)]')
-# pyplot.ylabel('Zenith [degrees]')
-# pyplot.title('Number of simulations for each energy/zenith combination')
-# pyplot.colorbar()
-# pyplot.show()
 
 def plot_energy_zenith_per_particle(energy, zenith, particle):
     # Angles vs Energies per Particle
@@ -118,6 +109,30 @@ def plot_energy_zenith_per_particle(energy, zenith, particle):
         plot_energy_zenith(s_energy, s_zenith, particle_id=unique_particle)
 
 
+def plot_n_leptons(energy, zenith, particle, n_leptons):
+    """Energy, Zenith"""
+    color_styles = ('black,', 'red,', 'blue,', 'orange,', 'gray,', 'green,', 'purple,')
+    line_styles = ('solid', 'dashed', 'dotted')
+    unique_energy = get_unique(energy)
+    unique_zenith = get_unique(zenith)
+    n_bins = numpy.linspace(0, 8, 300)
+    graph = artist.Plot()
+    for j, e in enumerate(unique_energy):
+        for i, z in enumerate(unique_zenith[::3]):
+            n_l = n_leptons.compress((energy == e) & (zenith == z) &
+                                     (particle == 14))
+            if len(n_l) < 200:
+                continue
+            counts, n_bins = numpy.histogram(numpy.log10(n_l), bins=n_bins, density=True)
+            graph.histogram(counts, n_bins, linestyle=color_styles[j % 5] + line_styles[i % 3])
+    graph.set_xlimits(min=0, max=8)
+    graph.set_ylimits(min=0)
+    graph.set_xlabel('Number of leptons [N]')
+    graph.set_ylabel('Count')
+    graph.set_title('Distribution of number of leptons per energy and zenith angle')
+    graph.save_as_pdf('n_leptons')
+
+
 def get_data(overview):
     seed1 = overview.root.simulations.col('seed1')
     seed2 = overview.root.simulations.col('seed2')
@@ -126,7 +141,9 @@ def get_data(overview):
     energy = overview.root.simulations.col('energy')
     zenith = overview.root.simulations.col('zenith')
     azimuth = overview.root.simulations.col('azimuth')
-    return seeds, particle, energy, zenith, azimuth
+    n_leptons = (overview.root.simulations.col('n_electron') +
+                 overview.root.simulations.col('n_muon'))
+    return seeds, particle, energy, zenith, azimuth, n_leptons
 
 
 def get_unique(parameter):
@@ -140,7 +157,13 @@ def get_random_seed(seeds, particle, energy, zenith, e, z):
     except IndexError:
         return None
 
+
 def get_seed_matrix(seeds, particle, energy, zenith):
+    """Get random seed for each combination of Zenith and Energy.
+
+    :param seeds,particle,energy,zenith: columns from simulations table.
+
+    """
     unique_energy = get_unique(energy)
     unique_zenith = get_unique(zenith)
 
@@ -153,10 +176,11 @@ def get_seed_matrix(seeds, particle, energy, zenith):
 
 if __name__ == '__main__':
     with tables.open_file(OVERVIEW, 'r') as overview:
-        seeds, particle, energy, zenith, azimuth = get_data(overview)
+        seeds, particle, energy, zenith, azimuth, n_leptons = get_data(overview)
+    plot_n_leptons(energy, zenith, particle, n_leptons)
 #     plot_energy(energy)
 #     plot_zenith(zenith)
 #     plot_azimuth(azimuth)
 #     plot_energy_zenith(energy, zenith)
 #     plot_energy_zenith_per_particle(energy, zenith, particle)
-    get_seed_matrix(seeds, particle, energy, zenith)
+#     get_seed_matrix(seeds, particle, energy, zenith)
