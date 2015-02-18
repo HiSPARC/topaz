@@ -5,16 +5,18 @@ import ephem
 
 from sapphire.transformations import base, angles, celestial, clock
 
-LONGITUDE = 52.3545603701
-LATITUDE = 4.95569830927
-ALTITUDE = 56.8426188165
 
-ZENITH = np.radians(5)
-AZIMUTH = np.radians(90)
+LONGITUDE = 52.3562599596
+LATITUDE = 4.95294402001
+ALTITUDE = 51.4433
+
+ZENITH = 0.38176
+AZIMUTH = 3.0030
 
 H_ALTITUDE, H_AZIMUTH = celestial.zenithazimuth_to_horizontal(ZENITH, AZIMUTH)
 
-UTC = 1418750003
+GPS = 1333018296.870008589
+UTC = clock.gps_to_utc(GPS)
 
 
 def calc_ephem():
@@ -46,9 +48,8 @@ def calc_sapphire():
     """Calculate coordinates using SAPPHiRE
 
     """
-    gps = clock.utc_to_gps(UTC)
     ra, dec = celestial.zenithazimuth_to_equatorial(LONGITUDE, LATITUDE,
-                                                    gps, ZENITH, AZIMUTH)
+                                                    GPS, ZENITH, AZIMUTH)
 
     sra = base.decimal_to_sexagesimal(angles.radians_to_hours(ra))
     sdec = base.decimal_to_sexagesimal(np.degrees(dec))
