@@ -60,7 +60,7 @@ def calc_astropy():
     obstime = Time(GPS - GPS_EPOCH, format='gps')
     location = EarthLocation(lon=Angle('%fd' % LONGITUDE),
                              lat=Angle('%fd' % LATITUDE),
-                             height=51.4433 * u.m)
+                             height=ALTITUDE * u.m)
     altaz_frame = AltAz(obstime=obstime, location=location)
     altaz = SkyCoord('%fd %fd' % (np.degrees(H_AZIMUTH), np.degrees(H_ALTITUDE)),
                      frame=altaz_frame)
