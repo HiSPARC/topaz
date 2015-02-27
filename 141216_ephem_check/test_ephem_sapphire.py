@@ -12,11 +12,11 @@ from astropy.coordinates import Angle, SkyCoord
 from sapphire.transformations import base, angles, celestial, clock
 
 
-LONGITUDE = 52.3562599596
-LATITUDE = 4.95294402001
+LATITUDE = 52.3562599596
+LONGITUDE = 4.95294402001
 ALTITUDE = 51.4433
 
-ZENITH = 0.38176
+ZENITH = 0.3818
 AZIMUTH = 3.0030
 
 H_ALTITUDE, H_AZIMUTH = celestial.zenithazimuth_to_horizontal(ZENITH, AZIMUTH)
@@ -24,7 +24,6 @@ H_ALTITUDE, H_AZIMUTH = celestial.zenithazimuth_to_horizontal(ZENITH, AZIMUTH)
 GPS = 1333018296.870008589
 UTC = clock.gps_to_utc(GPS)
 GPS_EPOCH = 315964800.000000000
-
 
 
 def calc_ephem():
@@ -57,7 +56,7 @@ def calc_astropy():
     Code from the test code for AzAlt in AstroPy
 
     """
-    obstime = Time(GPS - GPS_EPOCH, format='gps')
+    obstime = Time(UTC, format='unix')
     location = EarthLocation(lon=Angle('%fd' % LONGITUDE),
                              lat=Angle('%fd' % LATITUDE),
                              height=ALTITUDE * u.m)
@@ -78,12 +77,40 @@ def calc_sapphire():
     sra = base.decimal_to_sexagesimal(angles.radians_to_hours(ra))
     sdec = base.decimal_to_sexagesimal(np.degrees(dec))
 
-#     print 'SAPPHiRE:', '%d:%02d:%02.2f' % sra, '%d:%02d:%02.2f' % sdec
-#     print 'SAPPHiRE: %10.6f %10.6f' % (ra, dec)
     print 'SAPPHiRE:  %10.6f %10.6f' % (np.degrees(ra), np.degrees(dec))
+
+#     print 'SAPPHiRE:', '%d:%02d:%02.2f' % sra, '%d:%02d:%02.2f' % sdec
+#     print 'SAPPHiRE:  %10.6f %10.6f' % (ra, dec)
+
+
+def show_steps():
+    print
+    print 'WGS84'
+    print 'lat, lon, alt = ', LATITUDE, LONGITUDE, ALTITUDE
+    print
+    print 'ZenAzi'
+    print 'zenith = ', ZENITH
+    print 'azimuth = ', AZIMUTH
+    print
+    print 'Horizontal'
+    print 'altitude = ', H_ALTITUDE
+    print 'azimuth = ', H_AZIMUTH
+    print
+    print 'Time'
+    print 'GPS = ', GPS
+    print 'UTC = ', UTC
+    print
+    print 'JD = ', clock.datetime_to_juliandate(datetime.utcfromtimestamp(UTC))
+    gmst = clock.utc_to_gmst(datetime.utcfromtimestamp(UTC))
+    print 'GMST = ', gmst, base.decimal_to_sexagesimal(gmst)
+    lst = clock.gps_to_lst(GPS, LONGITUDE)
+    print 'LST = ', lst, base.decimal_to_sexagesimal(gmst)
+    print
 
 
 if __name__ == '__main__':
+    show_steps()
+
     print 'Code base   right asc    declination'
     calc_ephem()
     calc_astropy()
