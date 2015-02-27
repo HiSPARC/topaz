@@ -34,9 +34,9 @@ def reconstruct_simulations(data):
 
 def offset(station):
     if station == 501:
-        return [1.064884, 0., -6.217017, -4.851398]
+        return [-1.064884, 0., 6.217017, 4.851398]
     elif station == 510:
-        return [-9.416971, 0., -9.298256, -8.447724]
+        return [9.416971, 0., 9.298256, 8.447724]
 
 def cluster_501_510():
     station_size = 10.
