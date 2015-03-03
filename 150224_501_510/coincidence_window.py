@@ -11,11 +11,9 @@ should perhaps be counted as only 1 coincidence.
 """
 import os
 
-import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
-import matplotlib.gridspec as gridspec
 import tables
 import numpy
+from artist import MultiPlot
 
 from sapphire.api import Station, Network
 from sapphire.analysis import coincidences
@@ -31,8 +29,7 @@ def coincidences_501_510():
 
 def coincidences_stations(station_ids):
 
-    filepath = EVENTDATA_PATH
-    with tables.openFile(filepath, 'r') as data:
+    with tables.open_file(EVENTDATA_PATH, 'r') as data:
         coinc, event_tables = get_event_tables(data, station_ids)
         windows, counts, n_events = find_n_coincidences(coinc, event_tables)
         plot_coinc_window(windows, counts, n_events)
@@ -77,32 +74,27 @@ def find_n_coincidences(coinc, event_tables):
 
 
 def plot_coinc_window(windows, counts, n_events=0):
+
+    plot = MultiPlot(2, 1, axis='semilogx',
+                     width=r'.8\linewidth', height=r'.5\linewidth')
+    plot.set_title(0, 0, 'Number of coincidences as function of coincidence window')
+    plot.set_xlabel('Coincidence window (ns)')
+    plot.show_xticklabels(1, 0)
+    plot.show_yticklabels_for_all()
+    plot.set_xlimits_for_all(min=1e1, max=1e8)
+    plot.set_ylimits(1, 0, min=0)
+
     counts = numpy.array(counts)
-    plt.figure()
-    grid = gridspec.GridSpec(2, 1, height_ratios=[4, 1])
-    plt.subplot(grid[0])
-    plt.plot(windows, counts)
-    plt.yscale('log')
-    plt.xscale('log')
-    plt.annotate('501 and 510\n'
-                 'Total n events: %d\n' % n_events,
-                 (0.05, 0.8), xycoords='axes fraction')
-    plt.title('Found coincidences versus coincidence window')
-    plt.ylabel('Found coincidences')
-    plt.ylim(ymin=1e3)
 
+    subplot = plot.get_subplot_at(0, 0)
+    subplot.set_ylabel('Found coincidences')
+    subplot.plot(windows, counts, mark=None)
 
-    plt.subplots_adjust(wspace=0, hspace=0)
-    plt.gca().xaxis.set_major_formatter(ticker.NullFormatter())
-    plt.subplot(grid[1])
-    plt.plot(windows[:-1], counts[1:] - counts[:-1])
-    plt.xlabel('Coincidence window (ns)')
-    plt.gca().yaxis.tick_right()
-    plt.ylim(ymin=1)
-    plt.yscale('log')
-    plt.xscale('log')
+    subplot = plot.get_subplot_at(1, 0)
+    subplot.set_ylabel('Delta found coincidences')
+    subplot.plot(windows[:-1], counts[1:] - counts[:-1], mark=None)
 
-    plt.show()
+    plot.save_as_pdf('coincidence_window')
 
 
 if __name__ == '__main__':
