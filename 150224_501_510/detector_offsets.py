@@ -35,11 +35,12 @@ def determine_detector_timing_offsets(s, events):
         tj = events.col('t%d' % j)
         dt = (tj - tref).compress((tref >= 0) & (tj >= 0))
         y, bins = histogram(dt, bins=bins)
-        graph.histogram(y, bins, linestyle='color=%s' % col.next())
+        c = col.next()
+        graph.histogram(y, bins, linestyle='%s' % c)
         x = (bins[:-1] + bins[1:]) / 2
         try:
             popt, pcov = curve_fit(gauss, x, y, p0=(len(dt), 0., 10.))
-            graph.draw_vertical_line(popt[1])
+            graph.draw_vertical_line(popt[1], linestyle='%s' % c)
             print '%d-%d: %f (%f)' % (j, reference, popt[1], popt[2])
         except (IndexError, RuntimeError):
             print '%d-%d: failed' % (j, reference)
