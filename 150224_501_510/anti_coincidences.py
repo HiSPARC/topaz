@@ -7,7 +7,7 @@ from artist import Plot
 
 
 STATIONS = [501, 510]
-EVENTDATA_PATH = '/Users/arne/Datastore/501_510/e_501_510_150120_150201.h5'
+EVENTDATA_PATH = '/Users/arne/Datastore/501_510/e_501_510_141101_150201.h5'
 
 
 def anti_coincidences(data):

@@ -17,7 +17,8 @@ from sapphire.utils import pbar, gauss, ERR, angle_between
 
 
 STATIONS = [501, 510]
-COINDATA_PATH = '/Users/arne/Datastore/501_510/c_501_510_150120_150201.h5'
+COINDATA_PATH = '/Users/arne/Datastore/501_510/c_501_510_141101_150201.h5'
+#COINDATA_PATH = '/Users/arne/Datastore/501_510/c_501_510_150120_150201.h5'
 
 
 def reconstruct_events(data):
