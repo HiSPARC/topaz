@@ -106,7 +106,7 @@ def image_to_numpy(img):
 # -----------------------------------------------------------------------------
 # Functions related to coordinates
 # -----------------------------------------------------------------------------
-def deg2num(lat_deg, lon_deg, zoom, do_round=True):
+def deg2num(latitude, longitude, zoom, do_round=True):
     """Convert from latitude and longitude to tile numbers.
 
     If do_round is True, return integers. Otherwise, return floating point
@@ -115,13 +115,13 @@ def deg2num(lat_deg, lon_deg, zoom, do_round=True):
     Source: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Python
 
     """
-    lat_rad = np.radians(lat_deg)
+    lat_rad = np.radians(latitude)
     n = 2.0 ** zoom
     if do_round:
         f = np.floor
     else:
         f = lambda x: x
-    xtile = f((lon_deg + 180.) / 360. * n)
+    xtile = f((longitude + 180.) / 360. * n)
     ytile = f((1.0 - np.log(np.tan(lat_rad) + (1 / np.cos(lat_rad))) / np.pi) / 2. * n)
     if do_round:
         if isinstance(xtile, np.ndarray):
@@ -141,10 +141,10 @@ def num2deg(xtile, ytile, zoom, do_round=True):
 
     """
     n = 2.0 ** zoom
-    lon_deg = xtile / n * 360. - 180.
-    lat_rad = np.degrees(np.arctan(np.sinh(np.pi * (1 - 2 * ytile / n))))
+    longitude = xtile / n * 360. - 180.
+    latitude = np.degrees(np.arctan(np.sinh(np.pi * (1 - 2 * ytile / n))))
 
-    return (lat_deg, lon_deg)
+    return (latitude, longitude)
 
 def get_tile_box(box_latlon, z):
     """Convert a box in geographical coordinates to a box in
