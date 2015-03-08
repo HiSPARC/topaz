@@ -53,10 +53,11 @@ def fetch_map(box, z):
     x0, x1 = min(x0, x1), max(x0, x1)
     y0, y1 = min(y0, y1), max(y0, y1)
     x0 = max(0, x0)
-    x1 = min(2**z-1, x1)
+    x1 = min(2**z - 1, x1)
     y0 = max(0, y0)
-    y1 = min(2**z-1, y1)
-    sx, sy = x1 - x0 + 1, y1 - y0 + 1
+    y1 = min(2**z - 1, y1)
+    sx = x1 - x0 + 1
+    sy = y1 - y0 + 1
     if sx+sy >= MAXTILES:
         raise Exception(("You are requesting a very large map, beware of "
                  "OpenStreetMap tile usage policy "
@@ -67,6 +68,22 @@ def fetch_map(box, z):
             px, py = TILE_SIZE * (x - x0), TILE_SIZE * (y - y0)
             img.paste(fetch_tile(x, y, z), (px, py))
     return img
+
+def determine_scale(latitude, z):
+    """Determine the amount of meters per pixel
+
+    :param latitude: latitude in radians
+    :param z: zoom level
+
+    Source: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Resolution_and_Scale
+
+    """
+    # For zoom = 0 at equator
+    meter_per_pixel = 156543.03
+
+    resolution = meter_per_pixel * np.cos(latitude) / (2 ** z)
+
+    return resolution
 
 
 # -----------------------------------------------------------------------------
@@ -104,8 +121,8 @@ def deg2num(lat_deg, lon_deg, zoom, do_round=True):
         f = np.floor
     else:
         f = lambda x: x
-    xtile = f((lon_deg + 180.0) / 360.0 * n)
-    ytile = f((1.0 - np.log(np.tan(lat_rad) + (1 / np.cos(lat_rad))) / np.pi) / 2.0 * n)
+    xtile = f((lon_deg + 180.) / 360. * n)
+    ytile = f((1.0 - np.log(np.tan(lat_rad) + (1 / np.cos(lat_rad))) / np.pi) / 2. * n)
     if do_round:
         if isinstance(xtile, np.ndarray):
             xtile = xtile.astype(np.int32)
@@ -116,6 +133,18 @@ def deg2num(lat_deg, lon_deg, zoom, do_round=True):
         else:
             ytile = int(ytile)
     return (xtile, ytile)
+
+def num2deg(xtile, ytile, zoom, do_round=True):
+    """Convert from x and y tile numbers to latitude and longitude.
+
+    Source: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Python
+
+    """
+    n = 2.0 ** zoom
+    lon_deg = xtile / n * 360. - 180.
+    lat_rad = np.degrees(np.arctan(np.sinh(np.pi * (1 - 2 * ytile / n))))
+
+    return (lat_deg, lon_deg)
 
 def get_tile_box(box_latlon, z):
     """Convert a box in geographical coordinates to a box in
