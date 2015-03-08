@@ -3,6 +3,8 @@
 Give a box in geographical coordinates (latitude/longitude) and a zoom level,
 Smopy returns an OpenStreetMap tile image!
 
+Map tiles by CartoDB, under CC BY 3.0. Data by OpenStreetMap, under ODbL
+
 """
 # -----------------------------------------------------------------------------
 # Imports
@@ -14,7 +16,6 @@ from six.moves.urllib.request import urlopen
 from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
-from IPython.display import display_png
 
 
 # -----------------------------------------------------------------------------
@@ -30,7 +31,8 @@ MAXTILES = 20
 # -----------------------------------------------------------------------------
 def get_url(x, y, z):
     """Return the URL to the image tile (x, y) at zoom z."""
-    return "http://tile.openstreetmap.org/{z}/{x}/{y}.png".format(z=z, x=x, y=y)
+    return ("http://tile.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png"
+            .format(z=z, x=x, y=y))
 
 def fetch_tile(x, y, z):
     """Fetch tile (x, y) at zoom level z from OpenStreetMap's servers.
@@ -202,8 +204,6 @@ class Map(object):
 
     Methods:
 
-    * To display in the IPython notebook: `map.show_ipython()`.
-
     * To create a matplotlib plot: `ax = map.show_mpl()`.
 
     * To save a PNG: `map.save_png(filename)`.
@@ -269,11 +269,6 @@ class Map(object):
             plt.tight_layout();
         ax.imshow(self.img);
         return ax
-
-    def show_ipython(self):
-        """Show the image in IPython as a PNG image."""
-        png = image_to_png(self.img)
-        display_png(png, raw=True)
 
     def to_pil(self):
         """Return the PIL image."""
