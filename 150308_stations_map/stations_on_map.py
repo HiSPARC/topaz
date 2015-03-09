@@ -26,7 +26,11 @@ def show_map():
     image = map.to_pil()
     x, y = map.to_pixels(array(latitudes), array(longitudes))
 
-    graph = Plot()
+    aspect = float(image.size[0]) / float(image.size[1])
+    height = .67 / aspect
+
+    graph = Plot(height=r'%.2f\linewidth' % height)
+
 
     # graph histogram
     graph.draw_image(image, 0, 0, image.size[0], image.size[1])
