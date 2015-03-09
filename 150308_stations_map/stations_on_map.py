@@ -10,7 +10,7 @@ def show_map():
     latitudes = []
     longitudes = []
 
-    for station_number in Network().station_numbers(subcluster=1000):
+    for station_number in Network().station_numbers(country=0):
         try:
             location = Station(station_number).location()
         except:
@@ -21,7 +21,7 @@ def show_map():
         longitudes.append(location['longitude'])
 
     map = Map((min(latitudes), min(longitudes),
-               max(latitudes), max(longitudes)), z=13)
+               max(latitudes), max(longitudes)))
     map.save_png('map-tiles-background.png')
     image = map.to_pil()
     x, y = map.to_pixels(array(latitudes), array(longitudes))

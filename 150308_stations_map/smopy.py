@@ -22,11 +22,11 @@ import matplotlib.pyplot as plt
 # Constants
 # -----------------------------------------------------------------------------
 __version__ = '0.0.3'
-TILE_SIZE = 256
-MAXTILES = 20
+TILE_SIZE = 512
+MAXTILES = 25
 
-# TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"
-TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png"
+TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png"
+#TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}@2x.png"
 
 
 # -----------------------------------------------------------------------------
@@ -34,7 +34,7 @@ TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png"
 # -----------------------------------------------------------------------------
 def get_url(x, y, z):
     """Return the URL to the image tile (x, y) at zoom z."""
-    return TILE_SERVER.format(z=z, x=x, y=y))
+    return TILE_SERVER.format(z=z, x=x, y=y)
 
 
 def fetch_tile(x, y, z):
@@ -53,16 +53,10 @@ def fetch_tile(x, y, z):
 def fetch_map(box, z):
     """Fetch OSM tiles composing a box at a given zoom level, and
     return the assembled PIL image."""
+    box = correct_box(box, z)
     x0, y0, x1, y1 = box
-    x0, x1 = min(x0, x1), max(x0, x1)
-    y0, y1 = min(y0, y1), max(y0, y1)
-    x0 = max(0, x0)
-    x1 = min(2**z - 1, x1)
-    y0 = max(0, y0)
-    y1 = min(2**z - 1, y1)
-    sx = x1 - x0 + 1
-    sy = y1 - y0 + 1
-    if sx+sy >= MAXTILES:
+    sx, sy = get_box_size(box)
+    if sx + sy >= MAXTILES:
         raise Exception(("You are requesting a very large map, beware of "
                  "OpenStreetMap tile usage policy "
                  "(http://wiki.openstreetmap.org/wiki/Tile_usage_policy)."))
@@ -72,6 +66,25 @@ def fetch_map(box, z):
             px, py = TILE_SIZE * (x - x0), TILE_SIZE * (y - y0)
             img.paste(fetch_tile(x, y, z), (px, py))
     return img
+
+
+def correct_box(box, z):
+    """Get good box limits"""
+    x0, y0, x1, y1 = box
+    new_x0 = max(0, min(x0, x1))
+    new_x1 = min(2**z - 1, max(x0, x1))
+    new_y0 = max(0, min(y0, y1))
+    new_y1 = min(2**z - 1, max(y0, y1))
+
+    return (new_x0, new_y0, new_x1, new_y1)
+
+
+def get_box_size(box):
+    """Get box size"""
+    x0, y0, x1, y1 = box
+    sx = abs(x1 - x0) + 1
+    sy = abs(y1 - y0) + 1
+    return (sx, sy)
 
 
 def determine_scale(latitude, z):
@@ -256,14 +269,18 @@ class Map(object):
         Can be called with `Map(box, z=z)` or `Map(lat, lon, z=z)`.
 
         """
-        z = kwargs.get('z', 3)
+        z = kwargs.get('z', 19)
         margin = kwargs.get('margin', None)
         box = _box(*args)
         if margin is not None:
             box = extend_box(box, margin)
         self.box = box
-        self.z = z
+
+        self.z = self.get_allowed_zoom(z)
+        if z != self.z:
+            print 'Lowered zoom level to keep map size reasonable'
         self.box_tile = get_tile_box(self.box, self.z)
+
         self.xmin = min(self.box_tile[0], self.box_tile[2])
         self.ymin = min(self.box_tile[1], self.box_tile[3])
         self.img = None
@@ -287,6 +304,14 @@ class Map(object):
             return np.c_[px, py]
         else:
             return px, py
+
+    def get_allowed_zoom(self, z=19):
+        box_tile = get_tile_box(self.box, z)
+        box = correct_box(box_tile, z)
+        sx, sy = get_box_size(box)
+        if sx * sy >= MAXTILES:
+            z = self.get_allowed_zoom(z - 1)
+        return z
 
     def fetch(self):
         """Fetch the image from OSM's servers."""
