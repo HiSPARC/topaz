@@ -25,14 +25,17 @@ __version__ = '0.0.3'
 TILE_SIZE = 256
 MAXTILES = 20
 
+# TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"
+TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png"
+
 
 # -----------------------------------------------------------------------------
 # OSM functions
 # -----------------------------------------------------------------------------
 def get_url(x, y, z):
     """Return the URL to the image tile (x, y) at zoom z."""
-    return ("http://tile.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png"
-            .format(z=z, x=x, y=y))
+    return TILE_SERVER.format(z=z, x=x, y=y))
+
 
 def fetch_tile(x, y, z):
     """Fetch tile (x, y) at zoom level z from OpenStreetMap's servers.
@@ -45,6 +48,7 @@ def fetch_tile(x, y, z):
     img = Image.open(png)
     img.load()
     return img
+
 
 def fetch_map(box, z):
     """Fetch OSM tiles composing a box at a given zoom level, and
@@ -68,6 +72,7 @@ def fetch_map(box, z):
             px, py = TILE_SIZE * (x - x0), TILE_SIZE * (y - y0)
             img.paste(fetch_tile(x, y, z), (px, py))
     return img
+
 
 def determine_scale(latitude, z):
     """Determine the amount of meters per pixel
@@ -97,6 +102,7 @@ def image_to_png(img):
     s = exp.read()
     exp.close()
     return s
+
 
 def image_to_numpy(img):
     """Convert a PIL image to a NumPy array."""
@@ -134,7 +140,8 @@ def deg2num(latitude, longitude, zoom, do_round=True):
             ytile = int(ytile)
     return (xtile, ytile)
 
-def num2deg(xtile, ytile, zoom, do_round=True):
+
+def num2deg(xtile, ytile, zoom):
     """Convert from x and y tile numbers to latitude and longitude.
 
     Source: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Python
@@ -145,6 +152,7 @@ def num2deg(xtile, ytile, zoom, do_round=True):
     latitude = np.degrees(np.arctan(np.sinh(np.pi * (1 - 2 * ytile / n))))
 
     return (latitude, longitude)
+
 
 def get_tile_box(box_latlon, z):
     """Convert a box in geographical coordinates to a box in
@@ -158,10 +166,12 @@ def get_tile_box(box_latlon, z):
     x1, y1 = deg2num(lat1, lon1, z)
     return (x0, y0, x1, y1)
 
+
 def get_tile_coords(lat, lon, z):
     """Convert geographical coordinates to tile coordinates (integers),
     at a given zoom level."""
     return deg2num(lat, lon, z, do_round=False)
+
 
 def _box(*args):
     """Return a tuple (lat0, lon0, lat1, lon1) from a coordinate box that
@@ -206,6 +216,7 @@ def _box(*args):
         pos1 = pos0
 
     return (pos0[0], pos0[1], pos1[0], pos1[1])
+
 
 def extend_box(box_latlon, margin=.1):
     """Extend a box in geographical coordinates with a relative margin."""
