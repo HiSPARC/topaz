@@ -9,7 +9,6 @@ Map tiles by CartoDB, under CC BY 3.0. Data by OpenStreetMap, under ODbL
 # -----------------------------------------------------------------------------
 # Imports
 # -----------------------------------------------------------------------------
-import math
 from six import BytesIO
 from six.moves.urllib.request import urlopen
 
@@ -26,7 +25,7 @@ TILE_SIZE = 512
 MAXTILES = 25
 
 TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png"
-#TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}@2x.png"
+# TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}@2x.png"
 
 
 # -----------------------------------------------------------------------------
@@ -43,7 +42,7 @@ def fetch_tile(x, y, z):
     Return a PIL image.
 
     """
-    url = get_url(x,y,z)
+    url = get_url(x, y, z)
     png = BytesIO(urlopen(url).read())
     img = Image.open(png)
     img.load()
@@ -58,8 +57,8 @@ def fetch_map(box, z):
     sx, sy = get_box_size(box)
     if sx + sy >= MAXTILES:
         raise Exception(("You are requesting a very large map, beware of "
-                 "OpenStreetMap tile usage policy "
-                 "(http://wiki.openstreetmap.org/wiki/Tile_usage_policy)."))
+                         "OpenStreetMap tile usage policy "
+                         "(http://wiki.openstreetmap.org/wiki/Tile_usage_policy)."))
     img = Image.new('RGB', (sx*TILE_SIZE, sy*TILE_SIZE))
     for x in range(x0, x1 + 1):
         for y in range(y0, y1 + 1):
@@ -141,7 +140,8 @@ def deg2num(latitude, longitude, zoom, do_round=True):
     else:
         f = lambda x: x
     xtile = f((longitude + 180.) / 360. * n)
-    ytile = f((1.0 - np.log(np.tan(lat_rad) + (1 / np.cos(lat_rad))) / np.pi) / 2. * n)
+    ytile = f((1.0 - np.log(np.tan(lat_rad) + (1 / np.cos(lat_rad))) / np.pi) /
+              (2. * n))
     if do_round:
         if isinstance(xtile, np.ndarray):
             xtile = xtile.astype(np.int32)
@@ -325,14 +325,14 @@ class Map(object):
         if not ax:
             plt.figure(figsize=figsize, dpi=dpi)
             ax = plt.subplot(111)
-            plt.xticks([]);
-            plt.yticks([]);
+            plt.xticks([])
+            plt.yticks([])
             plt.grid(False)
-            plt.xlim(0, self.w);
+            plt.xlim(0, self.w)
             plt.ylim(self.h, 0)
-            plt.axis('off');
-            plt.tight_layout();
-        ax.imshow(self.img);
+            plt.axis('off')
+            plt.tight_layout()
+        ax.imshow(self.img)
         return ax
 
     def to_pil(self):
@@ -348,4 +348,3 @@ class Map(object):
         png = image_to_png(self.img)
         with open(filename, 'wb') as f:
             f.write(png)
-
