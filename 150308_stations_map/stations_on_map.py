@@ -1,3 +1,5 @@
+import argparse
+
 from numpy import array
 
 from artist import Plot
@@ -6,11 +8,19 @@ from sapphire.api import Network, Station
 from smopy import Map, num2deg, TILE_SIZE
 
 
-def show_map():
+def make_map(country=None, cluster=None, subcluster=None, station=None,
+             label='map'):
     latitudes = []
     longitudes = []
 
-    for station_number in Network().station_numbers(country=0):
+    if station is None:
+        station_numbers = Network().station_numbers(country=country,
+                                                    cluster=cluster,
+                                                    subcluster=subcluster)
+    else:
+        station_numbers = [station]
+
+    for station_number in station_numbers:
         try:
             location = Station(station_number).location()
         except:
@@ -51,9 +61,39 @@ def show_map():
     graph.set_yticks([0, image.size[1]])
     graph.set_ytick_labels([se[0], nw[0]])
 
+    graph.set_title(label)
+
     # save graph to file
-    graph.save_as_pdf('map')
+    graph.save_as_pdf(label.replace(' ', '-'))
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('number', type=int,
+        help="Number of the country, cluster, subcluster, or station")
+    parser.add_argument('--country', action='store_true',
+                        help='Number represents the country')
+    parser.add_argument('--cluster', action='store_true',
+                        help='Number represents the cluster')
+    parser.add_argument('--subcluster', action='store_true',
+                        help='Number represents the subcluster')
+    parser.add_argument('--station', action='store_true',
+                        help='Number represents the station')
+    args = parser.parse_args()
+
+    if args.country:
+        label = 'Country %d' % args.number
+        make_map(country=args.number, label=label)
+    elif args.cluster:
+        label = 'Cluster %d' % args.number
+        make_map(cluster=args.number, label=label)
+    elif args.subcluster:
+        label = 'Subcluster %d' % args.number
+        make_map(subcluster=args.number, label=label)
+    elif args.station:
+        label = 'Station %d' % args.number
+        make_map(station=args.number, label=label)
 
 
 if __name__ == '__main__':
-    show_map()
+    main()
