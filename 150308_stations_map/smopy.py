@@ -55,7 +55,7 @@ def fetch_map(box, z):
     box = correct_box(box, z)
     x0, y0, x1, y1 = box
     sx, sy = get_box_size(box)
-    if sx + sy >= MAXTILES:
+    if sx * sy >= MAXTILES:
         raise Exception(("You are requesting a very large map, beware of "
                          "OpenStreetMap tile usage policy "
                          "(http://wiki.openstreetmap.org/wiki/Tile_usage_policy)."))
