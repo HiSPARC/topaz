@@ -269,8 +269,8 @@ class Map(object):
         Can be called with `Map(box, z=z)` or `Map(lat, lon, z=z)`.
 
         """
-        z = kwargs.get('z', 19)
-        margin = kwargs.get('margin', None)
+        z = kwargs.get('z', 18)
+        margin = kwargs.get('margin', .05)
         box = _box(*args)
         if margin is not None:
             box = extend_box(box, margin)
@@ -305,7 +305,7 @@ class Map(object):
         else:
             return px, py
 
-    def get_allowed_zoom(self, z=19):
+    def get_allowed_zoom(self, z=18):
         box_tile = get_tile_box(self.box, z)
         box = correct_box(box_tile, z)
         sx, sy = get_box_size(box)
