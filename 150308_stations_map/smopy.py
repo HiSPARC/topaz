@@ -141,7 +141,7 @@ def deg2num(latitude, longitude, zoom, do_round=True):
         f = lambda x: x
     xtile = f((longitude + 180.) / 360. * n)
     ytile = f((1.0 - np.log(np.tan(lat_rad) + (1 / np.cos(lat_rad))) / np.pi) /
-              (2. * n))
+              2. * n)
     if do_round:
         if isinstance(xtile, np.ndarray):
             xtile = xtile.astype(np.int32)
