@@ -9,6 +9,7 @@ def download_sciencepark_dataset():
 
     This script downloads coincidence data from the Science Park stations.
     Station 507 is excluded because its detector positions are not well known.
+    Station 510 is ignored because it 'overlaps' with 501.
     Coincidences with at least 2 events in a coincidence are included.
     This allows for determination of detector and station offsets.
     After this coincidences with many events (6+ or 7+) will be reconstructed.
@@ -20,6 +21,26 @@ def download_sciencepark_dataset():
 
     print "Downloading Science Park dataset."
     with tables.open_file('sciencepark_n2_100101_140801.h5', 'a') as data:
+        for startdt, enddt in monthrange(start, end):
+            download_coincidences(data, stations=stations, start=startdt,
+                                  end=enddt, n=2)
+
+
+def download_sciencepark_dataset_n7():
+    """Download a dataset for analysis
+
+    This script downloads coincidence data from the Science Park stations.
+    Station 507 is excluded because its detector positions are not well known.
+    Station 510 is ignored because it 'overlaps' with 501.
+    Coincidences with at least 7 events in a coincidence are included.
+
+    """
+    stations = [501, 502, 503, 504, 505, 506, 508, 509]
+    start = (2012, 1)
+    end = (2015, 2)
+
+    print "Downloading n7 Science Park dataset."
+    with tables.open_file('sciencepark_n7_120101_150201.h5', 'a') as data:
         for startdt, enddt in monthrange(start, end):
             download_coincidences(data, stations=stations, start=startdt,
                                   end=enddt, n=2)
