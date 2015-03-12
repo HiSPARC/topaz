@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 # -----------------------------------------------------------------------------
 __version__ = '0.0.3'
 TILE_SIZE = 512
-MAXTILES = 25
+MAXTILES = 16
 
 TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png"
 # TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}@2x.png"
