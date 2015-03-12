@@ -37,8 +37,8 @@ def plot_angles(data):
         plotz = Plot()
         plotz.histogram2d(azicounts, degrees(x), degrees(y), type='reverse_bw', bitmap=True)
         plotz.set_title('Reconstructed azimuths for events in coincidence (zenith gt .2 rad)')
-        plotz.set_xlabel('Azimuth 501 [deg]')
-        plotz.set_ylabel('Azimuth 510 [deg]')
+        plotz.set_xlabel('Azimuth 501 [\si{\degree}]')
+        plotz.set_ylabel('Azimuth 510 [\si{\degree}]')
         plotz.save_as_pdf('azimuth_501_510_minn%d' % minn)
 
         zencounts, x, y = np.histogram2d(zen501.compress(filter),
@@ -47,20 +47,19 @@ def plot_angles(data):
         plota = Plot()
         plota.histogram2d(zencounts, degrees(x), degrees(y), type='reverse_bw', bitmap=True)
         plota.set_title('Reconstructed zeniths for station events in coincidence')
-        plota.set_xlabel('Zenith 501 [deg]')
-        plota.set_ylabel('Zenith 510 [deg]')
+        plota.set_xlabel('Zenith 501 [\si{\degree}]')
+        plota.set_ylabel('Zenith 510 [\si{\degree}]')
         plota.save_as_pdf('zenith_501_510_minn%d' % minn)
 
-        distances = angle_between(azi501.compress(filter), zen501.compress(filter),
-                                  azi510.compress(filter), zen510.compress(filter))
-
+        distances = angle_between(zen501.compress(filter), azi501.compress(filter),
+                                  zen510.compress(filter), azi510.compress(filter))
         counts, bins = np.histogram(distances, bins=linspace(0, pi, 100))
         plotd = Plot()
         plotd.histogram(counts, degrees(bins))
-        plotd.set_title('Distance between reconstructed angles for station events in coincidence')
-        plotd.set_xlabel('Angle between reconstructions [deg]')
+        plotd.set_title('Distance between reconstructed angles for station events')
+        plotd.set_xlabel('Angle between reconstructions [\si{\degree}]')
         plotd.set_ylabel('Counts')
-        plotd.set_xlimits(min=0, max=180)
+        plotd.set_xlimits(min=0, max=90)
         plotd.set_ylimits(min=0)
         plotd.save_as_pdf('angle_between_501_510_minn%d' % minn)
 
