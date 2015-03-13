@@ -59,7 +59,7 @@ def reconstruct_for_detectors(ids):
     # and a straight line where detector 0 and 2 have equal times
     times = np.arange(-60, 60, TIME_RESOLUTION)
 
-    for dt in (-2.5, 0, 2.5, 5., 7.5, 10, 22.5):
+    for dt in (-2.5, 0, 2.5, 7.5, 15, 22.5, 30, 45):
         theta, phi = itertools.izip(*(dirrec.reconstruct_common((t, 0, dt), x, y, z)
                                       for t in times))
         thetaa = [t for t in theta if not np.isnan(t)]
