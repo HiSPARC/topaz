@@ -1,0 +1,85 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[svgnames]{xcolor}
+\usepackage{a4wide}
+\usepackage{tikz}
+\usetikzlibrary{arrows,pgfplots.groupplots}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.3}
+\usepackage[detect-family]{siunitx}
+\usepackage[eulergreek]{sansmath}
+\sisetup{text-sf=\sansmath}
+\usepackage{relsize}
+
+\pagestyle{empty}
+
+\begin{document}
+% !TeX root = thesis.tex
+
+\begin{tikzpicture}
+    [ font=\sffamily, x=.75cm, y=.75cm,
+      hisparc/.style={draw},
+      >=stealth',
+    ]
+    \foreach \col / \sx / \sy / \angle in {ForestGreen/-5/0/90, DodgerBlue/5/0/-90,
+                                           Crimson/0/2.89/0, black/0/8.66/0} {
+        \begin{scope}[hisparc, shift={(\sx,\sy)}, rotate=\angle]
+            \draw[fill=white,rounded corners=2.25pt]
+                (-.4, .7) .. controls (0, .75) ..  (.4, .7) -- 
+                (.35, -1.7) ..  controls(0, -1.72) ..  (-.35, -1.7) --
+                cycle;
+            \draw[fill=\col] (-.25, .5) rectangle (.25, -.5);
+            \draw (-.25, -.5) -- (-.02, -1) --(.02, -1) -- (.25, -.5);
+            \fill (-.02, -1) rectangle (.02, -1.2);
+        \end{scope}
+    }
+    \draw[fill] (0, 0) circle (.10) node [above] {GPS};
+%    \node[color=gray] at (-.75, 8.66) {\Large 1};
+%    \node[color=gray] at (-.75, 2.89) {\Large 2};
+%    \node[color=gray] at (-5, .75) {\Large 3};
+%    \node[color=gray] at (5, .75) {\Large 4};
+
+    \coordinate (A) at (-5, 0);
+    \coordinate (B) at (5, 0);
+    \coordinate (D) at (0, 8.66);
+    \coordinate (F) at (0, 2.89);
+
+    \coordinate (A') at ($ (A)!.8cm!-90:(B) $);
+    \coordinate (B') at ($ (B)!.8cm!90:(A) $);
+%    \draw (A) -- ($ (A)!1.1!(A') $);
+%    \draw (B) -- ($ (B)!1.1!(B') $);
+%    \draw[<->] (A') -- (B') node [midway, below] {\SI{10}{\meter}};
+
+    \coordinate (C') at ($ (A)!.8cm!90:(D) $);
+    \coordinate (D') at ($ (D)!.8cm!-90:(A) $);
+    \draw[thick] (A) -- ($ (A)!1.1!(C') $);
+    \draw[thick] (D) -- ($ (D)!1.1!(D') $);
+    \draw[<->,thick] (C') -- (D') node [midway, above, sloped] {\SI{10}{\meter}};
+
+    \coordinate (E) at (0, 0);
+    \coordinate (D'') at ($ (D)!.8cm!180:(E) $);
+    \coordinate (E') at ($ (E)!.8cm!90:(A) $);
+    \coordinate (F') at ($ (F)!.8cm!-90:(D) $);
+    \draw (E) -- ($ (E)!1.1!(E') $);
+%    \draw (F) -- ($ (F)!1.1!(F') $);
+%    \draw (D) -- ($ (D)!1.1!(D'') $);
+%    \draw[<->] (E') -- (F') node [midway, below, sloped]
+%        {\SI{2.89}{\meter}};
+%    \draw[<->] (F') -- (D'') node [midway, below, sloped]
+%        {\SI{5.77}{\meter}};
+    \draw[thick] (A) -- ($ (A)!1.1!(A') $);
+    \draw[thick] (E) -- ($ (E)!1.1!(E') $);
+    \draw[<->,thick] (A') -- (E') node [midway, below] {\SI{5}{\meter}};
+
+    \draw[<->,thick] (A) ++(0:2.1) arc (0:60:2.1);
+    \node at (-2.8, 1.4) {\SI{60}{\degree}};
+
+    \draw[dashed,thick,gray] (A) -- (B);
+    \draw[dashed,thick,gray] (A) -- (D);
+    \draw[dashed,thick,gray] (A) -- (F);
+    \draw[dashed,thick,gray] (B) -- (D);
+    \draw[dashed,thick,gray] (B) -- (F);
+    \draw[dashed,thick,gray] (F) -- (D);
+\end{tikzpicture}
+
+\end{document}
