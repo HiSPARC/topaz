@@ -1,6 +1,6 @@
-\documentclass[a4paper,11pt]{article}
+\documentclass[a4paper,landscape,11pt]{article}
 
-\usepackage{a4wide}
+\usepackage[a4paper]{geometry}
 \usepackage{tikz}
 \usetikzlibrary{arrows,pgfplots.groupplots,external}
 \usepackage{pgfplots}
@@ -19,41 +19,37 @@
 
 \begin{tikzpicture}
 [font=\sffamily,
- every matrix/.style={ampersand replacement=\&,column sep=1.5cm,row sep=1.5cm},
+ every matrix/.style={ampersand replacement=\&,column sep=1.75cm,row sep=1cm},
  source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.3cm},
  process/.style={draw,thick,circle,fill=blue!20},
  sink/.style={source,fill=green!20},
  datastore/.style={draw,very thick,shape=datastore,inner sep=.3cm},
  dots/.style={gray,scale=2},
- fromto/.style={<->,>=stealth',shorten >=1pt,shorten <=1pt,semithick,font=\sffamily\footnotesize},
- to/.style={->,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
+ fromto/.style={stealth'-stealth',shorten >=1pt,shorten <=1pt,semithick,font=\sffamily\footnotesize},
+ to/.style={-stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
  every node/.style={align=center},
 ]
 \matrix{
     \& \node[source] (corsika) {CORSIKA}; \& \\
-    \node[source] (ldf) {Lateral density\\function}; \& \node[datastore] (corsikadata) {CORSIKA\\simulations};  \& \node[source] (showerfront) {Shower front}; \\
-    \node[source] (showerparameters) {Shower parameter\\generator}; \& \node[process] (simulations) {Simulations}; \& \node[process] (detectorresponse) {Detector\\response}; \\
-    \node[datastore] (rawdata) {Raw data}; \& \node[datastore] (simulateddata) {Simulated data}; \& \\
-    \node[process] (processevents) {Process\\events}; \& \& \\
-    \node[datastore] (esd) {Event summary data}; \& \node[process] (reconstructions) {Reconstructions}; \& \\
+    \node[source] (ldf) {Lateral density\\function}; \& \node[datastore] (corsikadata) {CORSIKA\\simulations};  \& \node[source] (showerfront) {Shower front\\model}; \\
+    \node[process] (detectorresponse) {Detector\\response}; \& \node[process] (simulations) {Simulations}; \& \node[datastore] (simulateddata) {Simulated data}; \\
+    \node[source] (station) {HiSPARC stations}; \& \& \node[process] (reconstructions) {Reconstructions}; \& \node[datastore] (reconstructed) {Reconstructed data}; \\
+    \node[datastore] (rawdata) {Raw data}; \& \node[process] (processevents) {Process\\events}; \& \node[datastore] (esd) {Event summary data}; \\
 };
-%\& \node[datastore] (buffer) {buffer}; \& \\
-%\node[datastore] (storage) {storage}; \& \node[process] (monitor) {monitor}; \& \node[sink] (datastore) {datastore}; \\
-%\node[dots] {\vdots}; \& \node[process] (datastore) {datastore}; \& \node[dots] {\vdots}; \\
-%\node[source] (station2) {station}; \& \& \node[sink] (user2) {user}; \\
 
 \draw[to] (corsika) -- node[midway,right] {pre-generate\\showers} (corsikadata);
 \draw[to] (corsikadata) to [bend right=5] node[midway,left] {particles} (simulations);
 \draw[to] (simulations) to [bend right=5] node[midway,right] {select\\shower} (corsikadata);
 \draw[to] (ldf) -- node[midway,below,sloped] {particle density} (simulations);
 \draw[to] (showerfront) -- node[midway,below,sloped] {front shape} (simulations);
-\draw[to] (showerparameters) -- node[midway,above] {direction} node[midway,below] {core} (simulations);
 \draw[fromto] (detectorresponse) -- (simulations);
 \draw[to] (simulations) -- (simulateddata);
+\draw[to] (station) -- (rawdata);
 \draw[to] (rawdata) -- (processevents);
 \draw[to] (processevents) -- (esd);
 \draw[to] (simulateddata) -- (reconstructions);
 \draw[to] (esd) -- (reconstructions);
+\draw[to] (reconstructions) -- (reconstructed);
 
 \end{tikzpicture}
 
