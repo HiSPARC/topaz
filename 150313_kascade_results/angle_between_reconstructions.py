@@ -2,6 +2,7 @@ import itertools
 
 import numpy as np
 from numpy import nan, isnan, arange, histogram, linspace, pi, array, sqrt, degrees
+from scipy.stats import scoreatpercentile
 import tables
 
 from artist import Plot, PolarPlot
@@ -57,6 +58,9 @@ def plot_angles(data):
         counts, bins = np.histogram(distances, bins=linspace(0, pi, 100))
         plotd = Plot()
         plotd.histogram(counts, degrees(bins))
+        sigma = degrees(scoreatpercentile(distances, 67))
+        plotd.set_title(r'$N_\textrm{MIP} \leq %d$' % minn)
+        plotd.set_label(r'67\%% within \SI{%.1f}{\degree}' % sigma)
         # plotd.set_title('Distance between reconstructed angles for station events')
         plotd.set_xlabel('Angle between reconstructions [\si{\degree}]')
         plotd.set_ylabel('Counts')
