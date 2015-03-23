@@ -2,7 +2,7 @@ import argparse
 from math import cos, sin
 
 import tables
-from numpy import nan_to_num, nanmin, isnan, array, arange
+from numpy import nan_to_num, nanmin, isnan, array, arange, insert, append
 
 from artist import Plot, MultiPlot
 
@@ -26,7 +26,7 @@ OFFSETS =  {501: [-1.10338, 0.0000, 5.35711, 3.1686],
 DETECTOR_IDS = [0, 1, 2, 3]
 STATIONS = [501, 502, 503, 504, 505, 506, 508, 509]
 CLUSTER = HiSPARCStations(STATIONS)
-COLORS = ['black', 'red!20!black', 'green!20!black', 'blue!20!black']
+COLORS = ['black', 'red!80!black', 'green!80!black', 'blue!80!black']
 
 def make_map(cluster=CLUSTER):
     latitudes = []
@@ -139,23 +139,35 @@ def display_coincidences(coincidence_events, reconstruction, c_id, map):
 def plot_traces(coincidence_events):
     plot = Plot()
     t0 = int(coincidence_events[0][1]['ext_timestamp'])
+    tick_labels = []
+    tick_positions = []
+
     for i, station_event in enumerate(coincidence_events):
         station_number, event = station_event
         station = Station(station_number)
         traces = station.event_trace(event['timestamp'], event['nanoseconds'])
         start_trace = (int(event['ext_timestamp']) - t0) - event['t_trigger']
         t = arange(start_trace, start_trace + (2.5 * len(traces[0])), 2.5)
+        t = insert(t, 0, -20000)
+        t = append(t, 20000)
         # trace = array(traces).sum(0)
         for j, trace in enumerate(traces):
             if max(trace) <= 10:
                 trace = array(trace)
             else:
                 trace = array(trace) / float(max(trace)) * 100
+            trace = insert(trace, 0, 0)
+            trace = append(trace, 0)
             plot.plot(t, trace + (100 * j) + (500 * i), mark=None,
                       linestyle=COLORS[j])
-    plot.set_xlimits(min=-500, max=1500)
+        tick_labels.append(station_number)
+        tick_positions.append(500 * i)
+
+    plot.set_yticks(tick_positions)
+    plot.set_ytick_labels(tick_labels)
+    plot.set_xlimits(min=-250, max=1300)
     plot.set_xlabel('t [\si{n\second}]')
-    plot.set_ylabel('Signal strength [ADC counts]')
+    plot.set_ylabel('Signal strength')
 
     plot.save_as_pdf('traces')
 
