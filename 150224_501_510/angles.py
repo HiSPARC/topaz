@@ -31,25 +31,35 @@ def plot_angles(data):
     for minn in [0, 1, 2, 4, 8, 16]:
         filter = (minn501 > minn) & (minn510 > minn)
 
-        azicounts, x, y = np.histogram2d(azi501.compress(high_zenith & filter),
-                                         azi510.compress(high_zenith & filter),
-                                         bins=np.linspace(-pi, pi, 72))
-        plotz = Plot()
-        plotz.histogram2d(azicounts, degrees(x), degrees(y), type='reverse_bw', bitmap=True)
-        plotz.set_title('Reconstructed azimuths for events in coincidence (zenith gt .2 rad)')
-        plotz.set_xlabel('Azimuth 501 [\si{\degree}]')
-        plotz.set_ylabel('Azimuth 510 [\si{\degree}]')
-        plotz.save_as_pdf('azimuth_501_510_minn%d' % minn)
-
-        zencounts, x, y = np.histogram2d(zen501.compress(filter),
-                                         zen510.compress(filter),
-                                         bins=np.linspace(0, pi / 2., 36))
+        length = len(azi501.compress(high_zenith & filter))
+        shifts501 = np.random.normal(0, .06, length)
+        shifts510 = np.random.normal(0, .06, length)
+        azicounts, x, y = np.histogram2d(azi501.compress(high_zenith & filter) + shifts501,
+                                         azi510.compress(high_zenith & filter) + shifts510,
+                                         bins=np.linspace(-pi, pi, 73))
         plota = Plot()
-        plota.histogram2d(zencounts, degrees(x), degrees(y), type='reverse_bw', bitmap=True)
-        plota.set_title('Reconstructed zeniths for station events in coincidence')
-        plota.set_xlabel('Zenith 501 [\si{\degree}]')
-        plota.set_ylabel('Zenith 510 [\si{\degree}]')
-        plota.save_as_pdf('zenith_501_510_minn%d' % minn)
+        plota.histogram2d(azicounts, degrees(x), degrees(y), type='reverse_bw', bitmap=True)
+#         plota.set_title('Reconstructed azimuths for events in coincidence (zenith gt .2 rad)')
+        plota.set_xlabel(r'$\phi_{501}$ [\si{\degree}]')
+        plota.set_ylabel(r'$\phi_{510}$ [\si{\degree}]')
+        plota.set_xticks([-180, -90, 0, 90, 180])
+        plota.set_yticks([-180, -90, 0, 90, 180])
+        plota.save_as_pdf('azimuth_501_510_minn%d' % minn)
+
+        length = len(zen501.compress(filter))
+        shifts501 = np.random.normal(0, .04, length)
+        shifts510 = np.random.normal(0, .04, length)
+        zencounts, x, y = np.histogram2d(zen501.compress(filter) + shifts501,
+                                         zen510.compress(filter) + shifts510,
+                                         bins=np.linspace(0, pi / 3., 41))
+        plotz = Plot()
+        plotz.histogram2d(zencounts, degrees(x), degrees(y), type='reverse_bw', bitmap=True)
+#         plotz.set_title('Reconstructed zeniths for station events in coincidence')
+        plotz.set_xlabel(r'$\theta_{501}$ [\si{\degree}]')
+        plotz.set_ylabel(r'$\theta_{510}$ [\si{\degree}]')
+        plotz.set_xticks([0, 15, 30, 45, 60])
+        plotz.set_yticks([0, 15, 30, 45, 60])
+        plotz.save_as_pdf('zenith_501_510_minn%d' % minn)
 
         distances = angle_between(zen501.compress(filter), azi501.compress(filter),
                                   zen510.compress(filter), azi510.compress(filter))
