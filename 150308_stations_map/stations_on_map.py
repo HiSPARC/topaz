@@ -61,7 +61,7 @@ def make_map(country=None, cluster=None, subcluster=None, station=None,
     graph.set_yticks([0, image.size[1]])
     graph.set_ytick_labels([se[0], nw[0]])
 
-    graph.set_title(label)
+#     graph.set_title(label)
 
     # save graph to file
     graph.save_as_pdf(label.replace(' ', '-'))
@@ -71,6 +71,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('number', type=int,
         help="Number of the country, cluster, subcluster, or station")
+    parser.add_argument('--network', action='store_true',
+                        help='Map of the whole network')
     parser.add_argument('--country', action='store_true',
                         help='Number represents the country')
     parser.add_argument('--cluster', action='store_true',
@@ -81,7 +83,10 @@ def main():
                         help='Number represents the station')
     args = parser.parse_args()
 
-    if args.country:
+    if args.network:
+        label = 'Network'
+        make_map(label=label)
+    elif args.country:
         label = 'Country %d' % args.number
         make_map(country=args.number, label=label)
     elif args.cluster:
