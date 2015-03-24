@@ -59,7 +59,7 @@ def plot_angles(data):
         plotd = Plot()
         plotd.histogram(counts, degrees(bins))
         sigma = degrees(scoreatpercentile(distances, 67))
-        plotd.set_title(r'$N_\textrm{MIP} \leq %d$' % minn)
+        plotd.set_title(r'$N_\textrm{MIP} \geq %d$' % minn)
         plotd.set_label(r'67\%% within \SI{%.1f}{\degree}' % sigma)
         # plotd.set_title('Distance between reconstructed angles for station events')
         plotd.set_xlabel('Angle between reconstructions [\si{\degree}]')
