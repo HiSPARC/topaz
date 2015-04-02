@@ -34,7 +34,7 @@ def calculate(data, id):
 
     """
     coin = CoincidencesESD(data, None, ['/refr/t%d' % id, '/swap/t%d' % id])
-    coin.search_coincidences(window=8000)
+    coin.search_coincidences(window=300)
 
     coincidences = coin._src_c_index
     timestamps = coin._src_timestamps
