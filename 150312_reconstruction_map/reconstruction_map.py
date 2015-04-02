@@ -133,7 +133,7 @@ def display_coincidences(coincidence_events, reconstruction, c_id, map):
 #     plot.set_xlabel('x [\si{\meter}]')
 #     plot.set_ylabel('y [\si{\meter}]')
 
-    plot.save_as_pdf('coincidences/event_display_%d' % c_id)
+    plot.save_as_pdf('coincidences/event_display_%d_%d' % (c_id, ts0))
 
 
 def plot_traces(coincidence_events):
@@ -169,7 +169,8 @@ def plot_traces(coincidence_events):
     plot.set_xlabel('t [\si{n\second}]')
     plot.set_ylabel('Signal strength')
 
-    plot.save_as_pdf('traces')
+    plot.save_as_pdf('traces_%d' % t0)
+
 
 if __name__ == '__main__':
     map = make_map(CLUSTER)
