@@ -4,12 +4,17 @@ import warnings
 import itertools
 
 import numpy as np
-from hisparc import publicdb
+
+from sapphire.esd import download_data
 
 from testlist import Tijdtest
 import data
 import delta
 from delta import DeltaVal
+
+DATA_PATH = '/Users/arne/Datastore/tijdtest/tijdtest_data_david.h5'
+DELTA_PATH = '/Users/arne/Datastore/tijdtest/tijdtest_delta_david.h5'
+
 
 def test_log_david():
     """ A log of davids tests
@@ -35,13 +40,13 @@ def download(storage, test):
 
     """
     print 'tt_data: Downloading data for test %d: %s' % (test.id, test.group)
-    publicdb.download_data(storage, '/refr/t%d' % test.id, 502, test.start, test.end)
-    publicdb.download_data(storage, '/swap/t%d' % test.id, 501, test.start, test.end)
+    download_data(storage, '/refr/t%d' % test.id, 95, test.start, test.end)
+    download_data(storage, '/swap/t%d' % test.id, 94, test.start, test.end)
 
 
 def download_data():
     tests = test_log_david()
-    with tables.open_file(paths('tt_data_david'), 'w') as storage:
+    with tables.open_file(DATA_PATH, 'w') as storage:
         for test in tests:
             download(storage, test)
 
@@ -50,8 +55,8 @@ def calculate_delta():
     # Difference in length of cables to boxes in nano seconds, (swap - refr)
     cable_length = 435.
     tests = test_log_david()
-    with tables.open_file(paths('tt_data_david'), 'r') as data_file, \
-         tables.open_file(paths('tt_delta_david'), 'w') as delta_file:
+    with tables.open_file(DATA_PATH, 'r') as data_file, \
+         tables.open_file(DELTA_PATH, 'w') as delta_file:
         for test in tests:
             table = delta_file.create_table('/t%d' % test.id, 'delta',
                                            delta.DeltaVal, createparents=True)
@@ -72,7 +77,7 @@ def print_delta_results():
     tests = test_log_david()
 
     for test in tests:
-        with tables.open_file(paths('tt_delta_david'), 'r') as delta_file:
+        with tables.open_file(DELTA_PATH, 'r') as delta_file:
             delta_table = delta_file.get_node('/t%d' % test.id, 'delta')
             ext_timestamps = [row['ext_timestamp'] for row in delta_table]
             deltas = [row['delta'] for row in delta_table]
