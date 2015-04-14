@@ -70,7 +70,7 @@ def plot_discrete(angles):
 def angles_between_discrete(angles):
     theta, phi = zip(*angles)
     distances = angle_between(0., 0., np.array(theta), np.array(phi))
-    counts, bins = np.histogram(distances, bins=np.linspace(0, np.pi, 91))
+    counts, bins = np.histogram(distances, bins=np.linspace(0, np.pi, 721))
     plotd = Plot()
     plotd.histogram(counts, np.degrees(bins))
     # plotd.set_title('Distance between reconstructed angles for station and cluster')
@@ -84,7 +84,7 @@ def angles_between_discrete(angles):
     distances = []
     for t, p in angles:
         distances.extend(angle_between(t, p, np.array(theta), np.array(phi)))
-    counts, bins = np.histogram(distances, bins=np.linspace(0, np.pi, 91))
+    counts, bins = np.histogram(distances, bins=np.linspace(0, np.pi, 361))
     plotd.histogram(counts, np.degrees(bins))
     # plotd.set_title('Distance between reconstructed angles for station and cluster')
     plotd.set_xlabel('Angle between reconstructions [\si{\degree}]')
