@@ -26,6 +26,7 @@ def test_log():
     project.
 
     """
+        # id HiSPARC GPS    Trigger  Start datetime       End datetime         Notes
     tests = (
         ( 1 , '083', '501', 'PMT2',  (2011,11,15, 15,52), (2011,11,16, 14,25), 'int250'),
         ( 2 , '074', '501', 'PMT2',  (2011,11,16, 14,44), (2011,11,17, 15, 6), ''),
@@ -195,11 +196,16 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
         test_list = [test for test in test_all
                      if ('noalmanac') in test.note]
     elif subset in ('Good1'):
+        # Tests with different GPS, otherwise normal conditions
         test_list = [test for test in test_all
                      if test.id in [1, 2, 4, 10, 12, 15, 16, 17, 25, 84]]
     elif subset in ('Good2'):
+        # Tests with GPS splitter, otherwise normal conditions
+        # test 33 and 34 could be added, but the same units were also
+        # tested with a different GPS: 4 and 10, which are in Good1
         test_list = [test for test in test_all
-                     if test.id in [38, 39, 45, 47, 51, 52, 54, 55, 56, 57, 58,
+                     if test.id in [33, 34,
+                                    38, 39, 45, 47, 51, 52, 54, 55, 56, 57, 58,
                                     73, 77, 81, 90, 91, 92, 93, 94, 95]]
     else:
         test_list = test_all
