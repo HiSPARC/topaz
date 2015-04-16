@@ -4,17 +4,17 @@ from artist import Plot
 
 
 if __name__ == '__main__':
-    led = [1, 225, 300, 225, 320, 250, 350, 375, 370, 340, 325,
-           300, 350, 325, 350, 350, 350, 325, 350, 350, 350,
-           330, 310, 350, 350]
+    led_direct_ph = [1, 225, 300, 225, 320, 250, 350, 375, 370, 340, 325,
+                     300, 350, 325, 350, 350, 350, 325, 350, 350, 350,
+                     330, 310, 350, 350]
 
     led8_on_b = [1, 310, 272, 328, 332, 336, 276, 192, 352, 268, 240,
                  340, 336, 268, 320, 344, 260, 312, 248, 264, 276,
                  268, 160, 208, 200]
 
-    led_on_b  = [1, 160, 192, 152, 240, 232, 232, 148, 352, 192, 200,
-                 248, 280, 222, 274, 302, 224, 308, 200, 214, 212,
-                 172, 136, 190, 168]
+    led_ph  = [1, 160, 192, 152, 240, 232, 232, 148, 352, 192, 200,
+               248, 280, 222, 274, 302, 224, 308, 200, 214, 212,
+               172, 136, 190, 168]
 
     multi_led = [((1, 8), 508),
                  ((2, 8), 516),
@@ -91,15 +91,15 @@ if __name__ == '__main__':
                  ((1, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23), 4600)]
 
 
-    eff_8b = [l8_on_b / led[8] for l8_on_b in led8_on_b]
-    eff_lb = [lb / l for lb, l in zip(led_on_b, led)]
+    eff_8b = [l8_on_b / led_direct_ph[8] for l8_on_b in led8_on_b]
+    eff_lb = [lb / l for lb, l in zip(led_ph, led_direct_ph)]
     eff_lb_8b = [elb / e8b for elb, e8b in zip(eff_lb, eff_8b)]
 
     for fibers, signal in multi_led:
-        sum_signal = sum(led_on_b[fiber] for fiber in fibers)
+        sum_signal = sum(led_ph[fiber] for fiber in fibers)
 
     signals = [signal for fibers, signal in multi_led]
-    sum_signals = [sum(led_on_b[fiber] for fiber in fibers) for fibers, signal in multi_led]
+    sum_signals = [sum(led_ph[fiber] for fiber in fibers) for fibers, signal in multi_led]
 
 
     graph = Plot()

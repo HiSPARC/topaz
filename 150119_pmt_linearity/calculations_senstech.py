@@ -5,7 +5,7 @@ from artist import Plot
 
 if __name__ == '__main__':
 
-    led_on_b  = [1, 160, 224, 172, 206, 246, 242, 188, 352, 180, 232,
+    led_ph  = [1, 160, 224, 172, 206, 246, 242, 188, 352, 180, 232,
                  236, 292, 232, 260, 258, 198, 302, 202, 212, 218,
                  186, 166, 214, 214]
 
@@ -56,10 +56,10 @@ if __name__ == '__main__':
                  ((2, 3, 4, 5, 6, 7, 8, 9), 1380)]
 
     for fibers, signal in multi_led:
-        sum_signal = sum(led_on_b[fiber] for fiber in fibers)
+        sum_signal = sum(led_ph[fiber] for fiber in fibers)
 
     signals = [signal for fibers, signal in multi_led]
-    sum_signals = [sum(led_on_b[fiber] for fiber in fibers) for fibers, signal in multi_led]
+    sum_signals = [sum(led_ph[fiber] for fiber in fibers) for fibers, signal in multi_led]
 
 
     graph = Plot()
