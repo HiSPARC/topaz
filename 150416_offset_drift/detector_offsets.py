@@ -2,6 +2,17 @@
 
 This determines the detector offsets for several stations on various dates.
 
+The offsets seems fairly constant over time, within a nanosecond. A day
+of data seems enough to accurately determine the offsets, If a detector
+is not working properly it may result in a completely wrong offset,
+though there might not be any good data for which the offset would be
+needed. However, if the bad detector is detector 2, it might be
+difficult to determine the offsets for the other detectors.
+
+Causes for changing offsets at some points:
+- When swapping HiSPARC electronics (e.g. 501, 502, 504)
+- When swapping PMTs or a PMT is not working well (e.g. 503, 505, 508)
+
 """
 import os
 
