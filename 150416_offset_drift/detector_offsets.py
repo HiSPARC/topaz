@@ -21,7 +21,7 @@ from artist import Plot
 from numpy import histogram, arange, nan
 from scipy.optimize import curve_fit
 
-from sapphire.analysis.reconstructions import ReconstructESDCoincidences as Rec
+from sapphire.analysis.calibration import determine_detector_timing_offsets
 from sapphire.utils import gauss
 from sapphire.clusters import Station
 
@@ -35,9 +35,9 @@ LIMITS = 20
 
 
 def determine_offset(data, station):
-    station_group = data.get_node('/station_%d' % station)
-    offsets = Rec.determine_detector_timing_offsets(STATION, station_group)
-    offsets = [o if o != 0. else nan for o in offsets]
+    station_events = data.get_node('/station_%d' % station, 'events')
+    offsets = determine_detector_timing_offsets(station_events, STATION)
+    offsets = [round(o, 1) if o != 0. else nan for o in offsets]
     return offsets
 
 
