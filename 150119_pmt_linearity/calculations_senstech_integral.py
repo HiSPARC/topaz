@@ -1,7 +1,5 @@
-from __future__ import division
-
-from numpy import mean
-from artist import Plot
+from process import get_measured_expected, determine_pi_ph_ratio
+from plot_results import plot_ph, plot_pi, plot_pi_ph
 
 
 if __name__ == '__main__':
@@ -36,31 +34,10 @@ if __name__ == '__main__':
                  ((2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24), 2150, 38.15),
                  ((1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24), 2170, 38.57)]
 
-    signals_ph = [ph for fibers, ph, pi in multi_led]
-    signals_pi = [pi for fibers, ph, pi in multi_led]
-    sum_signals_ph = [sum(led_ph[fiber] for fiber in fibers) for fibers, ph, pi in multi_led]
-    sum_signals_pi = [sum(led_pi[fiber] for fiber in fibers) for fibers, ph, pi in multi_led]
 
-    ratio = mean([pi/ph for ph, pi in zip(led_ph[1:], led_pi[1:])])
-
-    graph = Plot()
-    graph.scatter(sum_signals_ph, signals_ph)
-    graph.plot([0, 5500], [0, 5500], mark=None)
-    graph.set_xlabel('Sum individual LED pulseheights [mV]')
-    graph.set_ylabel('Multiple-LED pulseheight [mV]')
-    graph.save_as_pdf('linearity_senstech_ph')
-
-    graph = Plot()
-    graph.scatter(sum_signals_pi, signals_pi)
-    graph.plot([0, 100], [0, 100], mark=None)
-    graph.set_xlabel('Sum individual LED pulseintegrals [nVs]')
-    graph.set_ylabel('Multiple-LED pulseintegrals [nVs]')
-    graph.save_as_pdf('linearity_senstech_pi')
-
-    graph = Plot()
-    graph.scatter(signals_pi, signals_ph)
-    graph.scatter(led_pi[1:], led_ph[1:])
-    graph.plot([0, 5500 * ratio], [0, 5500], mark=None)
-    graph.set_xlabel('Multiple-LED pulseintegrals [nVs]')
-    graph.set_ylabel('Multiple-LED pulseheights [mV]')
-    graph.save_as_pdf('linearity_senstech_ph_pi')
+    m_pi, m_ph, e_pi, e_ph = get_measured_expected(led_ph, led_pi, multi_led)
+    ratio = determine_pi_ph_ratio(led_pi, led_ph)
+    name = 'senstech_integral'
+    plot_ph(e_ph, m_ph, name)
+    plot_pi(e_pi, m_pi, name)
+    plot_pi_ph(m_pi, m_ph, name, ratio)
