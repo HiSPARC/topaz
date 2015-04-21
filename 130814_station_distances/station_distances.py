@@ -8,24 +8,25 @@ a histogram to show these distances.
 """
 from itertools import combinations
 
-import matplotlib.pyplot as plt
+from artist import Plot
 import numpy
 
 from sapphire.api import Station, Network
 
+
 def distances_sciencepark():
     network = Network()
     station_ids = [station['number'] for station in network.stations(subcluster=500)]
-    distances_stations(station_ids)
+    distances_stations(station_ids, name='_sciencepark')
 
 
 def distances_all_stations():
     network = Network()
     station_ids = [station for station in network.station_numbers()]
-    distances_stations(station_ids)
+    distances_stations(station_ids, name='_all')
 
 
-def distances_stations(station_ids):
+def distances_stations(station_ids, name=''):
     station_coords = []
     for station_id in station_ids:
         try:
@@ -36,7 +37,7 @@ def distances_stations(station_ids):
         station_coords.append(info.location())
 
     distances = distance_combinations(station_coords)
-    plot_station_distances(distances)
+    plot_station_distances(distances, name=name)
 
 
 def Dns(Dm):
@@ -45,21 +46,17 @@ def Dns(Dm):
     return Dm / c
 
 
-def plot_station_distances(distances):
-    fig = plt.figure()
-    ax1 = plt.subplot(111) # y-axis in m
-    bins = numpy.logspace(-2, 5, 71)
-    plt.hist(distances, bins=bins, histtype='step')
-    plt.title('Distances between all combinations of 2 stations')
-    plt.xlabel('Distance (km)')
-    plt.ylabel('Occurance')
-    plt.xscale('log')
-    # title.set_y(1.09)
-    # plt.subplots_adjust(top=0.86)
-    # ax2 = plt.twiny() # x-axis in us
-    # x1, x2 = ax1.get_xlim()
-    # ax2.set_xlim(Dns(x1), Dns(x2))
-    plt.show()
+def plot_station_distances(distances, name=''):
+    plot = Plot('semilogx')
+    bins = numpy.logspace(-3, 5, 71)
+    counts, bins = numpy.histogram(distances, bins=bins)
+    plot.histogram(counts, bins)
+    plot.set_title('Distances between all combinations of 2 stations')
+    plot.set_xlabel('Distance (km)')
+    plot.set_ylabel('Occurance')
+    plot.set_ylimits(min=0)
+    plot.set_xlimits(min=1e-3, max=1e5)
+    plot.save_as_pdf('station_distances' + name)
 
 
 def distance_combinations(coordinates):
