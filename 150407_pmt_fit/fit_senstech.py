@@ -36,6 +36,7 @@ def ice_cube_pmt_p1(x, p0, p2):
 def saturating_function(x, p0):
     return x * exp(p0 * x)
 
+
 def chisq(f, y, x, popt, sigma):
 
     chisq = sum(((yi - f(xi, *popt)) / si) ** 2 for yi, xi, si in zip(y, x, s))
@@ -57,7 +58,7 @@ def fit_curve(x, y):
 
 if __name__ == '__main__':
 
-    led_on_b  = [1, 160, 224, 172, 206, 246, 242, 188, 352, 180, 232,
+    led_ph  = [1, 160, 224, 172, 206, 246, 242, 188, 352, 180, 232,
                  236, 292, 232, 260, 258, 198, 302, 202, 212, 218,
                  186, 166, 214, 214]
 
@@ -108,10 +109,10 @@ if __name__ == '__main__':
                  ((2, 3, 4, 5, 6, 7, 8, 9), 1380)]
 
     for fibers, signal in multi_led:
-        sum_signal = sum(led_on_b[fiber] for fiber in fibers)
+        sum_signal = sum(led_ph[fiber] for fiber in fibers)
 
     signals = [float(signal) for fibers, signal in multi_led]
-    sum_signals = [float(sum(led_on_b[fiber] for fiber in fibers))
+    sum_signals = [float(sum(led_ph[fiber] for fiber in fibers))
                    for fibers, signal in multi_led]
 
     popt, perr = fit_curve(signals, sum_signals)
