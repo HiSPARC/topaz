@@ -18,11 +18,9 @@ import os
 
 import tables
 from artist import Plot
-from numpy import histogram, arange, nan
-from scipy.optimize import curve_fit
+from numpy import nan
 
 from sapphire.analysis.calibration import determine_detector_timing_offsets
-from sapphire.utils import gauss
 from sapphire.clusters import Station
 
 DATA_PATH = '/Users/arne/Datastore/esd/'

@@ -1,19 +1,8 @@
-import itertools
-
 import numpy as np
-from numpy import nan, isnan, arange, histogram, linspace, pi, array, sqrt, degrees
-from scipy.optimize import curve_fit
 import tables
-import matplotlib.pyplot as plt
-
-from artist import Plot, PolarPlot
 
 from sapphire.clusters import HiSPARCStations
-from sapphire.analysis.reconstructions import (ReconstructESDEvents,
-                                               ReconstructESDCoincidences)
-
-from sapphire.analysis.coincidence_queries import CoincidenceQuery
-from sapphire.utils import pbar, gauss, ERR, angle_between
+from sapphire.analysis.reconstructions import ReconstructESDEvents
 
 
 STATIONS = [501, 510]

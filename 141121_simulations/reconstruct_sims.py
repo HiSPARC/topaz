@@ -1,10 +1,7 @@
 """ Reconstruct the results
 
 """
-
-
 import tables
-from numpy import histogram, pi, array, arange, linspace
 
 from sapphire.analysis.reconstructions import (ReconstructESDEvents,
                                                ReconstructESDCoincidences)

@@ -1,7 +1,7 @@
 import tables
 from math import cos, sin
-from numpy import nan_to_num, nanmin, isnan
-from artist import Plot, MultiPlot
+from numpy import nanmin, isnan
+from artist import Plot
 
 from sapphire.clusters import HiSPARCStations
 from sapphire.analysis import coincidence_queries, event_utils

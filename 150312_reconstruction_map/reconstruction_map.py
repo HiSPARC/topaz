@@ -1,15 +1,14 @@
-import argparse
 from math import cos, sin
 
 import tables
-from numpy import nan_to_num, nanmin, isnan, array, arange, insert, append
+from numpy import nanmin, isnan, array, arange, insert, append
 
-from artist import Plot, MultiPlot
+from artist import Plot
 
 from sapphire.clusters import HiSPARCStations
 from sapphire.analysis import coincidence_queries, event_utils
 from sapphire.transformations import geographic
-from sapphire.api import Network, Station
+from sapphire.api import Station
 
 from smopy import Map, num2deg, TILE_SIZE
 

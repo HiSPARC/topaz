@@ -1,11 +1,10 @@
 import itertools
 
-from numpy import nan, isnan, arange, histogram, linspace, array, where
+from numpy import nan, histogram, linspace, array, where
 from scipy.optimize import curve_fit
 import tables
 
-from sapphire.analysis.coincidence_queries import CoincidenceQuery
-from sapphire.utils import pbar, gauss, ERR
+from sapphire.utils import gauss, ERR
 from artist import Plot
 
 

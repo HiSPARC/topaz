@@ -22,7 +22,7 @@ with tables.open_file('test_showerfront_alt.h5', 'w') as data:
         detectors[0].z = z
         sim = FlatFrontSimulation(cluster, data, '/e_z%d' % z, 20000)
         sim.run()
-        sim_off.append(
+        # sim_off.append(
         events = sim.station_groups[0].events
         dt = events.col('t1') - events.col('t2')
         bins = arange(-100 + 1.25, 100, 2.5)

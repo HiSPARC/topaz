@@ -1,11 +1,7 @@
-import itertools
-
 import numpy as np
-from numpy import nan, isnan, arange, histogram, linspace, pi, array, sqrt, degrees
-from scipy.optimize import curve_fit
 import tables
 
-from artist import Plot, MultiPlot
+from artist import MultiPlot
 
 
 EVENTDATA_PATH = '/Users/arne/Datastore/501_510/e_501_510_141101_150201.h5'

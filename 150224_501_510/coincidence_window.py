@@ -9,13 +9,10 @@ contain another coincidences. e.g. 1, 3, 2 also includes 3, 2. This
 should perhaps be counted as only 1 coincidence.
 
 """
-import os
-
 import tables
 import numpy
 from artist import MultiPlot
 
-from sapphire.api import Station, Network
 from sapphire.analysis import coincidences
 
 

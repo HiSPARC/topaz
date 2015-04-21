@@ -1,13 +1,11 @@
-import itertools
-
 import numpy as np
-from numpy import nan, isnan, arange, histogram, linspace, pi, array, sqrt, degrees
+from numpy import linspace, pi, degrees
 from scipy.stats import scoreatpercentile
 import tables
 
-from artist import Plot, PolarPlot
+from artist import Plot
 
-from sapphire.utils import pbar, gauss, ERR, angle_between
+from sapphire.utils import angle_between
 
 
 DATA_PATH = 'kascade.h5'

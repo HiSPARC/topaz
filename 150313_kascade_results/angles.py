@@ -1,7 +1,4 @@
-import itertools
-
 import numpy as np
-from numpy import nan, isnan, arange, histogram, linspace, pi, array, sqrt, degrees
 
 from artist import Plot
 
