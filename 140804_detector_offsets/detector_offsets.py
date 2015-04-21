@@ -12,30 +12,30 @@ from artist import Plot
 from numpy import histogram, arange
 from scipy.optimize import curve_fit
 
-from sapphire.analysis.reconstructions import ReconstructESDCoincidences
+from sapphire.analysis.calibration import determine_detector_timing_offsets
 from sapphire.utils import gauss
 from sapphire.clusters import Station
 
 DATA_PATH = '/Users/arne/Datastore/esd/2014/1/'
 BIN_WIDTH = 2.5
 
+O = (0, 0, 0)
+STATION = Station(None, 0, O,
+                  detectors=[(O, 'UD'), (O, 'UD'), (O, 'LR'), (O, 'LR')])
 
-def determine_offset(dirrec, s_path):
-    station_group = dirrec.data.get_node(s_path)
-    o = (0, 0, 0)
-    station = Station(None, 0, o,
-                      detectors=[(o, 'UD'), (o, 'UD'), (o, 'LR'), (o, 'LR')])
+
+def determine_offset(data, s_path):
+    events = data.get_node(s_path, 'events')
     offsets = [offset
-               for offset in dirrec.determine_detector_timing_offsets(station, station_group)
+               for offset in determine_detector_timing_offsets(events, STATION)
                if offset != 0.0]
     return offsets
 
 
 def determine_offsets(data):
     detector_offsets = []
-    dirrec = ReconstructESDCoincidences(data)
-    for s_path in dirrec.coincidences_group.s_index:
-        detector_offsets.extend(determine_offset(dirrec, s_path))
+    for s_path in data.root.coincidences.s_index:
+        detector_offsets.extend(determine_offset(data, s_path))
     return detector_offsets
 
 
