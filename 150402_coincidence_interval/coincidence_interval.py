@@ -3,14 +3,12 @@ from numpy import histogram, logspace
 
 from artist import Plot
 
-COIN_PATH = '/Users/arne/Datastore/esd_coincidences/coincidences_n2_100101_140601.h5'
+COIN_PATH = '/Users/arne/Datastore/esd_coincidences/sciencepark_n2_100101_150401.h5'
 
 
 def plot_coincidence_intervals(coincidences):
     plot = Plot(axis='semilogx')
-    # Bins chosen to start at 8.5 because of a spike of coincidences at 2.5e8.
-    # These are due to the GPS offset tests (using 4 Hz) between 501 and 502.
-    bins = logspace(8.5, 15, 150)
+    bins = logspace(7, 15, 150)
     for n in [2, 3, 4, 5, 6, 7, 8]:
         dt = coincidence_interval(coincidences, n)
         counts, bins = histogram(dt, bins=bins)
@@ -22,6 +20,7 @@ def plot_coincidence_intervals(coincidences):
     plot.set_ylabel(r'Counts')
     plot.set_ylimits(min=0)
     plot.save_as_pdf('coincidence_intervals_501')
+    plot.set_xlimits(min=bins[0], max=bins[-1])
 
 
 def coincidence_interval(coincidences, n):
