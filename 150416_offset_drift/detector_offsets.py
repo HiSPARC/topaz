@@ -15,11 +15,14 @@ Causes for changing offsets at some points:
 
 """
 import os
+from datetime import date
+import csv
 
 import tables
 from artist import Plot
 from numpy import nan
 
+from sapphire.transformations.clock import datetime_to_gps
 from sapphire.analysis.calibration import determine_detector_timing_offsets
 from sapphire.clusters import Station
 
@@ -43,12 +46,18 @@ if __name__ == '__main__':
 
     for station in STATIONS:
         # Determine offsets for first day of each month
+        output = open('offsets_%d.csv' % station, 'wb')
+        csvwriter = csv.writer(output, delimiter='\t')
         offsets = []
+        timestamps = []
         for y in range(2010, 2015):
             for m in range(1, 13):
+                timestamps.append(datetime_to_gps(date(y, m, 1)))
                 path = os.path.join(DATA_PATH, str(y), str(m), '%d_%d_1.h5' % (y, m))
                 with tables.open_file(path, 'r') as data:
                     offsets.append(determine_offset(data, station))
+                csvwriter.writerow([timestamps[-1]] + offsets[-1])
+        output.close()
         d1, _, d3, d4 = zip(*offsets)
         x = range(len(d1))
         graph = Plot()
