@@ -1,5 +1,9 @@
+# Plots and Figures
 *.pdf
+
+# Data
 *.h5
+*.csv
 
 *.swp
 *.pyc
