@@ -19,8 +19,8 @@ def plot_coincidence_intervals(coincidences):
     plot.set_xlabel(r'Time between consecutive coincidences')
     plot.set_ylabel(r'Counts')
     plot.set_ylimits(min=0)
-    plot.save_as_pdf('coincidence_intervals_501')
     plot.set_xlimits(min=bins[0], max=bins[-1])
+    plot.save_as_pdf('coincidence_intervals_501')
 
 
 def coincidence_interval(coincidences, n):
