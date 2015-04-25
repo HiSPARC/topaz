@@ -10,6 +10,7 @@ needed. However, if the bad detector is detector 2, it might be
 difficult to determine the offsets for the other detectors.
 
 Causes for changing offsets at some points:
+- Use a temporary GPS with bad view of the sky (501)
 - When swapping HiSPARC electronics (e.g. 501, 502, 504)
 - When swapping PMTs or a PMT is not working well (e.g. 503, 505, 508)
 
@@ -23,7 +24,7 @@ from numpy import nan, genfromtxt
 from sapphire.api import Station
 from sapphire.transformations.clock import gps_to_datetime, datetime_to_gps
 
-STATIONS = [502, 503, 504, 505, 506, 508, 509]
+STATIONS = [502, 503, 504, 505, 506, 508, 509, 510]
 
 
 def get_detector_offsets(station):
@@ -34,7 +35,7 @@ def get_detector_offsets(station):
 
 def get_station_offsets(station):
     offsets = genfromtxt('offsets_s%d.csv' % station, delimiter='\t',
-                         names=('station', 'timestamp', 'n', 'offset'))
+                         names=('timestamp', 'offset'))
     return offsets
 
 
@@ -46,10 +47,12 @@ def get_n_events(station):
 
 def save_n_events_month(station):
     s = Station(station)
-    output = open('n_month_%d.csv' % station, 'wb')
+    output = open('n_month_%d.csv' % station, 'a')
     csvwriter = csv.writer(output, delimiter='\t')
-    for y in range(2010, 2015):
+    for y in range(2010, 2016):
         for m in range(1, 13):
+            if y == 2015 and m >= 4:
+                continue
             n = s.n_events(y, m) / float(calendar.monthrange(y, m)[1])
             t = datetime_to_gps(date(y, m, 1))
             csvwriter.writerow([t, n])
@@ -58,10 +61,12 @@ def save_n_events_month(station):
 
 def save_n_events(station):
     s = Station(station)
-    output = open('n_%d.csv' % station, 'wb')
+    output = open('n_%d.csv' % station, 'a')
     csvwriter = csv.writer(output, delimiter='\t')
-    for y in range(2010, 2015):
+    for y in range(2010, 2016):
         for m in range(1, 13):
+            if y == 2015 and m >= 4:
+                continue
             for d in range(1, calendar.monthrange(y, m)[1] + 1):
                 n = s.n_events(y, m, d)
                 t = datetime_to_gps(date(y, m, d))
@@ -71,15 +76,16 @@ def save_n_events(station):
 
 if __name__ == '__main__':
 
+#     save_n_events(501)
 #     save_n_events_month(501)
 #     for station in STATIONS:
+#         save_n_events(station)
 #         save_n_events_month(station)
 
     ref_s = Station(501)
     ref_gps = ref_s.gps_locations
     ref_voltages = ref_s.voltages
     ref_n = get_n_events(501)
-
     for station in STATIONS:
         s = Station(station)
         voltages = s.voltages
@@ -88,15 +94,12 @@ if __name__ == '__main__':
         d_off = get_detector_offsets(station)
         s_off = get_station_offsets(station)
         n = get_n_events(station)
-
         graph = Plot()
         graph.scatter(ref_gps['timestamp'], [95] * len(ref_gps), mark='square', markstyle='purple,mark size=.5pt')
         graph.scatter(ref_voltages['timestamp'], [90] * len(ref_voltages), mark='triangle', markstyle='purple,mark size=.5pt')
         graph.scatter(gps['timestamp'], [85] * len(gps), mark='square', markstyle='gray,mark size=.5pt')
         graph.scatter(voltages['timestamp'], [80] * len(voltages), mark='triangle', markstyle='gray,mark size=.5pt')
-#         graph.plot(ref_n['timestamp'], -ref_n['n'] / 1000, mark=None, use_steps=True, linestyle='gray')
-#         graph.plot(n['timestamp'], n['n'] / 1000, mark=None, use_steps=True)
-        graph.shade_region(n['timestamp'], -ref_n['n'] / 1000, n['n'] / 1000)
+        graph.shade_region(n['timestamp'], -ref_n['n'] / 1000, n['n'] / 1000, color='lightgray,const plot')
         graph.plot(d_off['timestamp'], d_off['d0'], markstyle='mark size=.5pt')
         graph.plot(d_off['timestamp'], d_off['d2'], markstyle='mark size=.5pt', linestyle='green')
         graph.plot(d_off['timestamp'], d_off['d3'], markstyle='mark size=.5pt', linestyle='blue')

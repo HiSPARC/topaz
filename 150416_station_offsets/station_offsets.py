@@ -9,6 +9,7 @@ For various combinations of stations in compact clusters
 import itertools
 from datetime import datetime
 from bisect import bisect_right
+import csv
 
 from numpy import nan, isnan, arange, histogram, linspace, genfromtxt
 from scipy.optimize import curve_fit
@@ -23,55 +24,28 @@ from sapphire.utils import pbar, ERR
 from sapphire.clusters import HiSPARCStations
 from artist import Plot
 
-
 """
 Reference stations
 
-102 for Zaanlands stations, data starting at 2012/6.
 501 for Science Park stations, data starting at 2010/1.
-7001 for Twente University stations, data starting at 2011/8.
-8001 for Eindhoven University stations, data starting at 2011/10.
 """
 
 SPA_DATA = '/Users/arne/Datastore/esd_coincidences/sciencepark_n2_100101_150401.h5'
-# ZAA_DATA = '/Users/arne/Datastore/esd_coincidences/zaanlands_n2_120601_140801.h5'
-# TWE_DATA = '/Users/arne/Datastore/esd_coincidences/twente_n2_110801_140801.h5'
-# ALP_DATA = '/Users/arne/Datastore/esd_coincidences/alphen_n2_101201_140801.h5'
+SPA_STAT = [501, 502, 503, 504, 505, 506, 508, 509, 510]
+CLUSTER = HiSPARCStations(SPA_STAT)
 
-# SPA_STAT = [501, 502, 503, 504, 505, 506, 508, 509, 510]
-SPA_STAT = [501, 502, 503, 504, 505, 506, 508, 509]
-ZAA_STAT = [102, 104, 105]
-TWE_STAT = [7001, 7002, 7003]
-ALP_STAT = [8001, 8004, 8008, 8009]
 
-COLORS = ['black', 'green', 'blue', 'teal', 'orange', 'purple', 'cyan', 'red',
-          'gray']
-
-CLUSTER = HiSPARCStations(SPA_STAT + ZAA_STAT + TWE_STAT + ALP_STAT)
-
-OFFSETS = {102: [-3.1832, 0.0000, 0.0000, 0.0000],
-           104: [-1.5925, -5.0107, 0.0000, 0.0000],
-           105: [-14.1325, -10.9451, 0.0000, 0.0000],
-           501: [-1.10338, 0.0000, 5.35711, 3.1686],
-           502: [-8.11711, -8.5528, -8.72451, -9.3388],
-           503: [-22.9796, -26.6098, -22.7522, -21.8723],
-           504: [-15.4349, -15.2281, -15.1860, -16.5545],
-           505: [-21.6035, -21.3060, -19.6826, -25.5366],
-           506: [-20.2320, -15.8309, -14.1818, -14.1548],
-           508: [-26.2402, -24.9859, -24.0131, -23.2882],
-           509: [-24.8369, -23.0218, -20.6011, -24.3757],
-           7001: [4.5735, 0.0000, 0.0000, 0.0000],
-           7002: [45.0696, 47.8311, 0.0000, 0.0000],
-           7003: [-2.2674, -4.9578, 0.0000, 0.0000],
-           8001: [2.5733, 0.0000, 0.0000, 0.0000],
-           8004: [-39.3838, -36.1131, 0.0000, 0.0000],
-           8008: [57.3990, 58.1135, 0.0000, 0.0000],
-           8009: [-20.3489, -16.9938, 0.0000, 0.0000]}
+class DeltaVal(tables.IsDescription):
+    ext_timestamp = tables.UInt64Col()
+    timestamp = tables.UInt32Col()
+    nanoseconds = tables.UInt32Col()
+    delta = tables.FloatCol()
 
 
 def determine_time_differences(coin_events, ref_station, station, ref_d_off, d_off):
     """Determine the offsets between the stations."""
     dt = []
+    ets = []
     for events in coin_events:
         ref_ts = events[0][1]['ext_timestamp']
         # Filter for possibility of same station twice in coincidence
@@ -89,7 +63,8 @@ def determine_time_differences(coin_events, ref_station, station, ref_d_off, d_o
         if isnan(t) or isnan(ref_t):
             continue
         dt.append(t - ref_t)
-    return dt
+        ets.append((ref_ts))
+    return ets, dt
 
 
 def get_detector_offsets(station):
@@ -98,36 +73,59 @@ def get_detector_offsets(station):
 
 
 def get_active_detector_offsets(offsets, timestamp):
-    idx = bisect_right(offsets[:,0], timestamp, lo=0)
+    idx = bisect_right(offsets[:, 0], timestamp, lo=0)
     if idx == 0:
         idx = 1
     return offsets[idx - 1][1:]
 
 
+def write_offets(station, offsets):
+    output = open('offsets_s%d.csv' % station, 'wb')
+    csvwriter = csv.writer(output, delimiter='\t')
+    for ts, offset in offsets:
+        csvwriter.writerow([ts, offset])
+    output.close()
+
+
+def store_dt(station, ext_timestamps, deltats):
+    with tables.open_file('dt.h5', 'a') as data:
+        try:
+            table = data.get_node('/s%d' % station)
+        except tables.NoSuchNodeError:
+            table = data.create_table('/', 's%d' % station, DeltaVal,
+                                      createparents=True)
+        for ets, deltat in zip(ext_timestamps, deltats):
+            delta_row = table.row
+            delta_row['ext_timestamp'] = ets
+            delta_row['timestamp'] = int(ets) / int(1e9)
+            delta_row['nanoseconds'] = int(ets) - ((int(ets) / int(1e9)) * int(1e9))
+            delta_row['delta'] = deltat
+            delta_row.append()
+        table.flush()
+
+
 def main(data):
-    offsets = {}
     cq = CoincidenceQuery(data)
     ref_station = 501
     ref_detector_offsets = get_detector_offsets(ref_station)
-    for station in SPA_STAT:
+    for station in pbar(SPA_STAT):
+        offsets = []
         detector_offsets = get_detector_offsets(station)
         if station == ref_station:
             continue
-        o = []
-        for dt0, dt1 in monthrange((2010, 1), (2015, 1)):
+        for dt0, dt1 in monthrange((2010, 1), (2015, 4)):
             coins = cq.all([station, ref_station], start=dt0, stop=dt1, iterator=True)
             coin_events = cq.events_from_stations(coins, [station, ref_station])
             ref_d_off = get_active_detector_offsets(ref_detector_offsets, dt0)
             d_off = get_active_detector_offsets(detector_offsets, dt0)
-            dt = determine_time_differences(coin_events, ref_station, station, ref_d_off, d_off)
+            ets, dt = determine_time_differences(coin_events, ref_station, station, ref_d_off, d_off)
+            store_dt(station, ets, dt)
             if len(dt) < 100:
-                print station, dt0, len(dt), 'To few events'
                 continue
             s_off = determine_station_timing_offset(dt)
-            print station, dt0, len(dt), s_off
-            o.append(s_off)
-        offsets[station] = o
-    print offsets
+            offsets.append((dt0, s_off))
+        write_offets(station, offsets)
+
 
 def monthrange(start, stop):
     """Generator for datetime month ranges
