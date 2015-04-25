@@ -25,9 +25,10 @@ from numpy import nan
 from sapphire.transformations.clock import datetime_to_gps
 from sapphire.analysis.calibration import determine_detector_timing_offsets
 from sapphire.clusters import Station
+from sapphire.utils import pbar
 
 DATA_PATH = '/Users/arne/Datastore/esd/'
-STATIONS = [501, 502, 503, 504, 505, 506, 508, 509, 1006]
+STATIONS = [501, 502, 503, 504, 505, 506, 508, 509, 510, 1006]
 
 O = (0, 0, 0)
 STATION = Station(None, 0, O,
@@ -42,33 +43,39 @@ def determine_offset(data, station):
     return offsets
 
 
+def plot_detector_offsets(offsets, type='month'):
+    d1, _, d3, d4 = zip(*offsets)
+    x = range(len(d1))
+    graph = Plot()
+    graph.plot(x, d1, markstyle='mark size=.5pt')
+    graph.plot(x, d3, markstyle='mark size=.5pt', linestyle='green')
+    graph.plot(x, d4, markstyle='mark size=.5pt', linestyle='blue')
+    graph.set_ylabel('$\Delta t$ [ns]')
+    graph.set_xlabel('Date')
+    graph.set_xlimits(0, max(x))
+    graph.set_ylimits(-LIMITS, LIMITS)
+    graph.save_as_pdf('detector_offset_drift_%s_%d' % (type, station))
+
+
 if __name__ == '__main__':
 
-    for station in STATIONS:
+    for station in pbar(STATIONS):
         # Determine offsets for first day of each month
         output = open('offsets_%d.csv' % station, 'wb')
         csvwriter = csv.writer(output, delimiter='\t')
         offsets = []
         timestamps = []
-        for y in range(2010, 2015):
+        for y in range(2010, 2016):
             for m in range(1, 13):
+                if y == 2015 and m >= 4:
+                    continue
                 timestamps.append(datetime_to_gps(date(y, m, 1)))
                 path = os.path.join(DATA_PATH, str(y), str(m), '%d_%d_1.h5' % (y, m))
                 with tables.open_file(path, 'r') as data:
                     offsets.append(determine_offset(data, station))
                 csvwriter.writerow([timestamps[-1]] + offsets[-1])
         output.close()
-        d1, _, d3, d4 = zip(*offsets)
-        x = range(len(d1))
-        graph = Plot()
-        graph.plot(x, d1, markstyle='mark size=.5pt')
-        graph.plot(x, d3, markstyle='mark size=.5pt', linestyle='green')
-        graph.plot(x, d4, markstyle='mark size=.5pt', linestyle='blue')
-        graph.set_ylabel('$\Delta t$ [ns]')
-        graph.set_xlabel('Date')
-        graph.set_xlimits(0, max(x))
-        graph.set_ylimits(-LIMITS, LIMITS)
-        graph.save_as_pdf('detector_offset_drift_months_%d' % station)
+        plot_detector_offsets(offsets, 'month')
 
         # Determine offsets for each day in one month
         offsets = []
@@ -78,14 +85,4 @@ if __name__ == '__main__':
             path = os.path.join(DATA_PATH, str(y), str(m), '%d_%d_%d.h5' % (y, m, d))
             with tables.open_file(path, 'r') as data:
                 offsets.append(determine_offset(data, station))
-        d1, _, d3, d4 = zip(*offsets)
-        x = range(len(d1))
-        graph = Plot()
-        graph.plot(x, d1, markstyle='mark size=.5pt')
-        graph.plot(x, d3, markstyle='mark size=.5pt', linestyle='green')
-        graph.plot(x, d4, markstyle='mark size=.5pt', linestyle='blue')
-        graph.set_ylabel('$\Delta t$ [ns]')
-        graph.set_xlabel('Day')
-        graph.set_xlimits(0, max(x))
-        graph.set_ylimits(-LIMITS, LIMITS)
-        graph.save_as_pdf('detector_offset_drift_daily_%d' % station)
+        plot_detector_offsets(offsets, 'daily')
