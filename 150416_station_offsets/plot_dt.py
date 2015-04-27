@@ -1,13 +1,17 @@
 """Plot station dt vs time"""
 
+from datetime import datetime
+
 import tables
 from numpy import histogram2d, linspace, arange
 from artist import Plot
 
 from sapphire.clusters import HiSPARCStations
+from sapphire.transformations.clock import datetime_to_gps
 
 STATIONS = [502, 503, 504, 505, 506, 508, 509, 510]
 DAY = 86400
+HALF_DAY = DAY / 2
 WEEK = 7 * DAY
 FORTNIGHT = 2 * WEEK
 XWEEK = 3 * WEEK
@@ -24,8 +28,8 @@ def get_station_dt(data, station):
 
 
 if __name__ == '__main__':
-    t_start = 1.25e9
-    t_end = 1.45e9
+    t_start = datetime_to_gps(datetime(2010, 1, 1))
+    t_end = datetime_to_gps(datetime(2015, 4, 1))
 
     with tables.open_file('dt.h5', 'r') as data:
         for i, station in enumerate(STATIONS, 1):
@@ -36,8 +40,8 @@ if __name__ == '__main__':
             counts, x, y = histogram2d(table.col('timestamp'),
                                        table.col('delta'),
                                        bins=(arange(t_start, t_end, XWEEK),
-                                             linspace(-max_dt, max_dt, 100)))
-            graph.histogram2d(counts, x, y, bitmap=True, type='coolwarm')
+                                             linspace(-max_dt, max_dt, 150)))
+            graph.histogram2d(counts, x, y, bitmap=True, type='color')
             graph.set_ylabel('$\Delta t$ [ns]')
             graph.set_xlabel('Timestamp [s]')
             graph.set_xlimits(t_start, t_end)
