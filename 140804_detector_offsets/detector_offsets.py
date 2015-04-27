@@ -8,6 +8,7 @@ has a mean of 0 ns and a sigma of 2.7 ns.
 
 """
 import tables
+from datetime import date
 from artist import Plot
 from numpy import histogram, arange
 from scipy.optimize import curve_fit
@@ -16,8 +17,8 @@ from sapphire.analysis.calibration import determine_detector_timing_offsets
 from sapphire.utils import gauss
 from sapphire.clusters import Station
 
-DATA_PATH = '/Users/arne/Datastore/esd/2014/1/'
-BIN_WIDTH = 2.5
+DATA_PATH = '/Users/arne/Datastore/esd/'
+BIN_WIDTH = 1.25
 
 O = (0, 0, 0)
 STATION = Station(None, 0, O,
@@ -40,7 +41,7 @@ def determine_offsets(data):
 
 
 def fit_offsets(offsets):
-    bins = arange(-40 + BIN_WIDTH / 2, 40, BIN_WIDTH)
+    bins = arange(-50 + BIN_WIDTH / 2, 50, BIN_WIDTH)
     y, bins = histogram(offsets, bins=bins)
     x = (bins[:-1] + bins[1:]) / 2
     popt, pcov = curve_fit(gauss, x, y, p0=(len(offsets), 0., 2.5))
@@ -55,17 +56,21 @@ def plot_fit(x, y, popt, graph):
 
 if __name__ == '__main__':
 
-    files = ['2014_1_1.h5', '2014_1_2.h5', '2014_1_3.h5', '2014_1_4.h5',
-             '2014_1_10.h5', '2014_1_20.h5', '2014_1_30.h5']
-    for file in files:
-        with tables.open_file(DATA_PATH + file, 'r') as data:
+    dates = [(2013, 3, 19), (2013, 10, 28), (2014, 1, 1), (2014, 1, 2),
+             (2014, 1, 3), (2014, 1, 4), (2014, 1, 10), (2014, 1, 20),
+             (2014, 1, 30)]
+    files = [date(y, m, d) for y, m, d in dates]
+    for f in files:
+        path = DATA_PATH + f.strftime('%Y/%-m/%Y_%-m_%-d.h5')
+        with tables.open_file(path, 'r') as data:
             offsets = determine_offsets(data)
 
         graph = Plot()
         x, y, popt = fit_offsets(offsets)
         plot_fit(x, y, popt, graph)
-        graph.set_label('$\mu$: %f, $\sigma$: %f' % (popt[1], popt[2]))
-        graph.set_ylabel('P')
+        graph.set_label('$\mu$: %.2f, $\sigma$: %.2f' % (popt[1], popt[2]))
+        graph.set_ylabel('Occurrence')
         graph.set_xlabel('$\Delta t$ [ns]')
         graph.set_ylimits(min=0)
-        graph.save_as_pdf('detector_offset_distribution_' + file[:-3])
+        graph.save_as_pdf('detector_offset_distribution_' +
+                          f.strftime('%Y%m%d'))
