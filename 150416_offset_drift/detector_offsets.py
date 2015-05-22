@@ -33,21 +33,22 @@ STATIONS = [501, 502, 503, 504, 505, 506, 508, 509, 510, 1006]
 O = (0, 0, 0)
 STATION = Station(None, 0, O,
                   detectors=[(O, 'UD'), (O, 'UD'), (O, 'LR'), (O, 'LR')])
-LIMITS = 20
+LIMITS = 15
 
 
 def determine_offset(data, station):
     station_events = data.get_node('/station_%d' % station, 'events')
     offsets = determine_detector_timing_offsets(station_events, STATION)
-    offsets = [round(o, 1) if o != 0. else nan for o in offsets]
+    offsets = [round(o, 2) for o in offsets]
     return offsets
 
 
 def plot_detector_offsets(offsets, type='month'):
-    d1, _, d3, d4 = zip(*offsets)
+    d1, d2, d3, d4 = zip(*offsets)
     x = range(len(d1))
     graph = Plot()
     graph.plot(x, d1, markstyle='mark size=.5pt')
+    graph.plot(x, d2, markstyle='mark size=.5pt', linestyle='red')
     graph.plot(x, d3, markstyle='mark size=.5pt', linestyle='green')
     graph.plot(x, d4, markstyle='mark size=.5pt', linestyle='blue')
     graph.set_ylabel('$\Delta t$ [ns]')
