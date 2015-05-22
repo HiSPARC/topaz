@@ -32,9 +32,9 @@
 \matrix{
     \& \node[source] (corsika) {CORSIKA}; \& \\
     \node[source] (ldf) {Lateral density\\function}; \& \node[datastore] (corsikadata) {CORSIKA\\simulations};  \& \node[source] (showerfront) {Shower front\\model}; \\
-    \node[process] (detectorresponse) {Detector\\response}; \& \node[process] (simulations) {Simulations}; \& \node[datastore] (simulateddata) {Simulated data}; \\
-    \node[source] (station) {HiSPARC stations}; \& \& \node[process] (reconstructions) {Reconstructions}; \& \node[datastore] (reconstructed) {Reconstructed data}; \\
-    \node[datastore] (rawdata) {Raw data}; \& \node[process] (processevents) {Process\\events}; \& \node[datastore] (esd) {Event summary data}; \\
+    \node[process] (detectorresponse) {Detector\\response}; \& \node[process] (simulations) {Simulations}; \& \node[datastore] (simulateddata) {Simulated\\data}; \\
+    \node[source] (station) {HiSPARC stations}; \& \& \node[process] (reconstructions) {Reconstructions}; \& \node[datastore] (reconstructed) {Reconstructed\\data}; \\
+    \node[datastore] (rawdata) {Raw data}; \& \node[process] (processevents) {Process\\events}; \& \node[datastore] (esd) {Event summary\\data}; \\
 };
 
 \draw[to] (corsika) -- node[midway,right] {pre-generate\\showers} (corsikadata);
