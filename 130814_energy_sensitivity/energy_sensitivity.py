@@ -10,7 +10,6 @@ import sapphire.clusters
 import sapphire.simulations
 from sapphire.simulations.ldf import KascadeLdf
 
-from paths import paths
 
 class EnergySensitivity(object):
 
@@ -116,19 +115,22 @@ class EnergySensitivity(object):
         for station in self.cluster.stations:
             for detector in station.detectors:
                 detector_x, detector_y = detector.get_xy_coordinates()
-                plt.scatter(detector_x, detector_y, marker=',', c='m', edgecolor='none', s=6)
+                plt.scatter(detector_x, detector_y, marker=',', c='m',
+                            edgecolor='none', s=6)
             station_x, station_y, station_a = station.get_xyalpha_coordinates()
-            plt.scatter(station_x, station_y, marker=',', c='b', edgecolor='none', s=3)
+            plt.scatter(station_x, station_y, marker=',', c='b',
+                        edgecolor='none', s=3)
 
     def plot_energy_acceptance(self):
         # Grid
-        C = plt.contour(self.xx, self.yy, self.results, np.logspace(13, 21, 25))
+        C = plt.contour(self.xx, self.yy, self.results,
+                        np.logspace(13, 21, 25))
         plt.clabel(C, np.logspace(13, 21, 9), inline=1, fontsize=8, fmt='%.0e')
 
     def draw_background_map(self):
         # Draw Science Park Map on 1:1 scale (1 meter = 1 pixel)
-        background = plt.imread("/Users/arne/Dropbox/hisparc/Code/topaz/backgrounds/"
-                                "ScienceParkMap_1.092.png")
+        background = plt.imread("/Users/arne/Dropbox/hisparc/Code/topaz/"
+                                "backgrounds/ScienceParkMap_1.092.png")
         # determine pixel:meter ratio for different OSM zoom levels at Science Park..
         bg_scale = 1.092
         bg_width = background.shape[1] * bg_scale
@@ -174,7 +176,7 @@ class SingleDiamondEnergySensitivity(SingleFourEnergySensitivity):
 
 # Simulation with Kascade LDF:
 # file_path = paths('temp')
-# data = tables.openFile(file_path, 'w')
+# data = tables.open_file(file_path, 'w')
 # kascade_ldf = sapphire.simulations.KascadeLdfSimulation(cluster, data,
 #        '/ldfsim/poisson_gauss_20', R=600, N=10000, use_poisson=True, gauss=.2, trig_threshold=.5)
 # kascade_ldf.run(max_theta=pi / 3)
@@ -200,6 +202,7 @@ def generate_regular_grid_positions(self, N, x0, y0=None, x1=None, y1=None):
         for y in np.linspace(y0, y1, N_y):
             yield x, y
 
+
 def generate_positions(self, N, max_r):
     """ Generate positions and an orientation uniformly on a circle
 
@@ -212,7 +215,7 @@ def generate_positions(self, N, max_r):
         yield r, phi
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     plt.figure()
     sens = SingleFourEnergySensitivity()
 #     sens.plot_scintillators_in_cluster()

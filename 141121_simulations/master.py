@@ -1,5 +1,5 @@
 """
-Run simulations, reoncstruct the results and make some plots..
+Run simulations, reconstruct the results and make some plots..
 
 """
 import tables

@@ -131,7 +131,6 @@ def plot_coinc_window(windows, counts, group_name='', n_events=0,
     plt.ylabel('Found coincidences')
     plt.ylim(ymin=1)
 
-
     plt.subplots_adjust(wspace=0, hspace=0)
     plt.gca().xaxis.set_major_formatter(ticker.NullFormatter())
     plt.subplot(grid[1])

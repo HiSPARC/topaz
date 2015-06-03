@@ -40,7 +40,7 @@ def main(station_id=501, date=datetime.date(2013, 8, 1)):
     plt.show()
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main(station_id=501)
     main(station_id=502)
     main(station_id=503)
