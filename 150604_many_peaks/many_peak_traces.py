@@ -42,5 +42,5 @@ if __name__ == "__main__":
         station = 504
         events = data.get_node('/hisparc/cluster_amsterdam/station_%d' % station,
                                'events')
-        plot_n_peaks_histogram(events)
+        plot_n_peaks_histogram(events, station)
         plot_traces_with_many_peaks(events, station)
