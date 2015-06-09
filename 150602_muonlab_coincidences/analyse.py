@@ -5,10 +5,11 @@ import numpy as np
 from sapphire.analysis.coincidence_queries import CoincidenceQuery
 
 
-EVENTDATA_PATH = '/Users/arne/Datastore/muonlab_test.h5'
+EVENTDATA_PATHS = ['/Users/arne/Datastore/muonlab_test.h5',
+                   '/Users/arne/Datastore/muonlab_test2.h5']
 
 
-def analyse(data):
+def analyse(data, id):
     event_node = data.get_node('/station_99/events')
     cq = CoincidenceQuery(data)
     coincidences = cq.all(stations=[99])
@@ -31,7 +32,7 @@ def analyse(data):
         plot.histogram(counts, bins, linestyle=ls)
     plot.set_xlimits(min=0, max=4000)
     plot.set_ylimits(min=.5)
-    plot.save_as_pdf('muonlab_pulseheights')
+    plot.save_as_pdf('muonlab_pulseheights_%d' % id)
 
     cdt = coincident_events['t2'] - coincident_events['t1']
     dt = events['t2'] - events['t1']
@@ -41,10 +42,11 @@ def analyse(data):
         counts, bins = np.histogram(t, bins=bins)
         plot.histogram(counts, bins, linestyle=ls)
     plot.set_ylimits(min=0)
-    plot.save_as_pdf('muonlab_dt')
+    plot.save_as_pdf('muonlab_dt_%d' % id)
 
 
 
 if __name__ == '__main__':
-    with tables.open_file(EVENTDATA_PATH, 'r') as data:
-        analyse(data)
+    for id, data_path in enumerate(EVENTDATA_PATHS):
+        with tables.open_file(data_path, 'r') as data:
+            analyse(data, id)

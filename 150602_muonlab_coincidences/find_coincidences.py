@@ -5,7 +5,8 @@ from sapphire.analysis.coincidences import CoincidencesESD
 
 
 STATIONS = [501, 510, 99]
-EVENTDATA_PATH = '/Users/arne/Datastore/muonlab_test.h5'
+EVENTDATA_PATHS = ['/Users/arne/Datastore/muonlab_test.h5',
+                   '/Users/arne/Datastore/muonlab_test2.h5']
 
 
 def analyse_coincidences(data):
@@ -26,5 +27,6 @@ def get_cluster():
 
 
 if __name__ == '__main__':
-    with tables.open_file(EVENTDATA_PATH, 'a') as data:
-        analyse_coincidences(data)
+    for data_path in EVENTDATA_PATHS:
+        with tables.open_file(data_path, 'a') as data:
+            analyse_coincidences(data)
