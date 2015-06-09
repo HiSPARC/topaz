@@ -11,6 +11,7 @@ EVENTDATA_PATHS = ['/Users/arne/Datastore/muonlab_test.h5',
 
 def analyse(data, id):
     event_node = data.get_node('/station_99/events')
+    print 'Total number of events: %d' % event_node.nrows
     cq = CoincidenceQuery(data)
     coincidences = cq.all(stations=[99])
     coincident_events = cq.events_from_stations(coincidences, [99], n=1)
@@ -19,6 +20,8 @@ def analyse(data, id):
                  if i not in coincident_event_ids]
     events = event_node.read_coordinates(event_ids)
     coincident_events = event_node.read_coordinates(coincident_event_ids)
+    print 'Total number of events not in coincidence: %d' % len(events)
+    print 'Total number of events in coincidence: %d' % len(coincident_events)
 
     cph1 = coincident_events['pulseheights'][:, 0]
     cph2 = coincident_events['pulseheights'][:, 1]
@@ -32,6 +35,8 @@ def analyse(data, id):
         plot.histogram(counts, bins, linestyle=ls)
     plot.set_xlimits(min=0, max=4000)
     plot.set_ylimits(min=.5)
+    plot.set_ylabel('Counts')
+    plot.set_xlabel('Pulseheight [ADC]')
     plot.save_as_pdf('muonlab_pulseheights_%d' % id)
 
     cdt = coincident_events['t2'] - coincident_events['t1']
@@ -42,6 +47,8 @@ def analyse(data, id):
         counts, bins = np.histogram(t, bins=bins)
         plot.histogram(counts, bins, linestyle=ls)
     plot.set_ylimits(min=0)
+    plot.set_ylabel('Counts')
+    plot.set_xlabel('Time difference [ns]')
     plot.save_as_pdf('muonlab_dt_%d' % id)
 
 
