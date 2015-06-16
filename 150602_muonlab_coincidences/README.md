@@ -32,13 +32,13 @@ Number of events not in coincidence: 952 (~76%) -> ~23 per hour
 After this the second detector was placed on the ground floor in the
 inner court of the Nikhef, close to the building, still relatively close
 to being underneath the first detector. This test was started on
-2015/06/02 12:00 and ran until 2015/06/09 0:00.
+2015/06/02 12:00 and ran until 2015/06/16 0:00.
 
 Distance between detectors: 16-20? meter.
-Test measurement time: ~156 hours (without 9 June).
-Total number of events: 814.
-Number of events in coincidence with 501/510: 574 (~71%)
-Number of events not in coincidence: 240 (~29%) -> ~1.5 per hour
+Test measurement time: ~324 hours (without 16 June).
+Total number of events: 1661.
+Number of events in coincidence with 501/510: 1194 (~72%)
+Number of events not in coincidence: 467 (~28%) -> ~1.4 per hour
 
 
 ## Data processing

@@ -15,7 +15,8 @@ def analyse_coincidences(data):
     station_groups = ['/station_%d' % number for number in STATIONS]
     cluster = get_cluster()
 
-    coin = CoincidencesESD(data, '/coincidences', station_groups)
+    coin = CoincidencesESD(data, '/coincidences', station_groups,
+                           overwrite=True)
     coin.search_coincidences(window=2000)
     coin.store_coincidences(cluster)
 

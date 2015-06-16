@@ -27,7 +27,7 @@ def download_data(station):
     path = os.path.join(DATA_PATH, 'muonlab_test2.h5')
     with open_file(path, 'a') as data:
         esd.download_data(data, '/station_%d' % station, station,
-                          datetime(2015, 6, 2, 12), datetime(2015, 6, 9))
+                          datetime(2015, 6, 2, 12), datetime(2015, 6, 16))
 
 
 if __name__ == "__main__":
