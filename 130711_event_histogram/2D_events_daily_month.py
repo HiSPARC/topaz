@@ -9,7 +9,7 @@ from artist import Plot
 from sapphire.api import Network, Station
 from sapphire.utils import pbar
 
-LOCAL_DATA = '/Users/arne/Datastore/publicdb/n_events.npy'
+LOCAL_DATA = '/Users/arne/Datastore/publicdb/n_events_month.npz'
 TODAY = datetime.date.today()
 YEARS = np.arange(2004, TODAY.year + 1)
 MONTHS = np.arange(12) + 1
@@ -34,23 +34,32 @@ def get_number_of_events(station_number):
     """
     try:
         station = Station(station_number)
-        if station.n_detectors() == 4:
-            # Expected number of events per day for 4 detector station
-            scale = 60000.
-        else:
-            # Expected number of events per day for 2 detector station
-            scale = 36000.
-        n_events = [station.n_events(year, month) /
-                    (monthrange(year, month)[1] * scale)
+    except:
+        print 'failed to get station info for %d' % station_number
+        n_events = [0] * ((len(YEARS) * 12) - (13 - TODAY.month))
+        return n_events
+
+
+    if station.n_detectors() == 4:
+        # Expected number of events per day for 4 detector station
+        scale = 60000.
+    else:
+        # Expected number of events per day for 2 detector station
+        scale = 36000.
+
+    try:
+        n_events = [min(station.n_events(year, month) /
+                        (monthrange(year, month)[1] * scale), 2)
                     for year in YEARS for month in MONTHS
                     if not (year == TODAY.year and month >= TODAY.month)]
     except:
+        print 'failed to get event counts for %d, for %d-%d' % (station_number, year, month)
         n_events = [0] * ((len(YEARS) * 12) - (13 - TODAY.month))
 
     return n_events
 
 
-def get_and_save_data(station_numbers):
+def get_and_save_data(station_numbers=None):
     """Get number of events for each station in the list
 
     Once done the data is saved to a data file.
@@ -59,11 +68,33 @@ def get_and_save_data(station_numbers):
                             `get_number_of_events` function.
 
     """
+    if station_numbers is None:
+        network = Network()
+        station_numbers = network.station_numbers()
     data = [get_number_of_events(number) for number in pbar(station_numbers)]
     np.savez(LOCAL_DATA, data=data, station_numbers=station_numbers)
 
 
 def plot_histogram(data, station_numbers):
+    """Make a 2D histogram plot of the number of events over time per station
+
+    :param data: list of lists, with the number of events.
+    :param station_numbers: list of station numbers in the data list.
+
+    """
+    plot = Plot(width=r'\linewidth', height=r'1.35\linewidth')
+    plot.histogram2d(data.T, np.arange(len(data[0]) + 1),
+                     np.arange(len(station_numbers) + 1),
+                     type='reverse_bw', bitmap=True)
+    plot.set_xticks((YEARS - YEARS[0]) * 12)
+    plot.set_xtick_labels(['%d' % y for y in YEARS])
+    plot.set_yticks(np.arange(0.5, len(station_numbers) + 0.5))
+    plot.set_ytick_labels(['%d' % s for s in station_numbers], style=r'font=\sffamily\tiny')
+#     plot.set_title("Fraction of expected number of events per month")
+    plot.save_as_pdf('all_station_daily_events_month')
+
+
+def plot_histogram_mpl(data, station_numbers):
     """Make a 2D histogram plot of the number of events over time per station
 
     :param data: list of lists, with the number of events.
@@ -85,11 +116,9 @@ def plot_histogram(data, station_numbers):
 
 
 if __name__ == "__main__":
-    network = Network()
-    station_numbers = network.stations_numbers()
 
     if not os.path.exists(LOCAL_DATA):
-        get_and_save_data(station_numbers)
+        get_and_save_data()
 
     stored_data = np.load(LOCAL_DATA)
     data = stored_data['data']
