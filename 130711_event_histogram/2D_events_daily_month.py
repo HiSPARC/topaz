@@ -1,18 +1,56 @@
 from calendar import monthrange
 import os
 import datetime
+from urllib2 import urlopen, HTTPError, URLError
 
 import numpy as np
 import matplotlib.pyplot as plt
 from artist import Plot
 
-from sapphire.api import Network, Station
+from sapphire.api import Network, Station, API_BASE
 from sapphire.utils import pbar
 
 LOCAL_DATA = '/Users/arne/Datastore/publicdb/n_events_month.npz'
 TODAY = datetime.date.today()
 YEARS = np.arange(2004, TODAY.year + 1)
 MONTHS = np.arange(12) + 1
+
+# API_BASE = 'http://127.0.0.1:8080/api/'
+
+# class Station(Station):
+#
+#     @staticmethod
+#     def _retrieve_url(urlpath, base=API_BASE):
+#         """Open a HiSPARC API URL and read the data
+#
+#         :param urlpath: the api urlpath (after http://data.hisparc.nl/api/)
+#             to retrieve
+#         :return: the data returned by the api as a string
+#
+#         """
+#         url = base + urlpath
+#         try:
+#             result = urlopen(url).read()
+#         except HTTPError, e:
+#             raise Exception('A HTTP %d error occured for the url: %s' %
+#                             (e.code, url))
+#         except URLError:
+#             raise Exception('An URL error occured. %s' % url)
+#
+#         return result
+#
+#     @staticmethod
+#     def check_connection():
+#         """Open the API man page URL to test the connection
+#
+#         :return: boolean indicating the internet status
+#
+#         """
+#         try:
+#             urlopen(API_BASE).read()
+#         except URLError:
+#             return False
+#         return True
 
 
 def get_number_of_events(station_number):
