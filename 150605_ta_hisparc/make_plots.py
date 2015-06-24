@@ -14,3 +14,7 @@ telarr_maps = [hp.read_map(telarr_fits) for telarr_fits in TELARR]
 
 [hp.mollview(hisparc_map, title='HiSPARC events: %s' % F) for hisparc_map, F in zip(hisparc_maps, FILES)]
 [hp.mollview(telarr_map, title='TA events: %s' % F) for telarr_map, F in zip(telarr_maps, FILES)]
+
+EXTRA = os.path.join(SELF_PATH, 'slmpixflat.fits')
+extra_map = hp.read_map(EXTRA)
+hp.mollview(extra_map, title='slmpixflat.fits')
