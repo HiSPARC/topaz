@@ -3,9 +3,8 @@ import time
 from artist import Plot
 from numpy import array, nanmin, isnan
 
-from sapphire.clusters import HiSPARCStations
+from sapphire import Station, HiSPARCStations
 from sapphire.transformations import geographic
-from sapphire.api import Station
 
 from smopy import Map, num2deg, TILE_SIZE
 

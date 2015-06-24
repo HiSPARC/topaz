@@ -18,7 +18,7 @@ import matplotlib.gridspec as gridspec
 import tables
 import numpy
 
-from sapphire.api import Station, Network
+from sapphire import Station, Network
 from sapphire.analysis import coincidences
 
 

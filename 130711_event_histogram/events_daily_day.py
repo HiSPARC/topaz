@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from artist import Plot
 
-from sapphire.api import Network, Station, API_BASE
+from sapphire import Network, Station
 from sapphire.utils import pbar
 
 LOCAL_DATA = '/Users/arne/Datastore/publicdb/n_events_day.npz'

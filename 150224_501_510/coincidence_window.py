@@ -13,7 +13,7 @@ import tables
 import numpy
 from artist import MultiPlot
 
-from sapphire.analysis import coincidences
+from sapphire import CoincidencesESD
 
 
 EVENTDATA_PATH = '/Users/arne/Datastore/501_510/e_501_510_141101_150201.h5'
@@ -35,7 +35,7 @@ def coincidences_stations(station_ids):
 def get_event_tables(data, station_ids):
 
     station_groups = ['/s%d' % s for s in station_ids]
-    coinc = coincidences.CoincidencesESD(data, None, station_groups)
+    coinc = CoincidencesESD(data, None, station_groups)
 
     event_tables = []
     for station_group in coinc.station_groups:

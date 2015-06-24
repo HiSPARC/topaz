@@ -3,8 +3,8 @@ from math import cos, sin
 from numpy import nanmin, isnan
 from artist import Plot
 
-from sapphire.clusters import HiSPARCStations
-from sapphire.analysis import coincidence_queries, event_utils
+from sapphire import HiSPARCStations, CoincidenceQuery
+from sapphire.analysis import event_utils
 
 
 COIN_DATA = '/Users/arne/Datastore/esd_coincidences/coincidences_n7_120101_140801.h5'
@@ -87,7 +87,7 @@ def display_coincidences(coincidence_events, reconstruction, c_id):
 
 if __name__ == '__main__':
     with tables.open_file(COIN_DATA, 'r') as data:
-        cq = coincidence_queries.CoincidenceQuery(data)
+        cq = CoincidenceQuery(data)
         for c_id in range(30):
             coincidence = cq.coincidences[c_id]
             coincidence_events = cq.events_from_stations([coincidence],

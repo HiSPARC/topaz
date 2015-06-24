@@ -1,7 +1,7 @@
 from datetime import datetime
 import tables
 
-from sapphire.esd import download_coincidences, download_data
+from sapphire import download_coincidences, download_data
 
 
 def download_501_510_dataset():

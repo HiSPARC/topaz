@@ -11,7 +11,7 @@ from itertools import combinations
 from artist import Plot
 import numpy
 
-from sapphire.api import Station, Network
+from sapphire import Station, Network
 
 
 def distances_sciencepark():

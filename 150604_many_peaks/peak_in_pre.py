@@ -13,7 +13,7 @@ import tables
 from numpy import arange
 from artist import Plot
 
-from sapphire.api import Station
+from sapphire import Station
 
 COLORS = ['black', 'red!80!black', 'green!80!black', 'blue!80!black']
 

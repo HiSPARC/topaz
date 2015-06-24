@@ -5,7 +5,7 @@ from scipy.optimize import curve_fit
 from sapphire.simulations.showerfront import (FlatFrontSimulation,
                                               FlatFrontSimulationWithoutErrors)
 from sapphire.clusters import SingleTwoDetectorStation, SingleStation
-from sapphire.analysis.reconstructions import ReconstructESDEvents
+from sapphire import ReconstructESDEvents
 from sapphire.utils import gauss
 
 

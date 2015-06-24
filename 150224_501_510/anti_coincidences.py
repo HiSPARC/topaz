@@ -1,7 +1,7 @@
 import numpy as np
 import tables
 
-from sapphire.clusters import HiSPARCStations
+from sapphire import HiSPARCStations
 
 from artist import Plot
 

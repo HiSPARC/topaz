@@ -3,7 +3,7 @@ from datetime import datetime
 
 import tables
 
-from sapphire.esd import download_coincidences
+from sapphire import download_coincidences
 
 DATASTORE = "/Users/arne/Datastore/esd_coincidences"
 

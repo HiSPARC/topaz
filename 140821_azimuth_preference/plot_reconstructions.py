@@ -1,7 +1,9 @@
 import tables
 from numpy import histogram, degrees, isnan
+
 from artist import Plot
-from sapphire.analysis.reconstructions import ReconstructESDEvents
+
+from sapphire import ReconstructESDEvents
 
 with tables.open_file('/Users/arne/Datastore/esd/2013/10/2013_10_28.h5', 'r') as data:
     for s in [501, 502, 503, 504,505, 506, 508, 509]:

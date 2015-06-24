@@ -7,10 +7,8 @@ from numpy import histogram, pi, array, arange, linspace
 
 from artist import Plot, PolarPlot
 
-from sapphire.simulations.groundparticles import GroundParticlesSimulation
-from sapphire.clusters import HiSPARCStations
-from sapphire.analysis.reconstructions import (ReconstructESDEvents,
-                                               ReconstructESDCoincidences)
+from sapphire import (GroundParticlesSimulation, HiSPARCStations
+                      ReconstructESDEvents, ReconstructESDCoincidences)
 from sapphire.utils import angle_between
 
 RESULT_PATH = 'result_400_gen_16394.h5'

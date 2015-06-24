@@ -4,7 +4,7 @@ import tables
 from artist import Plot, PolarPlot
 
 from sapphire.clusters import BaseCluster
-from sapphire.analysis.reconstructions import ReconstructESDEvents
+from sapphire import ReconstructESDEvents
 from sapphire.utils import angle_between
 
 

@@ -4,10 +4,11 @@ Get values from corsika_overview.h5
 - particle_id, energy, zenith, azimuth
 
 """
+from random import choice
+
 import tables
 import numpy
 import artist
-from random import choice
 
 from sapphire.corsika.particles import name
 

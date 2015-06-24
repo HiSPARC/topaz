@@ -6,8 +6,7 @@ import matplotlib.pyplot as plt
 
 from artist import Plot
 
-from sapphire.clusters import HiSPARCStations
-from sapphire.analysis.reconstructions import ReconstructESDEvents
+from sapphire import HiSPARCStations, ReconstructESDEvents
 
 
 STATIONS = [501, 510]

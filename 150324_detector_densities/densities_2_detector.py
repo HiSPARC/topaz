@@ -1,7 +1,7 @@
 import numpy as np
 import tables
 
-from sapphire.esd import download_data
+from sapphire import download_data
 from datetime import datetime
 
 from artist import Plot

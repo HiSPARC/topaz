@@ -21,6 +21,7 @@ import calendar
 
 from artist import Plot
 from numpy import nan, genfromtxt
+
 from sapphire.api import Station
 from sapphire.transformations.clock import gps_to_datetime, datetime_to_gps
 

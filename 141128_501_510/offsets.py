@@ -4,7 +4,7 @@ from numpy import arange, histogram, linspace
 from scipy.optimize import curve_fit
 import tables
 
-from sapphire.analysis.coincidence_queries import CoincidenceQuery
+from sapphire import CoincidenceQuery
 from sapphire.utils import gauss, ERR
 from artist import Plot
 

@@ -6,7 +6,7 @@ import tables
 from numpy import histogram2d, linspace, arange
 from artist import Plot
 
-from sapphire.clusters import HiSPARCStations
+from sapphire import HiSPARCStations
 from sapphire.transformations.clock import datetime_to_gps
 
 STATIONS = [502, 503, 504, 505, 506, 508, 509, 510]

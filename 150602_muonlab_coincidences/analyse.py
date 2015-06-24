@@ -2,7 +2,7 @@ from artist import Plot
 import tables
 import numpy as np
 
-from sapphire.analysis.coincidence_queries import CoincidenceQuery
+from sapphire import CoincidenceQuery
 
 
 EVENTDATA_PATHS = ['/Users/arne/Datastore/muonlab_test.h5',

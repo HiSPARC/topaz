@@ -1,7 +1,8 @@
 import tables
 from numpy import any, arange, histogram
-from sapphire.api import Station
+
 from artist import Plot
+from sapphire import Station
 
 COLORS = ['black', 'red!80!black', 'green!80!black', 'blue!80!black']
 

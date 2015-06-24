@@ -15,14 +15,15 @@ from numpy import nan, isnan, arange, histogram, linspace, genfromtxt
 from scipy.optimize import curve_fit
 import tables
 
+from artist import Plot
+
 from sapphire.transformations.clock import datetime_to_gps
-from sapphire.analysis.coincidence_queries import CoincidenceQuery
+from sapphire import CoincidenceQuery, HiSPARCStations
 from sapphire.analysis.event_utils import station_arrival_time
 from sapphire.analysis.calibration import (determine_station_timing_offset,
                                            determine_detector_timing_offsets)
 from sapphire.utils import pbar, ERR
-from sapphire.clusters import HiSPARCStations
-from artist import Plot
+
 
 """
 Reference stations

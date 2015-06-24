@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import tables
 import numpy
 
-from sapphire.api import Station
+from sapphire import Station
 
 
 ESD_PATH = '/Users/arne/Datastore/esd'

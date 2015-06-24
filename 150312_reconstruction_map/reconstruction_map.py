@@ -5,10 +5,9 @@ from numpy import nanmin, isnan, array, arange, insert, append
 
 from artist import Plot
 
-from sapphire.clusters import HiSPARCStations
-from sapphire.analysis import coincidence_queries, event_utils
+from sapphire import Station, HiSPARCStations, CoincidenceQuery
+from sapphire.analysis import event_utils
 from sapphire.transformations import geographic
-from sapphire.api import Station
 
 from smopy import Map, num2deg, TILE_SIZE
 
@@ -174,7 +173,7 @@ def plot_traces(coincidence_events):
 if __name__ == '__main__':
     map = make_map(CLUSTER)
     with tables.open_file(COIN_DATA, 'r') as data:
-        cq = coincidence_queries.CoincidenceQuery(data)
+        cq = CoincidenceQuery(data)
 #         coincidences = cq.all(STATIONS)
 #         for coincidence in coincidences[10:100]:
         coincidence = cq.coincidences[1999]

@@ -18,8 +18,7 @@ from timeit import default_timer as timer
 
 import tables
 
-from sapphire.simulations.groundparticles import GroundParticlesSimulation
-from sapphire.clusters import HiSPARCStations
+from sapphire import GroundParticlesSimulation, HiSPARCStations
 
 COMP_RESULT_PATH = 'output_l%d.h5'
 COMP_CORSIKA_DATA = 'corsika_l%d.h5'

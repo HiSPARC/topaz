@@ -1,7 +1,6 @@
 import tables
 
-from sapphire.clusters import HiSPARCStations
-from sapphire.analysis.coincidences import CoincidencesESD
+from sapphire import HiSPARCStations, CoincidencesESD
 
 
 STATIONS = [501, 510, 99]

@@ -3,7 +3,7 @@ import argparse
 from numpy import array
 
 from artist import Plot
-from sapphire.api import Network, Station
+from sapphire import Network, Station
 
 from smopy import Map, num2deg, TILE_SIZE
 

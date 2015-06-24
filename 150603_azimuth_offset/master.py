@@ -12,9 +12,7 @@ from numpy import histogram, pi, array, arange, linspace, random, sin
 
 from artist import Plot, PolarPlot
 
-from sapphire.simulations.showerfront import FlatFrontSimulation
-from sapphire.clusters import HiSPARCStations
-from sapphire.analysis.reconstructions import ReconstructESDEvents
+from sapphire import FlatFrontSimulation, HiSPARCStations, ReconstructESDEvents
 from sapphire.utils import angle_between
 
 RESULT_PATH = 'skewed_azimuth.h5'
