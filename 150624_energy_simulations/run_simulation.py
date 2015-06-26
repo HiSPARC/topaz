@@ -1,11 +1,15 @@
+import warnings
+
 import tables
 
 from sapphire import HiSPARCStations, GroundParticlesSimulation
 
 
 if __name__ == "__main__":
-    cluster = HiSPARCStations([501, 502, 503, 504, 505, 506, 508, 509, 510,
-                               511])
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        cluster = HiSPARCStations([501, 502, 503, 504, 505, 506, 508, 509,
+                                   510, 511])
     corsika_path = 'corsika.h5'
 
     with tables.open_file('result.h5', 'w') as result:
@@ -14,3 +18,4 @@ if __name__ == "__main__":
             cluster=cluster, datafile=result, output_path='/', N=100000,
             seed=153957, progress=False)
         sim.run()
+        sim.finish()
