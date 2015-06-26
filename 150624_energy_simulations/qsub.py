@@ -35,7 +35,7 @@ def create_script(seed):
     script_path = get_script_path(seed)
 
     with open(script_path, 'w') as script:
-        script.write(SCRIPT_TEMPLATE)
+        script.write(SCRIPT_TEMPLATE.format(seed=seed))
     os.chmod(script_path, 0774)
 
     return script_path
@@ -63,4 +63,5 @@ if __name__ == "__main__":
         seeds = seed_list.read().split('\n')
 
     for seed in seeds:
-        submit_job(seed)
+        if not seed == '':
+            submit_job(seed)
