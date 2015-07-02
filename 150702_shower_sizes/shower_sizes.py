@@ -2,7 +2,11 @@ from artist import Plot
 import tables
 from numpy import log10, median, percentile
 
+# proton = 14
+# iron = 5626
+
 OVERVIEW = '/Users/arne/Datastore/CORSIKA/corsika_overview_150624.h5'
+
 
 def plot_shower_size():
     plot = Plot(axis='semilogy')
@@ -12,7 +16,9 @@ def plot_shower_size():
             median_size = []
             min_size = []
             max_size = []
-            zeniths = sorted(set(sims.read_where('log10(energy) == e')['zenith']))
+            zeniths = sorted(set(sims.read_where('(log10(energy) == e) & '
+                                                 '(particle_id == 14)',
+                                                 field='zenith')))
             for z in zeniths:
                 selection = sims.read_where('(log10(energy) == e) & '
                                             '(zenith == z) & '
@@ -21,9 +27,10 @@ def plot_shower_size():
                 median_size.append(median(n_leptons))
                 min_size.append(percentile(n_leptons, 16))
                 max_size.append(percentile(n_leptons, 84))
-            plot.plot(zeniths, median_size)
-            plot.shade_region(zeniths, min_size, max_size, color='lightgray,semitransparent')
-            plot.add_pin('%.1f' % e, relative_position=0)
+            if len(zeniths):
+                plot.plot(zeniths, median_size)
+                plot.shade_region(zeniths, min_size, max_size, color='lightgray,semitransparent')
+                plot.add_pin('%.1f' % e, relative_position=0)
     plot.set_ylabel(r'Shower size (leptons)')
     plot.set_xlabel(r'Zenith [\si{\degree}]')
     plot.save_as_pdf('shower_sizes')
