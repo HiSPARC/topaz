@@ -32,7 +32,7 @@ def plot_shower_size():
                 plot.shade_region(zeniths, min_size, max_size, color='lightgray,semitransparent')
                 plot.add_pin('%.1f' % e, relative_position=0)
     plot.set_ylabel(r'Shower size (leptons)')
-    plot.set_xlabel(r'Zenith [\si{\degree}]')
+    plot.set_xlabel(r'Zenith [\si{\radian}]')
     plot.save_as_pdf('shower_sizes')
 
 
