@@ -33,8 +33,11 @@ def anti_coincidences(data):
         acounts, bins = np.histogram(aevents['n1'] + aevents['n2'] + aevents['n3'] + aevents['n4'],
                                      bins=bins)
         accounts = acounts - ccounts
+        # All events
         plot.histogram(acounts, bins, linestyle='dotted,%s' % colors[s_idx])
+        # Events in coincidence
         plot.histogram(ccounts, bins, linestyle='solid,%s' % colors[s_idx])
+        # Events not in coincidence
         plot.histogram(accounts, bins, linestyle='dashed,%s' % colors[s_idx])
 
     plot.set_ylimits(min=0.2)
