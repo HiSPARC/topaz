@@ -15,6 +15,8 @@ detectors becomes smaller.
 
 ## Tests
 
+### Test 1
+
 On 2015/05/28 a test with two muonlab detectors was started. Test
 station 99 was used to capture the data. One detector was placed on the
 roof of the Nikhef between detectors 1 and 4 of stations 501 and 510.
@@ -29,6 +31,8 @@ Number of events in coincidence with 501/510: 293 (~24%)
 Number of events not in coincidence: 952 (~76%) -> ~23 per hour
 
 
+### Test 2
+
 After this the second detector was placed on the ground floor in the
 inner court of the Nikhef, close to the building, still relatively close
 to being underneath the first detector. This test was started on
@@ -39,6 +43,15 @@ Test measurement time: ~324 hours (without 16 June).
 Total number of events: 1661.
 Number of events in coincidence with 501/510: 1194 (~72%)
 Number of events not in coincidence: 467 (~28%) -> ~1.4 per hour
+
+
+### Test 3
+
+Two additional detectors were placed on the roof, connected to the same
+HiSPARC station, using a Slave unit. This allows the stations to check
+for showers by itself and increase the number of possible paths for
+muons to be detected. This test was started on 2015/06/18 14:00 and ran
+until 2015/06/25 15:00.
 
 
 ## Data processing
