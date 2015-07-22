@@ -1,5 +1,8 @@
 import numpy as np
 from artist import Plot
+from scipy.optimize import curve_fit
+
+from sapphire.utils import gauss
 
 from testlist import get_tests
 from delta import get
@@ -102,12 +105,15 @@ def plot_delta_histogram(ids, **kwargs):
     for id in ids:
         ext_timestamps, deltas = get(id)
         n, bins = np.histogram(deltas, bins, normed=1)
+        bin_centers = (bins[:-1] + bins[1:]) / 2
+        popt, pcov = curve_fit(gauss, bin_centers, n, p0=[.15, np.mean(deltas), np.std(deltas)])
         plot.histogram(n, bins)
-
+        plot.plot(bin_centers, gauss(bin_centers, *popt), mark=None, linestyle='gray')
     if kwargs.keys():
         plot.set_title('Tijdtest ' + kwargs[kwargs.keys()[0]])
-    plot.set_xlabel(r'$\Delta$ t (swap - reference) [ns]')
-    plot.set_ylabel(r'p')
+    plot.set_label(r'$\mu={1:.1f}$, $\sigma={2:.1f}$'.format(*popt))
+    plot.set_xlabel(r'Time difference [ns]')
+    plot.set_ylabel(r'Counts')
     plot.set_xlimits(low, high)
     plot.set_ylimits(0., .15)
 
@@ -242,12 +248,17 @@ def plot_offset_distribution(ids, **kwargs):
     #Begin Figure
     plot = Plot()
     offsets = [np.average([x for x in get(id)[1] if abs(x) < 100]) for id in ids]
-    bins = np.arange(-100, 102.5, 1)
+    bins = np.arange(-70, 70, 2)
     n, bins = np.histogram(offsets, bins)
     plot.histogram(n, bins)
 
+    bin_centers = (bins[:-1] + bins[1:]) / 2
+    popt, pcov = curve_fit(gauss, bin_centers, n, p0=[1., np.mean(offsets), np.std(offsets)])
+    plot.plot(bin_centers, gauss(bin_centers, *popt), mark=None, linestyle='gray')
+
     if kwargs.keys():
         plot.set_title('Tijdtest offset distribution ' + kwargs[kwargs.keys()[0]])
+    plot.set_label(r'$\mu={1:.1f}$, $\sigma={2:.1f}$'.format(*popt))
     plot.set_xlabel(r'Offset [\si{\nano\second}]')
     plot.set_ylabel(r'Counts')
     plot.set_ylimits(min=0)
