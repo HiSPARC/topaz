@@ -19,17 +19,15 @@ def reconstruct_simulations(seed):
         cluster = data.root.coincidences._v_attrs.cluster
 
         rec_coins = ReconstructESDCoincidences(data, '/coincidences',
-                                               overwrite=True, progress=True)
+                                               overwrite=True, progress=True,
+                                               cluster=cluster)
         rec_coins.prepare_output()
         rec_coins.offsets = {station.number: [d.offset + station.gps_offset
                                               for d in station.detectors]
                              for station in cluster.stations}
-        try:
-            rec_coins.reconstruct_directions()
-            rec_coins.reconstruct_cores()
-            rec_coins.store_reconstructions()
-        except:
-            pass
+        rec_coins.reconstruct_directions()
+        rec_coins.reconstruct_cores()
+        rec_coins.store_reconstructions()
 
 
 if __name__ == '__main__':

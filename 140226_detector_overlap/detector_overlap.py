@@ -18,7 +18,7 @@ from pointrect import Point, Rect
 PATH = '/Users/arne/Dropbox/hisparc/Plots/overlap'
 
 def run():
-    square_size = (math.sqrt(2) / 2.)  / 2.
+    square_size = (math.sqrt(2) / 2.) / 2.
     detector_long = 1. / 2.
     detector_short = 0.5 / 2.
     square = Rect(Point(-square_size, -square_size),
@@ -38,8 +38,7 @@ def run():
         for _ in xrange(N):
             long = uniform(-detector_long, detector_long)
             short = uniform(-detector_short, detector_short)
-            point = Point(long, short)
-            point = point.rotate(angle)
+            point = Point(long, short).rotate(angle)
             if square.contains(point):
                 xin.append(point.x)
                 yin.append(point.y)
@@ -48,7 +47,8 @@ def run():
                 xout.append(point.x)
                 yout.append(point.y)
         overlap.append(count / (2. * N))
-        plt.text(.4, .6, 'Angle: %.2f deg\nOverlap: %.3f m**2' % (angle * 180 / np.pi, overlap[-1]), ha='left')
+        plt.text(.4, .6, ('Angle: %.2f deg\nOverlap: %.3f m**2' %
+                          (np.degrees(angle), overlap[-1])), ha='left')
         plt.scatter(xin, yin, s=2, c='black')
         plt.scatter(xout, yout, s=2, c='r')
         plt.plot([-square_size, -square_size, square_size, square_size, -square_size],
