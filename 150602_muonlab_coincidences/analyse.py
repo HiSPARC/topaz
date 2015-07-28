@@ -6,7 +6,8 @@ from sapphire import CoincidenceQuery
 
 
 EVENTDATA_PATHS = ['/Users/arne/Datastore/muonlab_test.h5',
-                   '/Users/arne/Datastore/muonlab_test2.h5']
+                   '/Users/arne/Datastore/muonlab_test2.h5',
+                   '/Users/arne/Datastore/muonlab_test3.h5']
 
 
 def analyse(data, id):

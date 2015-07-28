@@ -5,7 +5,8 @@ from sapphire import HiSPARCStations, CoincidencesESD
 
 STATIONS = [501, 510, 99]
 EVENTDATA_PATHS = ['/Users/arne/Datastore/muonlab_test.h5',
-                   '/Users/arne/Datastore/muonlab_test2.h5']
+                   '/Users/arne/Datastore/muonlab_test2.h5',
+                   '/Users/arne/Datastore/muonlab_test3.h5']
 
 
 def analyse_coincidences(data):
@@ -23,7 +24,7 @@ def analyse_coincidences(data):
 def get_cluster():
     """Get latest position from API"""
 
-    return HiSPARCStations(STATIONS)
+    return HiSPARCStations(STATIONS, allow_missing=True)
 
 
 if __name__ == '__main__':
