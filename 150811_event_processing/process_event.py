@@ -29,6 +29,11 @@ def mean_filter(trace, use_threshold=True, threshold=25):
 
 
 def mean_filter_with_threshold(trace, threshold=25):
+    """The mean filter in case use_threshold is True
+
+    Verified with the LabView VI
+
+    """
     filtered_trace = []
     local_mean = mean(trace[:4])
 
@@ -51,10 +56,15 @@ def mean_filter_with_threshold(trace, threshold=25):
 
 
 def mean_filter_without_threshold(trace):
-    filtered_trace = []
-    filtered_trace.extend([mean(trace[:4])] * 4)
+    """The mean filter in case use_threshold is False
+
+    Verified with the LabView VI
+
+    """
+    filtered_trace = [mean(trace[:4])] * 4
+
     for i in xrange(4, len(trace)):
-        local_mean = mean(trace[i-4:i])
+        local_mean = mean(trace[i - 4:i])
         if sign(trace[i] - local_mean) == sign(trace[i - 1] - local_mean):
             filtered_trace.append(trace[i])
         else:
