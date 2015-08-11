@@ -6,6 +6,7 @@ from artist import Plot
 from sapphire import Station
 
 COLORS = ['black', 'red', 'green', 'blue']
+FILTER_THRESHOLD = 25
 
 
 def get_traces():
@@ -14,21 +15,39 @@ def get_traces():
     return raw_traces
 
 
-def filter_trace(raw_trace):
+def filter_traces(raw_traces, use_threshold=True, threshold=FILTER_THRESHOLD):
+    """Apply the mean filter to multiple traces"""
+
+    return [filter_trace(raw_trace, use_threshold, threshold)
+            for raw_trace in raw_traces]
+
+
+def filter_trace(raw_trace, use_threshold=True, threshold=FILTER_THRESHOLD):
+    """Apply the mean filter to a single trace"""
+
     even_trace = raw_trace[::2]
     odd_trace = raw_trace[1::2]
 
+    filtered_even = mean_filter(even_trace, use_threshold, threshold)
+    filtered_odd = mean_filter(odd_trace, use_threshold, threshold)
+
+    recombined_trace = [v
+                        for eo in zip(filtered_even, filtered_odd)
+                        for v in eo]
+    filtered_trace = mean_filter(recombined_trace, use_threshold, threshold)
     return filtered_trace
 
 
-def mean_filter(trace, use_threshold=True, threshold=25):
+def mean_filter(trace, use_threshold=True, threshold=FILTER_THRESHOLD):
+    """Apply either the filter with or without the threshold"""
+
     if use_threshold:
         filtered_trace = mean_filter_with_threshold(trace)
     else:
         filtered_trace = mean_filter_without_threshold(trace)
 
 
-def mean_filter_with_threshold(trace, threshold=25):
+def mean_filter_with_threshold(trace, threshold=FILTER_THRESHOLD):
     """The mean filter in case use_threshold is True
 
     Verified with the LabView VI
