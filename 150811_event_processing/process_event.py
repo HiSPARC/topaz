@@ -1,6 +1,6 @@
 from itertools import chain
 
-from numpy import arange, nan, nanmin, nanmax, mean, array
+from numpy import arange, nan, nanmin, nanmax, mean, array, around
 from artist import Plot
 
 from sapphire import Station
@@ -61,7 +61,7 @@ def mean_filter_with_threshold(trace, threshold=FILTER_THRESHOLD):
     local_mean = mean(trace[:4])
 
     if all([abs(v - local_mean) <= threshold for v in trace[:4]]):
-        filtered_trace.extend([local_mean] * 4)
+        filtered_trace.extend([int(around(local_mean))] * 4)
     else:
         filtered_trace.extend(trace[:4])
 
@@ -73,7 +73,7 @@ def mean_filter_with_threshold(trace, threshold=FILTER_THRESHOLD):
         elif abs(trace[i] - local_mean) > threshold:
             filtered_trace.append(trace[i])
         else:
-            filtered_trace.append(local_mean)
+            filtered_trace.append(int(around(local_mean)))
 
     return filtered_trace
 
@@ -84,14 +84,15 @@ def mean_filter_without_threshold(trace):
     Verified with the LabView VI
 
     """
-    filtered_trace = [mean(trace[:4])] * 4
+    local_mean = mean(trace[:4])
+    filtered_trace = [int(around(local_mean))] * 4
 
     for i in xrange(4, len(trace)):
         local_mean = mean(trace[i - 4:i])
         if sign(trace[i] - local_mean) == sign(trace[i - 1] - local_mean):
             filtered_trace.append(trace[i])
         else:
-            filtered_trace.append(local_mean)
+            filtered_trace.append(int(around(local_mean)))
     return filtered_trace
 
 
