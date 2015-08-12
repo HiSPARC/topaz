@@ -23,8 +23,12 @@ def filter_traces(raw_traces, use_threshold=True, threshold=FILTER_THRESHOLD):
 
 
 def filter_trace(raw_trace, use_threshold=True, threshold=FILTER_THRESHOLD):
-    """Apply the mean filter to a single trace"""
+    """Apply the mean filter to a single trace
 
+    First separate the even and odd ADC traces, filter each separately.
+    Then recombine them and pass the entire trace through the filter.
+
+    """
     even_trace = raw_trace[::2]
     odd_trace = raw_trace[1::2]
 
@@ -42,9 +46,9 @@ def mean_filter(trace, use_threshold=True, threshold=FILTER_THRESHOLD):
     """Apply either the filter with or without the threshold"""
 
     if use_threshold:
-        filtered_trace = mean_filter_with_threshold(trace)
+        return mean_filter_with_threshold(trace)
     else:
-        filtered_trace = mean_filter_without_threshold(trace)
+        return mean_filter_without_threshold(trace)
 
 
 def mean_filter_with_threshold(trace, threshold=FILTER_THRESHOLD):
