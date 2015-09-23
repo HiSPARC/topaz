@@ -15,7 +15,7 @@ def read_eventtime(path):
 
 def get_data():
     return {int(os.path.basename(path)[:-4]): read_eventtime(path)
-        for path in glob(PATH)}
+            for path in glob(PATH)}
 
 def get_aligned():
     data = get_data()
