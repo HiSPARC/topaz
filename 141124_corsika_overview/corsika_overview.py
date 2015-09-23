@@ -83,16 +83,17 @@ def plot_azimuth(azimuth):
 
 def plot_energy_zenith(energy, zenith, particle_id=None):
     """Energy, Zenith"""
-    e_bins = get_unique(energy)
-    e_bins.append(e_bins[-1] * 10)
+
+    e_bins = get_unique(energy)[1:]
+    e_bins.append(e_bins[-1] + .5)
     z_bins = get_unique(zenith)
     z_bins.append(z_bins[-1] + (z_bins[-1] - z_bins[-2]))
     counts, e_bins, z_bins = numpy.histogram2d(energy, zenith, bins=[e_bins, z_bins])
     graph = artist.Plot() # axis='semilogx'
-    graph.histogram2d(counts, numpy.log10(e_bins) - 0.5, z_bins - (z_bins[1] / 2), type='area')
-    graph.set_xlimits(min=11.5, max=17.5)
-    graph.set_xlabel('Energy [eV]')
-    graph.set_ylabel('Zenith [rad]')
+    graph.histogram2d(numpy.sqrt(counts), e_bins - 0.25, z_bins - (z_bins[1] / 2), type='area')
+    graph.set_xlimits(min=11.5, max=19)
+    graph.set_xlabel(r'Energy [\si{electronvolt}]')
+    graph.set_ylabel(r'Zenith [\si{\radian}]')
     graph.set_title('Number of simulations per energy and zenith angle')
     if particle_id is None:
         graph.save_as_pdf('energy_zenith')
@@ -139,7 +140,7 @@ def get_data(overview):
     seed2 = overview.root.simulations.col('seed2')
     seeds = numpy.array(['%d_%d' % (s1, s2) for s1, s2  in zip(seed1, seed2)])
     particle = overview.root.simulations.col('particle_id')
-    energy = overview.root.simulations.col('energy')
+    energy = numpy.log10(overview.root.simulations.col('energy'))
     zenith = overview.root.simulations.col('zenith')
     azimuth = overview.root.simulations.col('azimuth')
     n_leptons = (overview.root.simulations.col('n_electron') +
@@ -172,16 +173,16 @@ def get_seed_matrix(seeds, particle, energy, zenith):
         for zen in unique_zenith:
             seed = get_random_seed(seeds, particle, energy, zenith, en, zen)
             print ('Energy: 10^%d, Zenith: %4.1f: %s' %
-                   (numpy.log10(en), numpy.degrees(zen), seed))
+                   (en, numpy.degrees(zen), seed))
 
 
 if __name__ == '__main__':
     with tables.open_file(OVERVIEW, 'r') as overview:
         seeds, particle, energy, zenith, azimuth, n_leptons = get_data(overview)
     plot_n_leptons(energy, zenith, particle, n_leptons)
+    plot_energy_zenith(energy, zenith, particle_id=14)
 #     plot_energy(energy)
 #     plot_zenith(zenith)
 #     plot_azimuth(azimuth)
-#     plot_energy_zenith(energy, zenith)
 #     plot_energy_zenith_per_particle(energy, zenith, particle)
 #     get_seed_matrix(seeds, particle, energy, zenith)
