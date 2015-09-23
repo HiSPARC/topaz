@@ -50,7 +50,11 @@ def plot_thickness(seed):
     data_path = os.path.join(LOCAL_STORE, seed, 'corsika.h5')
     with tables.open_file(data_path) as data:
         particles = data.get_node('/groundparticles')
-        core_distances = logspace(0, 5, 31)
+        header = data.get_node_attr('/', 'event_header')
+        end = data.get_node_attr('/', 'event_end')
+        time_first_interaction = (header.first_interaction_altitude -
+                                  header.observation_heights[0]) / .2998
+        core_distances = logspace(0, 4, 31)
         min_t = []
         lower_t = []
         low_t = []
@@ -60,6 +64,8 @@ def plot_thickness(seed):
         max_t = []
         distances = []
         density = []
+        xerr = []
+        yerr = []
         for r_inner, r_outer in zip(core_distances[:-1], core_distances[1:]):
             t = particles.read_where('(r >= %f) & (r <= %f) & '
                                      '(particle_id >= 2) & (particle_id <= 6)' %
@@ -68,40 +74,40 @@ def plot_thickness(seed):
             if len(t) < 1:
                 continue
 
-            density.append(len(t) / area_between(r_outer, r_inner))
-            distances.append(r_inner)
-#             distances.append(10**((log10(r_outer) + log10(r_inner)) / 2))
-            percentiles_t = percentile(t, [0, 5, 16, 50, 84, 95, 100])
-            ref_t, lsig2_t, lsig1_t, med_t, hsig1_t, hsig2_t, m_t = \
-                percentiles_t - percentiles_t[0]
+            area = area_between(r_outer, r_inner)
+            density.append(len(t) / area)
+            distances.append((r_outer + r_inner) / 2)
+            # distances.append(10**((log10(r_outer) + log10(r_inner)) / 2))
+            yerr.append(sqrt(len(t)) / area)
+            xerr.append((r_outer - r_inner) / 2)
+            percentiles_t = percentile(t, [0, 50])
+            ref_t, med_t = percentiles_t - time_first_interaction
             min_t.append(ref_t)
-            lower_t.append(lsig2_t)
-            low_t.append(lsig1_t)
+#             lower_t.append(lsig2_t)
+#             low_t.append(lsig1_t)
             median_t.append(med_t)
-            high_t.append(hsig1_t)
-            higher_t.append(hsig2_t)
-            max_t.append(m_t)
+#             high_t.append(hsig1_t)
+#             higher_t.append(hsig2_t)
+#             max_t.append(m_t)
 
-        header = data.get_node_attr('/', 'event_header')
-        end = data.get_node_attr('/', 'event_end')
         energy = log10(header.energy)
         shower_size = log10(end.n_electrons_levels + end.n_muons_levels)
-    plot.set_label('E=$10^{%.1f}$eV, size=$10^{%.1f}$' % (energy, shower_size))
+    plot.set_label('E=$10^{%.1f}$eV, size=$10^{%.1f}$' % (energy, shower_size),
+                   location='upper left')
 
-    plot.plot(distances, median_t)
-    plot.shade_region(distances, min_t, max_t, color='lightgray,semitransparent')
-    plot.shade_region(distances, low_t, high_t, color='lightgray,semitransparent')
-    plot.shade_region(distances, lower_t, higher_t, color='lightgray,semitransparent')
+    plot.plot(distances, median_t, mark=None)
+    plot.plot(distances, min_t, linestyle='dashed', mark=None)
     plot.draw_horizontal_line(1500)
-    plot.set_xlimits(min=.5, max=1e5)
-    plot.set_xlabel(r'core distance')
-    plot.set_ylabel(r'time after front')
-    plot.save_as_pdf('plots/%.1f_%.1f_%s.pdf' % (energy, shower_size, seed))
+    plot.set_xlimits(min=.5, max=1e4)
+    plot.set_xlabel(r'core distance [m]')
+    plot.set_ylabel(r'time after first [ns]')
+    plot.set_ylimits(min=-10, max=1000)
+    plot.save_as_pdf('plots/%.1f_%.1f_%s_front.pdf' % (energy, shower_size, seed))
 
     plot2.set_xlimits(min=.5, max=1e5)
     plot2.set_xlabel(r'core distance')
     plot2.set_ylabel(r'particle density')
-    plot2.plot(distances, density)
+    plot2.plot(distances, density, xerr=xerr, yerr=yerr, mark=None, markstyle='transparent', linestyle=None)
     plot2.draw_horizontal_line(2.46)
 #     plot2.draw_horizontal_line(0.6813)
     plot2.save_as_pdf('plots/%.1f_%.1f_%s_dens.pdf' % (energy, shower_size, seed))
