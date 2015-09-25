@@ -43,15 +43,26 @@ def download():
 def reconstruct_observables():
     with tables.open_file(DATA_PATH, 'r') as data:
         default_threshold = process_traces.BASELINE_THRESHOLD
+        default_low_iii = process_traces.LOW_THRESHOLD_III
+        default_low_ii = process_traces.LOW_THRESHOLD
 
         for station in STATIONS:
             if station in [202, 510, 304]:
                 process_traces.BASELINE_THRESHOLD = 25
             else:
                 process_traces.BASELINE_THRESHOLD = default_threshold
+            if station in [501]:
+                process_traces.LOW_THRESHOLD_III = 56
+            else:
+                process_traces.LOW_THRESHOLD_III = default_low_iii
+            if station in [510]:
+                process_traces.LOW_THRESHOLD = 226
+            else:
+                process_traces.LOW_THRESHOLD = default_low_ii
 
             pe = ProcessEvents(data, '/s%d' % station)
-            wrong = {'baseline': 0, 'pulseheights': 0, 'integrals': 0, 'std_dev': 0}
+            wrong = {'baseline': 0, 'std_dev': 0, 'n_peaks': 0,
+                     'pulseheights': 0, 'integrals': 0}
             for event in pe.source:
                 traces = pe.get_traces_for_event(event)
                 to = process_traces.TraceObservables(traces)
@@ -72,6 +83,11 @@ def reconstruct_observables():
                 except AssertionError:
                     wrong['std_dev'] += 1
 #                     print 'std_dev:', event['event_id'], to.std_dev, event['std_dev']
+                try:
+                    assert_allclose(to.n_peaks, event['n_peaks'], atol=0)
+                except AssertionError:
+                    wrong['n_peaks'] += 1
+#                     print 'n_peaks:', event['event_id'], to.n_peaks, event['n_peaks']
                 try:
                     assert_allclose(to.pulseheights, event['pulseheights'], atol=0)
                 except AssertionError:
