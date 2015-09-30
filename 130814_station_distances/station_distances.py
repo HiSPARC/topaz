@@ -11,32 +11,29 @@ from itertools import combinations
 from artist import Plot
 import numpy
 
-from sapphire import Station, Network
+from sapphire import ScienceParkCluster, HiSPARCNetwork
 
 
 def distances_sciencepark():
-    network = Network()
-    station_ids = [station['number'] for station in network.stations(subcluster=500)]
-    distances_stations(station_ids, name='_sciencepark')
+    cluster = ScienceParkCluster()
+    distances_stations(cluster, name='_sciencepark')
 
 
 def distances_all_stations():
-    network = Network()
-    station_ids = [station for station in network.station_numbers()]
-    distances_stations(station_ids, name='_all')
+    cluster = HiSPARCNetwork()
+    distances_stations(cluster, name='_all')
 
 
-def distances_stations(station_ids, name=''):
-    station_coords = []
-    for station_id in station_ids:
+def distances_stations(cluster, name=''):
+    coordinates = []
+    for station in cluster.stations:
         try:
-            info = Station(station_id)
-        except:
-            print 'Failed for %d' % station_id
-            continue
-        station_coords.append(info.location())
-
-    distances = distance_combinations(station_coords)
+            numpy.testing.assert_allclose(station.get_lla_coordinates(),
+                                          (0., 0., 0.), atol=1e-7)
+        except AssertionError:
+            # Not invalid GPS
+            coordinates.append(numpy.array(station.get_coordinates()[:-1]))
+    distances = distance_combinations(coordinates)
     plot_station_distances(distances, name=name)
 
 
@@ -60,19 +57,13 @@ def plot_station_distances(distances, name=''):
 
 
 def distance_combinations(coordinates):
-    distances = [distance(s1, s2) for s1, s2 in combinations(coordinates, 2)]
+    distances = [distance(c1, c2) for c1, c2 in combinations(coordinates, 2)]
     return distances
 
 
-def distance(s1, s2):
-    R = 6371  # km Radius of earth
-    d_lat = numpy.radians(s2['latitude'] - s1['latitude'])
-    d_lon = numpy.radians(s2['longitude'] - s1['longitude'])
-    a = (numpy.sin(d_lat / 2) ** 2 + numpy.cos(numpy.radians(s1['latitude'])) *
-         numpy.cos(numpy.radians(s2['latitude'])) * numpy.sin(d_lon / 2) ** 2)
-    c = 2 * numpy.arctan2(numpy.sqrt(a), numpy.sqrt(1 - a))
-    distance = R * c
-    return distance
+def distance(c1, c2):
+    distance = numpy.sqrt(sum((c1 - c2) ** 2))
+    return distance / 1e3
 
 
 if __name__ == '__main__':
