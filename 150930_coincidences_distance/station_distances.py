@@ -18,7 +18,7 @@ MAX_DISTANCE = 2e3
 
 def distance_between_stations(s1, s2):
     cluster = HiSPARCStations([s1, s2])
-    xyz = [numpy.array(s.get_coordinates()[-1]) for s in cluster.stations]
+    xyz = [numpy.array(s.get_coordinates()[:-1]) for s in cluster.stations]
     return distance(*xyz)
 
 

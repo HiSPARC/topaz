@@ -1,7 +1,7 @@
 from glob import glob
 import os
 
-from numpy import genfromtxt, zeros, histogram, arange
+from numpy import genfromtxt, zeros, histogram, arange, array
 
 
 PATH = '/Users/arne/Datastore/publicdb_csv/eventtime/{station_number}.csv'
@@ -15,6 +15,14 @@ def read_eventtime(path):
 def get_data(station_numbers):
     return {number: read_eventtime(PATH.format(station_number=number))
             for number in station_numbers}
+
+
+def get_total_exposure(timestamp_ranges):
+    if not len(timestamp_ranges):
+        return 0.
+    timestamp_ranges = array(timestamp_ranges)
+    total_exposure = (timestamp_ranges[:, 1] - timestamp_ranges[:, 0]).sum()
+    return total_exposure
 
 
 def get_timestamp_ranges(station_numbers):
