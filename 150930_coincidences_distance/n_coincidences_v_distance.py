@@ -47,14 +47,16 @@ def download_pair_coincidences(close_pairs):
 
 
 def get_coincidence_count(close_pairs):
-    distances = []
-    coincidence_rates = []
-    coincidence_rates_err = []
-    for pair in pbar(close_pairs):
+    network = HiSPARCNetwork()
+    distances = {4: [], 6: [], 8:[]}
+    coincidence_rates = {4: [], 6: [], 8:[]}
+    coincidence_rates_err = {4: [], 6: [], 8:[]}
+    for pair in pbar(close_pairs, show=False):
         path = DATAPATH % tuple(pair)
         if not os.path.exists(path):
             continue
-
+        if 507 in pair:
+            continue
         with tables.open_file(path, 'r') as data:
             total_exposure = data.get_node_attr('/', 'total_exposure')
             distance = data.get_node_attr('/', 'distance')
@@ -64,37 +66,41 @@ def get_coincidence_count(close_pairs):
                 continue
             if not n_coincidences:
                 continue
-#         print pair, total_exposure / 3600. / 24. / 365.
-#         print n_coincidences, total_exposure
-
-        distances.append(distance)
-        coincidence_rates.append(n_coincidences / total_exposure)
-        coincidence_rates_err.append(sqrt(n_coincidences + 1) / total_exposure)
-#     print distances, coincidence_rates
+        n = (len(network.get_station(pair[0]).detectors) +
+             len(network.get_station(pair[1]).detectors))
+        distances[n].append(distance)
+        rate = n_coincidences / total_exposure
+        coincidence_rates[n].append(rate)
+        err = sqrt(n_coincidences + 1) / total_exposure
+        if err > rate:
+            err = rate - 1e-15
+        coincidence_rates_err[n].append(err)
 
     return distances, coincidence_rates, coincidence_rates_err
 
 
 def plot_coincidence_rate_distance(distances, coincidence_rates, rate_errors):
+    markers = {4: 'o', 6: 'triangle', 8: 'square'}
     background_4 = 2 * .7 ** 2 * 2e-6
     background_2 = 2 * .4 ** 2 * 2e-6
     background_2_4 = 2 * .4 * .7 * 2e-6
-    plot = Plot('semilogy')
+    plot = Plot('loglog')
     plot.draw_horizontal_line(background_4)
     plot.draw_horizontal_line(background_2)
     plot.draw_horizontal_line(background_2_4)
-    plot.scatter(distances, coincidence_rates, yerr=rate_errors,
-                 markstyle='mark size=.75pt')
+    for n in distances.keys():
+        plot.scatter(distances[n], coincidence_rates[n], yerr=rate_errors[n],
+                     mark=markers[n], markstyle='mark size=.75pt')
     plot.set_xlabel(r'Distance between stations [\si{\meter}]')
     plot.set_ylabel(r'Coincidence rate [\si{\hertz}]')
     plot.set_axis_options('log origin y=infty')
-    plot.set_xlimits(min=0)
+    plot.set_xlimits(min=10, max=3e4)
     plot.save_as_pdf('distance_v_coincidence_rate')
     plot.save_as_document('distance_v_coincidence_rate')
 
 
 if __name__ == "__main__":
-    close_pairs = close_pairs_in_network(min=50, max=2e3)
+    close_pairs = close_pairs_in_network(min=45, max=2e3)
     close_pairs += close_pairs_in_network(min=9e3, max=1e4)
     close_pairs += close_pairs_in_network(min=1.2e4, max=1.5e4)
 
