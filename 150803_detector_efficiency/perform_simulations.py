@@ -52,7 +52,8 @@ with tables.open_file(shower_path, 'r') as data:
     max_r = min(max(data.root.groundparticles.col('r')), 500)
 
 with tables.open_file(result_path, 'w') as data:
-    sim = GroundParticlesSimulation(shower_path, max_r, cluster, data, '/', 50000, progress=False)
+    sim = GroundParticlesSimulation(shower_path, max_r, cluster, data, '/',
+                                    50000, progress=False)
     sim.run()
     sim.finish()
 END
@@ -72,7 +73,7 @@ N = 10
 
 def perform_simulations():
     cq = CorsikaQuery(OVERVIEW)
-    s = []
+    s = set()
     for energy in pbar(cq.available_parameters('energy', particle='proton')):
         for zenith in cq.available_parameters('zenith', particle='proton', energy=energy):
             sims = cq.simulations(particle='proton', zenith=zenith, energy=energy, iterator=False)
@@ -83,11 +84,13 @@ def perform_simulations():
                     continue
                 if not os.path.exists('/data/hisparc/corsika/data/{seeds}/corsika.h5'.format(seeds=seeds)):
                     continue
-                s.append(seeds)
+                s.add(seeds)
                 if energy >= 16:
                     perform_job(seeds, 'long')
-                else:
+                elif energy >= 14.5:
                     perform_job(seeds, 'generic')
+                else:
+                    perform_job(seeds, 'short')
     cq.finish()
 
 
