@@ -27,7 +27,6 @@ def detection_efficiency(path):
         station = data.root.coincidences._v_attrs.cluster.get_station(STATION_NUMBER)
         # Coincidences detected by given station
         coincidences = data.root.coincidences.coincidences
-        print '-', log10(coincidences[0]['energy']), degrees(coincidences[0]['zenith'])
         all_x = coincidences.col('x')
         all_y = coincidences.col('y')
         coins = coincidences.read_where('s%d' % STATION_NUMBER)
@@ -40,14 +39,14 @@ def detection_efficiency(path):
                                      bins=CORE_DISTANCE_BINS)
         counts, bins = histogram(distance_between(0, 0, coins['x'], coins['y']),
                                  bins=CORE_DISTANCE_BINS)
-        efficiency = counts / all_counts
-        efficiency = where(isnan(efficiency), 0, efficiency)
-        return efficiency
+
+        return counts, all_counts
 
 
 def collect_efficiencies():
     """Reconstruct shower (direction) for eligible events"""
-    efficiencies = {}
+    counts = {}
+    all_counts = {}
     n = {}
     cq = CorsikaQuery(OVERVIEW)
     for path in glob.glob(PATHS):
@@ -55,42 +54,47 @@ def collect_efficiencies():
         sim = cq.get_info(seeds)
         energy = log10(sim['energy'])
         zenith = degrees(sim['zenith'])
-        print '+', energy, zenith
-        efficiency = detection_efficiency(path)
+        count, all_count = detection_efficiency(path)
 
         # Check if its the first of this energy
         try:
-            efficiencies[energy]
+            counts[energy]
+            all_counts[energy]
         except KeyError:
-            efficiencies[energy] = {}
-            n[energy] = {}
+            counts[energy] = {}
+            all_counts[energy] = {}
 
         # Check if its the first of this energy and zenith
         try:
-            efficiencies[energy][zenith] += efficiency
-            n[energy][zenith] += 1
+            counts[energy][zenith] += count
+            all_counts[energy][zenith] += all_count
         except KeyError:
-            efficiencies[energy][zenith] = efficiency
-            n[energy][zenith] = 1
+            counts[energy][zenith] = count
+            all_counts[energy][zenith] = all_count
     cq.finish()
 
-    for e in efficiencies.keys():
-        for z in efficiencies[e].keys():
-            efficiencies[e][z] /= n[e][z]
+    efficiencies = {}
+    errors = {}
+    for e in counts.keys():
+        efficiencies[e] = {}
+        errors[e] = {}
+        for z in counts[e].keys():
+            efficiencies[e][z] = counts[e][z] / all_counts[e][z]
+            errors[e][z] = sqrt(counts[e][z] + 1) / all_counts[e][z]
 
-    return efficiencies
+    return efficiencies, errors
 
 
 def plot_effiencies():
-    efficiencies = collect_efficiencies()
-    print efficiencies.keys()
-    print efficiencies[15].keys()
+    efficiencies, errors = collect_efficiencies()
 
     for energy in efficiencies.keys():
         plot = Plot('semilogx')
         for zenith in efficiencies[energy].keys():
-            if zenith in [0, 22.5, 37.5]:
-                plot.plot(CORE_DISTANCES, efficiencies[energy][zenith], linestyle='blue')
+            if any(abs(zenith - z) < 0.1 for z in [0, 22.5, 37.5]):
+                plot.plot(CORE_DISTANCES, efficiencies[energy][zenith],
+                          yerr=errors[energy][zenith],
+                          markstyle='mark size=1pt', linestyle='blue')
                 plot.add_pin(str(zenith), x=15, use_arrow=True)
             else:
                 plot.plot(CORE_DISTANCES, efficiencies[energy][zenith], mark=None)
