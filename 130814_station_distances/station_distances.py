@@ -45,14 +45,14 @@ def Dns(Dm):
 
 def plot_station_distances(distances, name=''):
     plot = Plot('semilogx')
-    bins = numpy.logspace(-3, 5, 71)
+    bins = numpy.logspace(0, 8, 71)
     counts, bins = numpy.histogram(distances, bins=bins)
     plot.histogram(counts, bins)
     plot.set_title('Distances between all combinations of 2 stations')
-    plot.set_xlabel('Distance (km)')
+    plot.set_xlabel(r'Distance [\si{\meter}]')
     plot.set_ylabel('Occurance')
     plot.set_ylimits(min=0)
-    plot.set_xlimits(min=1e-3, max=1e5)
+    plot.set_xlimits(min=1e0, max=1e8)
     plot.save_as_pdf('station_distances' + name)
 
 
@@ -63,7 +63,7 @@ def distance_combinations(coordinates):
 
 def distance(c1, c2):
     distance = numpy.sqrt(sum((c1 - c2) ** 2))
-    return distance / 1e3
+    return distance
 
 
 if __name__ == '__main__':
