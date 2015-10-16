@@ -96,7 +96,7 @@ def plot_coincidence_rate_distance(distances, coincidence_rates, rate_errors):
     plot.set_axis_options('log origin y=infty')
     plot.set_xlimits(min=10, max=3e4)
     plot.save_as_pdf('distance_v_coincidence_rate')
-    plot.save_as_document('distance_v_coincidence_rate')
+#     plot.save_as_document('distance_v_coincidence_rate')
 
 
 if __name__ == "__main__":
