@@ -8,16 +8,22 @@ PATH = '/Users/arne/Datastore/publicdb_csv/eventtime/{station_number}.csv'
 
 
 def read_eventtime(path):
+    """Read an eventtime csv files"""
+
     return genfromtxt(path, delimiter='\t', dtype=None,
                       names=['timestamp', 'counts'])
 
 
 def get_data(station_numbers):
+    """Read the eventtime csv files for the given station numbers"""
+
     return {number: read_eventtime(PATH.format(station_number=number))
             for number in station_numbers}
 
 
 def get_total_exposure(timestamp_ranges):
+    """Get total exposure time of the timestamp ranges"""
+
     if not len(timestamp_ranges):
         return 0.
     timestamp_ranges = array(timestamp_ranges)
@@ -25,12 +31,15 @@ def get_total_exposure(timestamp_ranges):
     return total_exposure
 
 
-def get_timestamp_ranges(station_numbers):
+def get_timestamp_ranges(station_numbers, min_n=None):
     """Get timestamp ranges where all stations have data
 
-    [(start, end), (start, end), (start, end), ...]
+    :return: list of timestamp range, using the following format:
+             `[(start, end), (start, end), (start, end), ...]`
 
     """
+    if min_n is None:
+        min_n = len(station_numbers)
     data = get_data(station_numbers)
 
     first = min(values['timestamp'][0] for values in data.values())
@@ -45,13 +54,21 @@ def get_timestamp_ranges(station_numbers):
         extended_data[i, start:end] = ((data[sn]['counts'] > 500) &
                                        (data[sn]['counts'] < 5000))
 
-    flags = extended_data.sum(axis=0) == len(station_numbers)
+    flags = extended_data.sum(axis=0) >= min_n
     timestamp_ranges = get_ranges(timestamps, flags)
     return timestamp_ranges
 
 
 def get_ranges(timestamps, flags):
-    # Inspired by http://stackoverflow.com/a/16315498/1033535
+    """Make timestamp ranges from timestamps list
+
+    :param timestamps: list of timestamps.
+    :param flags: list of flags (booleans) which indicate if all of the
+                  requested stations have data during that timestamp..
+
+    Inspired by http://stackoverflow.com/a/16315498/1033535
+
+    """
     timestamp_ranges = []
     prev_flag = False
     for timestamp, flag in zip(timestamps, flags):

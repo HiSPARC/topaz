@@ -15,11 +15,12 @@ import os
 
 import tables
 from artist import Plot
-from numpy import array, sqrt
-
+from numpy import array, sqrt, logspace, log10, exp, sum, zeros, interp
+from scipy.optimize import curve_fit
 from sapphire import download_coincidences, HiSPARCNetwork
 from sapphire.utils import pbar
 from sapphire.transformations.clock import gps_to_datetime
+from sapphire.simulations.ldf import KascadeLdf
 
 from eventtime_ranges import get_timestamp_ranges, get_total_exposure
 from station_distances import close_pairs_in_network, distance_between_stations
@@ -32,6 +33,9 @@ def download_pair_coincidences(close_pairs):
         path = DATAPATH % tuple(pair)
         if os.path.exists(path):
             continue
+        else:
+            print pair
+            raise Exception
         distance = distance_between_stations(*pair)
         timestamp_ranges = get_timestamp_ranges(pair)
         total_exposure = get_total_exposure(timestamp_ranges)
@@ -51,11 +55,13 @@ def get_coincidence_count(close_pairs):
     distances = {4: [], 6: [], 8:[]}
     coincidence_rates = {4: [], 6: [], 8:[]}
     coincidence_rates_err = {4: [], 6: [], 8:[]}
-    for pair in pbar(close_pairs, show=False):
+    for pair in pbar(close_pairs, show=True):
         path = DATAPATH % tuple(pair)
         if not os.path.exists(path):
             continue
-        if 507 in pair:
+        # Do not plot points for stations with known issues
+        bad_stations = [22, 507, 2103, 13007, 20001]
+        if pair[0] in bad_stations or pair[1] in bad_stations:
             continue
         with tables.open_file(path, 'r') as data:
             total_exposure = data.get_node_attr('/', 'total_exposure')
@@ -72,6 +78,7 @@ def get_coincidence_count(close_pairs):
         rate = n_coincidences / total_exposure
         coincidence_rates[n].append(rate)
         err = sqrt(n_coincidences + 1) / total_exposure
+        # Prevent plotting issue due to log scale
         if err > rate:
             err = rate - 1e-15
         coincidence_rates_err[n].append(err)
@@ -79,31 +86,74 @@ def get_coincidence_count(close_pairs):
     return distances, coincidence_rates, coincidence_rates_err
 
 
+def expected_rate(real_distances, real_coincidence_rates, background, n=8):
+    """Rough estimation of expected rate"""
+
+    distances = logspace(log10(45), log10(1e4), 100)
+    energies = logspace(14, 19, 100)
+    ldf = KascadeLdf()
+    rates = zeros(len(distances))
+    slope = -2.7
+
+    for energy in energies:
+        size = 10 ** (log10(energy) - 15 + 4.8)
+        relative_flux = energy ** slope / sum(energies ** slope)
+        densities = ldf.calculate_ldf_value(distances / 2., Ne=size)
+        detection_probability = 1. - exp(-.5 * n * densities)
+        # TODO: fix this
+        rates += relative_flux * (detection_probability ** 1)
+
+    real_distances = array(real_distances)
+    r_coincidence_rates = array(real_coincidence_rates).compress(real_distances < 600)
+    r_distances = real_distances.compress(real_distances < 600)
+
+    scaling = lambda x, N: N * interp(x, distances, rates) + background
+    popt, pcov = curve_fit(scaling, r_distances, r_coincidence_rates, [1.])
+    print popt
+
+    return distances, popt[0] * rates + background
+
+
 def plot_coincidence_rate_distance(distances, coincidence_rates, rate_errors):
     markers = {4: 'o', 6: 'triangle', 8: 'square'}
-    background_4 = 2 * .7 ** 2 * 2e-6
-    background_2 = 2 * .4 ** 2 * 2e-6
-    background_2_4 = 2 * .4 * .7 * 2e-6
+    colors = {4: 'red', 6: 'black!50!green', 8: 'black!20!blue'}
     plot = Plot('loglog')
-    plot.draw_horizontal_line(background_4)
-    plot.draw_horizontal_line(background_2)
-    plot.draw_horizontal_line(background_2_4)
+
+    freq_2 = .3
+    freq_4 = .6
+    background = {4: 2 * freq_2 ** 2 * 2e-6,
+                  6: 2 * freq_2 * freq_4 * 2e-6,
+                  8: 2 * freq_4 ** 2 * 2e-6}
+
     for n in distances.keys():
-        plot.scatter(distances[n], coincidence_rates[n], yerr=rate_errors[n],
-                     mark=markers[n], markstyle='mark size=.75pt')
-    plot.set_xlabel(r'Distance between stations [\si{\meter}]')
+        plot.draw_horizontal_line(background[n], 'dashed,thin,' + colors[n])
+
+    for n in distances.keys():
+        expected_distances, expected_rates = expected_rate(distances[n],
+                                                           coincidence_rates[n],
+                                                           background[n],
+                                                           n=n)
+        plot.plot(expected_distances /1e3, expected_rates,
+                  linestyle=colors[n], mark=None, markstyle='mark size=.5pt')
+
+    for n in distances.keys():
+        plot.scatter([d/1e3 for d in distances[n]], coincidence_rates[n], yerr=rate_errors[n],
+                     mark=markers[n], markstyle='%s, mark size=.75pt' % colors[n])
+    plot.set_xlabel(r'Distance between stations [\si{\kilo\meter}]')
     plot.set_ylabel(r'Coincidence rate [\si{\hertz}]')
     plot.set_axis_options('log origin y=infty')
-    plot.set_xlimits(min=10, max=3e4)
+    plot.set_xlimits(min=40/1e3, max=2e4/1e3)
+    plot.set_ylimits(min=1e-7, max=1e-1)
     plot.save_as_pdf('distance_v_coincidence_rate')
-#     plot.save_as_document('distance_v_coincidence_rate')
 
 
 if __name__ == "__main__":
-    close_pairs = close_pairs_in_network(min=45, max=2e3)
-    close_pairs += close_pairs_in_network(min=9e3, max=1e4)
-    close_pairs += close_pairs_in_network(min=1.2e4, max=1.5e4)
+    if 'rates' not in globals():
+        close_pairs = close_pairs_in_network(min=45, max=2e3)
+        close_pairs += close_pairs_in_network(min=9e3, max=1e4)
+        close_pairs += close_pairs_in_network(min=1.2e4, max=1.5e4)
 
-    download_pair_coincidences(close_pairs)
-    distances, rates, rate_errors = get_coincidence_count(close_pairs)
+#         download_pair_coincidences(close_pairs)
+        distances, rates, rate_errors = get_coincidence_count(close_pairs)
+
     plot_coincidence_rate_distance(distances, rates, rate_errors)

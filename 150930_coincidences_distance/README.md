@@ -5,6 +5,22 @@ Then we find out when they were both working. For each of those periods
 coincidence data is downloaded. The number of coincidences divided by the
 total time both were on is then the coincidence rate.
 
+## Coincidence window
+
+For the ESD a coincidence window of 2µs was chosen. This corresponds to
+approximately 600m at light speed. For horizontal showers this would be the
+maximum distance between stations that would be included. Other experiments
+often use a zenith limit of 60° (which gives one solid angle of sky coverage).
+At 60° the maximum distance (assuming flat shower front and no timing offsets)
+would be: Δt / sin(θ) = d, for θ = 60° this gives 690m. When reducing the
+angle further the possible distance becomes larger.
+
+So for stations further appart than 600m the zenith angle acceptance it reduced
+This reduces the coincidence rate.
+
+
+## Bad stations and pairs
+
 Several stations/station pairs have deviating rates. In some cases these
 can be explained.
 
