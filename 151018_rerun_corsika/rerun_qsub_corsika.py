@@ -1,3 +1,12 @@
+"""Rerun some failed/broken CORSIKA simulations
+
+In 151016_verify_corsika I found some bad CORSIKA files. In some cases it was
+merely a bad corsika.h5 file, which has been regenerated. However, in other
+cases the DAT000000 file was incomplete, i.e. a bad number of blocks. These
+will be rerun on Stoomboot, using the same input-hisparc file.
+
+"""
+
 import shutil
 
 from sapphire.corsika.qsub_corsika import *
