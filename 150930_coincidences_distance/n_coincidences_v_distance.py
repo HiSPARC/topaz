@@ -89,29 +89,57 @@ def get_coincidence_count(close_pairs):
 def expected_rate(real_distances, real_coincidence_rates, background, n=8):
     """Rough estimation of expected rate"""
 
-    distances = logspace(log10(45), log10(1e4), 100)
-    energies = logspace(14, 19, 100)
+    distances = logspace(log10(45), log10(2e4), 200)
+    energies = logspace(13, 20, 200)
     ldf = KascadeLdf()
     rates = zeros(len(distances))
-    slope = -2.7
+    slope = -.95  # why this value?
 
     for energy in energies:
         size = 10 ** (log10(energy) - 15 + 4.8)
+
+        # Relative occurance as function of the energy
         relative_flux = energy ** slope / sum(energies ** slope)
+
+        # density in the stations if the shower hits between them
         densities = ldf.calculate_ldf_value(distances / 2., Ne=size)
-        detection_probability = 1. - exp(-.5 * n * densities)
-        # TODO: fix this
-        rates += relative_flux * (detection_probability ** 1)
+        # probability for single detectors
+        p = P(densities)
+        p0 = P0(densities)
+        # probability for at least 2 detectors in a station is
+        # \sum_{k=2}^{n} (^n_k) P^k P_0^{n-k}
+        p_4 = 6 * p ** 2 * p0 ** 2 + 4 * p ** 3 * p0 + p ** 4
+        p_2 = p ** 2
+        # probability for both stations
+        if n == 4:
+            detection_probability = p_2 ** 2
+        elif n == 6:
+            detection_probability = p_2 * p_4
+        elif n == 8:
+            detection_probability = p_4 ** 2
+
+        rates += relative_flux * detection_probability
 
     real_distances = array(real_distances)
-    r_coincidence_rates = array(real_coincidence_rates).compress(real_distances < 600)
-    r_distances = real_distances.compress(real_distances < 600)
+    r_coincidence_rates = array(real_coincidence_rates).compress(real_distances < 700)
+    r_distances = real_distances.compress(real_distances < 700)
 
-    scaling = lambda x, N: N * interp(x, distances, rates) + background
-    popt, pcov = curve_fit(scaling, r_distances, r_coincidence_rates, [1.])
-    print popt
+    scaling = lambda x, N: log10(N * interp(x, distances, rates) + background)
+    popt, pcov = curve_fit(scaling, r_distances, log10(r_coincidence_rates), [1.])
+    print n, popt
 
     return distances, popt[0] * rates + background
+
+
+def P(detector_density):
+    """Chance of at least one particle in detector"""
+
+    return 1.0 - P0(detector_density)
+
+def P0(detector_density):
+    """Chance of detecting no particle in a detector"""
+
+    return exp(-detector_density / 2.0)
 
 
 def plot_coincidence_rate_distance(distances, coincidence_rates, rate_errors):
@@ -133,16 +161,16 @@ def plot_coincidence_rate_distance(distances, coincidence_rates, rate_errors):
                                                            coincidence_rates[n],
                                                            background[n],
                                                            n=n)
-        plot.plot(expected_distances /1e3, expected_rates,
+        plot.plot(expected_distances / 1e3, expected_rates,
                   linestyle=colors[n], mark=None, markstyle='mark size=.5pt')
 
     for n in distances.keys():
-        plot.scatter([d/1e3 for d in distances[n]], coincidence_rates[n], yerr=rate_errors[n],
+        plot.scatter([d / 1e3 for d in distances[n]], coincidence_rates[n], yerr=rate_errors[n],
                      mark=markers[n], markstyle='%s, mark size=.75pt' % colors[n])
     plot.set_xlabel(r'Distance between stations [\si{\kilo\meter}]')
     plot.set_ylabel(r'Coincidence rate [\si{\hertz}]')
     plot.set_axis_options('log origin y=infty')
-    plot.set_xlimits(min=40/1e3, max=2e4/1e3)
+    plot.set_xlimits(min=40 / 1e3, max=2e4 / 1e3)
     plot.set_ylimits(min=1e-7, max=1e-1)
     plot.save_as_pdf('distance_v_coincidence_rate')
 
