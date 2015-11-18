@@ -1,4 +1,15 @@
-"""Get/plot event trace"""
+"""Get/plot event trace
+
+Call plot_trace with the station number of the station and the timestamp and
+nanoseconds of the event for which you want the trace.
+
+For example::
+
+    ./plot_trace 501 1362960030 490443679
+
+The script will retrieve the traces for the event and plot them using artist.
+
+"""
 
 import argparse
 
@@ -9,11 +20,25 @@ from sapphire import Station
 
 
 def get_traces(station_number, ts, ns):
+    """Retrieve the traces
+
+    :param station_number: number of the station to which the event belongs.
+    :param ts: timestamp of the event in seconds.
+    :param ns: subsecond part of the extended timestamp in nanoseconds.
+    :return: the traces.
+
+    """
     traces = Station(station_number).event_trace(ts, ns, raw=False)
     return traces
 
 
 def plot_traces(traces, label=''):
+    """Plot traces
+
+    :param traces: list of lists of trace values.
+    :param label: name (suffix) for the output pdf.
+
+    """
     colors = ['black', 'red', 'black!40!green', 'blue']
     plot = Plot(width=r'.5\textwidth')
     times = arange(0, len(traces[0]) * 2.5, 2.5)
