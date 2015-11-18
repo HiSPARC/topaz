@@ -14,69 +14,64 @@
 \pagestyle{empty}
 
 \begin{document}
-% !TeX root = thesis.tex
-% Based on station-layout.tex from Fokkema 2013.
+% Based on station-layout.tex from Fokkema 2012.
 
 \begin{tikzpicture}
-    [ font=\sffamily, x=.75cm, y=.75cm,
-      hisparc/.style={draw},
-      >=stealth',
+    [font=\sffamily, x=.75cm, y=.75cm,
+     >=stealth',
+%     thick,
     ]
-    \foreach \col / \sx / \sy / \angle in {ForestGreen/-5/0/90, DodgerBlue/5/0/-90,
-                                           Crimson/-10/8.66/0, black/0/8.66/0} {
-        \begin{scope}[hisparc, shift={(\sx,\sy)}, rotate=\angle]
-            \draw[rounded corners=2.25pt]
-                (-.4, .7) .. controls (0, .75) ..  (.4, .7) -- 
+    \foreach \sc / \col / \sx / \sy / \angle [count=\si] in
+             {A/black!80!white/0/8.66/0, B/Crimson/-10/8.66/0,
+              C/ForestGreen/-5/0/90, D/DodgerBlue/5/0/-90} {
+        \coordinate (\sc) at (\sx, \sy);
+        \begin{scope}[shift={(\sc)}, rotate=\angle]
+            % Skibox
+            \draw[fill=white, rounded corners=2.25pt]
+                (-.4, .7) .. controls (0, .75) ..  (.4, .7) --
                 (.35, -1.7) ..  controls(0, -1.72) ..  (-.35, -1.7) --
                 cycle;
+            % Scintillator
             \draw[fill=\col] (-.25, .5) rectangle (.25, -.5);
+            % Lightguide
             \draw (-.25, -.5) -- (-.02, -1) --(.02, -1) -- (.25, -.5);
+            % PMT
             \fill (-.02, -1) rectangle (.02, -1.2);
+            % Detector number
+            %\node[color=gray] at (.75, 1) {\Large \si};
         \end{scope}
     }
-    \draw[fill] (0, 0) circle (.10) node [above] {GPS};
-%    \node[color=gray] at (-5, .75) {\Large 0};
-%    \node[color=gray] at (5, .75) {\Large 1};
-%    \node[color=gray] at (-.75, 8.1) {\Large 2};
-%    \node[color=gray] at (-9.25, 8.1) {\Large 3};
 
-    \coordinate (A) at (-5, 0);
-    \coordinate (B) at (5, 0);
-    \coordinate (D) at (0, 8.66);
-    \coordinate (F) at (-10, 8.66);
+    \coordinate (G) at (0, 0);
+    % GPS
+    \draw[fill] (G) circle (.10) node [above] {GPS};
 
-    \coordinate (A') at ($ (A)!.8cm!-90:(B) $);
-    \coordinate (B') at ($ (B)!.8cm!90:(A) $);
-%    \draw (A) -- ($ (A)!1.1!(A') $);
-%    \draw (B) -- ($ (B)!1.1!(B') $);
-%    \draw[<->] (A') -- (B') node [midway, below] {\SI{10}{\meter}};
+    % Create coordinates for drawing distance lines
+    \foreach \sc in {A,...,D,G} {
+        \foreach \ssc in {A,...,D,G} {
+            % Create both in and outside coordinates
+            \coordinate (\sc'\ssc) at ($ (\sc)!.8cm!90:(\ssc) $);
+            \coordinate (\sc''\ssc) at ($ (\sc)!.8cm!-90:(\ssc) $);
+        }
+    }
 
-    \coordinate (C') at ($ (B)!.8cm!-90:(D) $);
-    \coordinate (D') at ($ (D)!.8cm!90:(B) $);
-    \draw (B) -- ($ (B)!1.1!(C') $);
-    \draw (D) -- ($ (D)!1.1!(D') $);
-    \draw[<->] (C') -- (D') node [midway, above, sloped] {\SI{10}{\meter}};
+    \draw (A) -- ($ (A)!1.1!(A'D) $);
+    \draw (D) -- ($ (D)!1.1!(D''A) $);
+    \draw[<->] (A'D) -- (D''A) node [midway, above, sloped] {\SI{10}{\meter}};
 
-    \coordinate (E) at (0, 0);
-    \coordinate (D'') at ($ (D)!.8cm!180:(E) $);
-    \coordinate (E') at ($ (E)!.8cm!90:(A) $);
-    \coordinate (F') at ($ (F)!.8cm!-90:(D) $);
-%    \draw (F) -- ($ (F)!1.1!(F') $);
-%    \draw (D) -- ($ (D)!1.1!(D'') $);
-%    \draw[<->] (F') -- (D'') node [midway, below, sloped] {\SI{10}{\meter}};
-    \draw (A) -- ($ (A)!1.1!(A') $);
-    \draw (E) -- ($ (E)!1.1!(E') $);
-    \draw[<->] (A') -- (E') node [midway, below] {\SI{5}{\meter}};
+    \draw (C) -- ($ (C)!1.1!(C''G) $);
+    \draw (G) -- ($ (G)!1.1!(G'C) $);
+    \draw[<->] (C''G) -- (G'C) node [midway, below] {\SI{5}{\meter}};
 
-    \draw[<->] (A) ++(0:2.1) arc (0:60:2.1);
-    \node at (-2.8, 1.4) {60°};
+    \draw[<->] (C) ++(0:2.1) arc (0:60:2.1)
+        node[midway, above, sloped] {\SI{60}{\degree}};
 
     \draw[dashed,gray] (A) -- (B);
+    \draw[dashed,gray] (A) -- (C);
     \draw[dashed,gray] (A) -- (D);
-    \draw[dashed,gray] (B) -- (D);
-    \draw[dashed,gray] (A) -- (F);
-    \draw[dashed,gray] (F) -- (D);
-%    \draw[dashed,gray] (A) -- (F);
+    \draw[dashed,gray] (B) -- (C);
+%    \draw[dashed,gray] (B) -- (D);
+    \draw[dashed,gray] (C) -- (D);
 \end{tikzpicture}
 
 \end{document}
