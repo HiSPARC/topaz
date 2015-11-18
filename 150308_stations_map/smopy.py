@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 # -----------------------------------------------------------------------------
 __version__ = '0.0.3'
 TILE_SIZE = 512
-MAXTILES = 16
+MAXTILES = 20
 
 TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png"
 # TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}@2x.png"
@@ -246,6 +246,7 @@ def extend_box(box_latlon, margin=.1):
 # Main Map class
 # -----------------------------------------------------------------------------
 class Map(object):
+
     """Represent an OpenStreetMap image.
 
     Initialized as:
@@ -262,6 +263,7 @@ class Map(object):
     * To save a PNG: `map.save_png(filename)`.
 
     """
+
     def __init__(self, *args, **kwargs):
         """Create and fetch the map with a given box in geographical
         coordinates.
@@ -277,8 +279,10 @@ class Map(object):
         self.box = box
 
         self.z = self.get_allowed_zoom(z)
-        if z != self.z:
+        if z > self.z:
             print 'Lowered zoom level to keep map size reasonable'
+        else:
+            self.z = z
         self.box_tile = get_tile_box(self.box, self.z)
 
         self.xmin = min(self.box_tile[0], self.box_tile[2])
