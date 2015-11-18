@@ -41,6 +41,7 @@ def detection_efficiency(path):
                                 for ids in combinations([1, 2, 3, 4], 3)]) # triangles
         if STATION_NUMBER in [2]:
             query = '(%s)' % ' & '.join('(n%d != 0)' % d for d in [1, 2])  # both detectors
+        # Use query = 'timestamp > 0' to select all triggered events
         e = events.get_where_list(query)
         coins = coins[e]
         all_counts, bins = histogram(distance_between(0, 0, all_x, all_y),
