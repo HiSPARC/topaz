@@ -15,7 +15,7 @@ from sapphire.utils import distance_between, angle_between
 DATA = '/Users/arne/Datastore/efficiency/'
 PATHS = '/Users/arne/Datastore/efficienc*/*_*.h5'
 OVERVIEW = '/Users/arne/Datastore/efficiency/corsika-overview.h5'
-CORE_DISTANCE_BINS = linspace(0, 500, 100)
+CORE_DISTANCE_BINS = linspace(0, 500, 101)
 CORE_DISTANCES = (CORE_DISTANCE_BINS[:-1] + CORE_DISTANCE_BINS[1:]) / 2
 
 # Stations
