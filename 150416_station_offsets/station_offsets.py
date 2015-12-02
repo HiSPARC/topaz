@@ -69,7 +69,8 @@ def determine_time_differences(coin_events, ref_station, station, ref_d_off, d_o
 
 
 def get_detector_offsets(station):
-    offsets = genfromtxt('offsets_%d.csv' % station, delimiter='\t')
+    offsets = genfromtxt('data/offsets_%d.csv' % station, delimiter='\t')
+    offsets = {d[0]: d[1:] for d in offsets}
     return offsets
 
 
@@ -80,16 +81,16 @@ def get_active_detector_offsets(offsets, timestamp):
     return offsets[idx - 1][1:]
 
 
-def write_offets(station, offsets):
-    output = open('offsets_s%d.csv' % station, 'wb')
+def write_offets(station, ref_station, offsets):
+    output = open('data/offsets_ref%d_s%d.csv' % (ref_station, station), 'wb')
     csvwriter = csv.writer(output, delimiter='\t')
     for ts, offset in offsets:
         csvwriter.writerow([ts, offset])
     output.close()
 
 
-def store_dt(station, ext_timestamps, deltats):
-    with tables.open_file('dt.h5', 'a') as data:
+def store_dt(station, ref_station, ext_timestamps, deltats):
+    with tables.open_file('data/dt_ref%d.h5' % ref_station, 'a') as data:
         try:
             table = data.get_node('/s%d' % station)
         except tables.NoSuchNodeError:
@@ -107,25 +108,26 @@ def store_dt(station, ext_timestamps, deltats):
 
 def main(data):
     cq = CoincidenceQuery(data)
-    ref_station = 501
+    ref_station = 510  # 501
     ref_detector_offsets = get_detector_offsets(ref_station)
-    for station in pbar(SPA_STAT):
+    for station in SPA_STAT:
+        print ref_station, station
         offsets = []
         detector_offsets = get_detector_offsets(station)
         if station == ref_station:
             continue
-        for dt0, dt1 in monthrange((2010, 1), (2015, 4)):
+        for dt0, dt1 in pbar(monthrange((2010, 1), (2015, 4)), length=63):
             coins = cq.all([station, ref_station], start=dt0, stop=dt1, iterator=True)
             coin_events = cq.events_from_stations(coins, [station, ref_station])
-            ref_d_off = get_active_detector_offsets(ref_detector_offsets, dt0)
-            d_off = get_active_detector_offsets(detector_offsets, dt0)
+            ref_d_off = ref_detector_offsets[dt0]
+            d_off = detector_offsets[dt0]
             ets, dt = determine_time_differences(coin_events, ref_station, station, ref_d_off, d_off)
-            store_dt(station, ets, dt)
+            store_dt(station, ref_station, ets, dt)
             if len(dt) < 100:
                 continue
             s_off = determine_station_timing_offset(dt)
             offsets.append((dt0, s_off))
-        write_offets(station, offsets)
+        write_offets(station, ref_station, offsets)
 
 
 def monthrange(start, stop):

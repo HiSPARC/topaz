@@ -29,26 +29,26 @@ STATIONS = [502, 503, 504, 505, 506, 508, 509, 510]
 
 
 def get_detector_offsets(station):
-    offsets = genfromtxt('offsets_%d.csv' % station, delimiter='\t',
+    offsets = genfromtxt('data/offsets_%d.csv' % station, delimiter='\t',
                          names=('timestamp', 'd0', 'd1', 'd2', 'd3'))
     return offsets
 
 
-def get_station_offsets(station):
-    offsets = genfromtxt('offsets_s%d.csv' % station, delimiter='\t',
+def get_station_offsets(ref, station):
+    offsets = genfromtxt('data/offsets_ref%d_s%d.csv' % (ref, station), delimiter='\t',
                          names=('timestamp', 'offset'))
     return offsets
 
 
 def get_n_events(station):
-    n = genfromtxt('n_month_%d.csv' % station, delimiter='\t',
+    n = genfromtxt('data/n_month_%d.csv' % station, delimiter='\t',
                    names=('timestamp', 'n'))
     return n
 
 
 def save_n_events_month(station):
     s = Station(station)
-    output = open('n_month_%d.csv' % station, 'a')
+    output = open('data/n_month_%d.csv' % station, 'a')
     csvwriter = csv.writer(output, delimiter='\t')
     for y in range(2010, 2016):
         for m in range(1, 13):
@@ -62,7 +62,7 @@ def save_n_events_month(station):
 
 def save_n_events(station):
     s = Station(station)
-    output = open('n_%d.csv' % station, 'a')
+    output = open('data/n_%d.csv' % station, 'a')
     csvwriter = csv.writer(output, delimiter='\t')
     for y in range(2010, 2016):
         for m in range(1, 13):
@@ -83,30 +83,34 @@ if __name__ == '__main__':
 #         save_n_events(station)
 #         save_n_events_month(station)
 
-    ref_s = Station(501)
-    ref_gps = ref_s.gps_locations
-    ref_voltages = ref_s.voltages
-    ref_n = get_n_events(501)
+    ref_station = 501
+    ref_s = Station(ref_station)
+#     ref_gps = ref_s.gps_locations
+#     ref_voltages = ref_s.voltages
+#     ref_n = get_n_events(501)
     for station in STATIONS:
         s = Station(station)
-        voltages = s.voltages
-        gps = s.gps_locations
+#         voltages = s.voltages
+#         gps = s.gps_locations
         # Determine offsets for first day of each month
-        d_off = get_detector_offsets(station)
-        s_off = get_station_offsets(station)
-        n = get_n_events(station)
-        graph = Plot()
-        graph.scatter(ref_gps['timestamp'], [95] * len(ref_gps), mark='square', markstyle='purple,mark size=.5pt')
-        graph.scatter(ref_voltages['timestamp'], [90] * len(ref_voltages), mark='triangle', markstyle='purple,mark size=.5pt')
-        graph.scatter(gps['timestamp'], [85] * len(gps), mark='square', markstyle='gray,mark size=.5pt')
-        graph.scatter(voltages['timestamp'], [80] * len(voltages), mark='triangle', markstyle='gray,mark size=.5pt')
-        graph.shade_region(n['timestamp'], -ref_n['n'] / 1000, n['n'] / 1000, color='lightgray,const plot')
-        graph.plot(d_off['timestamp'], d_off['d0'], markstyle='mark size=.5pt')
-        graph.plot(d_off['timestamp'], d_off['d2'], markstyle='mark size=.5pt', linestyle='green')
-        graph.plot(d_off['timestamp'], d_off['d3'], markstyle='mark size=.5pt', linestyle='blue')
-        graph.plot(s_off['timestamp'], s_off['offset'], mark='*', markstyle='mark size=1pt', linestyle='red')
+#         d_off = get_detector_offsets(station)
+        s_off = get_station_offsets(ref_station, station)
+#         n = get_n_events(station)
+        graph = Plot(width=r'.6\textwidth')
+#         graph.scatter(ref_gps['timestamp'], [95] * len(ref_gps), mark='square', markstyle='purple,mark size=.5pt')
+#         graph.scatter(ref_voltages['timestamp'], [90] * len(ref_voltages), mark='triangle', markstyle='purple,mark size=.5pt')
+#         graph.scatter(gps['timestamp'], [85] * len(gps), mark='square', markstyle='gray,mark size=.5pt')
+#         graph.scatter(voltages['timestamp'], [80] * len(voltages), mark='triangle', markstyle='gray,mark size=.5pt')
+#         graph.shade_region(n['timestamp'], -ref_n['n'] / 1000, n['n'] / 1000, color='lightgray,const plot')
+#         graph.plot(d_off['timestamp'], d_off['d0'], markstyle='mark size=.5pt')
+#         graph.plot(d_off['timestamp'], d_off['d2'], markstyle='mark size=.5pt', linestyle='green')
+#         graph.plot(d_off['timestamp'], d_off['d3'], markstyle='mark size=.5pt', linestyle='blue')
+        graph.plot(s_off['timestamp'] / 1e9, s_off['offset'], mark='*',
+                   markstyle='mark size=1.25pt', linestyle=None)
         graph.set_ylabel('$\Delta t$ [ns]')
         graph.set_xlabel('Date')
-        graph.set_xlimits(1.25e9, 1.45e9)
-        graph.set_ylimits(-100, 100)
-        graph.save_as_pdf('offset_drift_months_%d' % station)
+        graph.set_xticks([datetime_to_gps(date(y, 1, 1)) / 1e9 for y in range(2010, 2016)])
+        graph.set_xtick_labels(['%d' % y for y in range(2010, 2016)])
+        graph.set_xlimits(1.25, 1.45)
+        graph.set_ylimits(-80, 80)
+        graph.save_as_pdf('plots/offset_drift_months_%d_simple' % station)
