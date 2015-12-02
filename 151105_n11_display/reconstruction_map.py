@@ -26,6 +26,7 @@ STATIONS = range(501, 512)
 CLUSTER = HiSPARCStations(STATIONS)
 COLORS = ['black', 'red!80!black', 'green!80!black', 'blue!80!black']
 
+
 def make_map(cluster=CLUSTER):
     latitudes = []
     longitudes = []
@@ -52,8 +53,6 @@ def display_coincidences(coincidence_events, c_id, map):
     p = []
 
     for station_number, event in coincidence_events:
-#         if station_number == 507:
-#             continue
         station = cluster.get_station(station_number)
         for detector in station.detectors:
             latitude, longitude, _ = detector.get_lla_coordinates()
@@ -65,11 +64,14 @@ def display_coincidences(coincidence_events, c_id, map):
 
     image = map.to_pil()
 
-    aspect = float(image.size[0]) / float(image.size[1])
-    height = .67 / aspect
-    plot = Plot(height=r'%.2f\linewidth' % height)
+    map_w, map_h = image.size
+    aspect = float(map_w) / float(map_h)
+    width = 0.67
+    height = width / aspect
+    plot = Plot(width=r'%.2f\linewidth' % width,
+                height=r'%.2f\linewidth' % height)
 
-    plot.draw_image(image, 0, 0, image.size[0], image.size[1])
+    plot.draw_image(image, 0, 0, map_w, map_h)
 
     x, y = map.to_pixels(array(latitudes), array(longitudes))
     mint = nanmin(t)
@@ -81,10 +83,10 @@ def display_coincidences(coincidence_events, c_id, map):
 
     for xv, yv, tv, pv in zip(x, y, t, p):
         if isnan(tv) or isnan(pv):
-            plot.scatter([xv], [image.size[1] - yv], mark='diamond')
+            plot.scatter([xv], [map_h - yv], mark='diamond')
         else:
             xx.append(xv)
-            yy.append(image.size[1] - yv)
+            yy.append(map_h - yv)
             tt.append(tv - mint)
             pp.append(pv)
 
@@ -98,19 +100,19 @@ def display_coincidences(coincidence_events, c_id, map):
     plot.set_axis_equal()
 
     nw = num2deg(map.xmin, map.ymin, map.z)
-    se = num2deg(map.xmin + image.size[0] / TILE_SIZE,
-                 map.ymin + image.size[1] / TILE_SIZE,
+    se = num2deg(map.xmin + map_w / TILE_SIZE,
+                 map.ymin + map_h / TILE_SIZE,
                  map.z)
 
     x0, y0, _ = transform.lla_to_enu((nw[0], nw[1], 0))
     x1, y1, _ = transform.lla_to_enu((se[0], se[1], 0))
 
     plot.set_xlabel('x [\si{\meter}]')
-    plot.set_xticks([0, image.size[0]])
+    plot.set_xticks([0, map_w])
     plot.set_xtick_labels([int(x0), int(x1)])
 
     plot.set_ylabel('y [\si{\meter}]')
-    plot.set_yticks([0, image.size[1]])
+    plot.set_yticks([0, map_h])
     plot.set_ytick_labels([int(y1), int(y0)])
 
 
