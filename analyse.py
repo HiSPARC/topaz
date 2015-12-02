@@ -94,17 +94,17 @@ def plot_delta_histogram(ids, **kwargs):
     if type(ids) is int:
         ids = [ids]
 
-    #Define Bins
-    low = -200
-    high = 200
+    # Bin width
     bin_size = 1  # 2.5*n
-    bins = np.arange(low - .5 * bin_size, high + bin_size, bin_size)
 
-    #Begin Figure
+    # Begin Figure
     plot = Plot()
     for id in ids:
         ext_timestamps, deltas = get(id)
-        n, bins = np.histogram(deltas, bins, normed=1)
+        low = floor(min(deltas))
+        high = ceil(max(deltas))
+        bins = np.arange(low - .5 * bin_size, high + bin_size, bin_size)
+        n, bins = np.histogram(deltas, bins)
         bin_centers = (bins[:-1] + bins[1:]) / 2
         popt, pcov = curve_fit(gauss, bin_centers, n, p0=[.15, np.mean(deltas), np.std(deltas)])
         plot.histogram(n, bins)
@@ -115,7 +115,7 @@ def plot_delta_histogram(ids, **kwargs):
     plot.set_xlabel(r'Time difference [ns]')
     plot.set_ylabel(r'Counts')
     plot.set_xlimits(low, high)
-    plot.set_ylimits(0., .15)
+    plot.set_ylimits(min=0.)
 
     #Save Figure
     if len(ids) == 1:
