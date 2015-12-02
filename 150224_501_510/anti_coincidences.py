@@ -28,20 +28,22 @@ def anti_coincidences(data):
         cevents = events.read_coordinates(ceids)
         aevents = events.read()
         bins = np.linspace(0.01, 40, 300)
-        ccounts, bins = np.histogram(cevents['n1'] + cevents['n2'] + cevents['n3'] + cevents['n4'],
+        ccounts, bins = np.histogram(sum(cevents['n%d' % id] for id in [1, 2, 3, 4]) / 2.,
                                      bins=bins)
-        acounts, bins = np.histogram(aevents['n1'] + aevents['n2'] + aevents['n3'] + aevents['n4'],
+        acounts, bins = np.histogram(sum(aevents['n%d' % id] for id in [1, 2, 3, 4]) / 2.,
                                      bins=bins)
         accounts = acounts - ccounts
         # All events
-        plot.histogram(acounts, bins, linestyle='dotted,%s' % colors[s_idx])
+        plot.histogram(acounts, bins, linestyle='dotted, %s' % colors[s_idx])
         # Events in coincidence
-        plot.histogram(ccounts, bins, linestyle='solid,%s' % colors[s_idx])
+        plot.histogram(ccounts, bins, linestyle='solid, %s' % colors[s_idx])
         # Events not in coincidence
-        plot.histogram(accounts, bins, linestyle='dashed,%s' % colors[s_idx])
+        plot.histogram(accounts, bins, linestyle='dashed, %s' % colors[s_idx])
 
     plot.set_ylimits(min=0.2)
     plot.set_xlimits(min=bins[0], max=bins[-1])
+    plot.set_ylabel(r'Number of events')
+    plot.set_xlabel(r'Particle density [\si{\per\square\meter}]')
     plot.save_as_pdf('anti_coincidences')
 
 
