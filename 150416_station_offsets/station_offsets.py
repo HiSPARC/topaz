@@ -34,6 +34,7 @@ Reference stations
 SPA_DATA = '/Users/arne/Datastore/esd_coincidences/sciencepark_n2_100101_150401.h5'
 SPA_STAT = [501, 502, 503, 504, 505, 506, 508, 509, 510]
 CLUSTER = HiSPARCStations(SPA_STAT)
+DATA_PATH = '/Users/arne/Datastore/station_offsets/'
 
 
 class DeltaVal(tables.IsDescription):
@@ -69,7 +70,7 @@ def determine_time_differences(coin_events, ref_station, station, ref_d_off, d_o
 
 
 def get_detector_offsets(station):
-    offsets = genfromtxt('data/offsets_%d.csv' % station, delimiter='\t')
+    offsets = genfromtxt(DATA_PATH + 'offsets_%d.csv' % station, delimiter='\t')
     offsets = {d[0]: d[1:] for d in offsets}
     return offsets
 
@@ -82,7 +83,7 @@ def get_active_detector_offsets(offsets, timestamp):
 
 
 def write_offets(station, ref_station, offsets):
-    output = open('data/offsets_ref%d_s%d.csv' % (ref_station, station), 'wb')
+    output = open(DATA_PATH + 'offsets_ref%d_s%d.csv' % (ref_station, station), 'wb')
     csvwriter = csv.writer(output, delimiter='\t')
     for ts, offset in offsets:
         csvwriter.writerow([ts, offset])
@@ -90,7 +91,7 @@ def write_offets(station, ref_station, offsets):
 
 
 def store_dt(station, ref_station, ext_timestamps, deltats):
-    with tables.open_file('data/dt_ref%d.h5' % ref_station, 'a') as data:
+    with tables.open_file(DATA_PATH + 'dt_ref%d.h5' % ref_station, 'a') as data:
         try:
             table = data.get_node('/s%d' % station)
         except tables.NoSuchNodeError:

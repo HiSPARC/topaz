@@ -21,6 +21,8 @@ YEAR = 365 * DAY
 SPA_STAT = [501, 502, 503, 504, 505, 506, 508, 509, 510]
 CLUSTER = HiSPARCStations(SPA_STAT)
 
+DATA_PATH = '/Users/arne/Datastore/station_offsets/'
+
 
 def get_station_dt(data, station):
     table = data.get_node('/s%d' %station)
@@ -31,7 +33,7 @@ if __name__ == '__main__':
     t_start = datetime_to_gps(datetime(2010, 1, 1))
     t_end = datetime_to_gps(datetime(2015, 4, 1))
 
-    with tables.open_file('data/dt.h5', 'r') as data:
+    with tables.open_file(DATA_PATH + 'dt.h5', 'r') as data:
         for i, station in enumerate(STATIONS, 1):
             distance, _, _ = CLUSTER.calc_rphiz_for_stations(i, 0)
             max_dt = max(distance / .3, 100) * 1.5

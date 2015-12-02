@@ -135,7 +135,7 @@ def determine_station_timing_offsets(d, data):
 if __name__ == '__main__':
     for d in ['e_501_510_141001_141011', 'e_501_510_141101_141111']:
         print d
-        with tables.open_file(d + '.h5', 'r') as data:
+        with tables.open_file('/Users/arne/Datastore/501_510/%s.h5' % d, 'r') as data:
             for s in [501, 510]:
                 print 'Station: %d' % s
                 e = data.get_node('/s%d/events' % s)

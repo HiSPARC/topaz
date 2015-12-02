@@ -26,29 +26,30 @@ from sapphire.api import Station
 from sapphire.transformations.clock import gps_to_datetime, datetime_to_gps
 
 STATIONS = [502, 503, 504, 505, 506, 508, 509, 510]
+DATA_PATH = '/Users/arne/Datastore/station_offsets/'
 
 
 def get_detector_offsets(station):
-    offsets = genfromtxt('data/offsets_%d.csv' % station, delimiter='\t',
+    offsets = genfromtxt(DATA_PATH + 'offsets_%d.csv' % station, delimiter='\t',
                          names=('timestamp', 'd0', 'd1', 'd2', 'd3'))
     return offsets
 
 
 def get_station_offsets(ref, station):
-    offsets = genfromtxt('data/offsets_ref%d_s%d.csv' % (ref, station), delimiter='\t',
+    offsets = genfromtxt(DATA_PATH + 'offsets_ref%d_s%d.csv' % (ref, station), delimiter='\t',
                          names=('timestamp', 'offset'))
     return offsets
 
 
 def get_n_events(station):
-    n = genfromtxt('data/n_month_%d.csv' % station, delimiter='\t',
+    n = genfromtxt(DATA_PATH + 'n_month_%d.csv' % station, delimiter='\t',
                    names=('timestamp', 'n'))
     return n
 
 
 def save_n_events_month(station):
     s = Station(station)
-    output = open('data/n_month_%d.csv' % station, 'a')
+    output = open(DATA_PATH + 'n_month_%d.csv' % station, 'a')
     csvwriter = csv.writer(output, delimiter='\t')
     for y in range(2010, 2016):
         for m in range(1, 13):
@@ -62,7 +63,7 @@ def save_n_events_month(station):
 
 def save_n_events(station):
     s = Station(station)
-    output = open('data/n_%d.csv' % station, 'a')
+    output = open(DATA_PATH + 'n_%d.csv' % station, 'a')
     csvwriter = csv.writer(output, delimiter='\t')
     for y in range(2010, 2016):
         for m in range(1, 13):

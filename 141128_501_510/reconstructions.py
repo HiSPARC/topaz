@@ -89,7 +89,7 @@ def plot_reconstruction_accuracy(data, d):
 
 if __name__ == '__main__':
     for d in ['c_501_510_141001_141011', 'c_501_510_141101_141111']:
-#         with tables.open_file(d + '.h5', 'a') as data:
+#         with tables.open_file('/Users/arne/Datastore/501_510/%s.h5' % d, 'a') as data:
 #             reconstruct_simulations(data)
-        with tables.open_file(d + '.h5', 'r') as data:
+        with tables.open_file('/Users/arne/Datastore/501_510/%s.h5' % d, 'r') as data:
             plot_reconstruction_accuracy(data, d)
