@@ -6,9 +6,13 @@ LED_PH = [1, 150, 220, 156, 225, 230, 230, 182, 299, 163, 202,
           220, 250, 202, 244, 240, 190, 240, 159, 196, 180,
           182, 160, 210, 202]
 
+LED_PH_ERR = [0] + [5] * 24
+
 LED_PI = [1, 1.68, 2.44, 1.80, 2.43, 2.56, 2.57, 2.18, 3.32, 1.82, 2.46,
           2.46, 3.00, 2.36, 2.87, 2.56, 2.22, 2.79, 1.84, 2.20, 2.05,
           2.00, 1.83, 2.47, 2.70]
+
+LED_PI_ERR = [0] + [0.1] * 24
 
 MULTI_LED = [((23, 24), 325, 4.45),
              ((22, 23, 24), 550, 6.55),
@@ -32,12 +36,12 @@ MULTI_LED = [((23, 24), 325, 4.45),
              ((2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24), 2150, 38.15),
              ((1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24), 2170, 38.57)]
 
-M_PI, M_PH, E_PI, E_PH = get_measured_expected(LED_PH, LED_PI, MULTI_LED)
+M_PH, M_PH_ERR, M_PI, M_PI_ERR, E_PH, E_PH_ERR, E_PI, E_PI_ERR = get_measured_expected(LED_PH, LED_PH_ERR, LED_PI, LED_PI_ERR, MULTI_LED)
 RATIO = determine_pi_ph_ratio(LED_PI, LED_PH)
 
 
 if __name__ == '__main__':
     name = 'senstech_integral'
-    plot_ph(E_PH, M_PH, name)
-    plot_pi(E_PI, M_PI, name)
-    plot_pi_ph(M_PI, M_PH, name, RATIO)
+    plot_ph(E_PH, M_PH, name, E_PH_ERR, M_PH_ERR)
+    plot_pi(E_PI, M_PI, name, E_PI_ERR, M_PI_ERR)
+    plot_pi_ph(M_PI, M_PH, name, RATIO, M_PI_ERR, M_PH_ERR)

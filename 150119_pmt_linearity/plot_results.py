@@ -1,7 +1,7 @@
 from artist import Plot
 
 
-def plot_ph(expected, measured, name):
+def plot_ph(expected, measured, name, expected_err=[], measured_err=[]):
     """
 
     :param expected: expected pulseheight from sum individual measurements.
@@ -10,16 +10,17 @@ def plot_ph(expected, measured, name):
 
     """
     graph = Plot(height=r".67\linewidth")
-    graph.scatter(expected, measured)
-    graph.plot([0, 6000], [0, 6000], mark=None)
-    graph.set_xlabel('Sum individual LED pulseheights [mV]')
-    graph.set_ylabel('Multiple-LED pulseheight [mV]')
-    graph.set_xlimits(0, 6000)
-    graph.set_ylimits(0, 6000)
-    graph.save_as_pdf(name + '_ph')
+    graph.scatter(expected, measured, xerr=expected_err, yerr=measured_err,
+                  markstyle='mark size=1.5pt')
+    graph.plot([0, 6], [0, 6], mark=None)
+    graph.set_xlabel(r'Sum individual LED pulseheights [\si{\volt}]')
+    graph.set_ylabel(r'Multiple-LED pulseheight [\si{\volt}]')
+    graph.set_xlimits(0, 6)
+    graph.set_ylimits(0, 6)
+    graph.save_as_pdf('result_ph_' +name)
 
 
-def plot_pi(expected, measured, name):
+def plot_pi(expected, measured, name, expected_err=[], measured_err=[]):
     """
 
     :param expected: expected pulseintegral from sum individual measurements.
@@ -28,16 +29,17 @@ def plot_pi(expected, measured, name):
 
     """
     graph = Plot(height=r".67\linewidth")
-    graph.scatter(expected, measured)
+    graph.scatter(expected, measured, xerr=expected_err, yerr=measured_err,
+                  markstyle='mark size=1.5pt')
     graph.plot([0, 120], [0, 120], mark=None)
-    graph.set_xlabel('Sum individual LED pulseintegrals [nVs]')
-    graph.set_ylabel('Multiple-LED pulseintegrals [nVs]')
+    graph.set_xlabel(r'Sum individual LED pulseintegrals [\si{\nano\volt\second}]')
+    graph.set_ylabel(r'Multiple-LED pulseintegrals [\si{\nano\volt\second}]')
     graph.set_xlimits(0, 120)
     graph.set_ylimits(0, 120)
-    graph.save_as_pdf(name + '_pi')
+    graph.save_as_pdf('result_pi_' +name)
 
 
-def plot_pi_ph(measured_pi, measured_ph, name, ratio):
+def plot_pi_ph(measured_pi, measured_ph, name, ratio, pi_err=[], ph_err=[]):
     """
 
     :param measured_pi: measured pulseintegral.
@@ -47,10 +49,11 @@ def plot_pi_ph(measured_pi, measured_ph, name, ratio):
 
     """
     graph = Plot(height=r".67\linewidth")
-    graph.scatter(measured_pi, measured_ph)
-    graph.plot([0, 6000 * ratio], [0, 6000], mark=None)
-    graph.set_xlabel('Multiple-LED pulseintegrals [nVs]')
-    graph.set_ylabel('Multiple-LED pulseheights [mV]')
-    graph.set_xlimits(0, 6000 * ratio)
-    graph.set_ylimits(0, 6000)
-    graph.save_as_pdf(name + '_pi_ph')
+    graph.scatter(measured_pi, measured_ph, xerr=pi_err, yerr=ph_err,
+                  markstyle='mark size=1.5pt')
+    graph.plot([0, 6 * ratio], [0, 6], mark=None)
+    graph.set_xlabel(r'Multiple-LED pulseintegrals [\si{\nano\volt\second}]')
+    graph.set_ylabel(r'Multiple-LED pulseheights [\si{\volt}]')
+    graph.set_xlimits(0, 6 * ratio)
+    graph.set_ylimits(0, 6)
+    graph.save_as_pdf('result_piph_' +name)

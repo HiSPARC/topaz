@@ -16,8 +16,12 @@ LED_PH = [1, 160, 192, 152, 240, 232, 232, 148, 352, 192, 200,
           248, 280, 222, 274, 302, 224, 308, 200, 214, 212,
           172, 136, 190, 168]
 
+LED_PH_ERR = [0] + [5] * 24
+
 # Pulse integral not measured
 LED_PI = [0] * 25
+
+LED_PI_ERR = [0] + [.05] * 24
 
 MULTI_LED = [((1, 8), 508, 0.),
              ((2, 8), 516, 0.),
@@ -93,14 +97,14 @@ MULTI_LED = [((1, 8), 508, 0.),
              ((1, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24), 4720, 0.),
              ((1, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23), 4600, 0.)]
 
-M_PI, M_PH, E_PI, E_PH = get_measured_expected(LED_PH, LED_PI, MULTI_LED)
+M_PH, M_PH_ERR, M_PI, M_PI_ERR, E_PH, E_PH_ERR, E_PI, E_PI_ERR = get_measured_expected(LED_PH, LED_PH_ERR, LED_PI, LED_PI_ERR, MULTI_LED)
 RATIO = determine_pi_ph_ratio(LED_PI, LED_PH)
 
 
 if __name__ == '__main__':
     eff_8b = [l8_on_b / led_direct_ph[8] for l8_on_b in led8_on_b]
-    eff_lb = [lb / l for lb, l in zip(led_ph, led_direct_ph)]
+    eff_lb = [lb / l for lb, l in zip(LED_PH, led_direct_ph)]
     eff_lb_8b = [elb / e8b for elb, e8b in zip(eff_lb, eff_8b)]
 
     name = 'nikhef'
-    plot_ph(E_PH, M_PH, name)
+    plot_ph(E_PH, M_PH, name, E_PH_ERR, M_PH_ERR)

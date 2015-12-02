@@ -40,7 +40,7 @@ Check combination of LED and Bundle fibers
     #21                   173               3.40
     #22                   110               2.42
     #23                   190               3.50
-    #24                   170               6.68
+    #24                   170               3.68
 
 
 

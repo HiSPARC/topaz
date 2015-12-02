@@ -6,8 +6,13 @@ LED_PH = [1, 160, 224, 172, 206, 246, 242, 188, 352, 180, 232,
           236, 292, 232, 260, 258, 198, 302, 202, 212, 218,
           186, 166, 214, 214]
 
+LED_PH_ERR = [0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+              5, 5, 5, 5]
+
 # Pulse integral not measured
 LED_PI = [0] * 25
+
+LED_PI_ERR = [0] * 25
 
 MULTI_LED = [((1, 2), 344, 0.),
              ((1, 2, 3), 536, 0.),
@@ -55,10 +60,10 @@ MULTI_LED = [((1, 2), 344, 0.),
              ((3, 4, 5, 6, 7, 8, 9), 1290, 0.),
              ((2, 3, 4, 5, 6, 7, 8, 9), 1380, 0.)]
 
-M_PI, M_PH, E_PI, E_PH = get_measured_expected(LED_PH, LED_PI, MULTI_LED)
+M_PH, M_PH_ERR, M_PI, M_PI_ERR, E_PH, E_PH_ERR, E_PI, E_PI_ERR = get_measured_expected(LED_PH, LED_PH_ERR, LED_PI, LED_PI_ERR, MULTI_LED)
 RATIO = determine_pi_ph_ratio(LED_PI, LED_PH)
 
 
 if __name__ == '__main__':
     name = 'senstech'
-    plot_ph(E_PH, M_PH, name)
+    plot_ph(E_PH, M_PH, name, E_PH_ERR, M_PH_ERR)
