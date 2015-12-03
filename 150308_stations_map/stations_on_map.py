@@ -46,10 +46,7 @@ def get_station_locations(country=None, cluster=None, subcluster=None,
         station_numbers = [station]
 
     for station_number in station_numbers:
-        try:
-            location = Station(station_number).location()
-        except:
-            continue
+        location = Station(station_number).location()
         if location['latitude'] == 0 or location['longitude'] == 0:
             continue
         latitudes.append(location['latitude'])

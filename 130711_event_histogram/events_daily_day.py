@@ -67,8 +67,7 @@ def get_and_save_data(station_numbers=None):
 
     """
     if station_numbers is None:
-        network = Network()
-        station_numbers = network.station_numbers()
+        station_numbers = Network().station_numbers()
     data = [get_number_of_events(number) for number in pbar(station_numbers)]
     np.savez(LOCAL_DATA, data=data, station_numbers=station_numbers)
 

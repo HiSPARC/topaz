@@ -5,7 +5,7 @@ try:
     from django_publicdb.inforecords.models import Station
     DJANGO = True
 except ImportError:
-    from sapphire import api
+    from sapphire import Station, Network
     DJANGO = False
 
 
@@ -20,13 +20,10 @@ def get_versions_django():
 
 
 def get_versions_api():
-    station_numbers = api.Network().stations_numbers()
+    station_numbers = Network().station_numbers()
     for station_number in station_numbers:
-        try:
-            config = api.Station(station_number).config()
-            print '% 5d' % station_number, config['mas_version']
-        except:
-            print '% 5d' % station_number, '--'
+        config = Station(station_number).config()
+        print '% 5d' % station_number, config['mas_version']
 
 
 if __name__ == '__main__':

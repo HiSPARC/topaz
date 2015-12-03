@@ -43,8 +43,5 @@ def distance(s1, s2):
 
 if __name__ == "__main__":
     for sn in Network().station_numbers():
-        try:
-            station = Station(sn)
-        except:
-            pass
+        station = Station(sn)
         detect_problems(station)
