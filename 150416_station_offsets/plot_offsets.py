@@ -29,12 +29,6 @@ STATIONS = [502, 503, 504, 505, 506, 508, 509, 510]
 DATA_PATH = '/Users/arne/Datastore/station_offsets/'
 
 
-def get_detector_offsets(station):
-    offsets = genfromtxt(DATA_PATH + 'offsets_%d.csv' % station, delimiter='\t',
-                         names=('timestamp', 'd0', 'd1', 'd2', 'd3'))
-    return offsets
-
-
 def get_station_offsets(ref, station):
     offsets = genfromtxt(DATA_PATH + 'offsets_ref%d_s%d.csv' % (ref, station), delimiter='\t',
                          names=('timestamp', 'offset'))
@@ -94,7 +88,7 @@ if __name__ == '__main__':
 #         voltages = s.voltages
 #         gps = s.gps_locations
         # Determine offsets for first day of each month
-#         d_off = get_detector_offsets(station)
+#         d_off = s.detector_timing_offsets
         s_off = get_station_offsets(ref_station, station)
 #         n = get_n_events(station)
         graph = Plot(width=r'.6\textwidth')

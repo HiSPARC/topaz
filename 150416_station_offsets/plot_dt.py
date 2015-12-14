@@ -33,8 +33,8 @@ if __name__ == '__main__':
     t_start = datetime_to_gps(datetime(2010, 1, 1))
     t_end = datetime_to_gps(datetime(2015, 4, 1))
 
-    with tables.open_file(DATA_PATH + 'dt.h5', 'r') as data:
-        for i, station in enumerate(STATIONS, 1):
+    for i, station in enumerate(STATIONS, 1):
+        with tables.open_file(DATA_PATH + 'dt_ref501_%d.h5' % station, 'r') as data:
             distance, _, _ = CLUSTER.calc_rphiz_for_stations(i, 0)
             max_dt = max(distance / .3, 100) * 1.5
             table = get_station_dt(data, station)

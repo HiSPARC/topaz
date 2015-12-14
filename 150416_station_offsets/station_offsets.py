@@ -2,14 +2,16 @@
 
 For various combinations of stations in compact clusters
 
-
-- First determine dt once - use detector_offset from 150416_offset_drift
+- First determine dt for each station pair coincidence once
+- Use detector offsets from API
 
 """
 import itertools
 from datetime import datetime
 from bisect import bisect_right
 import csv
+import os
+import multiprocessing
 
 from numpy import nan, isnan, arange, histogram, linspace, genfromtxt
 from scipy.optimize import curve_fit
@@ -18,12 +20,10 @@ import tables
 from artist import Plot
 
 from sapphire.transformations.clock import datetime_to_gps
-from sapphire import CoincidenceQuery, HiSPARCStations
+from sapphire import CoincidenceQuery, HiSPARCStations, Station
 from sapphire.analysis.event_utils import station_arrival_time
-from sapphire.analysis.calibration import (determine_station_timing_offset,
-                                           determine_detector_timing_offsets)
+from sapphire.analysis.calibration import determine_station_timing_offset
 from sapphire.utils import pbar, ERR
-
 
 """
 Reference stations
@@ -38,14 +38,14 @@ DATA_PATH = '/Users/arne/Datastore/station_offsets/'
 
 
 class DeltaVal(tables.IsDescription):
-    ext_timestamp = tables.UInt64Col()
-    timestamp = tables.UInt32Col()
-    nanoseconds = tables.UInt32Col()
-    delta = tables.FloatCol()
+    ext_timestamp = tables.UInt64Col(pos=0)
+    timestamp = tables.UInt32Col(pos=1)
+    nanoseconds = tables.UInt32Col(pos=2)
+    delta = tables.FloatCol(pos=3)
 
 
 def determine_time_differences(coin_events, ref_station, station, ref_d_off, d_off):
-    """Determine the offsets between the stations."""
+    """Determine the arrival time differences between two stations."""
     dt = []
     ets = []
     for events in coin_events:
@@ -60,8 +60,9 @@ def determine_time_differences(coin_events, ref_station, station, ref_d_off, d_o
             ref_id = 1
             id = 0
         ref_t = station_arrival_time(events[ref_id][1], ref_ts, [0, 1, 2, 3],
-                                     ref_d_off)
-        t = station_arrival_time(events[id][1], ref_ts, [0, 1, 2, 3], d_off)
+                                     ref_d_off(ref_ts / int(1e9)))
+        t = station_arrival_time(events[id][1], ref_ts, [0, 1, 2, 3],
+                                 d_off(ref_ts / int(1e9)))
         if isnan(t) or isnan(ref_t):
             continue
         dt.append(t - ref_t)
@@ -69,29 +70,15 @@ def determine_time_differences(coin_events, ref_station, station, ref_d_off, d_o
     return ets, dt
 
 
-def get_detector_offsets(station):
-    offsets = genfromtxt(DATA_PATH + 'offsets_%d.csv' % station, delimiter='\t')
-    offsets = {d[0]: d[1:] for d in offsets}
-    return offsets
-
-
-def get_active_detector_offsets(offsets, timestamp):
-    idx = bisect_right(offsets[:, 0], timestamp, lo=0)
-    if idx == 0:
-        idx = 1
-    return offsets[idx - 1][1:]
-
-
 def write_offets(station, ref_station, offsets):
-    output = open(DATA_PATH + 'offsets_ref%d_s%d.csv' % (ref_station, station), 'wb')
-    csvwriter = csv.writer(output, delimiter='\t')
-    for ts, offset in offsets:
-        csvwriter.writerow([ts, offset])
-    output.close()
+    path = DATA_PATH + 'offsets_ref%d_s%d.tsv' % (ref_station, station)
+    with open(path, 'wb') as output:
+        csvwriter = csv.writer(output, delimiter='\t')
+        csvwriter.writerows((ts, offset) for ts, offset in offsets)
 
 
-def store_dt(station, ref_station, ext_timestamps, deltats):
-    with tables.open_file(DATA_PATH + 'dt_ref%d.h5' % ref_station, 'a') as data:
+def store_dt(ref_station, station, ext_timestamps, deltats):
+    with tables.open_file(DATA_PATH + 'dt_ref%d_%d.h5' % (ref_station, station), 'a') as data:
         try:
             table = data.get_node('/s%d' % station)
         except tables.NoSuchNodeError:
@@ -107,28 +94,49 @@ def store_dt(station, ref_station, ext_timestamps, deltats):
         table.flush()
 
 
-def main(data):
-    cq = CoincidenceQuery(data)
-    ref_station = 510  # 501
-    ref_detector_offsets = get_detector_offsets(ref_station)
-    for station in SPA_STAT:
-        print ref_station, station
-        offsets = []
-        detector_offsets = get_detector_offsets(station)
-        if station == ref_station:
-            continue
-        for dt0, dt1 in pbar(monthrange((2010, 1), (2015, 4)), length=63):
+def determine_dt_for_pair(stations):
+    """Determine and store dt for a pair of stations
+
+    :param ref_station: reference station number to use as refernece
+    :param station: station number to determine the dt for
+
+    """
+    ref_station, station = stations
+    with tables.open_file(SPA_DATA, 'r') as data:
+        cq = CoincidenceQuery(data)
+        ref_detector_offsets = Station(ref_station).detector_timing_offset
+        detector_offsets = Station(station).detector_timing_offset
+        for dt0, dt1 in monthrange((2010, 1), (2015, 4)):
             coins = cq.all([station, ref_station], start=dt0, stop=dt1, iterator=True)
             coin_events = cq.events_from_stations(coins, [station, ref_station])
-            ref_d_off = ref_detector_offsets[dt0]
-            d_off = detector_offsets[dt0]
-            ets, dt = determine_time_differences(coin_events, ref_station, station, ref_d_off, d_off)
-            store_dt(station, ref_station, ets, dt)
-            if len(dt) < 100:
-                continue
-            s_off = determine_station_timing_offset(dt)
-            offsets.append((dt0, s_off))
-        write_offets(station, ref_station, offsets)
+            ets, dt = determine_time_differences(coin_events, ref_station, station,
+                                                 ref_detector_offsets, detector_offsets)
+            store_dt(ref_station, station, ets, dt)
+
+
+def determine_dt():
+    args = [(ref_station, station)
+            for ref_station, station in itertools.permutations(SPA_STAT, 2)]
+    worker_pool = multiprocessing.Pool()
+    worker_pool.map(determine_dt_for_pair, args)
+    worker_pool.close()
+    worker_pool.join()
+
+
+def determine_offsets():
+    for ref_station, station in itertools.permutations(SPA_STAT, 2):
+        with tables.open_file(DATA_PATH + 'dt_ref%d_%d.h5' % (ref_station, station), 'r') as data:
+            table = data.get_node('/s%d' % station)
+            offsets = []
+            for dt0, dt1 in pbar(monthrange((2010, 1), (2015, 4)), length=63):
+                dt = table.read_where('(timestamp >= dt0) & (timestamp < dt1)',
+                                      field='delta')
+                if len(dt) < 100:
+                    s_off = nan
+                else:
+                    s_off = determine_station_timing_offset(dt)
+                offsets.append((dt0, s_off))
+            write_offets(station, ref_station, offsets)
 
 
 def monthrange(start, stop):
@@ -139,6 +147,7 @@ def monthrange(start, stop):
 
     :param start: a year, month tuple
     :param stop: a year, month tuple
+    :return: generator for start and end timestamps of one month intervals
 
     The stop is the last end of the range.
 
@@ -172,5 +181,5 @@ def monthrange(start, stop):
 
 
 if __name__ == '__main__':
-    with tables.open_file(SPA_DATA, 'r') as data:
-        main(data)
+    determine_dt()
+    determine_offsets()
