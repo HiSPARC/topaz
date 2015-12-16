@@ -1,5 +1,6 @@
 """Plot station dt distribution"""
 
+import itertools
 from datetime import datetime
 
 import tables
@@ -18,6 +19,8 @@ WEEK = 7 * DAY
 FORTNIGHT = 2 * WEEK
 XWEEK = 3 * WEEK
 MONTH = 30 * DAY
+QUARTER = 3 * MONTH
+HALFYEAR = 6 * MONTH
 YEAR = 365 * DAY
 
 SPA_STAT = [501, 502, 503, 504, 505, 506, 508, 509, 510]
@@ -35,14 +38,14 @@ if __name__ == '__main__':
     t_start = datetime_to_gps(datetime(2010, 1, 1))
     t_end = datetime_to_gps(datetime(2015, 4, 1))
 
-    for i, station in enumerate(STATIONS, 1):
-        with tables.open_file(DATA_PATH + 'dt_ref501_%d.h5' % station, 'r') as data:
-            distance, _, _ = CLUSTER.calc_rphiz_for_stations(i, 0)
+    for ref_station, station in itertools.permutations(SPA_STAT, 2):
+        with tables.open_file(DATA_PATH + 'dt_ref%d_%d.h5' % (ref_station, station), 'r') as data:
+            distance, _, _ = CLUSTER.calc_rphiz_for_stations(SPA_STAT.index(ref_station), SPA_STAT.index(station))
             max_dt = max(distance / .3, 100) * 1.5
             table = get_station_dt(data, station)
             graph = Plot()
-            ts0 = table[0]['timestamp'] + WEEK
-            ts1 = ts0 + XWEEK # * max(1, (distance / 100))
+            ts1 = table[-1]['timestamp'] - WEEK
+            ts0 = ts1 - QUARTER # * max(1, (distance / 100))
             counts, bins = histogram(table.read_where('(timestamp > ts0) & (timestamp < ts1)',
                                                       field='delta'),
                                      bins=(linspace(-max_dt, max_dt, 150)))
@@ -56,4 +59,4 @@ if __name__ == '__main__':
             graph.set_ylabel('Counts')
             graph.set_xlimits(-max_dt, max_dt)
             graph.set_ylimits(min=0)
-            graph.save('plots/dt_%d_dist_xweek' % station)
+            graph.save_as_pdf('plots/dt_ref%d_%d_dist_3month' % (ref_station, station))

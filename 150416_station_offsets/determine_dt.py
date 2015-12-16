@@ -45,7 +45,12 @@ class DeltaVal(tables.IsDescription):
 
 
 def determine_time_differences(coin_events, ref_station, station, ref_d_off, d_off):
-    """Determine the arrival time differences between two stations."""
+    """Determine the arrival time differences between two stations.
+
+    :return: extended timestamp of the first event and time difference,
+             t - t_ref.
+
+    """
     dt = []
     ets = []
     for events in coin_events:
@@ -70,15 +75,12 @@ def determine_time_differences(coin_events, ref_station, station, ref_d_off, d_o
     return ets, dt
 
 
-def write_offets(station, ref_station, offsets):
-    path = DATA_PATH + 'offsets_ref%d_s%d.tsv' % (ref_station, station)
-    with open(path, 'wb') as output:
-        csvwriter = csv.writer(output, delimiter='\t')
-        csvwriter.writerows((ts, offset) for ts, offset in offsets)
-
-
 def store_dt(ref_station, station, ext_timestamps, deltats):
-    with tables.open_file(DATA_PATH + 'dt_ref%d_%d.h5' % (ref_station, station), 'a') as data:
+    path = DATA_PATH + 'dt_ref%d_%d.h5' % (ref_station, station)
+    if os.path.exists(path):
+        print 'dt data already exists for %d-%d' % (ref_station, station)
+        return
+    with tables.open_file(path, 'w') as data:
         try:
             table = data.get_node('/s%d' % station)
         except tables.NoSuchNodeError:
@@ -121,22 +123,6 @@ def determine_dt():
     worker_pool.map(determine_dt_for_pair, args)
     worker_pool.close()
     worker_pool.join()
-
-
-def determine_offsets():
-    for ref_station, station in itertools.permutations(SPA_STAT, 2):
-        with tables.open_file(DATA_PATH + 'dt_ref%d_%d.h5' % (ref_station, station), 'r') as data:
-            table = data.get_node('/s%d' % station)
-            offsets = []
-            for dt0, dt1 in pbar(monthrange((2010, 1), (2015, 4)), length=63):
-                dt = table.read_where('(timestamp >= dt0) & (timestamp < dt1)',
-                                      field='delta')
-                if len(dt) < 100:
-                    s_off = nan
-                else:
-                    s_off = determine_station_timing_offset(dt)
-                offsets.append((dt0, s_off))
-            write_offets(station, ref_station, offsets)
 
 
 def monthrange(start, stop):
@@ -182,4 +168,3 @@ def monthrange(start, stop):
 
 if __name__ == '__main__':
     determine_dt()
-    determine_offsets()
