@@ -25,15 +25,18 @@ from sapphire.analysis.event_utils import station_arrival_time
 from sapphire.analysis.calibration import determine_station_timing_offset
 from sapphire.utils import pbar, ERR
 
+from station_distances import close_pairs_in_network, distance_between_stations
+
 """
 Reference stations
 
 501 for Science Park stations, data starting at 2010/1.
 """
 
+PAIR_DATAPATH = '/Users/arne/Datastore/pairs/%d_%d.h5'
+
 SPA_DATA = '/Users/arne/Datastore/esd_coincidences/sciencepark_n2_100101_150401.h5'
 SPA_STAT = [501, 502, 503, 504, 505, 506, 508, 509, 510]
-CLUSTER = HiSPARCStations(SPA_STAT)
 DATA_PATH = '/Users/arne/Datastore/station_offsets/'
 
 
@@ -48,13 +51,14 @@ def determine_time_differences(coin_events, ref_station, station, ref_d_off, d_o
     """Determine the arrival time differences between two stations.
 
     :return: extended timestamp of the first event and time difference,
-             t - t_ref.
+             t - t_ref. Not corrected for altitude differences.
 
     """
     dt = []
     ets = []
     for events in coin_events:
-        ref_ts = events[0][1]['ext_timestamp']
+        ref_ets = events[0][1]['ext_timestamp']
+        ref_ts = ref_ets / int(1e9)
         # Filter for possibility of same station twice in coincidence
         if len(events) is not 2:
             continue
@@ -64,23 +68,21 @@ def determine_time_differences(coin_events, ref_station, station, ref_d_off, d_o
         else:
             ref_id = 1
             id = 0
-        ref_t = station_arrival_time(events[ref_id][1], ref_ts, [0, 1, 2, 3],
-                                     ref_d_off(ref_ts / int(1e9)))
-        t = station_arrival_time(events[id][1], ref_ts, [0, 1, 2, 3],
-                                 d_off(ref_ts / int(1e9)))
+        ref_t = station_arrival_time(events[ref_id][1], ref_ets, [0, 1, 2, 3],
+                                     ref_d_off(ref_ts))
+        t = station_arrival_time(events[id][1], ref_ets, [0, 1, 2, 3],
+                                 d_off(ref_ts))
         if isnan(t) or isnan(ref_t):
             continue
         dt.append(t - ref_t)
-        ets.append((ref_ts))
+        ets.append((ref_ets))
     return ets, dt
 
 
 def store_dt(ref_station, station, ext_timestamps, deltats):
+    """Store determined dt values"""
     path = DATA_PATH + 'dt_ref%d_%d.h5' % (ref_station, station)
-    if os.path.exists(path):
-        print 'dt data already exists for %d-%d' % (ref_station, station)
-        return
-    with tables.open_file(path, 'w') as data:
+    with tables.open_file(path, 'a') as data:
         try:
             table = data.get_node('/s%d' % station)
         except tables.NoSuchNodeError:
@@ -103,22 +105,33 @@ def determine_dt_for_pair(stations):
     :param station: station number to determine the dt for
 
     """
+    path = DATA_PATH + 'dt_ref%d_%d.h5' % stations
+    if os.path.exists(path):
+        print 'dt data already exists for %d-%d' % stations
+        return
+
     ref_station, station = stations
-    with tables.open_file(SPA_DATA, 'r') as data:
-        cq = CoincidenceQuery(data)
-        ref_detector_offsets = Station(ref_station).detector_timing_offset
-        detector_offsets = Station(station).detector_timing_offset
-        for dt0, dt1 in monthrange((2010, 1), (2015, 4)):
-            coins = cq.all([station, ref_station], start=dt0, stop=dt1, iterator=True)
-            coin_events = cq.events_from_stations(coins, [station, ref_station])
-            ets, dt = determine_time_differences(coin_events, ref_station, station,
-                                                 ref_detector_offsets, detector_offsets)
-            store_dt(ref_station, station, ets, dt)
+    try:
+        with tables.open_file(PAIR_DATAPATH % tuple(sorted(stations)), 'r') as data:
+            cq = CoincidenceQuery(data)
+            ref_detector_offsets = Station(ref_station).detector_timing_offset
+            detector_offsets = Station(station).detector_timing_offset
+            for dt0, dt1 in monthrange((2004, 1), (2015, 9)):
+                coins = cq.all(stations, start=dt0, stop=dt1, iterator=True)
+                coin_events = cq.events_from_stations(coins, stations)
+                ets, dt = determine_time_differences(coin_events, ref_station, station,
+                                                     ref_detector_offsets, detector_offsets)
+                store_dt(ref_station, station, ets, dt)
+    except Exception as e:
+        print 'Failed for %d, %d' % stations
+        print e
+        return
 
 
 def determine_dt():
-    args = [(ref_station, station)
-            for ref_station, station in itertools.permutations(SPA_STAT, 2)]
+    """Determine and store dt values using multiprocessing"""
+
+    args = close_pairs_in_network(min=45, max=2e3)
     worker_pool = multiprocessing.Pool()
     worker_pool.map(determine_dt_for_pair, args)
     worker_pool.close()
