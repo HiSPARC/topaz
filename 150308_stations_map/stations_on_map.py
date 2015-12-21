@@ -111,22 +111,23 @@ def make_map(country=None, cluster=None, subcluster=None, station=None,
               max(longitudes + weather_longitudes + knmi_longitudes))
 
     map = Map(bounds, margin=.1)
-    map.save_png('map-tiles-background.png')
+#     map.save_png('map-tiles-background.png')
     image = map.to_pil()
 
     map_w, map_h = image.size
-    aspect = float(map_w) / float(map_h)
+
+    xmin, ymin = map.to_pixels(map.box[:2])
+    xmax, ymax = map.to_pixels(map.box[2:])
+    aspect = abs(xmax - xmin) / abs(ymax - ymin)
 
     width = 0.67
     height = width / aspect
     plot = Plot(width=r'%.2f\linewidth' % width,
-                 height=r'%.2f\linewidth' % height)
+                height=r'%.2f\linewidth' % height)
 
     plot.draw_image(image, 0, 0, map_w, map_h)
     plot.set_axis_equal()
 
-    xmin, ymin = map.to_pixels(map.box[:2])
-    xmax, ymax = map.to_pixels(map.box[2:])
     plot.set_xlimits(xmin, xmax)
     plot.set_ylimits(map_h - ymin, map_h - ymax)
 
@@ -135,19 +136,18 @@ def make_map(country=None, cluster=None, subcluster=None, station=None,
 
     if weather:
         x, y = map.to_pixels(array(weather_latitudes), array(weather_longitudes))
-        plot.scatter(x, map_h - y, markstyle="black!50!red, thick")
+        plot.scatter(x, map_h - y, markstyle="black!30!red, thick")
     if knmi:
         x, y = map.to_pixels(array(knmi_latitudes), array(knmi_longitudes))
         plot.scatter(x, map_h - y, markstyle="black!50!blue, thick")
 
     plot.set_xlabel('Longitude [$^\circ$]')
-#     plot.set_xticks([0, map_w])
-#     plot.set_xtick_labels([nw[1], se[1]])
+    plot.set_xticks([xmin, xmax])
+    plot.set_xtick_labels(['%.4f' % x for x in (map.box[1], map.box[3])])
 
     plot.set_ylabel('Latitude [$^\circ$]')
-#     plot.set_yticks([0, map_h])
-#     plot.set_ytick_labels([se[0], nw[0]])
-
+    plot.set_yticks([map_h - ymin, map_h - ymax])
+    plot.set_ytick_labels(['%.4f' % x for x in (map.box[0], map.box[2])])
 #     plot.set_title(label)
 
     # save plot to file
@@ -176,20 +176,28 @@ def main():
                         help='Show all KNMI weather stations')
     args = parser.parse_args()
 
+    label = ''
+
+    if args.weather:
+        label += '_weather'
+
+    if args.knmi:
+        label += '_knmi'
+
     if args.network:
-        label = 'network'
+        label = 'network' + label
         make_map(label=label, detectors=args.detectors, weather=args.weather, knmi=args.knmi)
     elif args.country:
-        label = 'country_%d' % args.number
+        label = 'country_%d' % args.number + label
         make_map(country=args.number, label=label, detectors=args.detectors, weather=args.weather, knmi=args.knmi)
     elif args.cluster:
-        label = 'cluster_%d' % args.number
+        label = 'cluster_%d' % args.number + label
         make_map(cluster=args.number, label=label, detectors=args.detectors, weather=args.weather, knmi=args.knmi)
     elif args.subcluster:
-        label = 'subcluster_%d' % args.number
+        label = 'subcluster_%d' % args.number + label
         make_map(subcluster=args.number, label=label, detectors=args.detectors, weather=args.weather, knmi=args.knmi)
     elif args.station:
-        label = 'station_%d' % args.number
+        label = 'station_%d' % args.number + label
         make_map(station=args.number, label=label, detectors=args.detectors, weather=args.weather, knmi=args.knmi)
 
 
