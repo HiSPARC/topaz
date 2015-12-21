@@ -22,10 +22,10 @@ import matplotlib.pyplot as plt
 # -----------------------------------------------------------------------------
 __version__ = '0.0.3'
 TILE_SIZE = 512
-MAXTILES = 20
+MAXTILES = 25
 
-TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png"
-# TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}@2x.png"
+TILE_SERVER_LABEL = "http://tile.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png"
+TILE_SERVER = "http://tile.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}@2x.png"
 
 
 # -----------------------------------------------------------------------------
@@ -236,10 +236,10 @@ def extend_box(box_latlon, margin=.1):
     (lat0, lon0, lat1, lon1) = box_latlon
     lat0, lat1 = min(lat0, lat1), max(lat0, lat1)
     lon0, lon1 = min(lon0, lon1), max(lon0, lon1)
-    dlat = (lat1 - lat0)
-    dlon = (lon1 - lon0)
-    return (lat0 - dlat * margin, lon0 - dlon * margin,
-            lat1 + dlat * margin, lon1 + dlon * margin)
+    dlat = max((lat1 - lat0) * margin, 0.0005)
+    dlon = max((lon1 - lon0) * margin, 0.0005 / np.cos(np.radians(lat0)))
+    return (lat0 - dlat, lon0 - dlon,
+            lat1 + dlat, lon1 + dlon)
 
 
 # -----------------------------------------------------------------------------
@@ -273,6 +273,7 @@ class Map(object):
         """
         z = kwargs.get('z', 18)
         margin = kwargs.get('margin', .05)
+
         box = _box(*args)
         if margin is not None:
             box = extend_box(box, margin)
