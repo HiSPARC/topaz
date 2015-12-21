@@ -9,8 +9,8 @@ from sapphire.utils import pbar
 from sapphire.transformations.clock import datetime_to_gps
 
 
-PATH = '/Users/arne/Datastore/publicdb_csv/eventtime/*.csv'
 
+PATH = '/Users/arne/Datastore/publicdb_csv/eventtime/*.tsv'
 
 def read_eventtime(path):
     """Read an eventtime csv file"""

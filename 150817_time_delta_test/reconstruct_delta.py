@@ -13,11 +13,11 @@ from sapphire.utils import gauss
 
 def load_dataset():
     with tables.open_file('data/data.h5', 'w') as data:
-        load_data(data, '/s99', 'data/events-s99-20150817.csv')
+        load_data(data, '/s99', 'data/events-s99-20150817.tsv')
 
 
 def combine_delta_data():
-    delta_data = genfromtxt('data/time_delta.csv', delimiter='\t', dtype=None,
+    delta_data = genfromtxt('data/time_delta.tsv', delimiter='\t', dtype=None,
                             names=['ext_timestamp', 'time_delta'])
     delta_data = {ets: td for ets, td in delta_data}
 

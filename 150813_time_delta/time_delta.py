@@ -4,7 +4,7 @@ from artist import Plot
 
 
 def analyse(name):
-    data = genfromtxt('data/%s.csv' % name, delimiter='\t', dtype=None,
+    data = genfromtxt('data/%s.tsv' % name, delimiter='\t', dtype=None,
                       names=['ext_timestamp', 'time_delta'])
     time_delta = data['time_delta']
 

@@ -13,6 +13,6 @@ if __name__ == "__main__":
     station_numbers = Network().station_numbers()
 
     for sn in pbar(station_numbers):
-        path = PATH + '%d.csv' % sn
+        path = PATH + '%d.tsv' % sn
         if not os.path.exists(path):
             urllib.urlretrieve(BASE % sn, path)

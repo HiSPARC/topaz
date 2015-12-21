@@ -62,7 +62,7 @@ if __name__ == '__main__':
 
     for station in pbar(STATIONS):
         # Determine offsets for first day of each month
-        output = open('offsets_%d.csv' % station, 'wb')
+        output = open('offsets_%d.tsv' % station, 'wb')
         csvwriter = csv.writer(output, delimiter='\t')
         offsets = []
         timestamps = []

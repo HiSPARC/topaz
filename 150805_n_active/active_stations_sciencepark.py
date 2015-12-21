@@ -5,7 +5,7 @@ from artist import Plot
 from numpy import genfromtxt, zeros, histogram, arange
 
 
-PATH = '/Users/arne/Datastore/publicdb_csv/eventtime/5*.csv'
+PATH = '/Users/arne/Datastore/publicdb_csv/eventtime/5*.tsv'
 STATIONS = [501, 502, 503, 504, 505, 506, 508, 509, 510, 511]
 
 

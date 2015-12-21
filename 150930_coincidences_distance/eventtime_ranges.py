@@ -4,7 +4,7 @@ import os
 from numpy import genfromtxt, zeros, histogram, arange, array
 
 
-PATH = '/Users/arne/Datastore/publicdb_csv/eventtime/{station_number}.csv'
+PATH = '/Users/arne/Datastore/publicdb_csv/eventtime/{station_number}.tsv'
 
 
 def read_eventtime(path):

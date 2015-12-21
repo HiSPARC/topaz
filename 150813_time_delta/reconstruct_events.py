@@ -11,7 +11,7 @@ from sapphire.utils import angle_between
 
 
 def download_dataset():
-    delta_data = genfromtxt('time_delta_fixed.csv', delimiter='\t', dtype=None,
+    delta_data = genfromtxt('time_delta_fixed.tsv', delimiter='\t', dtype=None,
                       names=['ext_timestamp', 'time_delta'])
     start = gps_to_datetime(delta_data['ext_timestamp'][0] / int(1e9))
     end = gps_to_datetime(delta_data['ext_timestamp'][-1] / int(1e9))

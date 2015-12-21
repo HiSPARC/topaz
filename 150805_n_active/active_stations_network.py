@@ -5,7 +5,7 @@ from artist import Plot
 from numpy import genfromtxt, zeros, histogram, arange
 
 
-PATH = '/Users/arne/Datastore/publicdb_csv/eventtime/*.csv'
+PATH = '/Users/arne/Datastore/publicdb_csv/eventtime/*.tsv'
 
 
 def read_eventtime(path):
