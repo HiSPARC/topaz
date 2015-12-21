@@ -9,8 +9,9 @@ from sapphire.utils import pbar
 from sapphire.transformations.clock import datetime_to_gps
 
 
-
 PATH = '/Users/arne/Datastore/publicdb_csv/eventtime/*.tsv'
+YEARS = range(2004, 2017)
+
 
 def read_eventtime(path):
     """Read an eventtime csv file"""
@@ -51,15 +52,27 @@ def get_aligned():
     return aligned_data, aligned_data_all, first, last
 
 
-if __name__ == "__main__":
-    if 'aligned_data_all' not in globals():
-        aligned_data, aligned_data_all, first, last = get_aligned()
+def plot_luminosity(timestamp, aligned_data, aligned_data_all):
+
     n_active_aligned = (aligned_data != 0).sum(axis=0)
     cumsummed_data_all = aligned_data_all.sum(axis=0).cumsum()
     summed_data = aligned_data.sum(axis=0)
     cumsummed_data = summed_data.cumsum()
 
-    timestamp = range(first, last + 1, 3600)
+    plot = Plot(width=r'.5\textwidth')
+    plot.plot([t / 1e9 for t in timestamp[::100]], cumsummed_data_all[::100],
+              linestyle='black!50!green, thick', mark=None)
+    plot.plot([t / 1e9 for t in timestamp[::100]], cumsummed_data[::100],
+              linestyle='thick', mark=None)
+    plot.set_xticks([datetime_to_gps(date(y, 1, 1)) / 1e9 for y in YEARS[::3]])
+    plot.set_xtick_labels(['%d' % y for y in YEARS[::3]])
+    plot.set_ylabel('Cummulative number of events')
+    plot.set_xlabel('Date')
+    plot.save_as_pdf('luminosity_network')
+
+
+def plot_active_stations(timestamp, aligned_data):
+
     first_ts = []
 
     for n in range(aligned_data.shape[0]):
@@ -69,7 +82,8 @@ if __name__ == "__main__":
                 break
 
     first_ts = sorted(first_ts)
-    years = range(2004, 2017)
+
+    n_active_aligned = (aligned_data != 0).sum(axis=0)
 
     plot = Plot(width=r'.5\textwidth')
     plot.plot([t / 1e9 for t in first_ts], range(1, len(first_ts) + 1),
@@ -79,19 +93,17 @@ if __name__ == "__main__":
     plot.set_axis_options('line join=round')
     plot.set_ylabel('Number of stations')
     plot.set_xlabel('Date')
-    plot.set_xticks([datetime_to_gps(date(y, 1, 1)) / 1e9 for y in years[::3]])
-    plot.set_xtick_labels(['%d' % y for y in years[::3]])
+    plot.set_xticks([datetime_to_gps(date(y, 1, 1)) / 1e9 for y in YEARS[::3]])
+    plot.set_xtick_labels(['%d' % y for y in YEARS[::3]])
     plot.save_as_pdf('active_stations')
 
-    plot = Plot(width=r'.5\textwidth')
-#     plot.plot(timestamp[::100], 1400 * n_active_aligned.cumsum()[::100],
-#               linestyle='blue', mark=None)
-    plot.plot([t / 1e9 for t in timestamp[::100]], cumsummed_data_all[::100],
-              linestyle='black!50!green, thick', mark=None)
-    plot.plot([t / 1e9 for t in timestamp[::100]], cumsummed_data[::100],
-              linestyle='thick', mark=None)
-    plot.set_xticks([datetime_to_gps(date(y, 1, 1)) / 1e9 for y in years[::3]])
-    plot.set_xtick_labels(['%d' % y for y in years[::3]])
-    plot.set_ylabel('Cummulative number of events')
-    plot.set_xlabel('Date')
-    plot.save_as_pdf('luminosity_network')
+
+if __name__ == "__main__":
+    if 'aligned_data_all' not in globals():
+        aligned_data, aligned_data_all, first, last = get_aligned()
+
+    timestamp = range(first, last + 1, 3600)
+
+    plot_active_stations(timestamp, aligned_data)
+    plot_luminosity(timestamp, aligned_data, aligned_data_all)
+
