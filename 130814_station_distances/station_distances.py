@@ -19,8 +19,16 @@ def distances_sciencepark():
     distances_stations(cluster, name='_sciencepark')
 
 
+def distances_netherlands():
+    cluster = HiSPARCNetwork()
+    cluster._stations = [s for s in cluster.stations if s.number < 10000]
+    distances_stations(cluster, name='_netherlands')
+
+
 def distances_all_stations():
     cluster = HiSPARCNetwork()
+    # Ignore KASCADE
+    cluster._stations = [s for s in cluster.stations if s.number < 70000]
     distances_stations(cluster, name='_all')
 
 
@@ -68,4 +76,5 @@ def distance(c1, c2):
 
 if __name__ == '__main__':
     distances_sciencepark()
+    distances_netherlands()
     distances_all_stations()
