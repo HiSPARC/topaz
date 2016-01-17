@@ -35,16 +35,23 @@ def get_traces(station_number, ts, ns, raw=False):
 def plot_traces(traces, label='', raw=False):
     """Plot traces
 
+    Does not take different mV/ADC for HiSPARC II-III into account!
+
     :param traces: list of lists of trace values.
     :param label: name (suffix) for the output pdf.
 
     """
     colors = ['black', 'red', 'black!40!green', 'blue']
-    plot = Plot(width=r'1.\textwidth')
+    plot = Plot(width=r'.6\textwidth')
     times = arange(0, len(traces[0]) * 2.5, 2.5)
     for i, trace in enumerate(traces):
         if not raw:
-            trace = [t * -0.57 / 1e3 for t in trace]
+            if max(trace) * 0.57 < 500:
+                use_milli = True
+                trace = [t * -0.57 for t in trace]
+            else:
+                use_milli = False
+                trace = [t * -0.57 / 1e3 for t in trace]
         plot.plot(times, trace, linestyle='%s, thin' % colors[i], mark=None)
     if len(traces[0]) == 2400 and raw:
         plot.add_pin_at_xy(500, 10, 'pre-trigger', location='below', use_arrow=False)
@@ -54,6 +61,8 @@ def plot_traces(traces, label='', raw=False):
         plot.draw_vertical_line(2500, 'gray')
     if raw:
         plot.set_ylabel(r'Signal strength [ADCcounts]')
+    elif use_milli:
+        plot.set_ylabel(r'Signal strength [\si{\milli\volt}]')
     else:
         plot.set_ylabel(r'Signal strength [\si{\volt}]')
     plot.set_xlabel(r'Event time [\si{\ns}]')
