@@ -2,7 +2,7 @@
 
 from itertools import combinations, permutations
 
-from numpy import histogram, histogram2d, isnan, array
+from numpy import histogram, histogram2d, isnan, array, nanmax, nanmean
 
 from artist import Plot
 
@@ -35,6 +35,38 @@ def round_trip(offsets):
         plot.save_as_pdf('round_trip_%d' % n)
 
 
+def stopover(offsets):
+    stations = offsets.keys()
+    from_s = 505
+    to_s = 509
+    idx = range(len(offsets[stations[0]][stations[1]]))
+    ts = array(idx)
+
+    plot = Plot()
+
+    offs = offsets[from_s][to_s]
+    plot.plot(ts, offs, linestyle='red', mark=None)
+
+    all_offs = []
+
+    for s in stations:
+        if s in [from_s, to_s, 508]:
+            continue
+        offs = offsets[from_s][s] + offsets[s][to_s]
+
+        all_offs.append(offs)
+
+        if nanmax(offs) > 45:
+            print s
+        plot.plot(ts, offs, linestyle='gray', mark=None)
+
+    mean_offs = nanmean(all_offs, axis=0)
+    plot.plot(ts, mean_offs, linestyle='blue', mark=None)
+
+    plot.set_ylimits(-200, 200)
+    plot.save_as_pdf('stop_over')
+
+
 def offset_distribution(offsets):
     stations = offsets.keys()
     for n in [1, 2, 3, 4, 5]:
@@ -58,3 +90,4 @@ if __name__ == "__main__":
     offsets = get_data()
     round_trip(offsets)
     offset_distribution(offsets)
+    stopover(offsets)
