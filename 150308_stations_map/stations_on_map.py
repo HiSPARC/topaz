@@ -87,12 +87,15 @@ def get_knmi_locations():
 def make_map(country=None, cluster=None, subcluster=None, station=None,
              label='map', detectors=False, weather=False, knmi=False):
 
-    if detectors:
-        latitudes, longitudes = get_detector_locations(country, cluster,
-                                                       subcluster, station)
+    get_locations = (get_detector_locations if detectors
+                     else get_station_locations)
+
+    if (country is None and cluster is None and subcluster is None and
+                station is None):
+        latitudes, longitudes = get_locations(country, cluster,
+                                              subcluster, station)
     else:
-        latitudes, longitudes = get_station_locations(country, cluster,
-                                                      subcluster, station)
+        latitudes, longitudes = ([], [])
 
     if weather:
         weather_latitudes, weather_longitudes = get_weather_locations()
@@ -157,7 +160,8 @@ def make_map(country=None, cluster=None, subcluster=None, station=None,
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('number', type=int,
-        help="Number of the country, cluster, subcluster, or station")
+                        help=("Number of the country, cluster, subcluster, "
+                              "or station (set to 0 when choosing network)"))
     parser.add_argument('--network', action='store_true',
                         help='Map of the whole network')
     parser.add_argument('--country', action='store_true',
@@ -199,6 +203,9 @@ def main():
     elif args.station:
         label = 'station_%d' % args.number + label
         make_map(station=args.number, label=label, detectors=args.detectors, weather=args.weather, knmi=args.knmi)
+    else:
+        label = 'map' + label
+        make_map(station=501, label=label, weather=args.weather, knmi=args.knmi)
 
 
 if __name__ == '__main__':
