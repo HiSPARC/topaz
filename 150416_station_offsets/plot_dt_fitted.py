@@ -51,6 +51,9 @@ if __name__ == '__main__':
                                      bins=(linspace(-max_dt, max_dt, 150)))
             x = (bins[:-1] + bins[1:]) / 2
             popt, pcov = curve_fit(gauss, x, counts, p0=(sum(counts), 0., max_dt))
+
+            # print ref_station, station, distance, popt[-1]
+
             graph.plot(x, gauss(x, *popt), mark=None, linestyle='gray')
             graph.set_label('$\mu$: %.2f, $\sigma$: %.2f' % (popt[1], popt[2]))
 
