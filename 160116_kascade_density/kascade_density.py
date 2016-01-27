@@ -127,16 +127,16 @@ class KascadeDensity(object):
         self.mpv_n = self.mpv_ni.sum(axis=1) / 4.
 
         self.zenith = recs.col('reference_theta')
-#         self.k_ni = ((recs.col('k_dens_mu') + recs.col('k_dens_e')).T * cos(self.zenith)).T
-        self.k_ni = (recs.col('k_dens_mu') + recs.col('k_dens_e'))
-        self.k_n = self.k_ni.sum(axis=1) / 4.
+#         self.src_ki = ((recs.col('k_dens_mu') + recs.col('k_dens_e')).T * cos(self.zenith)).T
+        self.src_ki = (recs.col('k_dens_mu') + recs.col('k_dens_e'))
+        self.src_k = self.src_ki.sum(axis=1) / 4.
 
         # Fit PMT curve
         self.cor_ni = empty_like(self.mpv_ni)
         self.fit_i = []
         for i in range(4):
-            filter = (self.k_ni[:, i] > .5) & (self.k_ni[:, i] < 100)
-            k = self.k_ni[:, i].compress(filter).tolist()
+            filter = (self.src_ki[:, i] > .5) & (self.src_ki[:, i] < 100)
+            k = self.src_ki[:, i].compress(filter).tolist()
             h = self.mpv_ni[:, i].compress(filter).tolist()
             try:
                 fit = fit_curve(h, k)
@@ -148,8 +148,8 @@ class KascadeDensity(object):
             # Detected n corrected for PMT
             self.cor_ni[:, i] = get_in_for_out(self.mpv_ni[:, i], self.ref_out, self.ref_in_i[:, i])
 
-        filter = (self.k_n > .5) & (self.k_n < 100)
-        k = self.k_n.compress(filter).tolist()
+        filter = (self.src_k > .5) & (self.src_k < 100)
+        k = self.src_k.compress(filter).tolist()
         h = self.mpv_n.compress(filter).tolist()
         fit = fit_curve(h, k)  # err=sqrt(k)
         self.ref_in = ice_cube_pmt_p1(self.ref_out, *fit[0])
@@ -158,8 +158,8 @@ class KascadeDensity(object):
         self.fit = fit[0]
         self.cor_n = get_in_for_out(self.mpv_n, self.ref_out, self.ref_in)
 
-        self.res_ni = residuals(self.cor_ni, self.k_ni)
-        self.res_n = residuals(self.cor_n, self.k_n)
+        self.res_ni = residuals(self.cor_ni, self.src_ki)
+        self.res_n = residuals(self.cor_n, self.src_k)
 
     def process_densities(self):
         """Determine errors on the data"""
@@ -269,15 +269,15 @@ class KascadeDensity(object):
         return plot
 
     def plot_src_hisparc_kascade_station(self):
-        plot = self.plot_hisparc_kascade_station(self.src_n, self.k_n)
+        plot = self.plot_hisparc_kascade_station(self.src_n, self.src_k)
         plot.save_as_pdf('plots/hisparc_kascade_station_src')
 
     def plot_mpv_hisparc_kascade_station(self):
-        plot = self.plot_hisparc_kascade_station(self.mpv_n, self.k_n)
+        plot = self.plot_hisparc_kascade_station(self.mpv_n, self.src_k)
         plot.save_as_pdf('plots/hisparc_kascade_station_mpv')
 
     def plot_cor_hisparc_kascade_station(self):
-        plot = self.plot_hisparc_kascade_station(self.cor_n, self.k_n)
+        plot = self.plot_hisparc_kascade_station(self.cor_n, self.src_k)
         plot.save_as_pdf('plots/hisparc_kascade_station_cor')
 
     def plot_hisparc_kascade_detector(self, ni, k_ni):
@@ -300,15 +300,15 @@ class KascadeDensity(object):
         return plot
 
     def plot_src_hisparc_kascade_detector(self):
-        plot = self.plot_hisparc_kascade_detector(self.src_ni, self.k_ni)
+        plot = self.plot_hisparc_kascade_detector(self.src_ni, self.src_ki)
         plot.save_as_pdf('plots/hisparc_kascade_detector_src')
 
     def plot_mpv_hisparc_kascade_detector(self):
-        plot = self.plot_hisparc_kascade_detector(self.mpv_ni, self.k_ni)
+        plot = self.plot_hisparc_kascade_detector(self.mpv_ni, self.src_ki)
         plot.save_as_pdf('plots/hisparc_kascade_detector_mpv')
 
     def plot_cor_hisparc_kascade_detector(self):
-        plot = self.plot_hisparc_kascade_detector(self.cor_ni, self.k_ni)
+        plot = self.plot_hisparc_kascade_detector(self.cor_ni, self.src_ki)
         plot.save_as_pdf('plots/hisparc_kascade_detector_cor')
 
     def plot_mpv_hisparc_pulseheight_detector(self):
@@ -334,7 +334,7 @@ class KascadeDensity(object):
         return plot
 
     def plot_kascade_detector_average(self):
-        mplot = self.plot_detector_average(self.k_n, self.k_ni)
+        mplot = self.plot_detector_average(self.src_k, self.src_ki)
         mplot.set_xlabel(r'KASCADE predicted density average [\si{\per\meter\squared}]')
         mplot.set_ylabel(r'KASCADE predicted density detector i [\si{\per\meter\squared}]')
         mplot.save_as_pdf('plots/detector_average_kas')
@@ -378,7 +378,7 @@ class KascadeDensity(object):
         plot = Plot()
         for density in densities:
             padding = round(sqrt(density) / 2.)
-            counts, bins = histogram(n.compress(abs(self.k_n - density) < padding),
+            counts, bins = histogram(n.compress(abs(self.src_k - density) < padding),
                                      bins=bins, density=True)
             plot.histogram(counts, bins)
             plot.add_pin(r'\SI[multi-part-units=single, separate-uncertainty]{%d\pm%d}{\per\meter\squared}' %
@@ -410,7 +410,7 @@ class KascadeDensity(object):
         plot.histogram(*histogram(n, bins=bins))
         plot.draw_vertical_line(1)
         for j, density in enumerate(range(1, 8)):
-            counts, bins = histogram(n.compress(abs(self.k_n - density) < padding), bins=bins)
+            counts, bins = histogram(n.compress(abs(self.src_k - density) < padding), bins=bins)
             plot.histogram(counts, bins + (j / 100.), linestyle=colors[j % len(colors)])
         plot.set_ylimits(min=0.9, max=1e4)
         plot.set_xlimits(min=bins[0], max=bins[-1])
@@ -441,7 +441,7 @@ class KascadeDensity(object):
             splot.histogram(*histogram(ni[:, i], bins=bins))
             splot.draw_vertical_line(1)
             for j, density in enumerate(range(1, 8)):
-                counts, bins = histogram(ni[:, i].compress(abs(self.k_ni[:, i] - density) < padding), bins=bins)
+                counts, bins = histogram(ni[:, i].compress(abs(self.src_ki[:, i] - density) < padding), bins=bins)
                 splot.histogram(counts, bins + (j / 100.), linestyle=colors[j % len(colors)])
         plot.set_ylimits_for_all(min=0.9, max=1e4)
         plot.set_xlimits_for_all(min=bins[0], max=bins[-1])
@@ -477,7 +477,7 @@ class KascadeDensity(object):
 
     def plot_kas_n_histogram(self):
         bins = linspace(0, 20, 300)
-        plot = self.plot_n_histogram(self.k_n, self.k_ni, bins)
+        plot = self.plot_n_histogram(self.src_k, self.src_ki, bins)
         plot.set_xlabel(r'Particle count')
         plot.save_as_pdf('plots/histogram_kas')
 
