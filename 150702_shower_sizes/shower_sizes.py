@@ -2,6 +2,7 @@ from artist import Plot
 import tables
 from numpy import (log10, median, percentile, degrees, array, arange,
                    histogram, logspace, mean)
+from scipy.optimize import curve_fit
 
 from sapphire import CorsikaQuery
 
@@ -9,6 +10,15 @@ from sapphire import CorsikaQuery
 # iron = 5626
 
 OVERVIEW = '/Users/arne/Datastore/CORSIKA/corsika_overview.h5'
+
+
+def f(x, a, b=1.):
+    """Relation between shower size and energy
+
+    size = 10 ** (energy ** b - a)
+
+    """
+    return (x ** b - a)
 
 
 def plot_shower_size(leptons=['electron', 'muon']):
@@ -32,12 +42,14 @@ def plot_shower_size(leptons=['electron', 'muon']):
             plot.plot(zeniths, median_size, linestyle='very thin')
             plot.shade_region(zeniths, min_size, max_size, color='lightgray,semitransparent')
             plot.add_pin('%.1f' % e, relative_position=0)
+
     plot.set_xticks([t for t in arange(0, 60.1, 7.5)])
     plot.set_ylimits(1, 1e9)
     plot.set_ylabel(r'Shower size (leptons)')
     plot.set_xlabel(r'Zenith [\si{\degree}]')
     plot.save_as_pdf('shower_sizes_%s' % '_'.join(leptons))
     cq.finish()
+
 
 def plot_shower_size_distributions():
     plot = Plot(axis='semilogx')
@@ -57,8 +69,58 @@ def plot_shower_size_distributions():
     cq.finish()
 
 
+def plot_size_energy():
+    plot = Plot(axis='semilogy')
+    cq = CorsikaQuery(OVERVIEW)
+    p = 'proton'
+    z = 0
+    energies = sorted(cq.available_parameters('energy', particle=p, zenith=z))
+    sizes_m = []
+    sizes_e = []
+
+    for e in energies:
+        selection = cq.simulations(zenith=z, energy=e, particle=p)
+        sizes_m.append(median(selection['n_muon']))
+        sizes_e.append(median(selection['n_electron']))
+
+    sizes = array(sizes_m) + array(sizes_e)
+
+    plot.scatter(energies, sizes_m, mark='+')
+    plot.scatter(energies, sizes_e, mark='x')
+    plot.scatter(energies, sizes, mark='square')
+
+    initial = (10.2, 1.)
+    popt_m, pcov_m = curve_fit(f, energies, log10(sizes_m), p0=initial)
+    popt_e, pcov_e = curve_fit(f, energies, log10(sizes_e), p0=initial)
+    popt, pcov = curve_fit(f, energies, log10(sizes), p0=initial)
+    print popt_e
+    print popt
+
+    sizes = [10 ** f(e, *popt_m) for e in energies]
+    plot.plot(energies, sizes, mark=None, linestyle='red')
+
+    sizes = [10 ** f(e, *popt_e) for e in energies]
+    plot.plot(energies, sizes, mark=None, linestyle='blue')
+
+    sizes = [10 ** f(e, *popt) for e in energies]
+    plot.plot(energies, sizes, mark=None)
+
+
+    plot.set_ylimits(1, 1e8)
+    plot.set_xlimits(11, 18.5)
+#     plot.set_xlimits(1, 1e9)
+#     plot.set_ylabel(r'pdf')
+    plot.set_ylabel(r'Shower size [number of leptons]')
+    plot.set_xlabel(r'Shower energy [log10(E/eV)]')
+    plot.save_as_pdf('shower_size_v_energy')
+    cq.finish()
+
+
+
+
 if __name__ == "__main__":
-#     plot_shower_size()
+    plot_shower_size()
 #     plot_shower_size(['muon'])
 #     plot_shower_size(['electron'])
     plot_shower_size_distributions()
+    plot_size_energy()
