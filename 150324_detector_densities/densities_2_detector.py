@@ -40,7 +40,7 @@ def plot_densities(data):
         plot.set_ylimits(min=0, max=n_max)
         plot.set_xlabel('Number of particles in detector 1')
         plot.set_ylabel('Number of particles in detector 2')
-        plot.save_as_pdf('n_minn%d_1001' % minn)
+        plot.save_as_pdf('plots/n_minn%d_1001' % minn)
 
 
 if __name__ == '__main__':

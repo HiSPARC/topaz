@@ -9,7 +9,7 @@ import tables
 
 from sapphire.corsika.particles import name
 
-OVERVIEW_PATH = '/Users/arne/Datastore/CORSIKA/simulation_overview.h5'
+OVERVIEW_PATH = '/Users/arne/Datastore/CORSIKA/corsika_overview.h5'
 
 
 def add_rightmost_bin(bins):
@@ -26,7 +26,7 @@ def print_overview(sims):
     e_bins = add_rightmost_bin(energies)
     z_bins = add_rightmost_bin(zeniths)
 
-    prows = {particle: sims.readWhere('particle_id==particle')
+    prows = {particle: sims.read_where('particle_id==particle')
              for particle in particles}
     for particle, rows in prows.iteritems():
         print 'Particle: %s (%d)' % (name(particle), particle)
@@ -35,7 +35,7 @@ def print_overview(sims):
         print 'Zenith >' + '% 6g° |' * len(zeniths) % tuple(numpy.degrees(zeniths))
         print 'Energy v' + '---------' * len(zeniths)
         for energy, counts in zip(energies, histogram[0]):
-            print '% 7g:' % energy + '% 7d |' * len(counts) % tuple(counts)
+            print '% 7.1f:' % numpy.log10(energy) + '% 7d |' * len(counts) % tuple(counts)
 
 def plot_number_of_particles(sims):
     particles = sorted(set(sims.col('particle_id')))
