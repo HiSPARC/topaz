@@ -513,5 +513,5 @@ class KascadeDensity(object):
 
 
 if __name__ == "__main__":
-    kascade_density = KascadeDensity()
-    kascade_density.make_plots()
+    kd = KascadeDensity()
+    kd.make_plots()
