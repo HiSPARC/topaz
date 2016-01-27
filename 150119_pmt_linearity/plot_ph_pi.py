@@ -33,7 +33,7 @@ def compared_nikhef_senstech():
     plot.set_ylabel(r'Multiple-LED pulseheights [\si{\volt}]')
     plot.set_xlimits(0, 7 * data_nikhef_final_integral.RATIO)
     plot.set_ylimits(0, 7)
-    plot.save_as_pdf('ph_pi_compared_nikhef_senstech')
+    plot.save_as_pdf('plots/ph_pi_compared_nikhef_senstech')
 
 
 if __name__ == "__main__":

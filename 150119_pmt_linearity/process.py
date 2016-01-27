@@ -5,7 +5,7 @@ Convert pulseheights from mV to V.
 """
 from __future__ import division
 
-from numpy import mean
+from numpy import mean, sqrt
 
 
 def get_measured_expected(led_ph, led_ph_err, led_pi, led_pi_err, multi_led):
@@ -34,10 +34,12 @@ def get_measured_expected(led_ph, led_ph_err, led_pi, led_pi_err, multi_led):
         measured_pi.append(pi)
         measured_pi_err.append(0.05 * pi)  # 5% error?
         expected_ph.append(sum(led_ph[fiber] for fiber in fibers) / 1e3)
-        expected_ph_err.append(sum(led_ph_err[fiber] for fiber in fibers) / 1e3)
+        expected_ph_err.append(sqrt(sum(led_ph_err[fiber] ** 2 for fiber in fibers)) / 1e3)
         expected_pi.append(sum(led_pi[fiber] for fiber in fibers))
-        expected_pi_err.append(sum(led_pi_err[fiber] for fiber in fibers))
+        expected_pi_err.append(sqrt(sum(led_pi_err[fiber] ** 2 for fiber in fibers)))
 
+#     print expected_ph_err
+#     print expected_ph
     return (measured_ph, measured_ph_err, measured_pi, measured_pi_err,
             expected_ph, expected_ph_err, expected_pi, expected_pi_err)
 

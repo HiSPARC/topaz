@@ -86,6 +86,7 @@ def fit_curve(x, y, err=None):
     :param err: uncertainties on y data.
 
     """
-    popt, pcov = curve_fit(ice_cube_pmt_p1, x, y, sigma=err, p0=(40., 2.5))
+    popt, pcov = curve_fit(ice_cube_pmt_p1, x, y, sigma=err, p0=(40., 2.5),
+                           absolute_sigma=True)
     perr = sqrt(diag(pcov))
     return popt, perr

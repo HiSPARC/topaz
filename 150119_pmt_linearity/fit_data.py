@@ -29,7 +29,7 @@ def plot_compared():
     plot.set_axis_equal()
     plot.set_xlabel(r'Sum individual LED pulseheights [\si{\volt}]')
     plot.set_ylabel(r'Multiple-LED pulseheight [\si{\volt}]')
-    plot.save_as_pdf('linearity_compared')
+    plot.save_as_pdf('plots/linearity_compared')
 
 
 def plot_fit_pulseheight(ph_in, ph_out):
@@ -57,11 +57,11 @@ def plot_fit_pulseheight(ph_in, ph_out):
 
 def plot_senstech_integral():
     plot = plot_fit_pulseheight(senstech_e_ph, senstech_m_ph)
-    plot.save_as_pdf('ph_sentech_integral')
+    plot.save_as_pdf('plots/ph_sentech_integral')
 
 def plot_nikhef_final_integral():
     plot = plot_fit_pulseheight(nikhef_e_ph, nikhef_m_ph)
-    plot.save_as_pdf('ph_nikhef_final_integral')
+    plot.save_as_pdf('plots/ph_nikhef_final_integral')
 
 def plot_fitted_curves():
     plot_senstech_integral()
