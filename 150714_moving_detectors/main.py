@@ -22,6 +22,8 @@ def plot_detectors(cluster):
         plot.scatter([x], [y], markstyle='purple')
         # print timestamp, gps_to_datetime(timestamp), x, y
 
+    plot.set_xlabel(r'Easting [\si{\meter}]')
+    plot.set_ylabel(r'Northing [\si{\meter}]')
     plot.set_axis_equal()
     plot.save_as_pdf('locations_%d' % station.number)
 
