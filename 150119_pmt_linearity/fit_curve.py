@@ -95,39 +95,48 @@ def lin_circ_lin(x, r, slope_low, intercept_low, slope_high, intercept_high):
     rc = center_circle_x
     d = center_circle_y
 
+    The center of the circle is given by (x_c, y_c)
+
     """
     if slope_low == slope_high:
         raise Exception("Parallel lines not allowed")
 
     if slope_low > slope_high:
+        # Circle below the lines
         sign = -1.
     else:
+        # Circle above the lines
         sign = 1.
 
-    tangent_intercept_low = intercept_low + sign * r / cos(arctan(slope_low))
-    tangent_intercept_high = intercept_high + sign * r / cos(arctan(slope_high))
+    # y-intercepts of lines parallel to input lines, but shifted by r
+    parallel_intercept_low = intercept_low + sign * r * sqrt(1 + slope_low**2)
+    parallel_intercept_high = intercept_high + sign * r * sqrt(1 + slope_high**2)
 
-    center_circle_x = ((tangent_intercept_high - tangent_intercept_low) /
-                       (slope_low - slope_high))
-    center_circle_y = slope_low * center_circle_x + tangent_intercept_low
+    # center of the circle
+    x_c = ((parallel_intercept_high - parallel_intercept_low) /
+           (slope_low - slope_high))
+    y_c = slope_low * x_c + parallel_intercept_low
 
-    # Calculate paramters for lines which intersect the circle center and
+    # Calculate parameters for lines which intersect the circle center and
     # are perpendicual to the low or high tangents.
-    slope_circ_low = -1. / slope_low
-    intercept_circ_low = (center_circle_x * (slope_low + 1 / slope_low) +
-                          tangent_intercept_low)
-    slope_circ_high = -1. / slope_high
-    intercept_circ_high = (center_circle_x * (slope_high + 1 / slope_high) +
-                           tangent_intercept_high)
+    perpendicular_slope_low = -1. / slope_low
+    perpendicular_slope_high = -1. / slope_high
+    perpendicular_intercept_low = (x_c * (slope_low + 1 / slope_low) +
+                                   parallel_intercept_low)
+    perpendicular_intercept_high = (x_c * (slope_high + 1 / slope_high) +
+                                    parallel_intercept_high)
 
+    # x positions where the lines transition to the circle and vice-versa
     intersect_circle_low_x = lin_intersection(slope_low, intercept_low,
-                                              slope_circ_low, intercept_circ_low)
+                                              perpendicular_slope_low,
+                                              perpendicular_intercept_low)
     intersect_circle_high_x = lin_intersection(slope_high, intercept_high,
-                                               slope_circ_high, intercept_circ_high)
+                                               perpendicular_slope_high,
+                                               perpendicular_intercept_high)
 
     y = where(x < intersect_circle_low_x,
               lin(x, slope_low, intercept_low),
-              -sign * sqrt(r ** 2 - (x - center_circle_x)**2) + center_circle_y)
+              y_c - sign * sqrt(r ** 2 - (x - x_c) ** 2))
     y = where(x < intersect_circle_high_x,
               y,
               lin(x, slope_high, intercept_high))
@@ -185,7 +194,7 @@ def lin_fit(x, y, filter):
 
     Provide x and y as list.
 
-    :param x: measure signal.
+    :param x: measured signal.
     :param y: expected signal (sum of individual).
     :param err: uncertainties on y data.
 
@@ -197,19 +206,18 @@ def lin_fit(x, y, filter):
 fit_function = loglog_xy_circ_lin
 
 
-def fit_curve(x, y, err=None):
+def fit_curve(x, y, err=None, p0=(2.8, 2, -1)):
     """Fit curve to the PMT measurements
 
     Provide x and y as list.
 
-    :param x: measure signal.
+    :param x: measured signal.
     :param y: expected signal (sum of individual).
     :param err: uncertainties on y data.
 
     """
-    p0 = (2.8, 2, -1)
     popt, pcov = curve_fit(fit_function, x, y, sigma=err,
-                           p0=(1., 0.9, 1.),
+                           p0=p0,
                            absolute_sigma=True)
     if all(popt == p0):
         raise Exception('Failed fit.')

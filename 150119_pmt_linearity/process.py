@@ -30,7 +30,7 @@ def get_measured_expected(led_ph, led_ph_err, led_pi, led_pi_err, multi_led):
     for fibers, ph, pi in multi_led:
         # Convert pulseheights to V
         measured_ph.append(ph / 1e3)
-        measured_ph_err.append(0.05 * ph / 1e3)  # 5% error?
+        measured_ph_err.append(2 * sqrt(ph) / 1e3)  # 5% error?
         measured_pi.append(pi)
         measured_pi_err.append(0.05 * pi)  # 5% error?
         expected_ph.append(sum(led_ph[fiber] for fiber in fibers) / 1e3)
