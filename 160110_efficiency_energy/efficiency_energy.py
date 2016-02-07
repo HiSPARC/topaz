@@ -4,7 +4,8 @@ Show which energy can be efficienctly detected by two detectors separated by
 distance d.
 
 """
-from numpy import arange, array, exp
+from numpy import arange, array, exp, median, interp
+from scipy.stats import binned_statistic
 
 from artist import Plot
 
@@ -35,7 +36,7 @@ def plot_E_d_P(ldf):
     sizes = energy_to_size(energies, 13.3, 1.07)
     size_centers = (sizes[1:] + sizes[:-1]) / 2
     log_distances = arange(0, 4.0001, .01)
-    core_distances = (10 ** log_distances) / 2.
+    core_distances = (10 ** log_distances)
     distance_centers = (core_distances[1:] + core_distances[:-1]) / 2
 
     probabilities = []
@@ -47,8 +48,20 @@ def plot_E_d_P(ldf):
     probabilities = array(probabilities)
 
     plot = Plot()
-    plot.histogram2d(probabilities.T, log_distances, energies, bitmap=True)
-    plot.set_xlabel(r'Distance [log10(d/\si{\meter})]')
+
+    low = []
+    mid = []
+    high = []
+    for p in probabilities:
+        # Using `1 -` to ensure x (i.e. p) is increasing.
+        low.append(interp(1 - 0.10, 1 - p, log_distances[:-1]))
+        mid.append(interp(1 - 0.50, 1 - p, log_distances[:-1]))
+        high.append(interp(1 - 0.90, 1 - p, log_distances[:-1]))
+    plot.plot(low, energies[:-1], linestyle='densely dotted', mark=None)
+    plot.plot(mid, energies[:-1], linestyle='densely dashed', mark=None)
+    plot.plot(high, energies[:-1], mark=None)
+
+    plot.set_xlabel(r'Core distance [log10(d/\si{\meter})]')
     plot.set_ylabel(r'Energy [log10(E/\si{\eV})]')
     plot.save_as_pdf('efficiency_distance_energy_' + ldf.__class__.__name__)
 
