@@ -68,11 +68,23 @@ def plot_traces(traces1, traces2, overlap=0, label=''):
 
 if __name__ == "__main__":
     station_number = 501
-    ts = 1432377853
+
+    ts1 = 1432377853
     ns1 = 301187731
-    ns2 = 301193386
-    if not 'traces1' in globals():
-        traces1 = get_traces(station_number, ts, ns1, raw=True)
-    if not 'traces2' in globals():
-        traces2 = get_traces(station_number, ts, ns2, raw=True)
-    plot_traces(traces1, traces2, overlap=700)
+    ns1b = 301193386
+
+    if 'traces1' not in globals():
+        traces1 = get_traces(station_number, ts1, ns1, raw=True)
+    if 'traces1b' not in globals():
+        traces1b = get_traces(station_number, ts1, ns1b, raw=True)
+    plot_traces(traces1, traces1b, overlap=700, label='501_1')
+
+    ts2 = 1452149092
+    ns2 = 363815846
+    ns2b = 363820896
+
+    if 'traces2' not in globals():
+        traces2 = get_traces(station_number, ts2, ns2, raw=True)
+    if 'traces2b' not in globals():
+        traces2b = get_traces(station_number, ts2, ns2b, raw=True)
+    plot_traces(traces2, traces2b, overlap=942, label='501_2')
