@@ -23,7 +23,7 @@ Issues
 ------
 
 Each station (with data) shows a big change in offset around timestamps
-1.32-1.34 (*10^9). This is caused by the Tijdtest tests during which the GPS of station 501 was temporarily used by the test stations and 501 used a temporary GPS in the window sill, which provided a bad view of the sky.
+1.32-1.34 (*10^9). This is caused by the Tijdtest tests during which the GPS of station 501 was temporarily used by the test stations and 501 used a temporary GPS in the window sill, which provided a bad view of the sky. Mostly towards North so few GPS satellites visible.
 
 
 Plot legend

@@ -75,7 +75,7 @@ def determine_time_differences(coin_events, ref_station, station, ref_d_off, d_o
         if isnan(t) or isnan(ref_t):
             continue
         dt.append(t - ref_t)
-        ets.append((ref_ets))
+        ets.append(ref_ets)
     return ets, dt
 
 
