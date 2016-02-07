@@ -68,7 +68,7 @@ def plot_delta_test(ids, **kwargs):
     plot = Plot()
     for id in ids:
         ext_timestamps, deltas = get(id)
-        n, bins = np.histogram(deltas, bins, normed=1)
+        n, bins = np.histogram(deltas, bins, density=True)
         plot.histogram(n, bins)
     if kwargs.keys():
         plot.set_title('Tijdtest ' + kwargs[kwargs.keys()[0]])

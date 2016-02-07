@@ -42,7 +42,7 @@ def plot_interaction_height(cq):
 def plot_interaction_altitude_distribution(cq):
     altitudes = cq.sims.col('first_interaction_altitude') / 1e3
     bins = arange(0, 100, 2)
-    counts, bins = histogram(altitudes, bins, normed=True)
+    counts, bins = histogram(altitudes, bins, density=True)
     plot = Plot()
     plot.histogram(counts, bins)
     plot.draw_vertical_line(median(altitudes), linestyle='red')
