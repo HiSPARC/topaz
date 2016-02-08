@@ -19,6 +19,8 @@ import itertools
 from datetime import date
 import csv
 import calendar
+from glob import glob
+import re
 
 from artist import Plot
 from numpy import nan, genfromtxt, histogram, arange
@@ -26,12 +28,22 @@ from numpy import nan, genfromtxt, histogram, arange
 from sapphire.api import Station
 from sapphire.transformations.clock import gps_to_datetime, datetime_to_gps
 
+
 STATIONS = [501, 502, 503, 504, 505, 506, 508, 509, 510]
-DATA_PATH = '/Users/arne/Datastore/station_offsets/'
+OFF_DATAPATH_GLOB = '/Users/arne/Datastore/station_offsets/offsets_ref*_s*.tsv'
+DATA_PATH = '/Users/arne/Datastore/station_offsets/offsets_ref%d_s%d.tsv'
+
+
+def get_available_station_pairs():
+    paths = glob(OFF_DATAPATH_GLOB)
+    pairs = [(int(s1), int(s2))
+             for s1, s2 in [re.findall(r'\d+', path)
+              for path in paths]]
+    return pairs
 
 
 def get_station_offsets(ref_station, station):
-    offsets = genfromtxt(DATA_PATH + 'offsets_ref%d_s%d.tsv' % (ref_station, station), delimiter='\t',
+    offsets = genfromtxt(DATA_PATH  % (ref_station, station), delimiter='\t',
                          names=('timestamp', 'offset'))
     return offsets
 
@@ -64,8 +76,8 @@ def plot_offset_timeline(ref_station, station):
     graph.set_xticks([datetime_to_gps(date(y, 1, 1)) for y in range(2010, 2016)])
     graph.set_xtick_labels(['%d' % y for y in range(2010, 2016)])
     graph.set_xlimits(1.25e9, 1.45e9)
-    graph.set_ylimits(-80, 80)
-    graph.save_as_pdf('plots/offsets_ref%d_%d_rp' %
+    graph.set_ylimits(-150, 150)
+    graph.save_as_pdf('plots/offsets_ref%d_%d' %
                       (ref_station, station))
 
 #     plot = Plot(width=r'.6\textwidth')
@@ -79,5 +91,5 @@ def plot_offset_timeline(ref_station, station):
 
 
 if __name__ == '__main__':
-    for ref_station, station in itertools.permutations(STATIONS, 2):
+    for ref_station, station in get_available_station_pairs():
         plot_offset_timeline(ref_station, station)

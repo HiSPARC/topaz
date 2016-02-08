@@ -10,11 +10,13 @@ import itertools
 from datetime import datetime, timedelta
 import csv
 import multiprocessing
+from glob import glob
+import re
 
 from numpy import nan, log10
 import tables
 
-from sapphire import HiSPARCStations
+from sapphire import HiSPARCStations, HiSPARCNetwork
 from sapphire.analysis.calibration import determine_station_timing_offset
 from sapphire.transformations.clock import datetime_to_gps
 
@@ -26,13 +28,24 @@ Reference stations
 
 SPA_STAT = [501, 502, 503, 504, 505, 506, 508, 509, 510]
 CLUSTER = HiSPARCStations(SPA_STAT)
-DATA_PATH = '/Users/arne/Datastore/station_offsets/'
+DATA_PATH = '/Users/arne/Datastore/station_offsets/offsets_ref%d_s%d.tsv'
 DAYS = 10
+
+DT_DATAPATH_GLOB = '/Users/arne/Datastore/station_offsets/dt_ref*_*.h5'
+DT_DATAPATH = '/Users/arne/Datastore/station_offsets/dt_ref%d_%d.h5'
+CLUSTER = HiSPARCNetwork()
+
+
+def get_available_station_pairs():
+    paths = glob(DT_DATAPATH_GLOB)
+    pairs = [(int(s1), int(s2))
+             for s1, s2 in [re.findall(r'\d+', path[:-3])
+              for path in paths]]
+    return pairs
 
 
 def determine_offsets():
-    args = [(ref_station, station)
-            for ref_station, station in itertools.permutations(SPA_STAT, 2)]
+    args = get_available_station_pairs()
     worker_pool = multiprocessing.Pool()
     worker_pool.map(determine_offsets_for_pair, args)
     worker_pool.close()
@@ -41,7 +54,7 @@ def determine_offsets():
 
 def determine_offsets_for_pair(stations):
     ref_station, station = stations
-    path = DATA_PATH + 'dt_ref%d_%d.h5' % (ref_station, station)
+    path = DT_DATAPATH % (ref_station, station)
     with tables.open_file(path, 'r') as data:
         table = data.get_node('/s%d' % station)
         offsets = []
@@ -52,8 +65,9 @@ def determine_offsets_for_pair(stations):
             ts0 = datetime_to_gps(dt0)
             CLUSTER.set_timestamp(ts0)
             # dz is z - z_ref
-            r, _, dz = CLUSTER.calc_rphiz_for_stations(SPA_STAT.index(ref_station),
-                                                       SPA_STAT.index(station))
+            r, _, dz = CLUSTER.calc_rphiz_for_stations(
+                CLUSTER.get_station(ref_station).station_id,
+                CLUSTER.get_station(station).station_id)
             ts1 = datetime_to_gps(dt0 + timedelta(days=max(int(r ** 1.12 / DAYS), 7)))
             dt = table.read_where('(timestamp >= ts0) & (timestamp < ts1)',
                                   field='delta')
@@ -66,7 +80,7 @@ def determine_offsets_for_pair(stations):
 
 
 def write_offets(station, ref_station, offsets):
-    path = DATA_PATH + 'offsets_ref%d_s%d.tsv' % (ref_station, station)
+    path = DATA_PATH % (ref_station, station)
     with open(path, 'wb') as output:
         csvwriter = csv.writer(output, delimiter='\t')
         csvwriter.writerows((ts, offset) for ts, offset in offsets)
