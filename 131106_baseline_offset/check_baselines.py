@@ -26,15 +26,15 @@ def get_baseline_offsets(date):
     """
     offsets = {}
     datapath = os.path.join(DATASTORE, date.strftime('%Y/%-m/%Y_%-m_%-d.h5'))
-    data = tables.openFile(datapath, 'r')
-    for node in data.walkNodes('/hisparc'):
-        if node._v_name == 'events':
-            baselines = node.col('baseline')
-            average_baselines = [int(round(mean_baseline - 200, 0))
-                                 for mean_baseline in numpy.mean(baselines, 0)
-                                 if not mean_baseline == -1]
-            station_number = int(node._v_parent._v_name[8:])
-            offsets[station_number] = average_baselines
+    with tables.open_file(datapath, 'r') as data:
+        for node in data.walk_nodes('/hisparc'):
+            if node._v_name == 'events':
+                baselines = node.col('baseline')
+                average_baselines = [int(round(mean_baseline - 200, 0))
+                                     for mean_baseline in numpy.mean(baselines, 0)
+                                     if not mean_baseline == -1]
+                station_number = int(node._v_parent._v_name[8:])
+                offsets[station_number] = average_baselines
     return offsets
 
 

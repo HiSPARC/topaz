@@ -37,6 +37,7 @@ def print_overview(sims):
         for energy, counts in zip(energies, histogram[0]):
             print '% 7.1f:' % numpy.log10(energy) + '% 7d |' * len(counts) % tuple(counts)
 
+
 def plot_number_of_particles(sims):
     particles = sorted(set(sims.col('particle_id')))
     energies = sorted(set(sims.col('energy')))
@@ -46,14 +47,14 @@ def plot_number_of_particles(sims):
     ne_bins = numpy.logspace(0, 9, 200)
 
     # protons
-    filtered_rows = sims.readWhere('(particle_id==14)')
+    filtered_rows = sims.read_where('(particle_id==14)')
 
     energy = energies[3]
     for zenith in zeniths:
         rows = [row for row in filtered_rows
                 if row['energy'] == energy and row['zenith'] == zenith]
         if len(rows) > 10:
-            weights = numpy.ones(len(rows))/float(len(rows))
+            weights = numpy.ones(len(rows)) / float(len(rows))
             ax1.hist([r['n_electron'] for r in rows], bins=ne_bins,
                      histtype='step', weights=weights,
                      label='%4.1f deg, %.g eV' % (numpy.degrees(zenith), energy))
@@ -66,7 +67,7 @@ def plot_number_of_particles(sims):
         rows = [row for row in filtered_rows
                 if row['energy'] == energy and row['zenith'] == zenith]
         if len(rows) > 10:
-            weights = numpy.ones(len(rows))/float(len(rows))
+            weights = numpy.ones(len(rows)) / float(len(rows))
             ax2.hist([r['n_muon'] for r in rows], bins=ne_bins,
                      histtype='step', weights=weights,
                      label='%4.1f deg, %.g eV' % (numpy.degrees(zenith), energy))
@@ -77,8 +78,8 @@ def plot_number_of_particles(sims):
 
 
 def main():
-    with tables.openFile(OVERVIEW_PATH, 'r') as data:
-        sims = data.getNode('/simulations')
+    with tables.open_file(OVERVIEW_PATH, 'r') as data:
+        sims = data.get_node('/simulations')
         print_overview(sims)
         plot_number_of_particles(sims)
 
