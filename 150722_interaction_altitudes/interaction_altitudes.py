@@ -40,7 +40,8 @@ def plot_interaction_height(cq):
 
 
 def plot_interaction_altitude_distribution(cq):
-    altitudes = cq.sims.col('first_interaction_altitude') / 1e3
+#     altitudes = cq.sims.col('first_interaction_altitude') / 1e3
+    altitudes = cq.simulations(energy=15, zenith=22.5)['first_interaction_altitude'] / 1e3
     bins = arange(0, 100, 2)
     counts, bins = histogram(altitudes, bins, density=True)
     plot = Plot()
