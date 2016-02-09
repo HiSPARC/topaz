@@ -8,82 +8,95 @@ should not keep increasing, because at some point one coincidence might
 contain another coincidences. e.g. 1, 3, 2 also includes 3, 2. This
 should perhaps be counted as only 1 coincidence.
 
+Ideas for faster coincidence finding
+
+- Use numpy array
+- Find where difference between subsequent elements is less than window
+- Then find where difference between those that passed previous check
+  also have less difference than window between next (idx+2) element
+- ...
+
+Notes
+
+- Lower than predicted background rate for Nijmegen due to low trigger rate
+
+
 """
 import datetime
 import os
+from itertools import combinations
 
-import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
-import matplotlib.gridspec as gridspec
 import tables
 import numpy
 
-from sapphire import Station, Network
-from sapphire.analysis import coincidences
+from artist import MultiPlot
+
+from sapphire import Station, Network, Coincidences
 
 
-ESD_PATH = '/Volumes/Hyperdrive/Datastore/esd'
+ESD_PATH = '/Users/arne/Datastore/esd'
 
 
 def coincidences_all_stations():
     network = Network()
-    station_ids = [station['number'] for station in network.all_stations]
-    coincidences_stations(station_ids, group_name='All stations')
+    station_numbers = [station for station in network.station_numbers()]
+    coincidences_stations(station_numbers, group_name='All stations')
 
 
 def coincidences_each_cluster():
     network = Network()
-    for cluster in network.all_clusters:
+    for cluster in network.clusters():
         stations = network.stations(cluster=cluster['number'])
-        station_ids = [station['number'] for station in stations]
+        station_numbers = [station['number'] for station in stations]
         group_name = '%s cluster' % cluster['name']
-        coincidences_stations(station_ids, group_name=group_name)
+        coincidences_stations(station_numbers, group_name=group_name)
 
 
 def coincidences_sciencepark():
     network = Network()
     stations = network.stations(subcluster=500)
-    station_ids = [station['number'] for station in stations]
+    station_numbers = [station['number'] for station in stations]
     group_name = 'Science Park subcluster'
-    coincidences_stations(station_ids, group_name=group_name)
+    coincidences_stations(station_numbers, group_name=group_name)
 
 
-def coincidences_stations(station_ids, group_name='Specific stations',
+def coincidences_stations(station_numbers, group_name='Specific stations',
                           date=None):
     if date is None:
-        date = datetime.date(2013, 8, 1)
+        date = datetime.date(2016, 2, 1)
     stations_with_data = []
     cluster_groups = []
-    for station_id in station_ids:
+    for station_id in station_numbers:
         try:
             info = Station(station_id)
         except:
             continue
         if info.has_data(year=date.year, month=date.month, day=date.day):
-            cluster_groups.append(info.cluster.lower())
+            cluster_groups.append(info.cluster().lower())
             stations_with_data.append(station_id)
 
     if len(stations_with_data) <= 1:
         return
 
     filepath = os.path.join(ESD_PATH, date.strftime('%Y/%-m/%Y_%-m_%-d.h5'))
-    data = tables.openFile(filepath, 'r')
-    coinc, event_tables = get_event_tables(data, cluster_groups, stations_with_data)
-    windows, counts, n_events = find_n_coincidences(coinc, event_tables)
-    plot_coinc_window(windows, counts, group_name, n_events, date)
-    data.close()
+    with tables.open_file(filepath, 'r') as data:
+        coinc, event_tables = get_event_tables(data, cluster_groups, stations_with_data)
+        windows, counts, n_events = find_n_coincidences(coinc, event_tables)
+        n_stations = len(stations_with_data)
+        plot_coinc_window(windows, counts, group_name, n_events, n_stations,
+                          date)
 
 
-def get_event_tables(data, cluster_groups, station_ids):
+def get_event_tables(data, cluster_groups, station_numbers):
     station_groups = ['/hisparc/cluster_%s/station_%d' % (c, s)
-                      for c, s in zip(cluster_groups, station_ids)]
+                      for c, s in zip(cluster_groups, station_numbers)]
 
-    coinc = coincidences.Coincidences(data, None, station_groups)
+    coinc = Coincidences(data, None, station_groups)
 
     event_tables = []
     for station_group in coinc.station_groups:
         try:
-            event_tables.append(coinc.data.getNode(station_group, 'events'))
+            event_tables.append(coinc.data.get_node(station_group, 'events'))
         except tables.NoSuchNodeError:
             print 'No events for: %s' % station_group
 
@@ -112,50 +125,51 @@ def find_n_coincidences(coinc, event_tables):
     else:
         return windows, counts, n_events
 
+def plot_background_v_window(plot, windows, n_stations):
+    low_rate = 0.3
+    high_rate = 0.8
+    n_pairs = len(list(combinations(range(n_stations), 2)))
+    background_rate_low_pair = 2 * windows * 1e-9 * low_rate ** 2 * 86400
+    background_rate_high_pair = 2 * windows * 1e-9 * high_rate ** 2 * 86400
+    background_rate_low = background_rate_low_pair * n_pairs
+    background_rate_high = background_rate_high_pair * n_pairs
+    plot.shade_region(windows, background_rate_low, background_rate_high)
 
-def plot_coinc_window(windows, counts, group_name='', n_events=0,
+
+def plot_chosen_coincidence_window(plot):
+    plot.draw_vertical_line(2e3)
+    plot.draw_vertical_line(10e3)
+
+
+def plot_coinc_window(windows, counts, group_name='', n_events=0, n_stations=0,
                       date=datetime.date.today()):
     counts = numpy.array(counts)
-    plt.figure()
-    grid = gridspec.GridSpec(2, 1, height_ratios=[4, 1])
-    plt.subplot(grid[0])
-    plt.plot(windows, counts)
-    plt.yscale('log')
-    plt.xscale('log')
-    plt.annotate('%s\n'
-                 'Date: %s\n'
-                 'Total n events: %d\n' %
-                 (group_name, date.isoformat(), n_events),
-                 (0.05, 0.7), xycoords='axes fraction')
-    plt.title('Found coincidences versus coincidence window')
-    plt.ylabel('Found coincidences')
-    plt.ylim(ymin=1)
+    plot = MultiPlot(2, 1, axis='loglog')
 
-    plt.subplots_adjust(wspace=0, hspace=0)
-    plt.gca().xaxis.set_major_formatter(ticker.NullFormatter())
-    plt.subplot(grid[1])
-    plt.plot(windows[:-1], counts[1:] - counts[:-1])
-    plt.xlabel('Coincidence window (ns)')
-    plt.gca().yaxis.tick_right()
-    plt.ylim(ymin=1)
-    plt.yscale('log')
-    plt.xscale('log')
+    splot = plot.get_subplot_at(0, 0)
+    splot.plot(windows, counts)
+    plot_background_v_window(splot, windows, n_stations)
+    plot_chosen_coincidence_window(splot)
+    splot = plot.get_subplot_at(1, 0)
+    splot.plot(windows[:-1], counts[1:] - counts[:-1])
+    splot.set_axis_options(r'height=0.2\textwidth')
 
-    plt.show()
+    text = ('%s\nDate: %s\nTotal n events: %d' %
+            (group_name, date.isoformat(), n_events))
+    plot.set_label(0, 0, text, 'upper left')
+    plot.set_xlimits_for_all(min=0.5, max=1e14)
+    plot.set_ylimits(0, 0, max=1e8)
+    plot.set_ylimits_for_all(min=1)
+    plot.set_ylabel('Found coincidences')
+    plot.set_xlabel(r'Coincidence window [\si{\ns}]')
+    plot.show_xticklabels(1, 0)
+    plot.show_yticklabels_for_all(None)
+    plot.set_yticklabels_position(1, 0, 'right')
+
+    plot.save_as_pdf('plots/coincidences_%s' % group_name)
 
 
 if __name__ == '__main__':
     coincidences_each_cluster()
     coincidences_all_stations()
     coincidences_sciencepark()
-
-"""
-Idea for faster cincidence finding
-
-- Use numpy array
-- Find where difference between subsequent elements is less than window
-- Then find where difference between those that passed previous check
-  also have less difference than window between next (idx+2) element
-- ...
-
-"""
