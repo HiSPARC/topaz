@@ -1,7 +1,8 @@
 from numpy import genfromtxt, where, histogram, arange, convolve, ones
+from scipy.optimize import curve_fit
 
 from artist import Plot
-
+from sapphire.utils import gauss
 
 def analyse(name):
     data = genfromtxt('data/%s.tsv' % name, delimiter='\t', dtype=None,
@@ -12,9 +13,13 @@ def analyse(name):
     counts, bins = histogram(time_delta, bins=arange(-10.5, 11.5, 1))
     plot = Plot()
     plot.histogram(counts, bins)
+    x = (bins[1:] + bins[:-1]) / 2.
+    popt, pcov = curve_fit(gauss, x, counts, p0=(sum(counts), 0., 2.5))
+    plot.plot(x, gauss(x, *popt), mark=None)
+    print popt
     plot.set_ylimits(min=0)
-    plot.set_ylabel('counts')
-    plot.set_xlabel(r'time delta [\si{\nano\second}]')
+    plot.set_ylabel('Counts')
+    plot.set_xlabel(r'Time delta [\si{\nano\second}]')
     plot.save_as_pdf(name)
 
     # Plot moving average
