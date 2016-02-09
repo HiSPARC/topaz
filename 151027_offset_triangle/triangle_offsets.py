@@ -21,7 +21,7 @@ def round_trip(offsets):
                 if ref in s:
                     continue
                 offs.extend(offsets[ref][s[0]] +
-                            sum(offsets[s[i]][s[i+1]] for i in range(n-1)) +
+                            sum(offsets[s[i]][s[i + 1]] for i in range(n-1)) +
                             offsets[s[-1]][ref])
                 ts.extend(idx)
         ts = array(ts)
@@ -77,7 +77,7 @@ def offset_distribution(offsets):
                 if ref in s:
                     continue
                 offs.extend(offsets[ref][s[0]] +
-                            sum(offsets[s[i]][s[i+1]] for i in range(n-1)) +
+                            sum(offsets[s[i]][s[i + 1]] for i in range(n - 1)) +
                             offsets[s[-1]][ref])
         plot.histogram(*histogram(offs, bins=range(-100, 100, 2)))
         plot.set_xlimits(-100, 100)

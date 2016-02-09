@@ -12,7 +12,7 @@ from sapphire.utils import angle_between
 
 def download_dataset():
     delta_data = genfromtxt('time_delta_fixed.tsv', delimiter='\t', dtype=None,
-                      names=['ext_timestamp', 'time_delta'])
+                            names=['ext_timestamp', 'time_delta'])
     start = gps_to_datetime(delta_data['ext_timestamp'][0] / int(1e9))
     end = gps_to_datetime(delta_data['ext_timestamp'][-1] / int(1e9))
 
@@ -49,7 +49,7 @@ def plot_reconstructions():
         bins = linspace(-pi, pi, 20)  # Radians
         plot = Plot()
         plot.histogram(*histogram(rec.col('azimuth'), bins=bins))
-        plot.histogram(*histogram(reco.col('azimuth'), bins=bins,
+        plot.histogram(*histogram(reco.col('azimuth'), bins=bins),
                        linestyle='red')
         plot.set_ylimits(min=0)
         plot.set_xlimits(-pi, pi)
@@ -75,11 +75,11 @@ def plot_reconstructions():
         filter = (rec.col('zenith') > .5)
         d_angle = angle_between(rec.col('zenith'), rec.col('azimuth'),
                                 reco.col('zenith'), reco.col('azimuth'))
-        plot.histogram(*histogram(degrees(d_angle), bins=bins)))
+        plot.histogram(*histogram(degrees(d_angle), bins=bins))
         plot.histogram(*histogram(degrees(d_angle).compress(filter),
-                       bins=bins), linestyle='red')
+                                  bins=bins), linestyle='red')
         plot.histogram(*histogram(degrees(d_angle).compress(invert(filter)),
-                       bins=bins), linestyle='blue')
+                                  bins=bins), linestyle='blue')
         plot.set_ylimits(min=0)
         plot.set_xlimits(0, 20)
         plot.set_ylabel('counts')
@@ -87,10 +87,10 @@ def plot_reconstructions():
         plot.save_as_pdf('angle_between')
 
 
-    def print_offsets()
-        with tables.open_file('data.h5', 'r') as data:
-            print data.root.s501.detector_offsets[:]
-            print data.root.s501_original.detector_offsets[:]
+def print_offsets():
+    with tables.open_file('data.h5', 'r') as data:
+        print data.root.s501.detector_offsets[:]
+        print data.root.s501_original.detector_offsets[:]
 
 
 if __name__ == "__main__":

@@ -52,9 +52,9 @@ def download_pair_coincidences(close_pairs):
 
 def get_coincidence_count(close_pairs):
     network = HiSPARCNetwork()
-    distances = {4: [], 6: [], 8:[]}
-    coincidence_rates = {4: [], 6: [], 8:[]}
-    coincidence_rates_err = {4: [], 6: [], 8:[]}
+    distances = {4: [], 6: [], 8: []}
+    coincidence_rates = {4: [], 6: [], 8: []}
+    coincidence_rates_err = {4: [], 6: [], 8: []}
     for pair in pbar(close_pairs, show=True):
         path = DATAPATH % tuple(pair)
         if not os.path.exists(path):

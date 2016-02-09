@@ -59,7 +59,7 @@ def fetch_map(box, z):
         raise Exception(("You are requesting a very large map, beware of "
                          "OpenStreetMap tile usage policy "
                          "(http://wiki.openstreetmap.org/wiki/Tile_usage_policy)."))
-    img = Image.new('RGB', (sx*TILE_SIZE, sy*TILE_SIZE))
+    img = Image.new('RGB', (sx * TILE_SIZE, sy * TILE_SIZE))
     for x in range(x0, x1 + 1):
         for y in range(y0, y1 + 1):
             px, py = TILE_SIZE * (x - x0), TILE_SIZE * (y - y0)
@@ -71,9 +71,9 @@ def correct_box(box, z):
     """Get good box limits"""
     x0, y0, x1, y1 = box
     new_x0 = max(0, min(x0, x1))
-    new_x1 = min(2**z - 1, max(x0, x1))
+    new_x1 = min(2 ** z - 1, max(x0, x1))
     new_y0 = max(0, min(y0, y1))
-    new_y1 = min(2**z - 1, max(y0, y1))
+    new_y1 = min(2 ** z - 1, max(y0, y1))
 
     return (new_x0, new_y0, new_x1, new_y1)
 

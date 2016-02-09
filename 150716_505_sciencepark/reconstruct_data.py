@@ -17,7 +17,7 @@ def reconstruct_data(data):
     station_path = '/hisparc/cluster_amsterdam/station_505'
     rec = ReconstructESDEvents(data, station_path, 505, overwrite=True)
     rec.prepare_output()
-    rec.offsets = [-0.53,0.0,1.64,-2.55]
+    rec.offsets = [-0.53, 0.0, 1.64, -2.55]
     rec.store_offsets()
     rec.reconstruct_directions()
     rec.store_reconstructions()

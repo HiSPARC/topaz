@@ -129,7 +129,6 @@ def plot_reconstructions():
     plot.save_as_pdf('angle_between_501_510')
 
 
-
 def print_coincident_time_delta():
 
     cq = CoincidenceQuery(DATA, coincidence_group='/coincidences')
@@ -181,7 +180,6 @@ def print_coincident_time_delta():
     plot.set_ylabel('counts')
     plot.set_xlabel(r'time delta [\si{\nano\second}]')
     plot.save_as_pdf('time_delta_501_510')
-
 
 
 def print_offsets():

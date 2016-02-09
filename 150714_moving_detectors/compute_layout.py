@@ -9,6 +9,7 @@ STATION = 501
 GOOD_GPS = 1412347557
 OTHER_GPS = 1414406502
 
+
 if __name__ == "__main__":
     cluster = HiSPARCStations([STATION])
     station = cluster.get_station(STATION)
@@ -25,7 +26,7 @@ if __name__ == "__main__":
     print dx, dy
 
     for d in station.detectors:
-        cluster.set_timestamp(other_gps)
+        cluster.set_timestamp(OTHER_GPS)
         d.x[d.index] -= dx
         d.y[d.index] -= dy
         print gps_to_datetime(OTHER_GPS)

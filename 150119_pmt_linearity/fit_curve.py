@@ -109,8 +109,8 @@ def lin_circ_lin(x, r, slope_low, intercept_low, slope_high, intercept_high):
         sign = 1.
 
     # y-intercepts of lines parallel to input lines, but shifted by r
-    parallel_intercept_low = intercept_low + sign * r * sqrt(1 + slope_low**2)
-    parallel_intercept_high = intercept_high + sign * r * sqrt(1 + slope_high**2)
+    parallel_intercept_low = intercept_low + sign * r * sqrt(1 + slope_low ** 2)
+    parallel_intercept_high = intercept_high + sign * r * sqrt(1 + slope_high ** 2)
 
     # center of the circle
     x_c = ((parallel_intercept_high - parallel_intercept_low) /
@@ -166,10 +166,10 @@ def chisq(f, y, x, popt, s):
     :returns: chi square value.
 
     """
-    chisq = sum(((yi - f(xi, *popt)) / si) ** 2
-                for yi, xi, si in zip(y, x, s))
+    chisquare = sum(((yi - f(xi, *popt)) / si) ** 2
+                    for yi, xi, si in zip(y, x, s))
 
-    return chisq
+    return chisquare
 
 
 def redchisq(f, y, x, popt, s, dof):
@@ -183,10 +183,10 @@ def redchisq(f, y, x, popt, s, dof):
     :returns: reduced chi square value.
 
     """
-    chisq = chisq(f, y, x, popt, s)
+    chisquare = chisq(f, y, x, popt, s)
     nu = len(x) - 1. - dof
 
-    return chisq / nu
+    return chisquare / nu
 
 
 def lin_fit(x, y, filter):

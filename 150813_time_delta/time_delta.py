@@ -4,6 +4,7 @@ from scipy.optimize import curve_fit
 from artist import Plot
 from sapphire.utils import gauss
 
+
 def analyse(name):
     data = genfromtxt('data/%s.tsv' % name, delimiter='\t', dtype=None,
                       names=['ext_timestamp', 'time_delta'])

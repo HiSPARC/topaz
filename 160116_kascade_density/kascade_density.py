@@ -85,7 +85,7 @@ class KascadeDensity(object):
         self.lin_bins = linspace(0.5, 200.5, 201)
         narrow_bins = linspace(0.5, 30.5, 31)
 #         wide_bins = linspace(31.5, 40.5, 4)
-        self.slice_bins = narrow_bins# append(narrow_bins, wide_bins)
+        self.slice_bins = narrow_bins  # append(narrow_bins, wide_bins)
         self.slice_bins_c = (self.slice_bins[:-1] + self.slice_bins[1:]) / 2.
         self.ref_out = linspace(0.1, 200, 4000)
         self.ref_in_i = zeros((len(self.ref_out), 4))
