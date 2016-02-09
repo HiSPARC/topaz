@@ -19,6 +19,11 @@ def read_eventtime(path):
                       names=['timestamp', 'counts'])
 
 
+def get_station_numbers():
+    """Read all eventtime data into a dictionary"""
+    return sorted([int(os.path.basename(path)[:-4]) for path in glob(PATH)])
+
+
 def get_data():
     """Read all eventtime data into a dictionary"""
     return {int(os.path.basename(path)[:-4]): read_eventtime(path)
@@ -42,7 +47,7 @@ def get_aligned():
     aligned_data = zeros((len(data.keys()), (last - first) / 3600 + 1))
     aligned_data_all = zeros((len(data.keys()), (last - first) / 3600 + 1))
 
-    for i, sn in enumerate(data.keys()):
+    for i, sn in enumerate(sorted(data.keys())):
         start = (data[sn]['timestamp'][0] - first) / 3600
         end = start + len(data[sn])
         aligned_data[i, start:end] = where((data[sn]['counts'] > 500) &
