@@ -85,6 +85,7 @@ def coincidences_stations(station_numbers, group_name='Specific stations',
         n_stations = len(stations_with_data)
         plot_coinc_window(windows, counts, group_name, n_events, n_stations,
                           date)
+    return windows, counts
 
 
 def get_event_tables(data, cluster_groups, station_numbers):
@@ -144,22 +145,36 @@ def plot_chosen_coincidence_window(plot):
 def plot_coinc_window(windows, counts, group_name='', n_events=0, n_stations=0,
                       date=datetime.date.today()):
     counts = numpy.array(counts)
-    plot = MultiPlot(2, 1, axis='loglog')
+    plot = MultiPlot(2, 1)
 
     splot = plot.get_subplot_at(0, 0)
-    splot.plot(windows, counts)
+    splot.set_axis_options(r'ymode=log, xmode=log')
+    splot.scatter(windows, counts)
     plot_background_v_window(splot, windows, n_stations)
     plot_chosen_coincidence_window(splot)
     splot = plot.get_subplot_at(1, 0)
-    splot.plot(windows[:-1], counts[1:] - counts[:-1])
-    splot.set_axis_options(r'height=0.2\textwidth')
+    # dy
+#     splot.scatter(windows[:-1], counts[1:] - counts[:-1])
+    # dy/dx
+#     splot.scatter(windows[:-1],
+#                   (counts[1:] - counts[:-1]) /
+#                   (windows[1:] - windows[:-1]))
+    # dy/dlogx
+#     splot.scatter(windows[:-1],
+#                   (counts[1:] - counts[:-1]) /
+#                   (numpy.log10(windows[1:]) - numpy.log10(windows[:-1])))
+    # dlogy/dlogx
+    splot.scatter(windows[:-1],
+                  (numpy.log10(counts[1:]) - numpy.log10(counts[:-1])) /
+                  (numpy.log10(windows[1:]) - numpy.log10(windows[:-1])))
+    splot.set_axis_options(r'height=0.2\textwidth, xmode=log, ymode=normal')
+#     splot.set_axis_options(r'height=0.2\textwidth, xmode=log, ymode=log')
 
     text = ('%s\nDate: %s\nTotal n events: %d' %
             (group_name, date.isoformat(), n_events))
     plot.set_label(0, 0, text, 'upper left')
     plot.set_xlimits_for_all(min=0.5, max=1e14)
-    plot.set_ylimits(0, 0, max=1e8)
-    plot.set_ylimits_for_all(min=1)
+    plot.set_ylimits(0, 0, min=1, max=1e8)
     plot.set_ylabel('Found coincidences')
     plot.set_xlabel(r'Coincidence window [\si{\ns}]')
     plot.show_xticklabels(1, 0)
