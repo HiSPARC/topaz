@@ -11,74 +11,75 @@ showers and angled showers.
 Might need a better fit than linear to account for the changing
 contributions.
 
-Data
-
-    ref  num  dis  wid
-    501  510    2    7
-    501  502   90   88
-    501  503  139  139
-    501  504  271  296
-    501  505  232  273
-    501  506  158  170
-    501  508   53   56
-    501  509  353  408
-    502  503  222  235
-    502  504  360  405
-    502  505  247  275
-    502  506  246  264
-    502  508  124  123
-    502  509  390  463
-    502  510   90   88
-    503  504  142  148
-    503  505  329  393
-    503  506  122  122
-    503  508  152  157
-    503  509  266  309
-    503  510  138  141
-    504  505  408  499
-    504  506  163  171
-    504  508  266  297
-    504  509  305  348
-    504  510  271  300
-    505  506  245  286
-    505  508  187  214
-    505  509  581  741
-    505  510  234  273
-    506  508  127  137
-    506  509  386  464
-    506  510  159  170
-    508  509  394  462
-    508  510   56   54
-    509  510  351  411
-
 """
-from numpy import sqrt, array
+import itertools
+
+from numpy import sqrt, array, std, histogram, linspace
+from scipy.optimize import curve_fit
+from scipy.stats import norm
+import tables
 
 from artist import Plot
 
-from scipy.optimize import curve_fit
+from sapphire import HiSPARCStations
+
+
+DATA_PATH = '/Users/arne/Datastore/station_offsets/'
+SPA_STAT = [501, 502, 503, 504, 505, 506, 508, 509, 510, 511]
+CLUSTER = HiSPARCStations(SPA_STAT)
+DAY = 86400.
+HALF_DAY = DAY / 2
+WEEK = 7 * DAY
+FORTNIGHT = 2 * WEEK
+XWEEK = 3 * WEEK
+MONTH = 30 * DAY
+QUARTER = 3 * MONTH
+HALFYEAR = 6 * MONTH
+YEAR = 365 * DAY
+
+
+def get_station_dt(data, station):
+    table = data.get_node('/s%d' % station)
+    return table
+
 
 def lin(x, a, b):
     return x * a + b
 
+
 def plot_distance_width():
+
+    distances = []
+    widths = []
+
+    for ref_station, station in itertools.combinations(SPA_STAT, 2):
+        if ref_station == 501 and station == 509:
+            continue
+        distances.append(CLUSTER.calc_rphiz_for_stations(SPA_STAT.index(ref_station), SPA_STAT.index(station))[0])
+        with tables.open_file(DATA_PATH + 'dt_ref%d_%d.h5' % (ref_station, station), 'r') as data:
+            table = get_station_dt(data, station)
+            ts1 = table[-1]['timestamp'] - WEEK
+            ts0 = ts1 - QUARTER # * max(1, (distance / 100))
+            dt = table.read_where('(timestamp > ts0) & (timestamp < ts1)',
+                                  field='delta')
+            pre_width = std(dt)
+            counts, bins = histogram(dt, bins=linspace(-1.8*pre_width, 1.8*pre_width, 100), density=True)
+            x = (bins[:-1] + bins[1:]) / 2
+            popt, pcov = curve_fit(norm.pdf, x, counts, p0=(0., distances[-1]))
+            widths.append(popt[1])
+            print distances[-1], std(dt), popt[1]
+
     plot = Plot()
-    d = [2, 90, 139, 271, 232, 158, 53, 353, 222, 360, 247, 246, 124, 390, 90,
-         142, 329, 122, 152, 266, 138, 408, 163, 266, 305, 271, 245, 187, 581,
-         234, 127, 386, 159, 394, 56, 351]
-    s = [7, 88, 139, 296, 273, 170, 56, 408, 235, 405, 275, 264, 123, 463, 88,
-         148, 393, 122, 157, 309, 141, 499, 171, 297, 348, 300, 286, 214, 741,
-         273, 137, 464, 170, 462, 54, 411]
-    popt, pcov = curve_fit(lin, d, s, p0=(1.1, 1), sigma=array(d) ** 0.3)
+    popt, pcov = curve_fit(lin, distances, widths, p0=(1.1, 1))#, sigma=array(distances) ** 0.3)
     print popt, pcov
-    plot.scatter(d, s)
-    plot.plot([0, 600], [0, 600], mark=None, linestyle='gray')
+    plot.scatter(distances, widths)
+    plot.plot([0, 600], [0, 600 / 0.3], mark=None, linestyle='gray')
     plot.plot([0, 600], [lin(0, *popt), lin(600, *popt)], mark=None)
     plot.set_xlimits(min=0, max=600)
     plot.set_ylimits(min=0, max=700)
     plot.set_xlabel(r'Distance [\si{\meter}]')
     plot.set_ylabel(r'Width of dt distribution [\si{\ns}]')
-    plot.save_as_pdf('plots/distance_v_width')
+    plot.save_as_pdf('plots/distance_v_width_pr')
 
 
 if __name__ == "__main__":
