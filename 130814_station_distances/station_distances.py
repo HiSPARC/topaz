@@ -40,7 +40,8 @@ def distances_stations(cluster, name=''):
                                           (0., 0., 0.), atol=1e-7)
         except AssertionError:
             # Not invalid GPS
-            coordinates.append(numpy.array(station.get_coordinates()[:-1]))
+            coordinates.append(
+                numpy.array(station.calc_center_of_mass_coordinates()))
     distances = distance_combinations(coordinates)
     plot_station_distances(distances, name=name)
 
