@@ -142,7 +142,8 @@ def make_map(country=None, cluster=None, subcluster=None, station=None,
         plot.scatter(x, map_h - y, markstyle="black!30!red, thick")
     if knmi:
         x, y = map.to_pixels(array(knmi_latitudes), array(knmi_longitudes))
-        plot.scatter(x, map_h - y, markstyle="black!50!blue, thick")
+        plot.scatter(x, map_h - y,
+                     markstyle="mark size=0.5pt, black!50!blue, thick")
 
     plot.set_xlabel('Longitude [$^\circ$]')
     plot.set_xticks([xmin, xmax])
