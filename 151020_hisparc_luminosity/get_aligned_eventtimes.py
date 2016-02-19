@@ -3,7 +3,7 @@ import os
 from datetime import date
 
 from artist import Plot
-from numpy import genfromtxt, zeros, histogram, arange, where
+from numpy import genfromtxt, zeros, histogram, arange, where, uint32
 
 from sapphire.utils import pbar
 from sapphire.transformations.clock import datetime_to_gps
@@ -15,7 +15,7 @@ YEARS = range(2004, 2017)
 
 def read_eventtime(path):
     """Read an eventtime csv file"""
-    return genfromtxt(path, delimiter='\t', dtype=None,
+    return genfromtxt(path, delimiter='\t', dtype=uint32,
                       names=['timestamp', 'counts'])
 
 
@@ -81,10 +81,17 @@ def plot_active_stations(timestamp, aligned_data):
     first_ts = []
 
     for n in range(aligned_data.shape[0]):
+        prev_ts = 0
         for ts, has_data in zip(timestamp, aligned_data[n]):
             if has_data:
-                first_ts.append(ts)
-                break
+                if prev_ts > 30:
+                    # Running for at least 30 hours.
+                    first_ts.append(ts)
+                    break
+                else:
+                    prev_ts += 1
+            else:
+                prev_ts = 0
 
     first_ts = sorted(first_ts)
 
@@ -98,6 +105,7 @@ def plot_active_stations(timestamp, aligned_data):
     plot.set_axis_options('line join=round')
     plot.set_ylabel('Number of stations')
     plot.set_xlabel('Date')
+    plot.set_ylimits(min=0)
     plot.set_xticks([datetime_to_gps(date(y, 1, 1)) / 1e9 for y in YEARS[::3]])
     plot.set_xtick_labels(['%d' % y for y in YEARS[::3]])
     plot.save_as_pdf('active_stations')
