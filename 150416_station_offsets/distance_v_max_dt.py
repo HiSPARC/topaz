@@ -14,7 +14,7 @@ contributions.
 """
 import itertools
 
-from numpy import sqrt, array, std, histogram, linspace, arange
+from numpy import sqrt, array, std, histogram, linspace, arange, percentile
 from scipy.optimize import curve_fit
 from scipy.stats import norm
 import tables
@@ -77,17 +77,13 @@ def plot_distance_width():
                 sim_dt = (sim_ref_events.col('ext_timestamp').astype(int) -
                           sim_events.col('ext_timestamp').astype(int))
 
-                bins = arange(-2000, 2000.1, 30)
-                # bins = linspace(-max_dt, max_dt, 150)
-                # bins = linspace(-1.8 * std(dt), 1.8 * std(dt), 100)
-                x = (bins[:-1] + bins[1:]) / 2
-
-                sim_counts, bins = histogram(sim_dt, bins=bins, density=True)
-                counts, bins = histogram(dt, bins=bins, density=True)
-
-                width = curve_fit(norm.pdf, x, counts, p0=(0., distances[-1]))[0][1]
+                high = 94
+                low = 6
+#                 width = curve_fit(norm.pdf, x, counts, p0=(0., distances[-1]))[0][1]
+                width = percentile(sorted(dt), high) - percentile(sorted(dt), low)
                 widths.append(width)
-                sim_width = curve_fit(norm.pdf, x, sim_counts, p0=(0., distances[-1]))[0][1]
+#                 sim_width = curve_fit(norm.pdf, x, sim_counts, p0=(0., distances[-1]))[0][1]
+                sim_width = percentile(sim_dt, high) - percentile(sim_dt, low)
                 sim_widths.append(sim_width)
 
     widths = array(widths)
@@ -102,7 +98,7 @@ def plot_distance_width():
     splot.scatter(distances, sim_widths, markstyle='green')
     splot.plot([0, 600], [0, 600 / 0.3], mark=None, linestyle='gray')
     splot.plot([0, 600], [lin(0, *popt), lin(600, *popt)], mark=None)
-    splot.set_ylimits(min=0, max=700)
+    splot.set_ylimits(min=0, max=700 / 0.3)
 
     splot = plot.get_subplot_at(1, 0)
     splot.scatter(distances, widths - sim_widths, markstyle='mark size=1pt')
@@ -114,7 +110,7 @@ def plot_distance_width():
     plot.set_xlimits_for_all(None, min=0, max=600)
     plot.set_xlabel(r'Distance [\si{\meter}]')
     plot.set_ylabel(r'Width of $\Delta t$ distribution [\si{\ns}]')
-    plot.save_as_pdf('plots/distance_v_width_sim')
+    plot.save_as_pdf('plots/distance_v_maxdt_sim')
 
 
 if __name__ == "__main__":
