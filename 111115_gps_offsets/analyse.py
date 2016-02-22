@@ -1,5 +1,5 @@
 import numpy as np
-from artist import Plot
+from artist import Plot, MultiPlot
 from scipy.optimize import curve_fit
 
 from sapphire.utils import gauss
@@ -10,7 +10,7 @@ from helper import (nanoseconds_from_ext_timestamp,
                     timestamps_from_ext_timestamp)
 
 
-PLOT_PATH = '/Users/arne/Dropbox/hisparc/Projects/tijdtest/plots/'
+PLOT_PATH = 'plots/'
 
 
 def print_delta_results(ids=None):
@@ -199,10 +199,40 @@ def plot_delta_time(ids, **kwargs):
     print 'tt_analyse: Plotted delta vs time'
 
 
+def plot_multi_delta_time(ids, **kwargs):
+    """ Plot delta versus the timestamps
+
+    """
+    plot = MultiPlot(1, len(ids))
+    for splot, id in zip(plot.subplots, ids):
+        ext_timestamps, deltas = get(id)
+        daystamps = (np.array(ext_timestamps) - min(ext_timestamps)) / 864e11
+        if max(daystamps) > 3:
+            idx = next(i for i, v in enumerate(daystamps) if v > 3.2)
+            deltas = deltas[:idx]
+            daystamps = daystamps[:idx]
+        splot.plot(daystamps[::101], deltas[::101], mark=None, linestyle='very thin')
+#         splot.scatter(daystamps[::400], deltas[::400], mark='*',
+#                       markstyle="mark size=.1pt")
+        splot.set_axis_options(r'width=%.2f\textwidth' % (.9 / len(ids)))
+
+        splot.set_xlimits(0, max(daystamps))
+    plot.show_xticklabels_for_all()
+    plot.show_yticklabels(0, 0)
+    plot.set_xlabel(r'Time in test [days]')
+    plot.set_ylabel(r'$\Delta t$ [\si{\ns}]')
+    plot.set_ylimits_for_all(None, -175, 175)
+
+    name = 'delta_time/tt_delta_time_' + '_'.join([str(id) for id in ids])
+    plot.save_as_pdf(PLOT_PATH + name)
+
+    print 'tt_analyse: Plotted delta vs time'
+
+
 def determine_stats(deltas):
     if len(deltas):
-        low = min(deltas)
-        high = max(deltas)
+        low = np.percentile(deltas, .5)  # min(deltas)
+        high = np.percentile(deltas, 99.5)  # max(deltas)
         avg = np.average(deltas)
         std = np.std(deltas)
         return low, high, avg, std
@@ -215,22 +245,59 @@ def plot_box(ids, **kwargs):
     if type(ids) is int:
         ids = [ids]
 
+    x = range(len(ids))
+
     #Begin Figure
     plot = Plot()
-    data = [determine_stats([x for x in get(id)[1] if abs(x) < 100]) for id in ids]
+    data = [determine_stats([i for i in get(id)[1] if abs(i) < 100]) for id in ids]
 
     low, high, avg, std = zip(*data)
 
-    plot.plot(ids, avg, yerr=std, mark='o', markstyle="mark size=1pt",
+    plot.plot(x, avg, yerr=std, mark='o', markstyle="mark size=1pt",
               linestyle=None)
-    plot.scatter(ids, low, mark='x', markstyle="mark size=.5pt")
-    plot.scatter(ids, high, mark='x', markstyle="mark size=.5pt")
+    plot.scatter(x, low, mark='x', markstyle="mark size=.5pt")
+    plot.scatter(x, high, mark='x', markstyle="mark size=.5pt")
 
-    if kwargs.keys():
-        plot.set_title('Tijdtest offsets ' + kwargs[kwargs.keys()[0]])
+#     if kwargs.keys():
+#         plot.set_title('Tijdtest offsets ' + kwargs[kwargs.keys()[0]])
     plot.set_xlabel(r'ids')
     plot.set_ylabel(r'$\Delta$ t (swap - reference) [\si{\nano\second}]')
-    plot.set_ylimits(-100, 100)
+    plot.set_ylimits(-80, 80)
+
+    #Save Figure
+    if len(ids) == 1:
+        name = 'box/tt_offset_%03d' % ids[0]
+    elif kwargs.keys():
+        name = 'box/tt_offset_' + kwargs[kwargs.keys()[0]]
+    plot.save_as_pdf(PLOT_PATH + name)
+
+    print 'tt_analyse: Plotted offsets'
+
+
+def plot_multi_box(ids1, ids2, **kwargs):
+    """Box Plot like results"""
+
+    li = len(ids1) + len(ids2)
+
+    #Begin Figure
+    plot = MultiPlot(1, 2)
+    for splot, ids in zip(plot.subplots, [ids1, ids2]):
+        data = [determine_stats([i for i in get(id)[1] if abs(i) < 100]) for id in ids]
+        low, high, avg, std = zip(*data)
+        x = range(len(ids))
+        splot.plot(x, avg, yerr=std, mark='o', markstyle="mark size=1pt",
+                   linestyle=None)
+        splot.scatter(x, low, mark='x', markstyle="mark size=.75pt")
+        splot.scatter(x, high, mark='x', markstyle="mark size=.75pt")
+        splot.set_axis_options(r'height=.67\textwidth, width=%.2f\textwidth' %
+                               ((len(ids) * .67 / li)))
+        splot.set_xlimits(-0.5, len(ids) - 0.5)
+        splot.set_xticks(x)
+
+    plot.set_xlabel(r'Tests')
+    plot.set_ylabel(r'$\Delta t$ [\si{\ns}]')
+    plot.set_ylimits_for_all(None, -70, 70)
+    plot.show_yticklabels(0, 0)
 
     #Save Figure
     if len(ids) == 1:
@@ -290,16 +357,21 @@ if __name__ == '__main__':
 #    plot_delta_histogram(gps_comp_groups, name='GPS_comp')
 #    bad_comp_groups = get_tests(part='group', subset='Bad', complement=True)
 #    plot_delta_histogram(bad_comp_groups, name='Bad_comp')
+    plot_delta_time([74])
+#     plot_multi_delta_time([89, 22, 44, 3])
 
-    ids = get_tests(part='id', subset='Good1')
-    plot_box(ids, name='Good1')
-    plot_offset_distribution(ids, name='Good1')
-    ids = get_tests(part='id', subset='Good2')
-    plot_box(ids, name='Good2')
-    plot_offset_distribution(ids, name='Good2')
-    ids = get_tests(part='id', subset='PMT')
-    plot_box(ids, name='PMT')
-    plot_offset_distribution(ids, name='PMT')
+#     ids1 = get_tests(part='id', subset='Good1')
+#     plot_box(ids1, name='Good1')
+#     plot_offset_distribution(ids1, name='Good1')
+#     ids2 = get_tests(part='id', subset='Good2')
+#     plot_box(ids, name='Good2')
+#     plot_offset_distribution(ids2, name='Good2')
+
+#     plot_multi_box(ids1, ids2, name='Good')
+
+#     ids = get_tests(part='id', subset='PMT')
+#     plot_box(ids, name='PMT')
+#     plot_offset_distribution(ids, name='PMT')
 
 #     plot_delta_time(62)
 #     print_delta_results()
