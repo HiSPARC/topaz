@@ -18,8 +18,14 @@ MAX_DISTANCE = 2e3
 
 def distance_between_stations(s1, s2):
     cluster = HiSPARCStations([s1, s2])
-    xyz = [numpy.array(s.get_coordinates()[:-1]) for s in cluster.stations]
+    xyz = [numpy.array(s.calc_center_of_mass_coordinates()) for s in cluster.stations]
     return distance(*xyz)
+
+
+def horizontal_distance_between_stations(s1, s2):
+    cluster = HiSPARCStations([s1, s2])
+    xy = [numpy.array(s.calc_center_of_mass_coordinates()[:-1]) for s in cluster.stations]
+    return distance(*xy)
 
 
 def close_pairs_in_network(min=MIN_DISTANCE, max=MAX_DISTANCE):
@@ -37,7 +43,7 @@ def close_pairs_in_cluster(cluster, min=MIN_DISTANCE, max=MAX_DISTANCE):
         except AssertionError:
             # Not invalid GPS
             station_numbers.append(station.number)
-            coordinates.append(numpy.array(station.get_coordinates()[:-1]))
+            coordinates.append(numpy.array(station.calc_center_of_mass_coordinates()))
     return get_close_pairs(zip(station_numbers, coordinates), min, max)
 
 
