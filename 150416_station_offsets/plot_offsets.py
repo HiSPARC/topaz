@@ -77,7 +77,7 @@ def plot_offset_timeline(ref_station, station):
     graph.set_xtick_labels(['%d' % y for y in range(2010, 2016)])
     graph.set_xlimits(1.25e9, 1.45e9)
     graph.set_ylimits(-150, 150)
-    graph.save_as_pdf('plots/offsets_ref%d_%d' %
+    graph.save_as_pdf('plots/offsets/offsets_ref%d_%d' %
                       (ref_station, station))
 
 #     plot = Plot(width=r'.6\textwidth')

@@ -14,7 +14,7 @@ contributions.
 """
 import itertools
 
-from numpy import sqrt, array, std, histogram, linspace, arange
+from numpy import sqrt, array, std, abs, histogram, linspace, arange
 from scipy.optimize import curve_fit
 from scipy.stats import norm
 import tables
@@ -47,6 +47,10 @@ def get_station_dt(data, station):
 
 def lin(x, a, b):
     return x * a + b
+
+
+def lin_origin(x, a):
+    return x * a
 
 
 def plot_distance_width():
@@ -85,35 +89,44 @@ def plot_distance_width():
                 sim_counts, bins = histogram(sim_dt, bins=bins, density=True)
                 counts, bins = histogram(dt, bins=bins, density=True)
 
-                width = curve_fit(norm.pdf, x, counts, p0=(0., distances[-1]))[0][1]
+#                 width = curve_fit(norm.pdf, x, counts, p0=(0., distances[-1]))[0][1]
+#                 widths.append(width)
+#                 sim_width = curve_fit(norm.pdf, x, sim_counts, p0=(0., distances[-1]))[0][1]
+#                 sim_widths.append(sim_width)
+                window_width = distances[-1] * 3.5
+                width = std(dt.compress(abs(dt) < window_width))
                 widths.append(width)
-                sim_width = curve_fit(norm.pdf, x, sim_counts, p0=(0., distances[-1]))[0][1]
+                sim_width = std(sim_dt.compress(abs(sim_dt) < window_width))
                 sim_widths.append(sim_width)
 
     widths = array(widths)
     sim_widths = array(sim_widths)
 
-    popt, pcov = curve_fit(lin, distances, widths, p0=(1.1, 1), sigma=array(distances) ** 0.3)
+    popt, pcov = curve_fit(lin, distances, widths, p0=(1.1, 1),
+                           sigma=array(distances) ** 0.3)
+    popt, pcov = curve_fit(lin_origin, distances, widths, p0=(1.1),
+                           sigma=array(distances) ** 0.3)
     print popt, pcov
 
     plot = MultiPlot(2, 1)
     splot = plot.get_subplot_at(0, 0)
-    splot.scatter(distances, widths)
-    splot.scatter(distances, sim_widths, markstyle='green')
+    splot.scatter(distances, widths, markstyle='black')
+    splot.scatter(distances, sim_widths, markstyle='black', mark='+')
     splot.plot([0, 600], [0, 600 / 0.3], mark=None, linestyle='gray')
-    splot.plot([0, 600], [lin(0, *popt), lin(600, *popt)], mark=None)
+    splot.plot([0, 600], [lin_origin(0, *popt), lin_origin(600, *popt)], mark=None)
     splot.set_ylimits(min=0, max=700)
+    splot.set_ylabel(r'$\sigma_{\Delta t}$ [\si{\ns}]')
 
     splot = plot.get_subplot_at(1, 0)
     splot.scatter(distances, widths - sim_widths, markstyle='mark size=1pt')
     splot.draw_horizontal_line(0, linestyle='gray')
     splot.set_axis_options(r'height=0.2\textwidth')
+    splot.set_ylabel(r'$\sigma_{\mathrm{data}} - \sigma_{\mathrm{sim}}$ [\si{\ns}]')
 
     plot.show_xticklabels(1, 0)
     plot.show_yticklabels_for_all(None)
     plot.set_xlimits_for_all(None, min=0, max=600)
     plot.set_xlabel(r'Distance [\si{\meter}]')
-    plot.set_ylabel(r'Width of $\Delta t$ distribution [\si{\ns}]')
     plot.save_as_pdf('plots/distance_v_width_sim')
 
 

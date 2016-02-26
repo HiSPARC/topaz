@@ -48,4 +48,4 @@ if __name__ == '__main__':
             graph.set_xlabel('Timestamp [s]')
             graph.set_xlimits(t_start, t_end)
             graph.set_ylimits(-max_dt, max_dt)
-            graph.save_as_pdf('plots/dt_%d_xweek' % station)
+            graph.save_as_pdf('plots/2d_distribution/dt_%d_xweek' % station)

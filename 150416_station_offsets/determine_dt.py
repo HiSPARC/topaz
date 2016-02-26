@@ -50,6 +50,10 @@ class DeltaVal(tables.IsDescription):
 def determine_time_differences(coin_events, ref_station, station, ref_d_off, d_off):
     """Determine the arrival time differences between two stations.
 
+    :param coin_events: coincidence events.
+    :param ref_station,station: station numbers.
+    :param ref_d_off,d_off: `detector_timing_offset` methods of Station objects
+        for the two stations, to retrieve applicable offsets.
     :return: extended timestamp of the first event and time difference,
              t - t_ref. Not corrected for altitude differences.
 

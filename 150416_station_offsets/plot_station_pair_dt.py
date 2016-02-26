@@ -97,7 +97,9 @@ def plot_offset_distributions():
                 splot = plot.get_subplot_at(0, 0)
                 splot.histogram(counts, bins)
                 splot.histogram(sim_counts, bins, linestyle='green')
-                plot_fits(splot, counts, bins)
+#                 plot_fits(splot, counts, bins)
+                splot.draw_vertical_line(distance * 3.5, linestyle='dashed')
+                splot.draw_vertical_line(-distance * 3.5, linestyle='dashed')
                 splot.set_ylabel('Counts')
                 splot.set_ylimits(min=0)
 
