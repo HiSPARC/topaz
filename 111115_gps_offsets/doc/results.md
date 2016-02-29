@@ -150,8 +150,11 @@ Table 3 | Test Trigger
     * 083/501/PMT2b  -18.82    11.94    124.95
     176/501/EXT     -140.44     4.67
     * 176/501/PMT2   -16.23     4.56    124.21
+    301/test/EXT    -150.22     3.12
+    * 301/test/PMT1  -12.18     3.09    138.04
+
     ------------------------------------------
-    Average delta between PMT and EXT:  123.33
+    Average delta PMT-EXT, HiSPARC II:  123.33
 
 
 Table 4 | Test GPS
