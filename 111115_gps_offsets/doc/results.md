@@ -127,8 +127,8 @@ Table 2 | David Test
       3  050/501/EXT      -4.43   11.33   2.77
 
 
-Table 3 | Test Trigger
-----------------------
+Table 3 | Test External Trigger
+-------------------------------
 
     HII/GPS/TRIG       Mean      Std     Delta
     ------------------------------------------
@@ -150,11 +150,21 @@ Table 3 | Test Trigger
     * 083/501/PMT2b  -18.82    11.94    124.95
     176/501/EXT     -140.44     4.67
     * 176/501/PMT2   -16.23     4.56    124.21
+    ------------------------------------------
+    Average delta PMT-EXT, HiSPARC II:  123.33
+
+
     301/test/EXT    -150.22     3.12
     * 301/test/PMT1  -12.18     3.09    138.04
 
+    348 EXT           630.0     5.00
+    * 348 PMT1        497.5     5.00    132.50
+    314 EXT           632.5     5.00
+    * 314 PMT1        497.5     5.00    135.00
+    318 EXT           632.5     5.00
+    * 318 PMT1        500.0     5.00    132.50
     ------------------------------------------
-    Average delta PMT-EXT, HiSPARC II:  123.33
+    Average delta PMT-EXT, HiSPARC III: 134.50
 
 
 Table 4 | Test GPS
