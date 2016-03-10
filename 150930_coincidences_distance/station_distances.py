@@ -8,7 +8,7 @@ a histogram to show these distances.
 """
 from itertools import combinations
 
-import numpy
+from numpy import array, sqrt, testing
 
 from sapphire import HiSPARCNetwork, HiSPARCStations
 
@@ -18,13 +18,15 @@ MAX_DISTANCE = 2e3
 
 def distance_between_stations(s1, s2):
     cluster = HiSPARCStations([s1, s2])
-    xyz = [numpy.array(s.calc_center_of_mass_coordinates()) for s in cluster.stations]
+    xyz = [array(s.calc_center_of_mass_coordinates())
+           for s in cluster.stations]
     return distance(*xyz)
 
 
 def horizontal_distance_between_stations(s1, s2):
     cluster = HiSPARCStations([s1, s2])
-    xy = [numpy.array(s.calc_center_of_mass_coordinates()[:-1]) for s in cluster.stations]
+    xy = [array(s.calc_center_of_mass_coordinates()[:-1])
+          for s in cluster.stations]
     return distance(*xy)
 
 
@@ -38,12 +40,12 @@ def close_pairs_in_cluster(cluster, min=MIN_DISTANCE, max=MAX_DISTANCE):
     coordinates = []
     for station in cluster.stations:
         try:
-            numpy.testing.assert_allclose(station.get_lla_coordinates(),
-                                          (0., 0., 0.), atol=1e-7)
+            testing.assert_allclose(station.get_lla_coordinates(),
+                                    (0., 0., 0.), atol=1e-7)
         except AssertionError:
             # Not invalid GPS
             station_numbers.append(station.number)
-            coordinates.append(numpy.array(station.calc_center_of_mass_coordinates()))
+            coordinates.append(array(station.calc_center_of_mass_coordinates()))
     return get_close_pairs(zip(station_numbers, coordinates), min, max)
 
 
@@ -54,7 +56,7 @@ def get_close_pairs(coordinates, min=MIN_DISTANCE, max=MAX_DISTANCE):
 
 
 def distance(c1, c2):
-    distance = numpy.sqrt(sum((c1 - c2) ** 2))
+    distance = sqrt(sum((c1 - c2) ** 2))
     return distance
 
 

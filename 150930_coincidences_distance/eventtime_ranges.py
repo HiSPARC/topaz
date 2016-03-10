@@ -34,6 +34,9 @@ def get_total_exposure(timestamp_ranges):
 def get_timestamp_ranges(station_numbers, min_n=None):
     """Get timestamp ranges where all stations have data
 
+    :param station_numbers: list of station numbers that should be considered.
+    :param min_n: if given at least this number of stations should have data,
+                  for a date to be included.
     :return: list of timestamp range, using the following format:
              `[(start, end), (start, end), (start, end), ...]`
 

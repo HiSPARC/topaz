@@ -25,29 +25,36 @@ from sapphire.simulations.ldf import KascadeLdf
 from eventtime_ranges import get_timestamp_ranges, get_total_exposure
 from station_distances import close_pairs_in_network, distance_between_stations
 
+
 DATAPATH = '/Users/arne/Datastore/pairs/%d_%d.h5'
 
 
-def download_pair_coincidences(close_pairs):
-    for pair in pbar(close_pairs):
-        path = DATAPATH % tuple(pair)
-        if os.path.exists(path):
-            continue
-        else:
-            print pair
-            raise Exception
-        distance = distance_between_stations(*pair)
-        timestamp_ranges = get_timestamp_ranges(pair)
-        total_exposure = get_total_exposure(timestamp_ranges)
-        with tables.open_file(path, 'w') as data:
-            for ts_start, ts_end in timestamp_ranges:
-                print ts_start, ts_end
-                download_coincidences(data, stations=list(pair),
-                                      start=gps_to_datetime(ts_start),
-                                      end=gps_to_datetime(ts_end),
-                                      progress=False)
-            data.set_node_attr('/', 'total_exposure', total_exposure)
-            data.set_node_attr('/', 'distance', distance)
+def download_coincidences_pairs(close_pairs):
+    worker_pool = multiprocessing.Pool(4)
+    worker_pool.map(download_coincidences_pair, close_pairs)
+    worker_pool.close()
+    worker_pool.join()
+
+
+def download_coincidences_pair(pair):
+    path = DATAPATH % tuple(pair)
+    if os.path.exists(path):
+        continue
+    else:
+        print pair
+        raise Exception
+    distance = distance_between_stations(*pair)
+    timestamp_ranges = get_timestamp_ranges(pair)
+    total_exposure = get_total_exposure(timestamp_ranges)
+    with tables.open_file(path, 'w') as data:
+        for ts_start, ts_end in timestamp_ranges:
+            print ts_start, ts_end
+            download_coincidences(data, stations=list(pair),
+                                  start=gps_to_datetime(ts_start),
+                                  end=gps_to_datetime(ts_end),
+                                  progress=False)
+        data.set_node_attr('/', 'total_exposure', total_exposure)
+        data.set_node_attr('/', 'distance', distance)
 
 
 def get_coincidence_count(close_pairs):
@@ -147,11 +154,12 @@ def plot_coincidence_rate_distance(distances, coincidence_rates, rate_errors):
     colors = {4: 'red', 6: 'black!50!green', 8: 'black!20!blue'}
     plot = Plot('loglog')
 
-    freq_2 = .3
-    freq_4 = .6
-    background = {4: 2 * freq_2 ** 2 * 2e-6,
-                  6: 2 * freq_2 * freq_4 * 2e-6,
-                  8: 2 * freq_4 ** 2 * 2e-6}
+    coincidence_window = 10e-6  # seconds
+    freq_2 = 0.3
+    freq_4 = 0.6
+    background = {4: 2 * freq_2 * freq_2 * coincidence_window,
+                  6: 2 * freq_2 * freq_4 * coincidence_window,
+                  8: 2 * freq_4 * freq_4 * coincidence_window}
 
     for n in distances.keys():
         plot.draw_horizontal_line(background[n], 'dashed,thin,' + colors[n])
@@ -177,9 +185,8 @@ def plot_coincidence_rate_distance(distances, coincidence_rates, rate_errors):
 
 if __name__ == "__main__":
     if 'rates' not in globals():
-        close_pairs = close_pairs_in_network(min=45, max=2e3)
-        close_pairs += close_pairs_in_network(min=9e3, max=1e4)
-        close_pairs += close_pairs_in_network(min=1.2e4, max=1.5e4)
+        close_pairs = close_pairs_in_network(min=30, max=3e3)
+        close_pairs += close_pairs_in_network(min=9e3, max=15e3)
 
 #         download_pair_coincidences(close_pairs)
         distances, rates, rate_errors = get_coincidence_count(close_pairs)
