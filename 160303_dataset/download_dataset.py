@@ -8,7 +8,11 @@ from sapphire import download_coincidences, download_data
 
 
 DATASTORE = "/Users/arne/Datastore/dataset"
+STATION_PATH = os.path.join(DATASTORE, 'dataset_s%d_110601_160201.h5')
+COIN_PATH = os.path.join(DATASTORE, 'dataset_sciencepark_n2_110601_160201.h5')
 STATIONS = [501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511]
+START = (2011, 6)
+END = (2016, 2)
 
 
 def download_sciencepark_station_data():
@@ -19,14 +23,11 @@ def download_sciencepark_station_data():
 
 
 def download_data_for_station(station_number):
-    start = (2011, 6)
-    end = (2016, 2)
-    filename = 'dataset_s%d_110601_160201.h5' % station_number
-    path = os.path.join(DATASTORE, filename)
+    path = STATION_PATH % station_number
     if os.path.exists(path):
         return path
     with tables.open_file(path, 'a') as data:
-        for startdt, enddt in monthrange(start, end):
+        for startdt, enddt in monthrange(START, END):
             print 'downloading', startdt.date(), enddt.date(), station_number
             download_data(data, '/s%d' % station_number, station_number,
                           start=startdt, end=enddt,
@@ -44,12 +45,10 @@ def download_sciencepark_coincidences():
     Note: Station 510 'overlaps' with 501. Station 507 is excluded.
 
     """
-    start = (2011, 6)
-    end = (2016, 2)
     stations = [501, 502, 503, 504, 505, 506, 508, 509, 510, 511]
-    path = os.path.join(DATASTORE, 'dataset_sciencepark_n2_110601_160201.h5')
+    path = COIN_PATH
     with tables.open_file(path, 'a') as data:
-        for startdt, enddt in monthrange(start, end):
+        for startdt, enddt in monthrange(START, END):
             download_coincidences(data, stations=stations,
                                   start=startdt, end=enddt, n=2)
 
