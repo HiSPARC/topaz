@@ -102,7 +102,7 @@ def plot_bad_value_timeline(stats, field, ylabel=None):
 
     plot.set_xlabel(r'Timestamp')
     if ylabel is None:
-        plot.set_ylabel(r'Fraction of bad data [\si{\percent}]')
+        plot.set_ylabel(r'Fraction of bad %s data [\si{\percent}]' % field)
     else:
         plot.set_ylabel(ylabel)
     plot.save_as_pdf('bad_fraction_%s' % ''.join(field))
