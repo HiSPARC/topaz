@@ -1,8 +1,9 @@
 from datetime import date
 import os
+import csv
 
 from numpy import (sum, sin, linspace, random, searchsorted, split, nan, array,
-                   empty, column_stack)
+                   empty, column_stack, genfromtxt)
 import tables
 
 from artist import Plot, MultiPlot
@@ -16,16 +17,24 @@ from download_dataset import STATIONS, START, END
 DATASTORE = "/Users/arne/Datastore/dataset"
 DATA_PATH = os.path.join(DATASTORE,
                          'dataset_sciencepark_stations_110601_160201.h5')
+COIN_PATH = os.path.join(DATASTORE, 'dataset_sciencepark_n2_110601_160201.h5')
+TSV_PATH = os.path.join(DATASTORE, 'stats/s%d_%s.tsv')
+
 # STATIONS = STATIONS[-2:]
 START_TS = datetime_to_gps(date(*START, day=1))
 END_TS = datetime_to_gps(date(*END, day=1))
-BINS = linspace(START_TS, END_TS, 241)
+BINS = linspace(START_TS, END_TS, 481)
 BIN_WIDTH = BINS[1] - BINS[0]
 COLORS = ['black', 'red', 'green', 'blue']
 
 YEARS = range(2011, date.today().year + 1)
 YEARS_TICKS = array([datetime_to_gps(date(y, 1, 1)) for y in YEARS])
 YEARS_LABELS = [str(y) for y in YEARS]
+
+FIELDS = ['integrals', 't_trigger', 'event_rate',
+          ('t1', 't2', 't3', 't4'),
+          ('n1', 'n2', 'n3', 'n4')]
+FIELD_NAMES = [''.join(field) for field in FIELDS]
 
 
 def frac_bad(values):
@@ -49,38 +58,120 @@ def binned_stat(x, values, func, bins):
     return array([func(group) for group in split(values, idx_ranges)]).T
 
 
-def get_stats(data, field):
+def binned_stat_idx(events, idx_ranges, station):
+
     stats = {}
-    for station in pbar(STATIONS):
-        events = data.get_node('/s%d' % station, 'events')
-        if isinstance(field, tuple):
-            cdata = column_stack(events.col(f) for f in field)
-            stat = binned_stat(events.col('timestamp'),
-                               cdata, frac_bad, bins=BINS)
+    for field_name in FIELD_NAMES:
+        if field_name == 'event_rate':
+            stats[field_name] = get_event_rate(idx_ranges)
         else:
-            stat = binned_stat(events.col('timestamp'),
-                               events.col(field), frac_bad, bins=BINS)
-        stats[station] = stat
+            stats[field_name] = []
+
+    for start, stop in pbar(zip(idx_ranges[:-1], idx_ranges[1:])):
+        slice = events.read(start, stop)
+        for field, field_name in zip(FIELDS, FIELD_NAMES):
+            if field_name == 'event_rate':
+                continue
+            elif isinstance(field, tuple):
+                data = column_stack(slice[f] for f in field)
+            else:
+                data = slice[field]
+            stats[field_name].append(frac_bad(data))
+
+    for field_name in FIELD_NAMES:
+        stats[field_name] = array(stats[field_name]).T
+
     return stats
 
 
-def get_event_rates(data):
-    stats = {}
-    for station in pbar(STATIONS):
-        events = data.get_node('/s%d' % station, 'events')
-        ts = events.col('timestamp')
-        idx_ranges = searchsorted(ts, BINS)
-        stat = (idx_ranges[1:] - idx_ranges[:-1]) / BIN_WIDTH
-        stats[station] = stat
+def get_event_rate(idx_ranges):
+    stat = (idx_ranges[1:] - idx_ranges[:-1]) / BIN_WIDTH
+    return stat
+
+
+def get_idx_ranges(events):
+    ts = events.col('timestamp')
+    idx_ranges = searchsorted(ts, BINS)
+    return idx_ranges
+
+
+def determine_station_stats(data, station):
+    events = data.get_node('/s%d' % station, 'events')
+    idx_ranges = get_idx_ranges(events)
+    stats = binned_stat_idx(events, idx_ranges, station)
+
+    save_station_stats(stats, station)
+
     return stats
 
 
-def plot_bad_value_timeline(stats, field, ylabel=None):
+def determine_all_stats(data):
+    """
+
+    Statistics is a dictionary which first contains stations, and
+    each station contains fields, which contain the statistics arrays.
+
+    """
+    stats = {station: determine_station_stats(data, station)
+             for station in STATIONS}
+
+    return stats
+
+
+def save_stat(stat, station, field_name):
+    path = TSV_PATH % (station, field_name)
+    with open(path, 'wb') as tsvfile:
+        tsv = csv.writer(tsvfile, delimiter='\t')
+        timestamped_stats = column_stack((BINS[:-1], stat.T))
+        tsv.writerows(timestamped_stats)
+
+
+def save_station_stats(stats, station):
+    for field_name in FIELD_NAMES:
+        save_stat(stats[field_name], station, field_name)
+
+
+def save_stats(stats):
+    for station in STATIONS:
+        for field_name in FIELD_NAMES:
+            save_stat(stats[station][field_name], station, field_name)
+
+
+def get_stat(station, field_name):
+    path = TSV_PATH % (station, field_name)
+    stat = genfromtxt(path, delimiter='\t')
+    # Check if the BINS have changed
+    assert all(stat[:, 0] == BINS[:-1])
+
+    return stat[:, 1:].T
+
+
+def get_station_stats(station):
+    print 'Reading stats for %d' % station
+    try:
+        stats = {field_name: get_stat(station, field_name)
+                 for field_name in FIELD_NAMES}
+    except (TypeError, IOError, AssertionError):
+        print 'Determining stats for %d' % station
+        with tables.open_file(DATA_PATH) as data:
+            stats = determine_station_stats(data, station)
+
+    return stats
+
+
+def get_all_stats():
+    """First try reading from TSV, if not available determine from data"""
+
+    stats = {station: get_station_stats(station) for station in STATIONS}
+    return stats
+
+
+def plot_bad_value_timeline(stats, field_name, ylabel=None):
     step = 0.2 * BIN_WIDTH
     plot = MultiPlot(len(STATIONS), 1,
                      width=r'.67\textwidth', height=r'.05\paperheight')
     for splot, station in zip(plot.subplots, STATIONS):
-        stat = stats[station]
+        stat = stats[station][field_name]
         if len(stat.shape) == 2:
             for i, s in enumerate(stat):
                 splot.histogram(s, BINS + (step * i), linestyle=COLORS[i])
@@ -102,27 +193,24 @@ def plot_bad_value_timeline(stats, field, ylabel=None):
 
     plot.set_xlabel(r'Timestamp')
     if ylabel is None:
-        plot.set_ylabel(r'Fraction of bad %s data [\si{\percent}]' % field)
+        plot.set_ylabel(r'Fraction of bad %s data [\si{\percent}]' %
+                        field_name.replace('_', ' '))
     else:
         plot.set_ylabel(ylabel)
-    plot.save_as_pdf('bad_fraction_%s' % ''.join(field))
+    plot.save_as_pdf('bad_fraction_%s' % field_name)
+
+
+def plot_bad_value_timelines(statistics):
+    for field_name in FIELD_NAMES:
+        if field_name == 'event_rate':
+            ylabel = r'Event rate [\si{\hertz}]'
+        else:
+            ylabel = None
+        plot_bad_value_timeline(statistics, field_name, ylabel)
 
 
 if __name__ == "__main__":
-    if 'statistics' not in globals():
-        fields = ['integrals', 't_trigger',
-                  ('t1', 't2', 't3', 't4'),
-                  ('n1', 'n2', 'n3', 'n4')]
-        statistics = {}
-        with tables.open_file(DATA_PATH) as data:
-            statistics['event_rate'] = get_event_rates(data)
-            plot_bad_value_timeline(statistics['event_rate'], 'event_rate',
-                                    r'Event rate [\si{\hertz}]')
-            for field in fields:
-                statistics[field] = get_stats(data, field)
-                plot_bad_value_timeline(statistics[field], field)
 
-    plot_bad_value_timeline(statistics['event_rate'], 'event_rate',
-                            r'Event rate [\si{\hertz}]')
-    for field in fields:
-        plot_bad_value_timeline(statistics[field], field)
+    statistics = get_all_stats()
+
+    plot_bad_value_timelines(statistics)
