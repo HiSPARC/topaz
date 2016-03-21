@@ -18,6 +18,7 @@ def modify_range(ts_range, start_ts):
     return [(ts1 if ts1 > start_ts else start_ts, ts2)
             for ts1, ts2 in ts_range if ts2 > start_ts]
 
+
 def get_coin_count(s1, s2, start_ts):
     """Get number of coincidences after a given timestamp"""
 
@@ -27,10 +28,11 @@ def get_coin_count(s1, s2, start_ts):
         return len(coin.get_where_list('timestamp >= start_ts'))
 
 
-def coin_rate_since():
+def coin_rate_since(start_ts=None):
     """Get coincidence rate since a given timestamp"""
 
-    start_ts = datetime_to_gps(date(2015, 1, 1))
+    if start_ts is None:
+        start_ts = datetime_to_gps(date(2015, 1, 1))
 
     for s1, s2 in combinations([7001, 7002, 7003], 2):
         ts12 = get_timestamp_ranges([s1, s2])

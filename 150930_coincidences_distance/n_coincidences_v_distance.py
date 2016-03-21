@@ -17,62 +17,51 @@ import tables
 from artist import Plot
 from numpy import array, sqrt, logspace, log10, exp, sum, zeros, interp
 from scipy.optimize import curve_fit
-from sapphire import download_coincidences, HiSPARCNetwork
+
+from sapphire import HiSPARCNetwork
 from sapphire.utils import pbar
-from sapphire.transformations.clock import gps_to_datetime
 from sapphire.simulations.ldf import KascadeLdf
 
-from eventtime_ranges import get_timestamp_ranges, get_total_exposure
-from station_distances import close_pairs_in_network, distance_between_stations
+from station_distances import close_pairs_in_network
 
 
 DATAPATH = '/Users/arne/Datastore/pairs/%d_%d.h5'
-
-
-def download_coincidences_pairs(close_pairs):
-    worker_pool = multiprocessing.Pool(4)
-    worker_pool.map(download_coincidences_pair, close_pairs)
-    worker_pool.close()
-    worker_pool.join()
-
-
-def download_coincidences_pair(pair):
-    path = DATAPATH % tuple(pair)
-    if os.path.exists(path):
-        continue
-    else:
-        print pair
-        raise Exception
-    distance = distance_between_stations(*pair)
-    timestamp_ranges = get_timestamp_ranges(pair)
-    total_exposure = get_total_exposure(timestamp_ranges)
-    with tables.open_file(path, 'w') as data:
-        for ts_start, ts_end in timestamp_ranges:
-            print ts_start, ts_end
-            download_coincidences(data, stations=list(pair),
-                                  start=gps_to_datetime(ts_start),
-                                  end=gps_to_datetime(ts_end),
-                                  progress=False)
-        data.set_node_attr('/', 'total_exposure', total_exposure)
-        data.set_node_attr('/', 'distance', distance)
+NO_LAYOUT = [2, 3, 5, 7, 10, 13, 21, 22, 23, 101, 103, 202, 203, 301, 303, 304,
+             305, 401, 601, 1001, 1002, 1003, 1006, 1007, 1008, 1010, 2001,
+             2002, 2003, 2004, 2005, 2006, 2008, 2010, 2101, 2102, 2103, 2201,
+             3001, 3002, 3101, 3102, 3103, 3104, 3105, 3202, 3203, 3301, 3302,
+             3303, 3401, 3501, 3601, 4001, 4002, 4003, 4004, 7001, 7002, 7003,
+             7101, 7201, 7301, 7401, 8001, 8002, 8004, 8005, 8006, 8007, 8008,
+             8009, 8102, 8103, 8104, 8105, 8201, 8301, 8302, 8303, 13001,
+             13002, 13003, 13004, 13005, 13006, 13007, 13008, 13101, 13103,
+             13104, 13201, 13301, 13501, 14002, 14003, 20001, 20002, 20003]
 
 
 def get_coincidence_count(close_pairs):
-    network = HiSPARCNetwork()
+    network = HiSPARCNetwork(force_stale=True)
     distances = {4: [], 6: [], 8: []}
+    distance_errors = {4: [], 6: [], 8: []}
     coincidence_rates = {4: [], 6: [], 8: []}
-    coincidence_rates_err = {4: [], 6: [], 8: []}
+    interval_rates = {4: [], 6: [], 8: []}
+    coincidence_rate_errors = {4: [], 6: [], 8: []}
+    pairs = {4: [], 6: [], 8: []}
     for pair in pbar(close_pairs, show=True):
         path = DATAPATH % tuple(pair)
         if not os.path.exists(path):
             continue
         # Do not plot points for stations with known issues
-        bad_stations = [22, 507, 2103, 13007, 20001]
+        bad_stations = [22, 507, 1001, 2103, 13007, 20001]
         if pair[0] in bad_stations or pair[1] in bad_stations:
             continue
+
         with tables.open_file(path, 'r') as data:
-            total_exposure = data.get_node_attr('/', 'total_exposure')
-            distance = data.get_node_attr('/', 'distance')
+            try:
+                total_exposure = data.get_node_attr('/', 'total_exposure')
+                distance = data.get_node_attr('/', 'distance')
+                n_rate = data.get_node_attr('/', 'n_rate')
+                interval_rate = data.get_node_attr('/', 'interval_rate')
+            except AttributeError:
+                continue
             try:
                 n_coincidences = data.root.coincidences.coincidences.nrows
             except tables.NoSuchNodeError:
@@ -82,15 +71,28 @@ def get_coincidence_count(close_pairs):
         n = (len(network.get_station(pair[0]).detectors) +
              len(network.get_station(pair[1]).detectors))
         distances[n].append(distance)
-        rate = n_coincidences / total_exposure
-        coincidence_rates[n].append(rate)
+        # Distance error due to unknown detector locations
+        if pair[0] in NO_LAYOUT and pair[1] in NO_LAYOUT:
+            distance_errors[n].append(20e-3)
+        else:
+            distance_errors[n].append(5e-3)
+
+        coincidence_rates[n].append(n_rate)
+        interval_rates[n].append(interval_rate)
         err = sqrt(n_coincidences + 1) / total_exposure
         # Prevent plotting issue due to log scale
+        rate = n_rate
         if err > rate:
             err = rate - 1e-15
-        coincidence_rates_err[n].append(err)
+        coincidence_rate_errors[n].append(err)
+        pairs[n].append(pair)
 
-    return distances, coincidence_rates, coincidence_rates_err
+    return (distances, coincidence_rates, interval_rates,
+            distance_errors, coincidence_rate_errors, pairs)
+
+
+def slope(x, N, s):
+    return N * exp(-s * x)
 
 
 def expected_rate(real_distances, real_coincidence_rates, background, n=8):
@@ -143,16 +145,26 @@ def P(detector_density):
 
     return 1.0 - P0(detector_density)
 
+
 def P0(detector_density):
     """Chance of detecting no particle in a detector"""
 
     return exp(-detector_density / 2.0)
 
 
-def plot_coincidence_rate_distance(distances, coincidence_rates, rate_errors):
+def plot_coincidence_rate_distance(distances, coincidence_rates, interval_rates,
+                                   distance_errors, rate_errors, pairs):
+    """Plot results
+
+    :param distances: dictionary with occuring distances for different
+                      combinations of number of detectors.
+    :param coincidence_rates: dictionary of occuring coincidence rates for
+                              different combinations of number of detectors.
+    :param rate_errors: errors on the coincidence rates.
+
+    """
     markers = {4: 'o', 6: 'triangle', 8: 'square'}
     colors = {4: 'red', 6: 'black!50!green', 8: 'black!20!blue'}
-    plot = Plot('loglog')
 
     coincidence_window = 10e-6  # seconds
     freq_2 = 0.3
@@ -161,6 +173,7 @@ def plot_coincidence_rate_distance(distances, coincidence_rates, rate_errors):
                   6: 2 * freq_2 * freq_4 * coincidence_window,
                   8: 2 * freq_4 * freq_4 * coincidence_window}
 
+    plot = Plot('loglog')
     for n in distances.keys():
         plot.draw_horizontal_line(background[n], 'dashed,thin,' + colors[n])
 
@@ -173,7 +186,8 @@ def plot_coincidence_rate_distance(distances, coincidence_rates, rate_errors):
                   linestyle=colors[n], mark=None, markstyle='mark size=.5pt')
 
     for n in distances.keys():
-        plot.scatter([d / 1e3 for d in distances[n]], coincidence_rates[n], yerr=rate_errors[n],
+        plot.scatter([d / 1e3 for d in distances[n]], coincidence_rates[n],
+                     xerr=distance_errors[n], yerr=rate_errors[n],
                      mark=markers[n], markstyle='%s, mark size=.75pt' % colors[n])
     plot.set_xlabel(r'Distance between stations [\si{\kilo\meter}]')
     plot.set_ylabel(r'Coincidence rate [\si{\hertz}]')
@@ -183,12 +197,38 @@ def plot_coincidence_rate_distance(distances, coincidence_rates, rate_errors):
     plot.save_as_pdf('distance_v_coincidence_rate')
 
 
+def plot_coincidence_v_interval_rate(distances, coincidence_rates, interval_rates,
+                                     distance_errors, rate_errors, pairs):
+    """Plot results
+
+    :param distances: dictionary with occuring distances for different
+                      combinations of number of detectors.
+    :param coincidence_rates: dictionary of occuring coincidence rates for
+                              different combinations of number of detectors.
+    :param rate_errors: errors on the coincidence rates.
+
+    """
+    markers = {4: 'o', 6: 'triangle', 8: 'square'}
+    colors = {4: 'red', 6: 'black!50!green', 8: 'black!20!blue'}
+    plot = Plot('loglog')
+
+    plot.plot([1e-7, 1e-1], [1e-7, 1e-1], mark=None)
+    for n in distances.keys():
+        plot.scatter(interval_rates[n], coincidence_rates[n],
+                     yerr=rate_errors[n], mark=markers[n],
+                     markstyle='%s, thin, mark size=.75pt' % colors[n])
+
+    plot.set_xlabel(r'Rate based on fitted coincidence intervals [\si{\hertz}]')
+    plot.set_ylabel(r'Rate based on number of coincidences and exposure [\si{\hertz}]')
+    plot.set_axis_options('log origin y=infty')
+    plot.set_xlimits(min=1e-7, max=1e-1)
+    plot.set_ylimits(min=1e-7, max=1e-1)
+    plot.save_as_pdf('interval_v_coincidence_rate')
+
+
 if __name__ == "__main__":
-    if 'rates' not in globals():
-        close_pairs = close_pairs_in_network(min=30, max=3e3)
-        close_pairs += close_pairs_in_network(min=9e3, max=15e3)
-
-#         download_pair_coincidences(close_pairs)
-        distances, rates, rate_errors = get_coincidence_count(close_pairs)
-
-    plot_coincidence_rate_distance(distances, rates, rate_errors)
+    if 'data' not in globals():
+        close_pairs = close_pairs_in_network(min=30, max=15e3)
+        data = get_coincidence_count(close_pairs)
+    plot_coincidence_rate_distance(*data)
+    plot_coincidence_v_interval_rate(*data)

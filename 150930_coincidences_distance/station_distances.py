@@ -17,21 +17,21 @@ MAX_DISTANCE = 2e3
 
 
 def distance_between_stations(s1, s2):
-    cluster = HiSPARCStations([s1, s2])
+    cluster = HiSPARCStations([s1, s2], force_stale=True)
     xyz = [array(s.calc_center_of_mass_coordinates())
            for s in cluster.stations]
     return distance(*xyz)
 
 
 def horizontal_distance_between_stations(s1, s2):
-    cluster = HiSPARCStations([s1, s2])
+    cluster = HiSPARCStations([s1, s2], force_stale=True)
     xy = [array(s.calc_center_of_mass_coordinates()[:-1])
           for s in cluster.stations]
     return distance(*xy)
 
 
 def close_pairs_in_network(min=MIN_DISTANCE, max=MAX_DISTANCE):
-    cluster = HiSPARCNetwork()
+    cluster = HiSPARCNetwork(force_stale=True)
     return close_pairs_in_cluster(cluster, min, max)
 
 
