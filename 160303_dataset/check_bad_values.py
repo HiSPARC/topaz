@@ -2,7 +2,7 @@ from datetime import date
 import os
 import csv
 
-from numpy import (sum, sin, linspace, random, searchsorted, split, nan, array,
+from numpy import (sum, sin, arange, random, searchsorted, split, nan, array,
                    empty, column_stack, genfromtxt)
 import tables
 
@@ -23,7 +23,7 @@ TSV_PATH = os.path.join(DATASTORE, 'stats/s%d_%s.tsv')
 # STATIONS = STATIONS[-2:]
 START_TS = datetime_to_gps(date(*START, day=1))
 END_TS = datetime_to_gps(date(*END, day=1))
-BINS = linspace(START_TS, END_TS, 481)
+BINS = arange(START_TS, END_TS + 1, 86400)
 BIN_WIDTH = BINS[1] - BINS[0]
 COLORS = ['black', 'red', 'green', 'blue']
 
@@ -31,7 +31,8 @@ YEARS = range(2011, date.today().year + 1)
 YEARS_TICKS = array([datetime_to_gps(date(y, 1, 1)) for y in YEARS])
 YEARS_LABELS = [str(y) for y in YEARS]
 
-FIELDS = ['integrals', 't_trigger', 'event_rate',
+FIELDS = ['event_rate', 'mpv',
+          'integrals', 't_trigger',
           ('t1', 't2', 't3', 't4'),
           ('n1', 'n2', 'n3', 'n4')]
 FIELD_NAMES = [''.join(field) for field in FIELDS]
@@ -51,6 +52,31 @@ def frac_bad(values):
             return nan
 
 
+def reconstruct_mpv(slice):
+    """Get first events in slice with a positive value in number of particles
+
+    A positive (non-zero) n# is required to determine the MPV from the
+    intergrals and n#. If the slice contains no applicable events
+    the returned value will be nan.
+
+    Works best for slices of a day because the MPV for the ESD is determined
+    daily.
+
+    """
+    mpvs = []
+    for detector_id in range(4):
+        try:
+            event = next(e for e in slice
+                         if e['n%d' % (detector_id + 1)] > 0.1)
+        except:
+            mpvs.append(nan)
+        else:
+            mpv = (event['integrals'][detector_id] /
+                   event['n%d' % (detector_id + 1)])
+            mpvs.append(int(mpv))
+    return mpvs
+
+
 def binned_stat(x, values, func, bins):
     """Similar to binned_statistic but assumes sorted (sorted by x) data"""
 
@@ -58,7 +84,7 @@ def binned_stat(x, values, func, bins):
     return array([func(group) for group in split(values, idx_ranges)]).T
 
 
-def binned_stat_idx(events, idx_ranges, station):
+def binned_stat_idx(events, idx_ranges):
 
     stats = {}
     for field_name in FIELD_NAMES:
@@ -71,12 +97,18 @@ def binned_stat_idx(events, idx_ranges, station):
         slice = events.read(start, stop)
         for field, field_name in zip(FIELDS, FIELD_NAMES):
             if field_name == 'event_rate':
+                # Event time determined above
                 continue
+            elif field_name == 'mpv':
+                # Simply the MPV value, not fraction of bad MPV
+                mpvs = reconstruct_mpv(slice)
+                stats[field_name].append(mpvs)
             elif isinstance(field, tuple):
                 data = column_stack(slice[f] for f in field)
+                stats[field_name].append(frac_bad(data))
             else:
                 data = slice[field]
-            stats[field_name].append(frac_bad(data))
+                stats[field_name].append(frac_bad(data))
 
     for field_name in FIELD_NAMES:
         stats[field_name] = array(stats[field_name]).T
@@ -85,7 +117,7 @@ def binned_stat_idx(events, idx_ranges, station):
 
 
 def get_event_rate(idx_ranges):
-    stat = (idx_ranges[1:] - idx_ranges[:-1]) / BIN_WIDTH
+    stat = (idx_ranges[1:] - idx_ranges[:-1]) / float(BIN_WIDTH)
     return stat
 
 
@@ -98,7 +130,7 @@ def get_idx_ranges(events):
 def determine_station_stats(data, station):
     events = data.get_node('/s%d' % station, 'events')
     idx_ranges = get_idx_ranges(events)
-    stats = binned_stat_idx(events, idx_ranges, station)
+    stats = binned_stat_idx(events, idx_ranges)
 
     save_station_stats(stats, station)
 
@@ -166,7 +198,7 @@ def get_all_stats():
     return stats
 
 
-def plot_bad_value_timeline(stats, field_name, ylabel=None):
+def plot_bad_value_timeline(stats, field_name):
     step = 0.2 * BIN_WIDTH
     plot = MultiPlot(len(STATIONS), 1,
                      width=r'.67\textwidth', height=r'.05\paperheight')
@@ -174,9 +206,10 @@ def plot_bad_value_timeline(stats, field_name, ylabel=None):
         stat = stats[station][field_name]
         if len(stat.shape) == 2:
             for i, s in enumerate(stat):
-                splot.histogram(s, BINS + (step * i), linestyle=COLORS[i])
+                splot.histogram(s, BINS + (step * i),
+                                linestyle='thin,' + COLORS[i])
         else:
-            splot.histogram(stat, BINS)
+            splot.histogram(stat, BINS, linestyle='thin')
         splot.set_ylabel(r'%d' % station)
 
     plot.set_xlimits_for_all(None, min=BINS[0], max=BINS[-1])
@@ -192,25 +225,27 @@ def plot_bad_value_timeline(stats, field_name, ylabel=None):
     plot.set_ylimits_for_all(None, -1e-4)
 
     plot.set_xlabel(r'Timestamp')
-    if ylabel is None:
-        plot.set_ylabel(r'Fraction of bad %s data [\si{\percent}]' %
-                        field_name.replace('_', ' '))
+
+    if field_name == 'event_rate':
+        ylabel = r'Event rate [\si{\hertz}]'
+    elif field_name == 'mpv':
+        ylabel = r'MPV [ADC.ns]'
     else:
-        plot.set_ylabel(ylabel)
-    plot.save_as_pdf('bad_fraction_%s' % field_name)
+        ylabel = (r'Fraction of bad %s data [\si{\percent}]' %
+                  field_name.replace('_', ' '))
+    plot.set_ylabel(ylabel)
+
+    if field_name in ['event_rate', 'mpv']:
+        plot.save_as_pdf('plots/%s' % field_name)
+    else:
+        plot.save_as_pdf('plots/bad_fraction_%s' % field_name)
 
 
 def plot_bad_value_timelines(statistics):
     for field_name in FIELD_NAMES:
-        if field_name == 'event_rate':
-            ylabel = r'Event rate [\si{\hertz}]'
-        else:
-            ylabel = None
-        plot_bad_value_timeline(statistics, field_name, ylabel)
+        plot_bad_value_timeline(statistics, field_name)
 
 
 if __name__ == "__main__":
-
     statistics = get_all_stats()
-
     plot_bad_value_timelines(statistics)
