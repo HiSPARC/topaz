@@ -7,7 +7,6 @@ a station.
 import datetime
 import os
 
-import matplotlib.pyplot as plt
 import tables
 import numpy
 

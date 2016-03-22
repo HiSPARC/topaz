@@ -23,8 +23,6 @@ predicted density as the input. After fitting the curve (in = f(out)) the
 output can be converted back to the actual expected output.
 
 """
-import sys
-
 import tables
 from numpy import (histogram2d, histogram, linspace, array, where,
                    log10, inf, sqrt, abs, interp, diff, mean, median,

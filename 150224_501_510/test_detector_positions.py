@@ -1,8 +1,7 @@
 import itertools
 
-from numpy import linspace, pi, array
+from numpy import linspace, pi, array, histogram2d
 import tables
-import matplotlib.pyplot as plt
 
 from artist import Plot
 
@@ -42,12 +41,11 @@ def reconstruct_simulations(data):
 
         high_zenith = (rec_501.theta > .2) & (rec_510.theta > .2)
 
-        plt.figure()
-        plt.hist2d(rec_501.phi.compress(high_zenith),
-                   rec_510.phi.compress(high_zenith),
-                   bins=linspace(-pi, pi, 100),
-                   cmap='coolwarm')
-        plt.show()
+        plot = Plot()
+        plot.histogram2d(*histogram2d(rec_501.phi.compress(high_zenith),
+                                      rec_510.phi.compress(high_zenith),
+                                      bins=linspace(-pi, pi, 100))
+        plot.save_as_pdf('order_%d%d%d%d' % order)
 
 
 def offset(station):

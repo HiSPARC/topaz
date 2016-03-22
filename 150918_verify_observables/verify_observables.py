@@ -16,7 +16,6 @@ However, due to the tiny pulses these are uninteressting anyway.
 from datetime import datetime
 
 import tables
-from matplotlib import pyplot
 from numpy.testing import assert_allclose
 
 from sapphire.publicdb import download_data

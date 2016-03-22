@@ -3,7 +3,6 @@ from datetime import datetime
 
 from numpy import linspace, pi, array, histogram2d
 import tables
-import matplotlib.pyplot as plt
 
 from artist import Plot
 

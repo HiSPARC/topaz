@@ -1,6 +1,6 @@
-import matplotlib.pyplot as plt
 import tables
 from scipy.optimize import curve_fit
+from numpy import histogram
 
 from sapphire.simulations.showerfront import (FlatFrontSimulation,
                                               FlatFrontSimulationWithoutErrors)
@@ -8,6 +8,7 @@ from sapphire.clusters import SingleTwoDetectorStation, SingleStation
 from sapphire import ReconstructESDEvents
 from sapphire.utils import gauss
 
+from artist import Plot
 
 cluster = SingleTwoDetectorStation()
 station = cluster.stations[0]
@@ -16,6 +17,7 @@ detectors = station.detectors
 sim_off = []
 rec_off = []
 zz = range(-20, 21, 2)
+
 
 with tables.open_file('test_showerfront_alt.h5', 'w') as data:
     for z in zz:
@@ -33,8 +35,9 @@ with tables.open_file('test_showerfront_alt.h5', 'w') as data:
         rec_off.append(popt[1])
 
         print '% 3d: %f' % (z, popt[1])
-        plt.figure()
-        plt.hist(dt, bins=bins)
-        plt.plot(x, gauss(x, *popt))
-        plt.title('Z = %d' % z)
-        plt.show()
+
+        plot = Plot()
+        plot.histogram(*histogram(dt, bins=bins))
+        plot.plot(x, gauss(x, *popt))
+        plot.set_title('Z = %d' % z)
+        plot.save_as_pdf('offset_z%d' % z)
