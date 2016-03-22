@@ -132,9 +132,18 @@ def determine_station_stats(data, station):
     idx_ranges = get_idx_ranges(events)
     stats = binned_stat_idx(events, idx_ranges)
 
+    save_idx_ranges(idx_ranges, station)
     save_station_stats(stats, station)
 
     return stats
+
+
+def save_idx_ranges(idx_ranges, station):
+    path = TSV_PATH % (station, 'idx_ranges')
+    with open(path, 'wb') as tsvfile:
+        tsv = csv.writer(tsvfile, delimiter='\t')
+        timestamped_stats = column_stack((BINS[:-1], idx_ranges[:-1]))
+        tsv.writerows(timestamped_stats)
 
 
 def determine_all_stats(data):
@@ -198,7 +207,7 @@ def get_all_stats():
     return stats
 
 
-def plot_bad_value_timeline(stats, field_name):
+def plot_timeline(stats, field_name):
     step = 0.2 * BIN_WIDTH
     plot = MultiPlot(len(STATIONS), 1,
                      width=r'.67\textwidth', height=r'.05\paperheight')
@@ -241,11 +250,11 @@ def plot_bad_value_timeline(stats, field_name):
         plot.save_as_pdf('plots/bad_fraction_%s' % field_name)
 
 
-def plot_bad_value_timelines(statistics):
+def plot_timelines(statistics):
     for field_name in FIELD_NAMES:
-        plot_bad_value_timeline(statistics, field_name)
+        plot_timeline(statistics, field_name)
 
 
 if __name__ == "__main__":
     statistics = get_all_stats()
-    plot_bad_value_timelines(statistics)
+    plot_timelines(statistics)
