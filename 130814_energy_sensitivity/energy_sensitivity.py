@@ -14,12 +14,15 @@ Each combination is considered when determining the probability.
 
 import os
 from itertools import combinations
+
 import pylab as plt
 import numpy as np
 import tables
 import progressbar as pb
 
-from sapphire import ScienceParkCluster
+from sapphire import ScienceParkCluster, HiSPARCStations
+from sapphire.clusters import (SingleStation, SingleTwoDetectorStation,
+                               SingleDiamondStation)
 from sapphire.simulations.ldf import KascadeLdf
 from sapphire.utils import pbar
 
@@ -62,7 +65,7 @@ class EnergySensitivity(object):
         self.draw_background_map()
 
     def find_min_energy(self, xc, yc):
-        # Use bisection to get to the final energy quicker
+        # Use bisection to quickly get the final energy
         E = self.start_energy
         lo = self.min_energy
         hi = self.max_energy
@@ -98,20 +101,10 @@ class EnergySensitivity(object):
             return 0
 
         p_stations = [self.detection_probability_for_station(detector_densities)
-                      for detector_densities in station_densities]
-        n_stations = len(p_stations)
-        p_cluster = 0
-        for n in range(self.min_stations, n_stations + 1):
-            for i in combinations(range(n_stations), n):
-                p_combination = 1.
-                for j in range(n_stations):
-                    if j in i:
-                        # Probability of trigger
-                        p_combination *= p_stations[j]
-                    else:
-                        # Probability of no trigger
-                        p_combination *= 1.0 - p_stations[j]
-                p_cluster += p_combination
+                       for detector_densities in station_densities]
+        p0_stations = [1. - p for p in p_stations]
+        p_cluster = self.calculate_p(p_stations, p0_stations,
+                                     self.min_stations)
 
         return p_cluster
 
@@ -128,26 +121,33 @@ class EnergySensitivity(object):
         :return: list of probabilities for each station.
 
         """
-        if len(station_densities) < self.min_detectors:
+        if len(detector_densities) < self.min_detectors:
             # To few detectors
             return 0
 
-        p_detectors = [self.P0(density) for density in detector_densities]
-        n_detectors = len(p_detectors)
-        p_station = 0
-        for n in range(self.min_detectors, n_detectors + 1):
-            for i in combinations(range(n_detectors), n):
-                p_combination = 1.
-                for j in range(n_detectors):
-                    if j in i:
-                        # At least one particle
-                        p_combination *= 1.0 - p_detectors[j]
-                    else:
-                        # No particles
-                        p_combination *= p_detectors[j]
-                p_station += p_combination
-
+        p0_detectors = [self.P0(density) for density in detector_densities]
+        p_detectors = [1. - p0 for p0 in p0_detectors]
+        p_station = self.calculate_p(p_detectors, p0_detectors,
+                                     self.min_detectors)
         return p_station
+
+    def calculate_p(self, p, p0, min_n):
+        n_p = len(p)
+        p_total = 0
+        for n in range(min_n, n_p + 1):
+            for i in combinations(range(n_p), n):
+                p_combination = 1.
+                for j in range(n_p):
+                    if j in i:
+                        # Probability of trigger
+                        p_combination *= p[j]
+                    else:
+                        # Probability of no trigger
+                        p_combination *= p0[j]
+                p_total += p_combination
+
+        return p_total
+
 
     def P(self, detector_density):
         """Chance of at least one particle in detector"""
@@ -157,7 +157,7 @@ class EnergySensitivity(object):
     def P0(self, detector_density):
         """Chance of detecting no particle in a detector"""
 
-        return np.exp(-detector_density / 2.0)
+        return np.exp(-detector_density / 2.)
 
     def calculate_densities_for_cluster(self, x, y, Ne):
         densities = [self.calculate_densities_for_station(station, x, y, Ne)
@@ -172,11 +172,16 @@ class EnergySensitivity(object):
         return densities
 
     def calculate_densities_for_detector(self, detector, x, y, Ne):
-        x0, y0 = detector.get_xy_coordinates()
-        r = np.sqrt((x - x0) ** 2 + (y - y0) ** 2)
+        r = self.calculate_detector_core_distance(detector, x, y)
         density = self.ldf.calculate_ldf_value(r, Ne)
 
         return density
+
+    def calculate_detector_core_distance(self, detector, x, y):
+        x0, y0 = detector.get_xy_coordinates()
+        r = np.sqrt((x - x0) ** 2 + (y - y0) ** 2)
+
+        return r
 
     def plot_scintillators_in_cluster(self):
         # Draw station locations on a map
@@ -215,7 +220,7 @@ class SingleFourEnergySensitivity(EnergySensitivity):
         super(SingleFourEnergySensitivity, self).__init__()
 
         # Detectors
-        self.cluster = sapphire.clusters.SingleStation()
+        self.cluster = SingleStation()
 
         # Conditions
         self.detection_probability = 0.5
@@ -229,7 +234,7 @@ class SingleTwoEnergySensitivity(SingleFourEnergySensitivity):
         super(SingleTwoEnergySensitivity, self).__init__()
 
         # Detectors
-        self.cluster = sapphire.clusters.SingleTwoDetectorStation()
+        self.cluster = SingleTwoDetectorStation()
 
 
 class SingleDiamondEnergySensitivity(SingleFourEnergySensitivity):
@@ -238,10 +243,29 @@ class SingleDiamondEnergySensitivity(SingleFourEnergySensitivity):
         super(SingleDiamondEnergySensitivity, self).__init__()
 
         # Detectors
-        self.cluster = sapphire.clusters.SingleDiamondStation()
+        self.cluster = SingleDiamondStation()
 
 
-def generate_regular_grid_positions(self, N, x0, y0=None, x1=None, y1=None):
+class StationPairEnergySensitivity():
+
+    def __init__(self, pair):
+        super(StationPairEnergySensitivity, self).__init__()
+
+        # Detectors
+        self.cluster = HiSPARCStations(pair)
+
+        # Shower parameters
+        self.grid_points = 250000
+        self.max_radius = np.sqrt(self.grid_points) / 2
+
+        # Throw showers in a regular grid around first station
+        self.xx = np.linspace(-self.max_radius, self.max_radius,
+                              np.sqrt(self.grid_points) + 1)
+        self.yy = np.linspace(-self.max_radius, self.max_radius,
+                              np.sqrt(self.grid_points) + 1)
+
+
+def generate_regular_grid_positions(N, x0, y0=None, x1=None, y1=None):
     """ Generate positions on a regular grid bound by (x0, y0) and (x1, y1)
 
     :return: x, y
