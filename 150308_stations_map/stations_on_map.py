@@ -134,16 +134,19 @@ def make_map(country=None, cluster=None, subcluster=None, station=None,
     plot.set_xlimits(xmin, xmax)
     plot.set_ylimits(map_h - ymin, map_h - ymax)
 
+    if knmi:
+        x, y = map.to_pixels(array(knmi_latitudes), array(knmi_longitudes))
+        plot.scatter(x, map_h - y, mark='square',
+                     markstyle="mark size=0.5pt, black!50!blue, thick, opacity=0.6")
+
     x, y = map.to_pixels(array(latitudes), array(longitudes))
-    plot.scatter(x, map_h - y, markstyle="black!50!green, thick")
+    plot.scatter(x, map_h - y, markstyle="mark size=1.5pt, black!50!green, thick, opacity=0.9")
 
     if weather:
         x, y = map.to_pixels(array(weather_latitudes), array(weather_longitudes))
-        plot.scatter(x, map_h - y, markstyle="black!30!red, thick")
-    if knmi:
-        x, y = map.to_pixels(array(knmi_latitudes), array(knmi_longitudes))
-        plot.scatter(x, map_h - y,
-                     markstyle="mark size=0.5pt, black!50!blue, thick")
+        plot.scatter(x, map_h - y, markstyle="mark size=1.5pt, black!30!red, thick, opacity=0.9")
+
+
 
     plot.set_xlabel('Longitude [$^\circ$]')
     plot.set_xticks([xmin, xmax])
