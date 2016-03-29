@@ -12,6 +12,7 @@ between the stations.
 from __future__ import division
 
 import os
+import warnings
 
 import tables
 from artist import Plot
@@ -23,18 +24,21 @@ from sapphire.utils import pbar
 from sapphire.simulations.ldf import KascadeLdf
 
 from station_distances import close_pairs_in_network
+from variable_distance import min_max_distance_pair
 
 
 DATAPATH = '/Users/arne/Datastore/pairs/%d_%d.h5'
-NO_LAYOUT = [2, 3, 5, 7, 10, 13, 21, 22, 23, 101, 103, 202, 203, 301, 303, 304,
-             305, 401, 601, 1001, 1002, 1003, 1006, 1007, 1008, 1010, 2001,
-             2002, 2003, 2004, 2005, 2006, 2008, 2010, 2101, 2102, 2103, 2201,
+NO_LAYOUT = [2, 3, 5, 7, 10, 13, 21, 22, 101, 103, 202, 203,
+             301, 303, 304, 305, 401, 1001, 1002, 1003, 1006, 1007, 1008, 1010,
+             2001, 2002, 2003, 2004, 2005, 2008, 2010, 2101, 2102, 2103, 2201,
              3001, 3002, 3101, 3102, 3103, 3104, 3105, 3202, 3203, 3301, 3302,
-             3303, 3401, 3501, 3601, 4001, 4002, 4003, 4004, 7001, 7002, 7003,
-             7101, 7201, 7301, 7401, 8001, 8002, 8004, 8005, 8006, 8007, 8008,
-             8009, 8102, 8103, 8104, 8105, 8201, 8301, 8302, 8303, 13001,
-             13002, 13003, 13004, 13005, 13006, 13007, 13008, 13101, 13103,
-             13104, 13201, 13301, 13501, 14002, 14003, 20001, 20002, 20003]
+             3303, 3401, 3501, 3601,
+             4001, 4002, 4003, 4004, 7101, 7201, 7301, 7401,
+             8001, 8002, 8004, 8005, 8006, 8007, 8008, 8009, 8102, 8103, 8104,
+             8105, 8201, 8301, 8302, 8303,
+             13001, 13002, 13003, 13004, 13005, 13006, 13007, 13008, 13101,
+             13103, 13104, 13201, 13301, 13501, 14002, 14003,
+             20001, 20002, 20003]
 
 
 def get_coincidence_count(close_pairs):
@@ -50,14 +54,14 @@ def get_coincidence_count(close_pairs):
         if not os.path.exists(path):
             continue
         # Do not plot points for stations with known issues
-        bad_stations = [22, 507, 1001, 2103, 13007, 20001]
+        bad_stations = [22, 507, 1001, 2103, 13007, 20001, 20002, 20003]
         if pair[0] in bad_stations or pair[1] in bad_stations:
             continue
 
         with tables.open_file(path, 'r') as data:
             try:
                 total_exposure = data.get_node_attr('/', 'total_exposure')
-                distance = data.get_node_attr('/', 'distance')
+                distance = network.calc_distance_between_stations(*pair)
                 n_rate = data.get_node_attr('/', 'n_rate')
                 interval_rate = data.get_node_attr('/', 'interval_rate')
             except AttributeError:
@@ -71,11 +75,16 @@ def get_coincidence_count(close_pairs):
         n = (len(network.get_station(pair[0]).detectors) +
              len(network.get_station(pair[1]).detectors))
         distances[n].append(distance)
-        # Distance error due to unknown detector locations
+        # Distance error due to unknown detector locations or moving stations
+        distance_error = [abs(d - distance)
+                          for d in min_max_distance_pair(pair)]
         if pair[0] in NO_LAYOUT and pair[1] in NO_LAYOUT:
-            distance_errors[n].append(20e-3)
+            distance_error = [d + 20 for d in distance_error]
+        elif pair[0] in NO_LAYOUT or pair[1] in NO_LAYOUT:
+            distance_error = [d + 10 for d in distance_error]
         else:
-            distance_errors[n].append(5e-3)
+            distance_error = [d + 3 for d in distance_error]
+        distance_errors[n].append(distance_error)
 
         coincidence_rates[n].append(n_rate)
         interval_rates[n].append(interval_rate)
@@ -175,24 +184,25 @@ def plot_coincidence_rate_distance(distances, coincidence_rates, interval_rates,
 
     plot = Plot('loglog')
     for n in distances.keys():
-        plot.draw_horizontal_line(background[n], 'dashed,thin,' + colors[n])
+        plot.draw_horizontal_line(background[n], 'dashed, thin,' + colors[n])
 
-    for n in distances.keys():
+    for n in [4, 8]: #distances.keys():
         expected_distances, expected_rates = expected_rate(distances[n],
                                                            coincidence_rates[n],
                                                            background[n],
+                                                           areas=area_interp[n],
                                                            n=n)
-        plot.plot(expected_distances / 1e3, expected_rates,
+        plot.plot(expected_distances, expected_rates,
                   linestyle=colors[n], mark=None, markstyle='mark size=.5pt')
 
     for n in distances.keys():
-        plot.scatter([d / 1e3 for d in distances[n]], coincidence_rates[n],
+        plot.scatter(distances[n], coincidence_rates[n],
                      xerr=distance_errors[n], yerr=rate_errors[n],
                      mark=markers[n], markstyle='%s, mark size=.75pt' % colors[n])
-    plot.set_xlabel(r'Distance between stations [\si{\kilo\meter}]')
+    plot.set_xlabel(r'Distance between stations [\si{\meter}]')
     plot.set_ylabel(r'Coincidence rate [\si{\hertz}]')
     plot.set_axis_options('log origin y=infty')
-    plot.set_xlimits(min=40 / 1e3, max=2e4 / 1e3)
+    plot.set_xlimits(min=40, max=20e3)
     plot.set_ylimits(min=1e-7, max=1e-1)
     plot.save_as_pdf('distance_v_coincidence_rate')
 
