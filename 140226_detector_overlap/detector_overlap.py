@@ -15,7 +15,6 @@ import numpy as np
 
 from pointrect import Point, Rect
 
-PATH = '/Users/arne/Dropbox/hisparc/Plots/overlap'
 
 def run():
     square_size = (math.sqrt(2) / 2.) / 2.
@@ -59,7 +58,7 @@ def run():
         plt.axis('equal')
         plt.xlim(-1, 1)
         plt.ylim(-1, 1)
-        plt.savefig(os.path.join(PATH, 'rotated_%d.png' % i))
+        plt.savefig('plots/rotated_%d.png' % i))
     plt.figure()
     plt.plot(angles, overlap)
     plt.show()
