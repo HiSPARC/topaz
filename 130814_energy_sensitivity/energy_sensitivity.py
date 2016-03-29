@@ -13,25 +13,32 @@ Each combination is considered when determining the probability.
 """
 
 import os
-from itertools import combinations
+from itertools import combinations, product
+from multiprocessing import Pool
+from functools import partial
 
-import pylab as plt
+import matplotlib.pyplot as plt
+from matplotlib.patches import Ellipse
 import numpy as np
 import tables
 import progressbar as pb
 
 from sapphire import ScienceParkCluster, HiSPARCStations
 from sapphire.clusters import (SingleStation, SingleTwoDetectorStation,
-                               SingleDiamondStation)
+                               SingleDiamondStation, BaseCluster)
 from sapphire.simulations.ldf import KascadeLdf
 from sapphire.utils import pbar
+
+
+def multi_find_min_energy(cls, xy):
+    return cls.find_min_energy(xy[0], xy[1])
 
 
 class EnergySensitivity(object):
 
     def __init__(self):
         # Detectors
-        stations = [501, 502, 503, 504, 505, 506, 508, 509, 511]
+        stations = [501, 503, 506]
         self.cluster = ScienceParkCluster(stations=stations)
 
         # Conditions
@@ -41,28 +48,52 @@ class EnergySensitivity(object):
 
         # Shower parameters
         self.ldf = KascadeLdf()
-        self.grid_points = 250000
+        self.grid_points = 2500
         self.max_radius = 1000
         self.min_energy = 1e13
         self.max_energy = 1e21
         self.start_energy = 1e17
-        self.bisections = 8
+        self.bisections = 10
 
-        # Throw showers in a regular grid around first station
-        self.xx = np.linspace(-self.max_radius, self.max_radius,
+        # Throw showers in a regular grid around center mass of the station
+        xc, yc, _ = self.cluster.calc_center_of_mass_coordinates()
+        self.xx = np.linspace(-self.max_radius + xc, self.max_radius + xc,
                               np.sqrt(self.grid_points))
-        self.yy = np.linspace(-self.max_radius, self.max_radius,
+        self.yy = np.linspace(-self.max_radius + yc, self.max_radius + yc,
                               np.sqrt(self.grid_points))
 
     def main(self):
+        # Cache detector positions
+        for station in self.cluster.stations:
+            for detector in station.detectors:
+                detector.xy_coordinates = detector.get_xy_coordinates()
         # Results
-        self.results = [[self.find_min_energy(xc, yc) for xc in self.xx]
-                        for yc in pbar(self.yy)]
+        self.results = self.get_min_energy_per_bin()
 
-        # Show results
+    def show_restults(self):
         self.plot_scintillators_in_cluster()
         self.plot_energy_acceptance()
-        self.draw_background_map()
+#         self.draw_background_map()
+
+    def get_area_energy(self, energy):
+        n_bins = np.sum(self.results < energy)
+        bin_area = abs((self.xx[1] - self.xx[0]) * (self.yy[1] - self.yy[0]))
+        area = n_bins * bin_area
+
+        return area
+
+    def get_min_energy_per_bin(self):
+
+        worker_pool = Pool()
+        temp_multi_find_min_energy = partial(multi_find_min_energy, self)
+        results = worker_pool.map(temp_multi_find_min_energy,
+                                  product(self.xx, self.yy))
+        worker_pool.close()
+        worker_pool.join()
+#         results = [temp_multi_find_min_energy(xy) for xy in product(self.xx, self.yy)]
+        results = np.array(results).reshape((len(self.xx), len(self.yy))).T
+
+        return results
 
     def find_min_energy(self, xc, yc):
         # Use bisection to quickly get the final energy
@@ -178,7 +209,7 @@ class EnergySensitivity(object):
         return density
 
     def calculate_detector_core_distance(self, detector, x, y):
-        x0, y0 = detector.get_xy_coordinates()
+        x0, y0 = detector.xy_coordinates
         r = np.sqrt((x - x0) ** 2 + (y - y0) ** 2)
 
         return r
@@ -196,9 +227,14 @@ class EnergySensitivity(object):
 
     def plot_energy_acceptance(self):
         # Grid
+        min_E = np.log10(self.min_energy)
+        max_E = np.log10(self.max_energy)
+        levels = (max_E - min_E) * 3 + 1
+        label_levels = (max_E - min_E) + 1
         C = plt.contour(self.xx, self.yy, self.results,
-                        np.logspace(13, 21, 25))
-        plt.clabel(C, np.logspace(13, 21, 9), inline=1, fontsize=8, fmt='%.0e')
+                        np.logspace(min_E, max_E, levels))
+        plt.clabel(C, np.logspace(min_E, max_E, label_levels), inline=1,
+                   fontsize=8, fmt='%.0e')
 
     def draw_background_map(self):
         self_path = os.path.dirname(__file__)
@@ -214,7 +250,7 @@ class EnergySensitivity(object):
                    extent=[-bg_width, bg_width, -bg_height, bg_height])
 
 
-class SingleFourEnergySensitivity(EnergySensitivity):
+class SingleStationSensitivity(EnergySensitivity):
 
     def __init__(self):
         super(SingleFourEnergySensitivity, self).__init__()
@@ -223,12 +259,10 @@ class SingleFourEnergySensitivity(EnergySensitivity):
         self.cluster = SingleStation()
 
         # Conditions
-        self.detection_probability = 0.5
-        self.min_detectors = 2
         self.min_stations = 1
 
 
-class SingleTwoEnergySensitivity(SingleFourEnergySensitivity):
+class SingleTwoEnergySensitivity(SingleStationSensitivity):
 
     def __init__(self):
         super(SingleTwoEnergySensitivity, self).__init__()
@@ -237,7 +271,7 @@ class SingleTwoEnergySensitivity(SingleFourEnergySensitivity):
         self.cluster = SingleTwoDetectorStation()
 
 
-class SingleDiamondEnergySensitivity(SingleFourEnergySensitivity):
+class SingleDiamondEnergySensitivity(SingleStationSensitivity):
 
     def __init__(self):
         super(SingleDiamondEnergySensitivity, self).__init__()
@@ -246,7 +280,7 @@ class SingleDiamondEnergySensitivity(SingleFourEnergySensitivity):
         self.cluster = SingleDiamondStation()
 
 
-class StationPairEnergySensitivity():
+class StationPairEnergySensitivity(EnergySensitivity):
 
     def __init__(self, pair):
         super(StationPairEnergySensitivity, self).__init__()
@@ -254,15 +288,159 @@ class StationPairEnergySensitivity():
         # Detectors
         self.cluster = HiSPARCStations(pair)
 
-        # Shower parameters
-        self.grid_points = 250000
-        self.max_radius = np.sqrt(self.grid_points) / 2
+        # Conditions
+        self.min_stations = 2
 
-        # Throw showers in a regular grid around first station
-        self.xx = np.linspace(-self.max_radius, self.max_radius,
-                              np.sqrt(self.grid_points) + 1)
-        self.yy = np.linspace(-self.max_radius, self.max_radius,
-                              np.sqrt(self.grid_points) + 1)
+
+class StationPairEnergySensitivityQuarter(EnergySensitivity):
+
+    """Subclass to only consider one quarter
+
+    This only works if the cluster is (almost) symmetric.
+    So either two 2-detector stations, or two 4-detector stations.
+
+    """
+
+    def __init__(self, pair):
+        super(StationPairEnergySensitivityQuarter, self).__init__()
+
+        # Detectors
+        self.cluster = HiSPARCStations(pair, force_stale=True)
+
+        # Conditions
+        self.min_stations = 2
+
+        # Shower parameters
+        self.max_radius = 1e3
+        self.bin_size = 10.
+#         self.max_radius = bin_size * np.sqrt(self.grid_points)
+
+        # Throw showers in one grid around center mass of the stations
+#         xc, yc, _ = self.cluster.calc_center_of_mass_coordinates()
+#         self.xx = np.arange(-self.max_radius + xc, self.max_radius + xc, self.bin_size)
+#         self.yy = np.arange(-self.max_radius + yc, self.max_radius + yc, self.bin_size)
+
+        # Rotate cluster to make stations aligned along x for easy symmetry
+        _, phi, _ = self.cluster.calc_rphiz_for_stations(0, 1)
+        self.cluster.alpha = -phi
+
+        # Throw showers in one quarter from center mass of the stations
+        xc, yc, _ = self.cluster.calc_center_of_mass_coordinates()
+        self.xx = np.arange(xc + self.bin_size / 2., self.max_radius + xc, self.bin_size)
+        self.yy = np.arange(yc + self.bin_size / 2., self.max_radius + yc, self.bin_size)
+
+    def get_area_energy(self, energy):
+        """Calculate area
+
+        Multiply area by four, because only one quadrant was considered.
+
+        """
+        area = super(StationPairEnergySensitivity, self).get_area_energy(energy)
+        area *= 4.
+
+        return area
+
+
+class StationPairAreaEnergySensitivity(StationPairEnergySensitivity):
+
+    """Subclass to only consider axis between stations and parallel
+
+    This only works if the cluster is (almost) symmetric.
+    So either two 2-detector stations, or two 4-detector stations.
+    This assumes that the resulting iso-sensitivity lines are ellipse-like.
+
+    """
+
+    def __init__(self, pair):
+        super(StationPairAreaEnergySensitivity, self).__init__(pair)
+
+        # Shower parameters
+        self.max_radius = 2e4
+        self.step_size = 2.
+
+        # Rotate cluster to make stations aligned along x for easy symmetry
+        _, phi, _ = self.cluster.calc_rphiz_for_stations(0, 1)
+        self.cluster.alpha = -phi
+
+        # Throw showers along axis between stations and parallel at point
+        # between the stations
+        xc, yc, _ = self.cluster.calc_center_of_mass_coordinates()
+        self.xx = np.arange(xc, self.max_radius + xc, self.step_size)
+        self.yy = np.arange(yc, self.max_radius + yc, self.step_size)
+
+    def get_area_energy(self, energy):
+        """Calculate area
+
+        Assume iso-sensitivity lines make ellipses with x and y as semi-major
+        and semi-minor axes.
+
+        """
+        a = np.interp(energy, self.results[0], self.xx) - self.xx[0]
+        b = np.interp(energy, self.results[1], self.yy) - self.yy[0]
+        area = np.pi * a * b
+
+        return area
+
+    def get_min_energy_per_bin(self):
+        """Only calculate along x, y axes with center between stations"""
+
+        temp_multi_find_min_energy = partial(multi_find_min_energy, self)
+        worker_pool = Pool()
+        x_results = np.array(worker_pool.map(temp_multi_find_min_energy,
+                             [(x, self.yy[0]) for x in self.xx], chunksize=10))
+        y_results = np.array(worker_pool.map(temp_multi_find_min_energy,
+                             [(self.xx[0], y) for y in self.yy], chunksize=10))
+        worker_pool.close()
+        worker_pool.join()
+#         x_results = np.array([temp_multi_find_min_energy(xy) for xy in
+#                               [(x, self.yy[0]) for x in self.xx]])
+#         y_results = np.array([temp_multi_find_min_energy(xy) for xy in
+#                               [(self.xx[0], y) for y in self.yy]])
+
+        return (x_results, y_results)
+
+    def plot_energy_acceptance(self):
+        """Plot itnerpolated ellipses instead of contours"""
+
+        # Grid
+        min_E = np.log10(self.min_energy)
+        max_E = np.log10(self.max_energy)
+        n_levels = (max_E - min_E) * 3 + 1
+        levels = np.logspace(min_E, max_E, n_levels)
+        label_levels = (max_E - min_E) + 1
+        x0 = self.xx[0]
+        y0 = self.yy[0]
+        for level in levels:
+            a = np.interp(level, self.results[0], self.xx) - x0
+            b = np.interp(level, self.results[1], self.yy) - y0
+            el = Ellipse(xy=(x0, y0), width=a * 2, height=b * 2,
+                         facecolor='none', edgecolor='red')
+            ax = plt.gca()
+            ax.add_artist(el)
+        plt.axis('equal')
+        plt.ylim(-self.yy[-1], self.yy[-1])
+        plt.xlim(-self.xx[-1], self.xx[-1])
+
+
+class DistancePairAreaEnergySensitivity(StationPairAreaEnergySensitivity):
+
+    def __init__(self, distance, n):
+        super(DistancePairAreaEnergySensitivity, self).__init__([102, 103])
+
+        self.cluster = BaseCluster()
+        if n == 8:
+            self.cluster._add_station((distance / 2., 0, 0))
+            self.cluster._add_station((-distance / 2., 0, 0))
+        elif n == 4:
+            detectors = [((-5, 0, 0), 'UD'), ((5, 0, 0), 'UD')]
+            self.cluster._add_station((distance / 2., 0, 0), detectors=detectors)
+            self.cluster._add_station((-distance / 2., 0, 0), detectors=detectors)
+
+        # Throw showers along axis between stations and parallel at point
+        # between the stations
+        xc, yc, _ = self.cluster.calc_center_of_mass_coordinates()
+        self.xx = np.arange(xc, self.max_radius + xc, self.step_size)
+        self.yy = np.arange(yc, self.max_radius + yc, self.step_size)
 
 
 def generate_regular_grid_positions(N, x0, y0=None, x1=None, y1=None):
@@ -298,8 +476,31 @@ def generate_positions(self, N, max_r):
         yield r, phi
 
 
+def get_pair_distance_energy_array(distances, energies, n=8):
+    results = []
+    for distance in pbar(distances):
+        sens = DistancePairAreaEnergySensitivity(distance=distance, n=n)
+        sens.main()
+        areas = sens.get_area_energy(energies)
+        results.append(areas)
+    results = np.array(results)
+    return results
+
+
+def plot_results(distances, energies, results):
+    plot = Plot('loglog')
+    plot.histogram2d(log10(results4[:-1, :-1] + 10), distances, energies,
+                     bitmap=True)
+    plot.set_ylabel('Shower energy')
+    plot.set_xlabel('Distance between stations')
+    plot.save_as_pdf('distance_energy_v_area')
+
+
 if __name__ == "__main__":
-    plt.figure()
-    sens = EnergySensitivity()
+    pair = [509, 505]
+    sens = StationPairAreaEnergySensitivity(pair)
     sens.main()
+
+    plt.figure()
+    sens.show_restults()
     plt.show()
