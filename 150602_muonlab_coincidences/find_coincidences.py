@@ -24,7 +24,7 @@ def analyse_coincidences(data):
 def get_cluster():
     """Get latest position from API"""
 
-    return HiSPARCStations(STATIONS, allow_missing=True)
+    return HiSPARCStations(STATIONS, skip_missing=True)
 
 
 if __name__ == '__main__':

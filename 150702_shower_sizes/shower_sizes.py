@@ -120,7 +120,7 @@ def plot_size_energy():
 
 if __name__ == "__main__":
     plot_shower_size()
-#     plot_shower_size(['muon'])
-#     plot_shower_size(['electron'])
+    plot_shower_size(['muon'])
+    plot_shower_size(['electron'])
     plot_shower_size_distributions()
     plot_size_energy()
