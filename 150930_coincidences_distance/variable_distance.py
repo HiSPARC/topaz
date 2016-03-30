@@ -1,5 +1,8 @@
-from numpy import mean
 import warnings
+
+from numpy import mean
+
+from artist import Plot
 
 from sapphire import HiSPARCStations
 
@@ -30,9 +33,20 @@ def min_max_distance_pair(pair):
     return (min(distances), max(distances))
 
 
+def plot_min_max(variable_pairs):
+    plot = Plot()
+    variable_pairs = sorted(variable_pairs)
+    for i, minmax_d in enumerate(variable_pairs):
+        plot.plot([i, i], minmax_d, mark=None)
+    plot.set_xlabel('Station pair')
+    plot.set_xtick_labels([' '])
+    plot.set_ylabel(r'Distance between stations [\si{\meter}]')
+    plot.save_as_pdf('min_max_distances')
+
 if __name__ == "__main__":
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
 
         pairs = close_pairs_in_network(min=30, max=15e3)
         variable_pairs = variable_distance_pairs(pairs)
+    plot_min_max(variable_pairs)
