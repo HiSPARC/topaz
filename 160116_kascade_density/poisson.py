@@ -133,7 +133,7 @@ def plot_contributions():
     plot = Plot('semilogy')
 
     for j, k in enumerate(range(1, 8) + [15] + [20]):
-        ks = [k] #arange(k - 0.5, k + 0.5, 0.2)
+        ks = [k]  # arange(k - 0.5, k + 0.5, 0.2)
         p = sum(density_probability(lamb, ki) for ki in ks) / len(ks)
         plot.plot(lamb, p, linestyle=colors[j % len(colors)], mark=None)
     plot.set_ylimits(min=0.01)
@@ -165,7 +165,7 @@ def plot_ranges():
 
 
 def make_plots():
-#     plot_contributions()
+    plot_contributions()
     plot_ranges()
 
 

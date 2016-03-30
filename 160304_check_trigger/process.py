@@ -21,7 +21,6 @@ if __name__ == "__main__":
                 source_file, tmp_file, '/s501', '/s501', 501, progress=True)
             process.process_and_store_results()
 
-
     with tables.open_file('data.h5', 'r') as source_file:
         with tables.open_file('result_bad_thresholds.h5', 'w') as tmp_file:
             process = ProcessEventsFromSourceWithTriggerOffset(
@@ -37,7 +36,6 @@ if __name__ == "__main__":
             process = ProcessEventsFromSourceWithTriggerOffset(
                 source_file, tmp_file, '/s501', '/s501', 501, progress=True)
             process.process_and_store_results()
-
 
     with tables.open_file('data_502_1.h5', 'r') as source_file:
         process = ProcessEventsWithTriggerOffset(source_file, '/s502', progress=True)
@@ -63,7 +61,6 @@ if __name__ == "__main__":
         timings = process.process_traces()
         print 100. * sum(timings[:, 4] == -999) / len(timings),
         print '% trigger reconstructions failed'
-
 
     with tables.open_file('data_502_2.h5', 'r') as source_file:
         process = ProcessEventsWithTriggerOffset(source_file, '/s502', progress=True)

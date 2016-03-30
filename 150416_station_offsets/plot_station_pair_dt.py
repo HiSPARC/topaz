@@ -112,7 +112,7 @@ def plot_offset_distributions():
                 plot.show_yticklabels_for_all(None)
                 plot.set_xlabel(r'$\Delta t$ [\si{\ns}]')
                 plot.set_xlimits_for_all(None, -2000, 2000)
-                plot.save_as_pdf('plots/distribution/dt_ref%d_%d_dist_sim' % (ref_station, station))
+                plot.save_as_pdf('plots/distribution/dt_ref%d_%d_dist_width' % (ref_station, station))
 
 
 if __name__ == '__main__':
