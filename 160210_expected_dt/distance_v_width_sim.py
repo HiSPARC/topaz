@@ -1,3 +1,8 @@
+"""Width of dt distribution vs distance
+
+Used to compare data to a simulation.
+
+"""
 import itertools
 
 from numpy import sqrt, array, arange, histogram, std, linspace
@@ -41,11 +46,11 @@ def plot_distance_width():
             widths.append(popt[1])
             print std(dt), popt[1]
 
-    plot = Plot()
     popt, pcov = curve_fit(lin, distances, widths, p0=(1.1, 1))
     print popt, pcov
+
+    plot = Plot()
     plot.scatter(distances, widths)
-#     plot.plot([0, 600], [0, 600], mark=None, linestyle='gray')
     plot.plot([0, 600], [0, 600 / 0.3], mark=None, linestyle='gray')
     plot.plot([0, 600], [lin(0, *popt), lin(600, *popt)], mark=None)
     plot.set_xlimits(min=0, max=600)
