@@ -12,7 +12,7 @@ from numpy import array, sqrt, testing
 
 from sapphire import HiSPARCNetwork, HiSPARCStations
 
-MIN_DISTANCE = 50
+MIN_DISTANCE = 30
 MAX_DISTANCE = 2e3
 
 

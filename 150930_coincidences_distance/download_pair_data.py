@@ -57,6 +57,7 @@ def download_coincidences_pair(pair):
                                   progress=False)
         rate = data.root.coincidences.coincidences.nrows / total_exposure
         data.set_node_attr('/', 'n_rate', rate)
+        data.set_node_attr('/', 'n_coincidences', data.root.coincidences.coincidences.nrows)
     os.rename(tmp_path, path)
     print 'Finished', pair, datetime.datetime.now()
 

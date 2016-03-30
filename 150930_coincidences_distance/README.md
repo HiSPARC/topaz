@@ -36,6 +36,12 @@ can be explained.
 - 507 - inside Nikhef, much lower event rate
 - 22 - Moved to different location
 
-'bad' combinations:
 
-- 7002 & 7003 - detectors not at GPS location?
+Pairs with very few coincidences (pair, n coincidences):
+
+- (8102, 8105) 2 - 8102 has very little good data
+- (13002, 13006) 2 - 8 km apart, only background
+- (13003, 13008) 1 - 13008 only has a week of data
+- (13005, 13008) 3 - 13008 only has a week of data
+- (13102, 13104) 4 - 13104 started at end of January 2016
+- (13103, 13104) 2 - 13104 started at end of January 2016
