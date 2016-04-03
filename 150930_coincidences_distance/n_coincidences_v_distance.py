@@ -189,51 +189,30 @@ def plot_coincidence_rate_distance(data, sim_data):
                   6: 2 * freq_2 * freq_4 * coincidence_window,
                   8: 2 * freq_4 * freq_4 * coincidence_window}
 
-    plot = Plot('loglog')
-    for n in distances.keys():
-        plot.draw_horizontal_line(background[n], 'dashed, thin,' + colors[n])
+    for name, rates in [(coincidence_rates, 'coincidence'),
+                        (interval_rates, 'interval')]:
+        plot = Plot('loglog')
+        for n in distances.keys():
+            plot.draw_horizontal_line(background[n], 'dashed,' + colors[n])
 
-    for n in [4, 8]:  # distances.keys():
-        expected_rates = expected_rate(distances[n], coincidence_rates[n],
-                                       background[n], sim_distances,
-                                       sim_energies, sim_areas[n], n=n)
-        plot.plot(sim_distances, expected_rates,
-                  linestyle=colors[n], mark=None, markstyle='mark size=.5pt')
+        for n in [4, 8]:  # distances.keys():
+            expected_rates = expected_rate(distances[n], rates[n],
+                                           background[n], sim_distances,
+                                           sim_energies, sim_areas[n], n=n)
+            plot.plot(sim_distances, expected_rates, linestyle=colors[n],
+                      mark=None, markstyle='mark size=.5pt')
 
-    for n in distances.keys():
-        plot.scatter(distances[n], coincidence_rates[n],
-                     xerr=distance_errors[n], yerr=rate_errors[n],
-                     mark=markers[n],
-                     markstyle='%s, mark size=.75pt' % colors[n])
-    plot.set_xlabel(r'Distance between stations [\si{\meter}]')
-    plot.set_ylabel(r'Coincidence rate [\si{\hertz}]')
-    plot.set_axis_options('log origin y=infty')
-    plot.set_xlimits(min=1, max=20e3)
-    plot.set_ylimits(min=1e-7, max=5e-1)
-    plot.save_as_pdf('distance_v_coincidence_rate')
-
-    plot = Plot('loglog')
-    for n in distances.keys():
-        plot.draw_horizontal_line(background[n], 'dashed, thin,' + colors[n])
-
-    for n in [4, 8]:  # distances.keys():
-        expected_rates = expected_rate(distances[n], interval_rates[n],
-                                       background[n], sim_distances,
-                                       sim_energies, sim_areas[n], n=n)
-        plot.plot(sim_distances, expected_rates,
-                  linestyle=colors[n], mark=None, markstyle='mark size=.5pt')
-
-    for n in distances.keys():
-        plot.scatter(distances[n], interval_rates[n],
-                     xerr=distance_errors[n],
-                     mark=markers[n],
-                     markstyle='%s, mark size=.75pt' % colors[n])
-    plot.set_xlabel(r'Distance between stations [\si{\meter}]')
-    plot.set_ylabel(r'Coincidence rate [\si{\hertz}]')
-    plot.set_axis_options('log origin y=infty')
-    plot.set_xlimits(min=1, max=20e3)
-    plot.set_ylimits(min=1e-7, max=5e-1)
-    plot.save_as_pdf('distance_v_interval_rate')
+        for n in distances.keys():
+            plot.scatter(distances[n], rates[n],
+                         xerr=distance_errors[n], yerr=rate_errors[n],
+                         mark=markers[n],
+                         markstyle='%s, mark size=.75pt' % colors[n])
+        plot.set_xlabel(r'Distance between stations [\si{\meter}]')
+        plot.set_ylabel(r'%s rate [\si{\hertz}]' % name.title())
+        plot.set_axis_options('log origin y=infty')
+        plot.set_xlimits(min=1, max=20e3)
+        plot.set_ylimits(min=1e-7, max=5e-1)
+        plot.save_as_pdf('distance_v_%s_rate' % name)
 
 
 def plot_coincidence_v_interval_rate(data):
