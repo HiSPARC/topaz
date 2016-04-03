@@ -68,6 +68,7 @@ def get_coincidence_count(close_pairs):
                 interval_rate = data.get_node_attr('/', 'interval_rate')
                 n_coincidences = data.get_node_attr('/', 'n_coincidences')
             except AttributeError:
+                # print 'failed reading attributes', pair
                 continue
         if not n_coincidences:
             continue
@@ -97,13 +98,6 @@ def get_coincidence_count(close_pairs):
             err = rate - 1e-15
         coincidence_rate_errors[n].append(err)
         pairs[n].append(pair)
-
-    distances[8].append(10)
-    coincidence_rates[8].append(.104)
-    interval_rates[8].append(.104)
-    distance_errors[8].append(5)
-    coincidence_rate_errors[8].append(.05)
-    pairs[8].append((501, 510))
 
     return (distances, coincidence_rates, interval_rates,
             distance_errors, coincidence_rate_errors, pairs)
@@ -146,6 +140,7 @@ def expected_rate(distances, coincidence_rates, background,
 
     sim_rates = (sim_areas * sim_energies * sim_solid_angle * sim_dif_flux
                  ).sum(axis=1)
+
     scaling = partial(scale_rate, sim_distances, sim_rates, background)
     popt, pcov = curve_fit(scaling, distances, log10(coincidence_rates), [1.])
     print n, popt
@@ -279,7 +274,7 @@ if __name__ == "__main__":
             sim_areas = saved_data['sim_data'][2]
             sim_data = (sim_distances, sim_energies, sim_areas)
         except:
-            sim_distances = logspace(log10(2), log10(20e3), 200)
+            sim_distances = logspace(log10(1), log10(20e3), 200)
             sim_energies = logspace(13, 20, 200)
             sim_areas = {n: get_pair_distance_energy_array(sim_distances,
                                                            sim_energies, n=n)

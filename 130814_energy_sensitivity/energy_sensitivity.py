@@ -50,10 +50,10 @@ class EnergySensitivity(object):
         self.ldf = KascadeLdf()
         self.grid_points = 2500
         self.max_radius = 1000
-        self.min_energy = 1e13
+        self.min_energy = 1e12
         self.max_energy = 1e21
         self.start_energy = 1e17
-        self.bisections = 10
+        self.bisections = 11
 
         # Throw showers in a regular grid around center mass of the station
         xc, yc, _ = self.cluster.calc_center_of_mass_coordinates()
@@ -355,7 +355,7 @@ class StationPairAreaEnergySensitivity(StationPairEnergySensitivity):
         super(StationPairAreaEnergySensitivity, self).__init__(pair)
 
         # Shower parameters
-        self.max_radius = 2e4
+        self.max_radius = 25e3
         self.step_size = 2.
 
         # Rotate cluster to make stations aligned along x for easy symmetry

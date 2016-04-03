@@ -23,6 +23,7 @@ from sapphire.transformations.clock import gps_to_datetime
 
 from eventtime_ranges import get_timestamp_ranges, get_total_exposure
 from station_distances import close_pairs_in_network, distance_between_stations
+from rate_from_intervals import determine_rate
 
 
 DATAPATH = '/Users/arne/Datastore/pairs/%d_%d.h5'
@@ -59,6 +60,7 @@ def download_coincidences_pair(pair):
         data.set_node_attr('/', 'n_rate', rate)
         data.set_node_attr('/', 'n_coincidences', data.root.coincidences.coincidences.nrows)
     os.rename(tmp_path, path)
+    determine_rate(path)
     print 'Finished', pair, datetime.datetime.now()
 
 if __name__ == "__main__":

@@ -44,7 +44,7 @@ def determine_rate(path):
     x = (bins[1:] + bins[:-1]) / 2.
     filter = c > 0
     slope, intercept, r_value, _, _ = linregress(x[filter], log(c[filter]))
-    print pair, expected_interval, 1e9 / expected_interval, r_value ** 2
+    # print pair, expected_interval, 1e9 / expected_interval, r_value ** 2
     rate = slope * -1e9
     with tables.open_file(path, 'a') as data:
         data.set_node_attr('/', 'interval_rate', rate)
