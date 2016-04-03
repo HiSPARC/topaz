@@ -31,5 +31,5 @@ def plot_detectors(cluster):
 if __name__ == "__main__":
     for sn in range(501, 512):
         # print sn
-        cluster = HiSPARCStations([sn])
+        cluster = HiSPARCStations([sn], force_stale=True)
         plot_detectors(cluster)
