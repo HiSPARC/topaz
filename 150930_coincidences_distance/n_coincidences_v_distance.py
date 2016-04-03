@@ -87,6 +87,8 @@ def get_coincidence_count(close_pairs):
             gps_layout_error = 3
         distance_error = [abs(d - distance) + gps_layout_error
                           for d in min_max_distance_pair(pair)]
+        if distance_error[0] > distance:
+            distance_error[0] = distance - 1e-15
         distance_errors[n].append(distance_error)
 
         coincidence_rates[n].append(n_rate)

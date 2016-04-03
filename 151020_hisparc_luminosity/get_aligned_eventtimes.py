@@ -33,6 +33,7 @@ def get_data():
 
 def get_station_end_timestamp(station, data):
     """Read all eventtime data into a dictionary"""
+
     if Station(station, force_stale=True).info['active']:
         return None
     else:
