@@ -189,7 +189,7 @@ def plot_coincidence_rate_distance(data, sim_data):
                   6: 2 * freq_2 * freq_4 * coincidence_window,
                   8: 2 * freq_4 * freq_4 * coincidence_window}
 
-    for name, rates in [(coincidence_rates, 'coincidence'),
+    for rates, name in [(coincidence_rates, 'coincidence'),
                         (interval_rates, 'interval')]:
         plot = Plot('loglog')
         for n in distances.keys():
