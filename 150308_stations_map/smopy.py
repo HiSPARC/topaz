@@ -236,8 +236,8 @@ def extend_box(box_latlon, margin=.1):
     (lat0, lon0, lat1, lon1) = box_latlon
     lat0, lat1 = min(lat0, lat1), max(lat0, lat1)
     lon0, lon1 = min(lon0, lon1), max(lon0, lon1)
-    dlat = max((lat1 - lat0) * margin, 0.0005)
-    dlon = max((lon1 - lon0) * margin, 0.0005 / np.cos(np.radians(lat0)))
+    dlat = max((lat1 - lat0) * margin, 0.0002)
+    dlon = max((lon1 - lon0) * margin, 0.0002 / np.cos(np.radians(lat0)))
     return (lat0 - dlat, lon0 - dlon,
             lat1 + dlat, lon1 + dlon)
 
