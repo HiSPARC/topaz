@@ -14,7 +14,7 @@ def get_detector_locations(station):
     latitudes = []
     longitudes = []
 
-    cluster = HiSPARCStations([station])
+    cluster = HiSPARCStations([station], force_stale=True)
 
     station = cluster.get_station(station)
     for timestamp in station.detectors[0].timestamps:
@@ -31,7 +31,7 @@ def get_detector_locations(station):
 def get_station_locations(station):
     """All GPS locations for a single station"""
 
-    locations = Station(station).gps_locations
+    locations = Station(station, force_stale=True).gps_locations
     return locations['latitude'], locations['longitude']
 
 
@@ -75,7 +75,7 @@ def make_map(station=None, label='map', detectors=False):
                          markstyle="%s, thick" % colors.next(),
                          mark=marks.next())
     else:
-        plot.scatter(x, map_h - y, markstyle="black!50!green, thick")
+        plot.scatter(x, map_h - y, markstyle="black!50!green")
 
     plot.set_xlabel('Longitude [$^\circ$]')
     plot.set_xticks([xmin, xmax])
