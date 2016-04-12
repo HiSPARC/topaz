@@ -58,7 +58,7 @@ def run():
         plt.axis('equal')
         plt.xlim(-1, 1)
         plt.ylim(-1, 1)
-        plt.savefig('plots/rotated_%d.png' % i))
+        plt.savefig('plots/rotated_%d.png' % i)
     plt.figure()
     plt.plot(angles, overlap)
     plt.show()
