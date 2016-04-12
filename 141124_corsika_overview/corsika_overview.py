@@ -84,14 +84,14 @@ def plot_azimuth(azimuth):
 def plot_energy_zenith(energy, zenith, particle_id=None):
     """Energy, Zenith"""
 
-    e_bins = get_unique(energy)[1:]
+    e_bins = get_unique(energy)
     e_bins.append(e_bins[-1] + .5)
     z_bins = get_unique(zenith)
     z_bins.append(z_bins[-1] + (z_bins[-1] - z_bins[-2]))
     counts, e_bins, z_bins = numpy.histogram2d(energy, zenith, bins=[e_bins, z_bins])
     graph = artist.Plot() # axis='semilogx'
     graph.histogram2d(numpy.sqrt(counts), e_bins - 0.25, z_bins - (z_bins[1] / 2), type='area')
-    graph.set_xlimits(min=11.5, max=19)
+    graph.set_xlimits(min=10, max=19)
     graph.set_xlabel(r'Energy [\si{electronvolt}]')
     graph.set_ylabel(r'Zenith [\si{\radian}]')
     graph.set_title('Number of simulations per energy and zenith angle')
