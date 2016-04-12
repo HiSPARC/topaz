@@ -11,24 +11,23 @@ from itertools import combinations
 from artist import Plot
 import numpy
 
-from sapphire import ScienceParkCluster, HiSPARCNetwork
+from sapphire import (ScienceParkCluster, HiSPARCNetwork, HiSPARCStations,
+                      Network)
 
 
 def distances_sciencepark():
-    cluster = ScienceParkCluster()
+    cluster = ScienceParkCluster(force_stale=True)
     distances_stations(cluster, name='_sciencepark')
 
 
 def distances_netherlands():
-    cluster = HiSPARCNetwork()
-    cluster._stations = [s for s in cluster.stations if s.number < 10000]
+    sn = Network(force_stale=True).station_numbers(country=0)
+    cluster = HiSPARCStations(sn, force_stale=True, skip_missing=True)
     distances_stations(cluster, name='_netherlands')
 
 
 def distances_all_stations():
-    cluster = HiSPARCNetwork()
-    # Ignore KASCADE
-    cluster._stations = [s for s in cluster.stations if s.number < 70000]
+    cluster = HiSPARCNetwork(force_stale=True)
     distances_stations(cluster, name='_all')
 
 
@@ -56,7 +55,6 @@ def plot_station_distances(distances, name=''):
     plot = Plot('semilogx')
     bins = numpy.logspace(0, 7, 41)
     counts, bins = numpy.histogram(distances, bins=bins)
-    plot.set_title('Distances between all combinations of 2 stations')
     plot.histogram(counts, bins / 1e3)
     plot.set_xlabel(r'Distance [\si{\kilo\meter}]')
     plot.set_ylabel('Occurance')
