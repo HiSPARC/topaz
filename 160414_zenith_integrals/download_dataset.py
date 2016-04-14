@@ -2,7 +2,7 @@ import os.path
 from datetime import datetime
 
 import tables
-from numpy import histogram, linspace, cos, sin, pi, mean, sqrt
+from numpy import histogram, linspace, cos, sin, pi, mean, sqrt, radians
 
 from artist import Plot
 
@@ -38,10 +38,11 @@ def plot_pulseintegrals():
     ph_bins = linspace(10, 1500, 200)
     az_bins = linspace(-pi, pi, 40)
     ze_bins = linspace(0, pi / 2., 50)
+    max_zenith = radians(60)
 
     with tables.open_file(STATION_PATH, 'r') as data:
         sn = data.get_node('/s%d' % station_number)
-        filter = sn.reconstructions.get_where_list('(zenith > 0.1) & d1 & d2 & d4')
+        filter = sn.reconstructions.get_where_list('(zenith < max_zenith) & d1 & d2 & d4')
         integrals = sn.events.col('integrals')[filter]
         pulseheights = sn.events.col('pulseheights')[filter]
         azimuths = sn.reconstructions.col('azimuth')[filter]
