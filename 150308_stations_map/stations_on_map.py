@@ -1,5 +1,23 @@
-import argparse
+""" Create a map of HiSPARC stations
 
+Use arguments to choose what to show. Either ther entire network or a specific
+subset. To choose a subset provide arguments to select a specific country,
+cluster, subcluster, stations, or a specific station. Additional options are
+available to also show HiSPARC and KNMI weather stations.
+
+Examples::
+
+    ./stations_on_map --network 0
+    ./stations_on_map --weather --knmi --network 0
+    ./stations_on_map --country 20000
+    ./stations_on_map --cluster 1000
+    ./stations_on_map --subcluster 500
+    ./stations_on_map --detectors --stations 102,104,105
+    ./stations_on_map --detectors --station 501
+
+"""
+import argparse
+from ast import literal_eval
 from numpy import array
 
 from artist import Plot
@@ -9,16 +27,18 @@ from smopy import Map, num2deg, TILE_SIZE
 
 
 def get_detector_locations(country=None, cluster=None, subcluster=None,
-                           station=None):
+                           station=None, stations=None):
     latitudes = []
     longitudes = []
 
-    if station is None:
+    if station is not None:
+        station_numbers = [station]
+    elif stations is not None:
+        station_numbers = stations
+    else:
         station_numbers = Network().station_numbers(country=country,
                                                     cluster=cluster,
                                                     subcluster=subcluster)
-    else:
-        station_numbers = [station]
 
     cluster = HiSPARCStations(station_numbers)
 
@@ -34,16 +54,18 @@ def get_detector_locations(country=None, cluster=None, subcluster=None,
 
 
 def get_station_locations(country=None, cluster=None, subcluster=None,
-                          station=None):
+                          station=None, stations=None):
     latitudes = []
     longitudes = []
 
-    if station is None:
+    if station is not None:
+        station_numbers = [station]
+    elif stations is not None:
+        station_numbers = stations
+    else:
         station_numbers = Network().station_numbers(country=country,
                                                     cluster=cluster,
                                                     subcluster=subcluster)
-    else:
-        station_numbers = [station]
 
     for station_number in station_numbers:
         location = Station(station_number).location()
@@ -85,17 +107,18 @@ def get_knmi_locations():
 
 
 def make_map(country=None, cluster=None, subcluster=None, station=None,
-             label='map', detectors=False, weather=False, knmi=False):
+             stations=None, label='map', detectors=False, weather=False,
+             knmi=False):
 
     get_locations = (get_detector_locations if detectors
                      else get_station_locations)
 
     if (country is None and cluster is None and subcluster is None and
-                station is None):
-        latitudes, longitudes = get_locations(country, cluster,
-                                              subcluster, station)
-    else:
+                station is None and stations is None):
         latitudes, longitudes = ([], [])
+    else:
+        latitudes, longitudes = get_locations(country, cluster,
+                                              subcluster, station, stations)
 
     if weather:
         weather_latitudes, weather_longitudes = get_weather_locations()
@@ -140,7 +163,12 @@ def make_map(country=None, cluster=None, subcluster=None, station=None,
                      markstyle="mark size=0.5pt, black!50!blue, thick, opacity=0.6")
 
     x, y = map.to_pixels(array(latitudes), array(longitudes))
-    plot.scatter(x, map_h - y, markstyle="mark size=1.5pt, black!50!green, thick, opacity=0.9")
+    if detectors:
+        mark_size = 1.5
+    else:
+        mark_size = 3
+    plot.scatter(x, map_h - y, markstyle="mark size=%fpt, black!50!green, "
+                                         "thick, opacity=0.9" % mark_size)
 
     if weather:
         x, y = map.to_pixels(array(weather_latitudes), array(weather_longitudes))
@@ -163,7 +191,7 @@ def make_map(country=None, cluster=None, subcluster=None, station=None,
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('number', type=int,
+    parser.add_argument('number', type=str,
                         help=("Number of the country, cluster, subcluster, "
                               "or station (set to 0 when choosing network)"))
     parser.add_argument('--network', action='store_true',
@@ -176,6 +204,8 @@ def main():
                         help='Number represents the subcluster')
     parser.add_argument('--station', action='store_true',
                         help='Number represents the station')
+    parser.add_argument('--stations', action='store_true',
+                        help='Number represents the station')
     parser.add_argument('--detectors', action='store_true',
                         help='Show each detector')
     parser.add_argument('--weather', action='store_true',
@@ -186,30 +216,36 @@ def main():
 
     label = ''
 
+    if args.detectors:
+        label += '_detectors'
     if args.weather:
         label += '_weather'
-
     if args.knmi:
         label += '_knmi'
+
+    number = literal_eval(args.number)
 
     if args.network:
         label = 'network' + label
         make_map(label=label, detectors=args.detectors, weather=args.weather, knmi=args.knmi)
     elif args.country:
-        label = 'country_%d' % args.number + label
-        make_map(country=args.number, label=label, detectors=args.detectors, weather=args.weather, knmi=args.knmi)
+        label = 'country_%d' % number + label
+        make_map(country=number, label=label, detectors=args.detectors, weather=args.weather, knmi=args.knmi)
     elif args.cluster:
-        label = 'cluster_%d' % args.number + label
-        make_map(cluster=args.number, label=label, detectors=args.detectors, weather=args.weather, knmi=args.knmi)
+        label = 'cluster_%d' % number + label
+        make_map(cluster=number, label=label, detectors=args.detectors, weather=args.weather, knmi=args.knmi)
     elif args.subcluster:
-        label = 'subcluster_%d' % args.number + label
-        make_map(subcluster=args.number, label=label, detectors=args.detectors, weather=args.weather, knmi=args.knmi)
+        label = 'subcluster_%d' % number + label
+        make_map(subcluster=number, label=label, detectors=args.detectors, weather=args.weather, knmi=args.knmi)
     elif args.station:
-        label = 'station_%d' % args.number + label
-        make_map(station=args.number, label=label, detectors=args.detectors, weather=args.weather, knmi=args.knmi)
+        label = 'station_%d' % number + label
+        make_map(station=number, label=label, detectors=args.detectors, weather=args.weather, knmi=args.knmi)
+    elif args.stations:
+        label = 'stations_%s' % '_'.join(str(n) for n in number) + label
+        make_map(stations=number, label=label, detectors=args.detectors, weather=args.weather, knmi=args.knmi)
     else:
         label = 'map' + label
-        make_map(station=501, label=label, weather=args.weather, knmi=args.knmi)
+        make_map(station=None, label=label, weather=args.weather, knmi=args.knmi)
 
 
 if __name__ == '__main__':
