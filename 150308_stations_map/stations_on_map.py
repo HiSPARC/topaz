@@ -26,6 +26,9 @@ from sapphire import Network, Station, HiSPARCStations
 from smopy import Map, num2deg, TILE_SIZE
 
 
+NETWORK = Network(force_stale=True)
+
+
 def get_detector_locations(country=None, cluster=None, subcluster=None,
                            station=None, stations=None):
     latitudes = []
@@ -36,11 +39,11 @@ def get_detector_locations(country=None, cluster=None, subcluster=None,
     elif stations is not None:
         station_numbers = stations
     else:
-        station_numbers = Network().station_numbers(country=country,
-                                                    cluster=cluster,
-                                                    subcluster=subcluster)
+        station_numbers = NETWORK.station_numbers(country=country,
+                                                  cluster=cluster,
+                                                  subcluster=subcluster)
 
-    cluster = HiSPARCStations(station_numbers)
+    cluster = HiSPARCStations(station_numbers, force_stale=True)
 
     for station_number in station_numbers:
         station = cluster.get_station(station_number)
@@ -63,12 +66,12 @@ def get_station_locations(country=None, cluster=None, subcluster=None,
     elif stations is not None:
         station_numbers = stations
     else:
-        station_numbers = Network().station_numbers(country=country,
-                                                    cluster=cluster,
-                                                    subcluster=subcluster)
+        station_numbers = NETWORK.station_numbers(country=country,
+                                                  cluster=cluster,
+                                                  subcluster=subcluster)
 
     for station_number in station_numbers:
-        location = Station(station_number).location()
+        location = Station(station_number, force_stale=True).location()
         if location['latitude'] == 0 or location['longitude'] == 0:
             continue
         latitudes.append(location['latitude'])
@@ -81,10 +84,10 @@ def get_weather_locations():
     longitudes = []
 
     station_numbers = [s['number']
-                       for s in Network().stations_with_weather()]
+                       for s in NETWORK.stations_with_weather()]
 
     for station_number in station_numbers:
-        location = Station(station_number).location()
+        location = Station(station_number, force_stale=True).location()
         latitudes.append(location['latitude'])
         longitudes.append(location['longitude'])
 
