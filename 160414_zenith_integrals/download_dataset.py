@@ -3,10 +3,12 @@ from datetime import datetime
 
 import tables
 from numpy import histogram, linspace, cos, sin, pi, mean, sqrt, radians
+from numpy.random import normal
 
 from artist import Plot
 
 from sapphire import download_data, ReconstructESDEvents
+from sapphire.utils import norm_angle
 
 
 DATASTORE = "/Users/arne/Datastore/zenith_integrals"
@@ -38,11 +40,14 @@ def plot_pulseintegrals():
     ph_bins = linspace(10, 1500, 200)
     az_bins = linspace(-pi, pi, 40)
     ze_bins = linspace(0, pi / 2., 50)
-    max_zenith = radians(60)
+    min_n = 1.5
+    max_zenith = radians(45)
 
     with tables.open_file(STATION_PATH, 'r') as data:
         sn = data.get_node('/s%d' % station_number)
-        filter = sn.reconstructions.get_where_list('(zenith < max_zenith) & d1 & d2 & d4')
+        n_filter = set(sn.events.get_where_list('(n1 >= min_n) & (n2 >= min_n) & (n4 >= min_n)'))
+        z_filter = set(sn.reconstructions.get_where_list('(zenith < max_zenith) & d1 & d2 & d4'))
+        filter = list(n_filter & z_filter)
         integrals = sn.events.col('integrals')[filter]
         pulseheights = sn.events.col('pulseheights')[filter]
         azimuths = sn.reconstructions.col('azimuth')[filter]
@@ -51,6 +56,12 @@ def plot_pulseintegrals():
     plot = Plot()
     counts, az_bins = histogram(azimuths, bins=az_bins)
     plot.histogram(counts, az_bins)
+
+    # Smoothed version of azimuth histogram to counter discreteness at low zenith.
+    smoothing = normal(scale=radians(8), size=len(azimuths))
+    counts, az_bins = histogram(norm_angle(azimuths + smoothing), bins=az_bins)
+    plot.histogram(counts, az_bins, linestyle='gray')
+
     plot.draw_horizontal_line(mean(counts), linestyle='red')
     plot.draw_horizontal_line(mean(counts) + sqrt(mean(counts)), linestyle='dashed, red')
     plot.draw_horizontal_line(mean(counts) - sqrt(mean(counts)), linestyle='dashed, red')
