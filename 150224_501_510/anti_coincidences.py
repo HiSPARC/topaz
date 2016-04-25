@@ -1,4 +1,4 @@
-import numpy as np
+from numpy import linspace, histogram
 import tables
 
 from sapphire import HiSPARCStations
@@ -19,6 +19,7 @@ def anti_coincidences(data):
     station_groups = ['/s%d' % number for number in STATIONS]
     plot = Plot('semilogy')
     plot2 = Plot()
+    ids = [1, 2, 3, 4]
 
     colors = ['red', 'blue']
     linestyles = ['solid', 'dashed']
@@ -31,11 +32,11 @@ def anti_coincidences(data):
         coin_events = events.read_coordinates(ceids)
         all_events = events.read()
 
-        bins = np.linspace(0.01, 40, 300)
+        bins = linspace(0.01, 40, 300)
         # Should filter -999 values, but there are only ~60 of those.
-        coin_counts, bins = np.histogram(sum(coin_events['n%d' % id] for id in [1, 2, 3, 4]) / 2.,
-                                     bins=bins)
-        all_counts, bins = np.histogram(sum(all_events['n%d' % id] for id in [1, 2, 3, 4]) / 2.,
+        coin_counts, bins = histogram(sum(coin_events['n%d' % id] for id in ids) / 2.,
+                                      bins=bins)
+        all_counts, bins = histogram(sum(all_events['n%d' % id] for id in ids) / 2.,
                                      bins=bins)
         anticoin_counts = all_counts - coin_counts
         # All events
@@ -45,13 +46,14 @@ def anti_coincidences(data):
         # Events not in coincidence
         plot.histogram(anticoin_counts, bins, linestyle='dashed, %s' % colors[s_id])
 
-        bins = np.linspace(0.01, 20, 50)
-        coin_counts, bins = np.histogram(sum(coin_events['n%d' % id] for id in [1, 2, 3, 4]) / 2.,
-                                     bins=bins)
-        all_counts, bins = np.histogram(sum(all_events['n%d' % id] for id in [1, 2, 3, 4]) / 2.,
+        bins = linspace(0.01, 20, 50)
+        coin_counts, bins = histogram(sum(coin_events['n%d' % id] for id in ids) / 2.,
+                                      bins=bins)
+        all_counts, bins = histogram(sum(all_events['n%d' % id] for id in ids) / 2.,
                                      bins=bins)
         detection_efficiency = coin_counts.astype('float') / all_counts
-        plot2.plot((bins[1:] + bins[:-1]) / 2., detection_efficiency, linestyle='%s' % linestyles[s_id], mark=None)
+        plot2.plot((bins[1:] + bins[:-1]) / 2., detection_efficiency,
+                   linestyle='%s' % linestyles[s_id], mark=None)
 
     plot.set_ylimits(min=0.2)
     plot.set_xlimits(min=bins[0], max=15)

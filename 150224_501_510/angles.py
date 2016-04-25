@@ -24,9 +24,13 @@ def plot_angles(data):
     minn501 = rec501.col('min_n')
     minn510 = rec510.col('min_n')
 
+    sigmas = []
+    blas = []
+    minns = [0, 1, 2, 4, 8, 16, 24]
+
     high_zenith = (zen501 > .2) & (zen510 > .2)
 
-    for minn in [0, 1, 2, 4, 8, 16]:
+    for minn in minns:
         filter = (minn501 > minn) & (minn510 > minn)
 
         length = len(azi501.compress(high_zenith & filter))
@@ -64,14 +68,25 @@ def plot_angles(data):
         counts, bins = np.histogram(distances, bins=linspace(0, pi, 100))
         plotd = Plot()
         plotd.histogram(counts, degrees(bins))
-        sigma = degrees(percentile(distances[isfinite(distances)], 67))
+        sigma = degrees(percentile(distances[isfinite(distances)], 68))
+        sigmas.append(sigma)
+        bla = degrees(percentile(distances[isfinite(distances)], 95))
+        blas.append(bla)
         plotd.set_label(r'67\%% within \SI{%.1f}{\degree}' % sigma)
 #         plotd.set_title('Distance between reconstructed angles for station events')
-        plotd.set_xlabel('Angle between reconstructions [\si{\degree}]')
+        plotd.set_xlabel(r'Angle between reconstructions [\si{\degree}]')
         plotd.set_ylabel('Counts')
         plotd.set_xlimits(min=0, max=90)
         plotd.set_ylimits(min=0)
         plotd.save_as_pdf('angle_between_501_510_minn%d' % minn)
+
+    plot = Plot()
+    plot.plot(minns, sigmas, mark='*')
+    plot.plot(minns, blas)
+    plot.set_ylimits(min=0, max=40)
+    plot.set_xlabel('Minimum number of particles in each station')
+    plot.set_ylabel(r'Angle between reconstructions [\si{\degree}]')
+    plot.save_as_pdf('angle_between_501_510_v_minn')
 
 
 if __name__ == '__main__':
