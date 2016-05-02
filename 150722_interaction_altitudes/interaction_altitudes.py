@@ -23,7 +23,7 @@ def plot_interaction_height(cq):
         zeniths = []
         for z in sorted(cq.available_parameters('zenith', particle=p, energy=e)):
             selection = cq.simulations(particle=p, energy=e, zenith=z)
-            if len(selection) > 100:
+            if len(selection) > 50:
                 interaction_altitudes = selection['first_interaction_altitude'] / 1e3
                 median_altitude.append(median(interaction_altitudes))
                 min_altitude.append(percentile(interaction_altitudes, 2))
@@ -36,7 +36,7 @@ def plot_interaction_height(cq):
             plot.add_pin('%.1f' % e, relative_position=0)
     plot.set_ylabel(r'First interaction altitude [\si{\kilo\meter}]')
     plot.set_xlabel(r'Zenith [\si{\radian}]')
-    plot.save_as_pdf('interaction_altitude')
+    plot.save_as_pdf('plots/interaction_altitude')
 
 
 def plot_interaction_altitude_distribution(cq):
@@ -49,24 +49,24 @@ def plot_interaction_altitude_distribution(cq):
     plot.draw_vertical_line(median(altitudes), linestyle='red')
     plot.set_xlabel(r'First interaction altitude [m]')
     plot.set_ylabel(r'Counts')
-    plot.save_as_pdf('interaction_altitude_distribution')
+    plot.save_as_pdf('plots/interaction_altitude_distribution')
 
 
 def plot_interaction_altitude_size(cq):
-    for z in cq.available_parameters('zenith'):
-        sims = cq.simulations(zenith=z)
-        altitudes = sims['first_interaction_altitude'] / 1e3
-        size = sims['n_electron'] + sims['n_muon']
-        alt_size_hist = histogram2d(altitudes, size,
-                                    bins=[linspace(0, 70, 100),
-                                          logspace(0, 9, 100)])
-    #                                       logspace(max(floor(log10(min(size))), 0),
-    #                                                ceil(log10(max(size))), 100)])
-        plot = Plot('semilogy')
-        plot.histogram2d(*alt_size_hist, bitmap=True, type='color')
-        plot.set_xlabel(r'First interaction altitude [m]')
-        plot.set_ylabel(r'Shower size')
-        plot.save_as_pdf('interaction_altitude_v_size_%.1f.pdf' % z)
+    for p in ['proton', 'iron', 'gamma']:
+        for z in cq.available_parameters('zenith', particle=p):
+            sims = cq.simulations(zenith=z, particle=p)
+            altitudes = sims['first_interaction_altitude'] / 1e3
+            size = sims['n_electron'] + sims['n_muon']
+            alt_size_hist = histogram2d(altitudes, size,
+                                        bins=[linspace(0, 70, 100),
+                                              logspace(0, 9, 100)])
+            plot = Plot('semilogy')
+            plot.histogram2d(*alt_size_hist, bitmap=True, type='color')
+            plot.set_xlabel(r'First interaction altitude [m]')
+            plot.set_ylabel(r'Shower size')
+            plot.save_as_pdf('plots/interaction_altitude_v_size_%s_%.1f.pdf' %
+                             (p if p is not None else 'all', z))
 
 
 if __name__ == "__main__":
