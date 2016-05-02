@@ -1,9 +1,10 @@
 from datetime import date
 import os
 import csv
+import itertools
 
 from numpy import (sum, sin, arange, random, searchsorted, split, nan, array,
-                   empty, column_stack, genfromtxt)
+                   empty, column_stack, genfromtxt, histogram2d)
 import tables
 
 from artist import Plot, MultiPlot
@@ -209,8 +210,9 @@ def get_all_stats():
 
 def plot_timeline(stats, field_name):
     step = 0.2 * BIN_WIDTH
+
     plot = MultiPlot(len(STATIONS), 1,
-                     width=r'.67\textwidth', height=r'.05\paperheight')
+                     width=r'.67\textwidth', height=r'.075\paperheight')
     for splot, station in zip(plot.subplots, STATIONS):
         stat = stats[station][field_name]
         if len(stat.shape) == 2:
@@ -255,6 +257,85 @@ def plot_timelines(statistics):
         plot_timeline(statistics, field_name)
 
 
+def plot_comparison(stats, field_name):
+    plot = MultiPlot(len(STATIONS), len(STATIONS),
+                     width=r'.06\textwidth', height=r'.06\textwidth')
+    bins = arange(0, 1.2, .03)
+    for i, ref_station in enumerate(STATIONS):
+        ref_stat = stats[ref_station][field_name][0]
+        ref_filter = ref_stat > 0
+        for j, station in enumerate(STATIONS):
+            if i == j:
+                plot.set_empty(i, j)
+                continue
+            splot = plot.get_subplot_at(i, j)
+            stat = stats[station][field_name][0]
+
+            tmp_stat = stat.compress(ref_filter & (stat > 0))
+            tmp_ref_stat = ref_stat.compress(ref_filter & (stat > 0))
+            counts, xbin, ybin = histogram2d(tmp_stat, tmp_ref_stat, bins=bins)
+            splot.histogram2d(counts, xbin, ybin, type='reverse_bw', bitmap=True)
+            splot.plot([0, 1.2], [0, 1.2], mark=None, linestyle='red, very thin')
+#     plot.set_xlimits_for_all(None, min=bins[0], max=bins[-1])
+#     plot.set_ylimits_for_all(None, min=bins[0], max=bins[-1])
+#     plot.subplots[-1].set_xtick_labels(YEARS_LABELS)
+#     plot.subplots[-1].show_xticklabels()
+#
+#     plot.show_yticklabels_for_all(None)
+#     for row in range(0, len(plot.subplots), 2):
+#         plot.set_yticklabels_position(row, 0, 'left')
+#     for row in range(1, len(plot.subplots), 2):
+#         plot.set_yticklabels_position(row, 0, 'right')
+#     plot.set_ylimits_for_all(None, -1e-4)
+
+
+    if field_name == 'event_rate':
+        label = r'Event rate [\si{\hertz}]'
+    elif field_name == 'mpv':
+        label = r'MPV [ADC.ns]'
+    else:
+        label = (r'Fraction of bad %s data [\si{\percent}]' %
+                 field_name.replace('_', ' '))
+    plot.set_ylabel(label)
+    plot.set_xlabel(label)
+
+    if field_name in ['event_rate', 'mpv']:
+        plot.save_as_pdf('plots/compare_%s' % field_name)
+    else:
+        plot.save_as_pdf('plots/compare_bad_fraction_%s' % field_name)
+
+
+def plot_comparison_501_510(stats, field_name):
+    plot = Plot()
+    bins = arange(0, 1, .02)
+
+    ref_stat = stats[501][field_name][0]
+    stat = stats[510][field_name][0]
+
+    tmp_stat = stat.compress((ref_stat > 0) & (stat > 0))
+    tmp_ref_stat = ref_stat.compress((ref_stat > 0) & (stat > 0))
+    counts, xbin, ybin = histogram2d(tmp_stat, tmp_ref_stat, bins=bins)
+    plot.histogram2d(counts, xbin, ybin, type='reverse_bw', bitmap=True)
+    plot.plot([0, 1.2], [0, 1.2], mark=None, linestyle='red, very thin')
+
+    if field_name == 'event_rate':
+        label = r'Event rate [\si{\hertz}]'
+    elif field_name == 'mpv':
+        label = r'MPV [ADC.ns]'
+    else:
+        label = (r'Fraction of bad %s data [\si{\percent}]' %
+                 field_name.replace('_', ' '))
+    plot.set_ylabel(label)
+    plot.set_xlabel(label)
+
+    if field_name in ['event_rate', 'mpv']:
+        plot.save_as_pdf('plots_501_510/compare_%s' % field_name)
+    else:
+        plot.save_as_pdf('plots_501_510/compare_bad_fraction_%s' % field_name)
+
+
 if __name__ == "__main__":
     statistics = get_all_stats()
     plot_timelines(statistics)
+    plot_comparison(statistics, 'event_rate')
+    plot_comparison_501_510(statistics, 'event_rate')
