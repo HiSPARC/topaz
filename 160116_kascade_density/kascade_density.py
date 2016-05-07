@@ -24,7 +24,7 @@ output can be converted back to the actual expected output.
 
 """
 import tables
-from numpy import (histogram2d, histogram, linspace, array, where,
+from numpy import (histogram2d, histogram, linspace, logspace, array, where,
                    log10, inf, sqrt, abs, interp, diff, mean, median,
                    empty_like, copyto, cos, zeros, arange, std, append)
 from scipy.stats import poisson, norm, binned_statistic
@@ -87,7 +87,7 @@ class KascadeDensity(object):
         self.slice_bins_c = (self.slice_bins[:-1] + self.slice_bins[1:]) / 2.
         self.ref_out = linspace(0.1, 200, 4000)
         self.ref_in_i = zeros((len(self.ref_out), 4))
-        self.log_bins = linspace(log10(self.lin_bins[0]),
+        self.log_bins = logspace(log10(self.lin_bins[0]),
                                  log10(self.lin_bins[-1]), 100)
 
         with tables.open_file(DATA_PATH, 'r') as data:
@@ -275,10 +275,10 @@ class KascadeDensity(object):
 
     def plot_hisparc_kascade_station(self, n, k_n):
         plot = Plot('loglog')
-        counts, xbins, ybins = histogram2d(log10(n), log10(k_n),
+        counts, xbins, ybins = histogram2d(n, k_n,
                                            bins=self.log_bins, normed=True)
         counts[counts == -inf] = 0
-        plot.histogram2d(counts, 10 ** xbins, 10 ** ybins,
+        plot.histogram2d(counts, xbins, ybins,
                          bitmap=True, type='reverse_bw')
         self.plot_xy(plot)
         plot.set_xlabel(r'HiSPARC detected density [\si{\per\meter\squared}]')
@@ -324,10 +324,10 @@ class KascadeDensity(object):
         plot = MultiPlot(2, 2, 'loglog', width=r'.3\linewidth', height=r'.3\linewidth')
         for i in range(4):
             splot = plot.get_subplot_at(i / 2, i % 2)
-            counts, xbins, ybins = histogram2d(log10(ni[:, i]), log10(k_ni[:, i]),
+            counts, xbins, ybins = histogram2d(ni[:, i], k_ni[:, i],
                                                bins=self.log_bins, normed=True)
             counts[counts == -inf] = 0
-            splot.histogram2d(counts, 10 ** xbins, 10 ** ybins,
+            splot.histogram2d(counts, xbins, ybins,
                               bitmap=True, type='reverse_bw')
             self.plot_xy(splot)
 
@@ -378,9 +378,9 @@ class KascadeDensity(object):
         plot = MultiPlot(2, 2, width=r'.3\linewidth', height=r'.3\linewidth')
         for i in range(4):
             splot = plot.get_subplot_at(i / 2, i % 2)
-            counts, xbins, ybins = histogram2d(log10(ni[:, i]), log10(n), bins=self.log_bins)
+            counts, xbins, ybins = histogram2d(ni[:, i], n, bins=self.log_bins)
             counts[counts == -inf] = 0
-            splot.histogram2d(counts, 10 ** xbins, 10 ** ybins, bitmap=True, type='reverse_bw')
+            splot.histogram2d(counts, xbins, ybins, bitmap=True, type='reverse_bw')
         plot.show_xticklabels_for_all([(1, 0), (0, 1)])
         plot.show_yticklabels_for_all([(1, 0), (0, 1)])
         return plot
