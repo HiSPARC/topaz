@@ -21,7 +21,7 @@ def plot_station_offset_matrix():
     stations = {station: Station(station, force_stale=True)
                 for station in STATIONS}
 
-    for type in ['offset']: #, 'rchi2']:
+    for type in ['offset', 'error']:
         plot = MultiPlot(n, n, width=r'.08\textwidth', height=r'.08\textwidth')
 
         for i, station in enumerate(STATIONS):
