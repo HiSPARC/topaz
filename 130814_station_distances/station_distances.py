@@ -13,6 +13,7 @@ import numpy
 
 from sapphire import (ScienceParkCluster, HiSPARCNetwork, HiSPARCStations,
                       Network)
+from sapphire.utils import c
 
 
 def distances_sciencepark():
@@ -45,10 +46,10 @@ def distances_stations(cluster, name=''):
     plot_station_distances(distances, name=name)
 
 
-def Dns(Dm):
+def distance_to_ns(distance):
     """Convert distance in meters to ns (light travel time)"""
-    c = 0.3  # m/ns (or km/us)
-    return Dm / c
+
+    return distance / c
 
 
 def plot_station_distances(distances, name=''):

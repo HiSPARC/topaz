@@ -9,7 +9,7 @@ import tables
 
 from artist import Plot
 from sapphire import ReconstructESDEvents, CorsikaQuery
-from sapphire.utils import distance_between, angle_between
+from sapphire.utils import angle_between, vector_length
 
 
 DATA = '/Users/arne/Datastore/efficiency/'
@@ -44,9 +44,9 @@ def detection_efficiency(path):
         # Use query = 'timestamp > 0' to select all triggered events
         e = events.get_where_list(query)
         coins = coins[e]
-        all_counts, bins = histogram(distance_between(0, 0, all_x, all_y),
+        all_counts, bins = histogram(vector_length(all_x, all_y),
                                      bins=CORE_DISTANCE_BINS)
-        counts, bins = histogram(distance_between(0, 0, coins['x'], coins['y']),
+        counts, bins = histogram(vector_length(coins['x'], coins['y']),
                                  bins=CORE_DISTANCE_BINS)
 
         return counts, all_counts

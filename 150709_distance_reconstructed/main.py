@@ -5,6 +5,7 @@ from numpy import nanmin, isnan, array, arange, insert, append, sqrt
 from artist import Plot
 
 from sapphire import Station, HiSPARCStations, CoincidenceQuery
+from sapphire.utils import distance_between
 from sapphire.analysis import event_utils
 from sapphire.transformations import geographic
 from sapphire.analysis.event_utils import relative_detector_arrival_times
@@ -29,9 +30,6 @@ COLORS = {501: 'black',
           506: 'pink!80!black',
           508: 'blue!40!black',
           509: 'red!40!black'}
-
-def distance(x0, y0, x1, y1):
-    return sqrt((x0 - x1) ** 2 + (y0 - y1) ** 2)
 
 
 if __name__ == "__main__":
@@ -58,7 +56,7 @@ if __name__ == "__main__":
             core_distances = []
             for d in station.detectors:
                 x, y = d.get_xy_coordinates()
-                core_distances.append(distance(core_x, core_y, x, y))
+                core_distances.append(distance_between(core_x, core_y, x, y))
             plot.scatter(core_distances, t, mark='*', markstyle=COLORS[station_number])
         plot.set_ylabel('Relative arrival time [ns]')
         plot.set_xlabel('Distance from core [m]')
