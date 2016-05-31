@@ -136,8 +136,14 @@ def expected_rate(distances, coincidence_rates, background,
     # Simplified flux
     sim_dif_flux = sim_energies ** slope / sum(sim_energies ** slope)
 
-    # Energy dependend scaling?
+    # Energy dependend scaling, smaller solid angle for low energy showers
+    max_zenith = log10(log10(sim_energies) - 12) ** 0.7
+
+    f = max(0, min(1, 1.205 * log10(E) - 14.76 - 2.52 / cos(theta)))
+    solid_angle = 2 * pi * int(0, pi/2) f(theta) * cos(theta) * sin(theta) * dtheta
+
     zenith = radians(60)
+
     sim_solid_angle = 2 * pi * (1 - cos(zenith))
 
     sim_rates = (sim_areas * sim_energies * sim_solid_angle * sim_dif_flux
