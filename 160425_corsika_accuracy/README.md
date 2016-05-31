@@ -54,12 +54,29 @@ the median showers for log E = 14.5, 15, and 16.
 
 ## Check chosen energy thresholds by looking at particle energy distritbution
 
-Histogram particle E distribution for muons/electrons/gammas, mainly for muons to show lower energy muons are not seen. Reason for e/gamma E cut is detection chance (3 MeV) of e/gamma in detector.
+Histogram particle E distribution for muons/electrons/gammas. Mainly for muons to show lower energy muons are not seen. Reason for energy cuts is the detection chance, at 3 MeV the electron is a MIP in the detector, and gamma's can easily create an e-e+ pair. For muons this threshold is higher, they are MIPs at 300 MeV.
 
-Electrons/Gammas show clear cut at ~3 MeV, not all particles exhausted, so some are cut, but would not have large signal in detector.
+Electrons/Gammas show clear cut at ~3 MeV, not all particles exhausted, so some are cut, but would not have large signal in detector and would be quickly absorbed by air due to ionizations.
 
-Muons less clear cut, some cut, but should be quickly absorbed..
+Muon energy distribution had a less clear cut. Still some muons are cut, but those should also be quickly absorbed due to ionizations.
 
+
+## Station first arrival time versus core distance
+
+Place a station at specific core distance multiple times (random phi). Examine the time profile/variations measured by the station.
+Expect larger variations at large core distances and more towards the front of actual shower front at higher densities.
+
+Observations:
+
+- Smaller spread around median for higher energies at same core distance
+- Small effect of first interaction altitude, more prominent at larger core distances
+- At higher energies clearer deviation from shower time profile (due to sampling/first over threshold)
+- 
+
+
+## Shower front shape seen by stations
+
+- 
 
 ## TODOs
 
