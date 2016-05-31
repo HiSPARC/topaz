@@ -2,6 +2,12 @@
 
 Uses stations 501 through 511 (except 507).
 
+- Perform simulations using CORSIKA simulated showers.
+- Reconstruct using the flat regression algorithm.
+- Reconstruct using first flat, then core (center mass), then curved algorithm.
+- Reconstruct using curved algorithm using the simulated core positions.
+- Compare results
+
 """
 
 from __future__ import division
@@ -98,8 +104,10 @@ def plot_results(data):
         angles = angle_between(recs.col('zenith'), recs.col('azimuth'),
                                recs.col('reference_zenith'), recs.col('reference_azimuth'))
         dangles = np.degrees(angles)
-        counts, bins = np.histogram(dangles, bins=np.arange(0, 30))
+        counts, bins = np.histogram(dangles, bins=np.arange(0, 25, .5))
         plot.histogram(counts, bins + (i / 10.), linestyle=linestyles[i])
+    plot.set_xlimits(0, 25)
+    plot.set_ylimits(0)
     plot.set_xlabel(r'Angle between [\si{\degree}]')
     plot.save_as_pdf('angle_between')
 
