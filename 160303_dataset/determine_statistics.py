@@ -213,6 +213,13 @@ def plot_timeline(stats, field_name):
 
     plot = MultiPlot(len(STATIONS), 1,
                      width=r'.67\textwidth', height=r'.075\paperheight')
+#     if field_name in ['event_rate', 'mpv']:
+#         plot = MultiPlot(len(STATIONS), 1,
+#                          width=r'.67\textwidth', height=r'.05\paperheight')
+#     else:
+#         plot = MultiPlot(len(STATIONS), 1, 'semilogy',
+#                          width=r'.67\textwidth', height=r'.05\paperheight')
+
     for splot, station in zip(plot.subplots, STATIONS):
         stat = stats[station][field_name]
         if len(stat.shape) == 2:
@@ -234,6 +241,9 @@ def plot_timeline(stats, field_name):
     for row in range(1, len(plot.subplots), 2):
         plot.set_yticklabels_position(row, 0, 'right')
     plot.set_ylimits_for_all(None, -1e-4)
+
+#     if field_name not in ['event_rate', 'mpv']:
+#         plot.set_ylimits_for_all(None, 1e-4, 100)
 
     plot.set_xlabel(r'Timestamp')
 
