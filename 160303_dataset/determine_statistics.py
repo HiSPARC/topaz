@@ -267,6 +267,7 @@ def plot_comparison(stats, field_name):
         for j, station in enumerate(STATIONS):
             if i == j:
                 plot.set_empty(i, j)
+                plot.set_label(r'%d' % station, location='center')
                 continue
             splot = plot.get_subplot_at(i, j)
             stat = stats[station][field_name][0]
