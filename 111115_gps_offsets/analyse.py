@@ -179,15 +179,23 @@ def plot_delta_time(ids, **kwargs):
     plot = Plot()
     for index, id in enumerate(ids):
         ext_timestamps, deltas = get(id)
-        daystamps = (np.array(ext_timestamps) - min(ext_timestamps)) / 864e11
-        plot.scatter(daystamps[::250], deltas[::250], mark='*',
-                     markstyle="mark size=.1pt")
+        # daystamps = (np.array(ext_timestamps) - min(ext_timestamps)) / 864e11
+        daystamps = (np.array(ext_timestamps) - min(ext_timestamps)) / 864e11 * 24 * 60
+        end = min(len(daystamps), 6000)
+        skip = 3
+        plot.plot(daystamps[:end:skip], deltas[:end:skip], mark=None, linestyle='very thin')
+
     if kwargs.keys():
         plot.set_title('Tijdtest delta time' + kwargs[kwargs.keys()[0]])
-    plot.set_xlabel(r'Time in test [days]')
-    plot.set_ylabel(r'$\Delta$ t (swap - reference) [ns]')
-    plot.set_xlimits(0, max(daystamps))
-    plot.set_ylimits(-175, 175)
+    # plot.set_xlabel(r'Time in test [days]')
+    plot.set_xlabel(r'Time in test [minutes]')
+    plot.set_ylabel(r'$\Delta$ t (swap - reference) [\si{\ns}]')
+    plot.set_xlimits(0, daystamps[:end][-1])
+    plot.set_ylimits(-50, 50)
+    # plot.set_ylimits(-175, 175)
+
+    plot.set_axis_options('line join=round')
+
 
     #Save Figure
     if len(ids) == 1:
