@@ -17,6 +17,13 @@ def analyse_reconstructions(data):
     print '%.2f%% successful out of %d coincidences' % (succesful_fraction,
                                                       total_count)
 
+    rec_d = cq.data.get_node('/coincidences', 'reconstructions_detectors')
+    total_count_d = rec_d.nrows
+    succesful_direction_d = sum(~isnan(rec_d.col('zenith')))
+    succesful_fraction_d = 100. * succesful_direction_d / total_count_d
+    print '%.2f%% successful out of %d coincidences' % (succesful_fraction_d,
+                                                        total_count_d)
+
 
 if __name__ == '__main__':
     path = os.path.join(DATASTORE, 'dataset_sciencepark_n10_151101_160201.h5')
