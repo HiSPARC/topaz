@@ -71,7 +71,7 @@ def get_station_locations(country=None, cluster=None, subcluster=None,
                                                   subcluster=subcluster)
 
     for station_number in station_numbers:
-        location = Station(station_number, force_stale=True).location()
+        location = Station(station_number, force_stale=True).gps_location()
         if location['latitude'] == 0 or location['longitude'] == 0:
             continue
         latitudes.append(location['latitude'])
@@ -87,7 +87,7 @@ def get_weather_locations():
                        for s in NETWORK.stations_with_weather()]
 
     for station_number in station_numbers:
-        location = Station(station_number, force_stale=True).location()
+        location = Station(station_number, force_stale=True).gps_location()
         latitudes.append(location['latitude'])
         longitudes.append(location['longitude'])
 
