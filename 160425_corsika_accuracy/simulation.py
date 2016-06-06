@@ -25,6 +25,8 @@ RESULT_DATA_SMALL = '/Users/arne/Datastore/corsika_accuracy/sim_small.h5'
 
 class ModGroundParticlesSimulation(GroundParticlesSimulation):
 
+    """Require three detection points in a station"""
+
     def simulate_trigger(self, detector_observables):
         detectors_low = sum([True for observables in detector_observables
                              if observables['n'] > 0.3])
