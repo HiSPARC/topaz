@@ -23,11 +23,12 @@ RESULT_DATA = '/Users/arne/Datastore/detector_orientation/sim.h5'
 
 
 
-def ThreeStationsOrientation():
+def ThreeStationsOrientation(d=10):
 
     cluster = BaseCluster()
     for i, orientation in enumerate(['UD', 'LR', 'UD']):
-        detectors = [((-5, 0, 0), orientation), ((5, 0, 0), orientation)]
+        detectors = [((-d / 2., 0, 0), orientation),
+                     ((d / 2., 0, 0), orientation)]
         cluster._add_station((0, 0, 0), 0, detectors, number=i)
         if i == 2:
             for d in cluster.stations[-1].detectors:
@@ -42,17 +43,25 @@ class ErrorlessDetectorBoundarySimulation(ErrorlessSimulation,
 
 
 def do_simulation():
-    with tables.open_file(RESULT_DATA, 'w') as data:
+    with tables.open_file(RESULT_DATA, 'a') as data:
         cluster = ThreeStationsOrientation()
         sim = ErrorlessDetectorBoundarySimulation(CORSIKA_DATA_e15_z375, 150,
                                                   cluster, data, N=30000,
-                                                  progress=True)
+                                                  progress=True,
+                                                  output_path='/')
+        sim.run()
+
+        cluster = ThreeStationsOrientation(5)
+        sim = ErrorlessDetectorBoundarySimulation(CORSIKA_DATA_e15_z375, 150,
+                                                  cluster, data, N=30000,
+                                                  progress=True,
+                                                  output_path='/d5')
         sim.run()
 
 
-def plot_n_azimuth():
+def plot_n_azimuth(path='/'):
     with tables.open_file(RESULT_DATA, 'r') as data:
-        coin = data.root.coincidences.coincidences
+        coin = data.get_node(path + 'coincidences/coincidences')
         ud_azi = coin.read_where('s0', field='azimuth')
         lr_azi = coin.read_where('s1', field='azimuth')
         sq_azi = coin.read_where('s2', field='azimuth')
@@ -75,12 +84,12 @@ def plot_n_azimuth():
         plot.set_xlimits(bins[0], bins[-1])
         plot.draw_horizontal_line(0, linestyle='thin, gray')
 #         plot.set_ylimits(0)
-        plot.save_as_pdf('azimuth')
+        plot.save_as_pdf('azimuth' + path.replace('/', '_'))
 
 
-def plot_n_histogram():
+def plot_n_histogram(path='/'):
     with tables.open_file(RESULT_DATA, 'r') as data:
-        sims = data.root.cluster_simulations
+        sims = data.get_node(path + 'cluster_simulations')
         ud_n1 = sims.station_0.events.col('n1')
         ud_n2 = sims.station_0.events.col('n2')
         lr_n1 = sims.station_1.events.col('n1')
@@ -101,12 +110,12 @@ def plot_n_histogram():
         plot.set_ylabel(r'Number of events with n detected')
         plot.set_xlimits(bins[0], bins[-1])
         plot.set_ylimits(0)
-        plot.save_as_pdf('n_histogram')
+        plot.save_as_pdf('n_histogram' + path.replace('/', '_'))
 
 
-def plot_detector_dt():
+def plot_detector_dt(path='/'):
     with tables.open_file(RESULT_DATA, 'r') as data:
-        sims = data.root.cluster_simulations
+        sims = data.get_node(path + 'cluster_simulations')
         ud_dt = sims.station_0.events.col('t1') - sims.station_0.events.col('t2')
         lr_dt = sims.station_1.events.col('t1') - sims.station_1.events.col('t2')
 
@@ -121,12 +130,12 @@ def plot_detector_dt():
         plot.set_ylabel(r'Number events with time difference')
         plot.set_xlimits(bins[0], bins[-1])
         plot.set_ylimits(0)
-        plot.save_as_pdf('dt')
+        plot.save_as_pdf('dt' + path.replace('/', '_'))
 
 
-def plot_layouts():
+def plot_layouts(path='/'):
     with tables.open_file(RESULT_DATA, 'r') as data:
-        cluster = data.root.coincidences._v_attrs['cluster']
+        cluster = data.get_node_attr(path + 'coincidences', 'cluster')
         plot = MultiPlot(3, 1, width=r'0.67\textwidth', height=r'.2\textwidth')
         for splot, station in zip(plot.subplots, cluster.stations):
             for detector in station.detectors:
@@ -139,7 +148,7 @@ def plot_layouts():
         plot.set_xlabel(r'East [\si{\meter}]')
         plot.set_xlimits_for_all(None, -6, 6)
         plot.set_ylimits_for_all(None, -1.2, 1.2)
-        plot.save_as_pdf('layouts')
+        plot.save_as_pdf('layouts' + path.replace('/', '_'))
 
 
 if __name__ == "__main__":
@@ -149,3 +158,9 @@ if __name__ == "__main__":
     plot_n_histogram()
     plot_detector_dt()
     plot_layouts()
+
+    path = '/d5/'
+    plot_n_azimuth(path)
+    plot_n_histogram(path)
+    plot_detector_dt(path)
+    plot_layouts(path)
