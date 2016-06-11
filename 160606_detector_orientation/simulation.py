@@ -62,29 +62,34 @@ def do_simulation():
 def plot_n_azimuth(path='/'):
     with tables.open_file(RESULT_DATA, 'r') as data:
         coin = data.get_node(path + 'coincidences/coincidences')
+        in_azi = coin.col('azimuth')
         ud_azi = coin.read_where('s0', field='azimuth')
         lr_azi = coin.read_where('s1', field='azimuth')
         sq_azi = coin.read_where('s2', field='azimuth')
+        udlr_azi = coin.get_where_list('s0 & s1')
+        print ('Percentage detected in both %f ' %
+               (float(len(udlr_azi)) / len(in_azi)))
 
         bins = np.linspace(-np.pi, np.pi, 30)
-        ud_counts, _ = np.histogram(ud_azi, bins)
-        lr_counts, _ = np.histogram(lr_azi, bins)
-        sq_counts, _ = np.histogram(sq_azi, bins)
+        in_counts = np.histogram(in_azi, bins)[0].astype(float)
+        ud_counts = np.histogram(ud_azi, bins)[0].astype(float)
+        lr_counts = np.histogram(lr_azi, bins)[0].astype(float)
+        sq_counts = np.histogram(sq_azi, bins)[0].astype(float)
 
         print ('Detected: UD %d | LR %d | SQ %d' %
                (sum(ud_counts), sum(lr_counts), sum(sq_counts)))
 
         plot = Plot()
-        plot.histogram(ud_counts, bins, linestyle='black')
-        plot.histogram(lr_counts, bins + 0.01, linestyle='red')
-        plot.histogram(sq_counts, bins + 0.01, linestyle='blue')
-        plot.histogram(ud_counts - lr_counts, bins, linestyle='black')
+        plot.histogram(ud_counts / in_counts, bins, linestyle='black')
+        plot.histogram(lr_counts / in_counts, bins + 0.01, linestyle='red')
+        plot.histogram(sq_counts / in_counts, bins + 0.01, linestyle='blue')
+        plot.histogram((ud_counts - lr_counts) / in_counts, bins, linestyle='black')
         plot.set_xlabel(r'Shower azimuth [\si{\radian}]')
-        plot.set_ylabel(r'Number of detected')
+        plot.set_ylabel(r'Percentage detected')
         plot.set_xlimits(bins[0], bins[-1])
         plot.draw_horizontal_line(0, linestyle='thin, gray')
 #         plot.set_ylimits(0)
-        plot.save_as_pdf('azimuth' + path.replace('/', '_'))
+        plot.save_as_pdf('azimuth_percentage' + path.replace('/', '_'))
 
 
 def plot_n_histogram(path='/'):
