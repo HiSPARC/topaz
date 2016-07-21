@@ -3,21 +3,13 @@ import os
 
 from numpy import genfromtxt, zeros, histogram, arange, array
 
-
-PATH = '/Users/arne/Datastore/publicdb_csv/eventtime/{station_number}.tsv'
-
-
-def read_eventtime(path):
-    """Read an eventtime csv files"""
-
-    return genfromtxt(path, delimiter='\t', dtype=None,
-                      names=['timestamp', 'counts'])
+from sapphire import Station
 
 
 def get_data(station_numbers):
     """Read the eventtime csv files for the given station numbers"""
 
-    return {number: read_eventtime(PATH.format(station_number=number))
+    return {number: Station(number, force_stale=True).event_time()
             for number in station_numbers}
 
 

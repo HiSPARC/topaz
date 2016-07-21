@@ -139,8 +139,8 @@ def expected_rate(distances, coincidence_rates, background,
     # Energy dependend scaling, smaller solid angle for low energy showers
     max_zenith = log10(log10(sim_energies) - 12) ** 0.7
 
-    f = max(0, min(1, 1.205 * log10(E) - 14.76 - 2.52 / cos(theta)))
-    solid_angle = 2 * pi * int(0, pi/2) f(theta) * cos(theta) * sin(theta) * dtheta
+#     f = max(0, min(1, 1.205 * log10(E) - 14.76 - 2.52 / cos(theta)))
+# #     solid_angle = 2 * pi * int(0, pi/2) f(theta) * cos(theta) * sin(theta) * dtheta
 
     zenith = radians(60)
 
@@ -201,12 +201,13 @@ def plot_coincidence_rate_distance(data, sim_data):
         for n in distances.keys():
             plot.draw_horizontal_line(background[n], 'dashed,' + colors[n])
 
-        for n in [4, 8]:  # distances.keys():
+#         for n in distances.keys():
+        for n in [4, 8]:
             expected_rates = expected_rate(distances[n], rates[n],
                                            background[n], sim_distances,
                                            sim_energies, sim_areas[n], n=n)
             plot.plot(sim_distances, expected_rates, linestyle=colors[n],
-                      mark=None, markstyle='mark size=.5pt')
+                      mark=None, markstyle='mark size=0.5pt')
 
         for n in distances.keys():
             plot.scatter(distances[n], rates[n],
