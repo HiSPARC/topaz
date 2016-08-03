@@ -2,7 +2,7 @@ from datetime import date
 import os
 
 from numpy import (sum, sin, linspace, random, searchsorted, split, nan, array,
-                   empty, column_stack)
+                   empty, column_stack, ones_like)
 import tables
 
 from artist import Plot, MultiPlot
@@ -15,43 +15,106 @@ from download_dataset import STATIONS, START, END
 from determine_statistics import get_all_stats, BINS
 
 
-def filter_data_days(statistics):
-    """Remove days of data not satisfying requirements"""
+class DayFilter(object):
 
-    # A rate of 0.6 Hz is expected, it may be lower because a single detector
-    # is bad, then 0.4 Hz is more reasonable. High event rates can also
-    # indicate problems, such as light leaks.
-    keep_slice = ((0.3 < statistics['event_rate']) &
-                  (statistics['event_rate'] < 1.0))[0]
-    # It seems 0.3% failure is to be expected for normal operation with filter.
-    # Put cut on 1.0%
-    keep_slice &= (statistics['t_trigger'] < 1.0)[0]
-    # High failure rate indicates no data or bad calibration. Some events with
-    # bad baseline, and thus bad n# are to be expected. Bad calibration causing
-    # failure of MPV fit fails an entire day.
-    # Perhaps cut per detector? (make entire days nan?)
-    keep_slice &= sum(statistics['n1n2n3n4'] < 1.0, axis=0) == 4
-    # MPV values are typically around 3000, drifting between 2000 and 4000.
-    # Cut on 5000.
-    keep_slice &= sum(statistics['mpv'] < 5000, axis=0) == 4
+    """Remove days of data not satisfying requirements
 
-    return keep_slice
+    :param statistics: dictionry of data statistics from determine_statistics.
+
+    """
+
+    def __init__(self, statistics):
+        self.stats = statistics
+
+    def data_filter(self):
+        """Get a filter to be used to keep good data
+
+        :return: days to keep.
+
+        """
+        keep_slice = ones_like(self.stats['event_rate'], dtype=bool)
+        keep_slice &= self.filter_event_rate()
+        keep_slice &= self.filter_trigger_time()
+        keep_slice &= self.filter_particle_density()
+        keep_slice &= self.filter_mpv()
+        return keep_slice
+
+    def filter_event_rate(self):
+        """Filter event rate statistics
+
+        A rate of 0.6 Hz is expected, it may be lower because a single detector
+        is bad, then 0.4 Hz is more reasonable. High event rates can also
+        indicate problems, such as light leaks.
+
+        """
+        return ((0.3 < self.stats['event_rate']) &
+                (self.stats['event_rate'] < 1.0))[0]
+
+    def filter_trigger_time(self):
+        """Filter event rate statistics
+
+        It seems 0.3% failure is to be expected for normal operation with filter.
+        Put cut on 1.0%
+
+        """
+        return (self.stats['t_trigger'] < 1.0)[0]
+
+    def filter_particle_density(self):
+        """Filter event rate statistics
+
+        High failure rate indicates no data or bad calibration. Some events with
+        bad baseline, and thus bad n# are to be expected. Bad calibration causing
+        failure of MPV fit fails an entire day.
+        Perhaps cut per detector? (make entire days nan?)
+
+        """
+        return sum(self.stats['n1n2n3n4'] < 1.0, axis=0) == 4
+
+    def filter_mpv(self):
+        """Filter event rate statistics
+
+        MPV values are typically around 3000, drifting between 2000 and 4000.
+        Cut on 5000.
+
+        """
+        return sum(self.stats['mpv'] < 5000, axis=0) == 4
+
+    def filter_configuration(self):
+        """Filter event rate statistics
+
+        MPV values are typically around 3000, drifting between 2000 and 4000.
+        Cut on 5000.
+
+        """
+        return sum(self.stats['mpv'] < 5000, axis=0) == 4
 
 
-def filter_data_events():
-    """Look for individual events to filter"""
+class EventFilter(object):
 
-    # Remove events that would not have triggered after accouting for MPV
-    # The trigger shouls actually trigger on number of particles, not an
-    # incorrectly calibrated pulseheight.
-    low = 0.3
-    high = 0.6
+    """Remove station events not satisfying requirements
 
-    n_high = sum(events['n%d' % (id + 1)] > high for id in range(4))
-    n_low = sum(events['n%d' % (id + 1)] > low for id in range(4))
-    keep_events = (n_high > 2) | (n_low > 3)
+    :param statistics: dictionary of data statistics from determine_statistics.
 
-    return keep_events
+    """
+
+    def __init__(self, events):
+        self.events = events
+
+    def data_filter(self):
+        keep_filter = self.filter_offline_trigger()
+
+    def filter_offline_trigger(self):
+        """Look for individual events to filter"""
+
+        # Remove events that would not have triggered after accouting for MPV
+        # The trigger shouls actually trigger on number of particles, not an
+        # incorrectly calibrated pulseheight.
+        low = 0.3
+        high = 0.6
+
+        n_high = sum(self.events['n%d' % (id + 1)] > high for id in range(4))
+        n_low = sum(self.events['n%d' % (id + 1)] > low for id in range(4))
+        return (n_high > 2) | (n_low > 3)
 
 
 def copy_selection(statistics):
