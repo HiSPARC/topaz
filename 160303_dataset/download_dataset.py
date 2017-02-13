@@ -93,6 +93,6 @@ def monthrange(start, stop):
 
 
 if __name__ == "__main__":
-#     download_data_for_station(501)
+    # download_data_for_station(501)
     download_sciencepark_station_data()
     download_sciencepark_coincidences()

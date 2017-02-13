@@ -34,19 +34,19 @@ class Point:
 
     def __add__(self, p):
         """Point(x1+x2, y1+y2)"""
-        return Point(self.x+p.x, self.y+p.y)
+        return Point(self.x + p.x, self.y + p.y)
 
     def __sub__(self, p):
         """Point(x1-x2, y1-y2)"""
-        return Point(self.x-p.x, self.y-p.y)
+        return Point(self.x - p.x, self.y - p.y)
 
-    def __mul__( self, scalar ):
+    def __mul__(self, scalar):
         """Point(x1*x2, y1*y2)"""
-        return Point(self.x*scalar, self.y*scalar)
+        return Point(self.x * scalar, self.y * scalar)
 
     def __div__(self, scalar):
         """Point(x1/x2, y1/y2)"""
-        return Point(self.x/scalar, self.y/scalar)
+        return Point(self.x / scalar, self.y / scalar)
 
     def __str__(self):
         return "(%s, %s)" % (self.x, self.y)
@@ -114,8 +114,8 @@ class Point:
         The new position is returned as a new Point.
         """
         s, c = [f(rad) for f in (math.sin, math.cos)]
-        x, y = (c*self.x - s*self.y, s*self.x + c*self.y)
-        return Point(x,y)
+        x, y = (c * self.x - s * self.y, s * self.x + c * self.y)
+        return Point(x, y)
 
     def rotate_about(self, p, theta):
         """Rotate counter-clockwise around a point, by theta degrees.
@@ -168,7 +168,7 @@ class Rect:
 
     def contains(self, pt):
         """Return true if a point is inside the rectangle."""
-        x,y = pt.as_tuple()
+        x, y = pt.as_tuple()
         return (self.left <= x <= self.right and
                 self.top <= y <= self.bottom)
 
@@ -191,13 +191,13 @@ class Rect:
         Create a new rectangle that is wider and taller than the
         immediate one. All sides are extended by "n" points.
         """
-        p1 = Point(self.left-n, self.top-n)
-        p2 = Point(self.right+n, self.bottom+n)
+        p1 = Point(self.left - n, self.top - n)
+        p2 = Point(self.right + n, self.bottom + n)
         return Rect(p1, p2)
 
-    def __str__( self ):
-        return "<Rect (%s,%s)-(%s,%s)>" % (self.left,self.top,
-                                           self.right,self.bottom)
+    def __str__(self):
+        return "<Rect (%s,%s)-(%s,%s)>" % (self.left, self.top,
+                                           self.right, self.bottom)
 
     def __repr__(self):
         return "%s(%r, %r)" % (self.__class__.__name__,

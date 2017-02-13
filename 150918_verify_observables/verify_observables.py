@@ -100,5 +100,5 @@ def reconstruct_observables():
             print 'station:', station, wrong, 'total:', pe.source.nrows
 
 if __name__ == "__main__":
-    #download()
+    # download()
     reconstruct_observables()

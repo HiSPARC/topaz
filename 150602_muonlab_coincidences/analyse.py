@@ -53,7 +53,6 @@ def analyse(data, id):
     plot.save_as_pdf('muonlab_dt_%d' % id)
 
 
-
 if __name__ == '__main__':
     for id, data_path in enumerate(EVENTDATA_PATHS):
         with tables.open_file(data_path, 'r') as data:

@@ -72,9 +72,9 @@ class OffsetAzimuthFlatFrontSimulation(FlatFrontSimulation):
 
 def run_simulation():
     with tables.open_file(RESULT_PATH, 'w') as data:
-        cluster = HiSPARCStations([501])#, 502, 503, 504, 505, 506, 508, 509])
+        cluster = HiSPARCStations([501])  # , 502, 503, 504, 505, 506, 508, 509])
         sim = OffsetAzimuthFlatFrontSimulation(
-                cluster=cluster, datafile=data, output_path='/', N=60000)
+            cluster=cluster, datafile=data, output_path='/', N=60000)
         sim.run()
 
 
@@ -101,7 +101,7 @@ def reconstruct_simulations():
 
 def plot_azimuth(azimuth, name=''):
 
-#     graph = PolarPlot(use_radians=True)
+    # graph = PolarPlot(use_radians=True)
     graph = Plot()
     n, bins = histogram(azimuth, bins=linspace(-pi, pi, 21))
     graph.histogram(n, bins)
@@ -128,8 +128,8 @@ def plot_zenith(zenith, name=''):
 
 if __name__ == '__main__':
 
-    #run_simulation()
-    #reconstruct_simulations()
+    # run_simulation()
+    # reconstruct_simulations()
 
     with tables.open_file(RESULT_PATH, 'r') as data:
         recs = data.get_node('/cluster_simulations/station_501', 'reconstructions_offset')

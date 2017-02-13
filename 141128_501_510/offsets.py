@@ -45,7 +45,6 @@ def determine_detector_timing_offsets(d, s, events):
     graph.save_as_pdf('%s_%d' % (d, s))
 
 
-
 def determine_detector_timing_offsets2(events):
 
     bins = arange(-100 + 1.25, 100, 2.5)

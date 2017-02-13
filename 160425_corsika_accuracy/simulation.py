@@ -140,12 +140,12 @@ def plot_zenith_core_distance_small():
 
 
 if __name__ == "__main__":
-#     do_simulation()
-#     do_reconstructions()
+    # do_simulation()
+    # do_reconstructions()
     plot_zenith_density()
     plot_zenith_core_distance()
-#     do_simulation_small()
-#     do_reconstructions_small()
+    # do_simulation_small()
+    # do_reconstructions_small()
     plot_zenith_density_small()
     plot_zenith_core_distance_small()
-#     plot_zenith_core_distance_small_2d()
+    # plot_zenith_core_distance_small_2d()

@@ -3,6 +3,7 @@ from re import sub
 
 
 class Tijdtest():
+
     def __init__(self, id, hisparc, gps, trigger, start, end, note):
         self.id = id
         self.hisparc = hisparc
@@ -151,10 +152,10 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
     subset of another test to cut the part without almanac (subset##)
 
     """
-    #All tests from the TijdTest Log
+    # All tests from the TijdTest Log
     test_all = test_log()
 
-    #Select a subset
+    # Select a subset
     if subset in ('ALL'):
         test_list = test_all
     elif subset in ('PMT'):
@@ -215,14 +216,14 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
                      for test in test_all
                      for ptest in test_list
                      if test.group == ptest.group.replace('EXT', 'PMT2') or
-                        test.group == ptest.group.replace('EXT', 'PMT1') or
-                        test.group == ptest.group]
+                     test.group == ptest.group.replace('EXT', 'PMT1') or
+                     test.group == ptest.group]
     elif complement and subset in ('GPS'):
         test_list = [test
                      for test in test_all
                      for ptest in test_list
                      if test.group == ptest.group.replace('test', '501') or
-                        test.group == ptest.group]
+                     test.group == ptest.group]
     elif complement and subset in ('Bad'):
         test_list = [test
                      for test in test_all
@@ -250,18 +251,29 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
     if note:
         test_list = [test for test in test_list if note in test.note]
 
-    #Get a part of the class
-    if part in (None,): pass
-    elif part in ('id',): test_list = [test.id for test in test_list]
-    elif part in ('hisparc',): test_list = [test.hisparc for test in test_list]
-    elif part in ('trigger',): test_list = [test.trigger for test in test_list]
-    elif part in ('gps',): test_list = [test.gps for test in test_list]
-    elif part in ('group',): test_list = [test.group for test in test_list]
-    elif part in ('legend',): test_list = [test.legend for test in test_list]
-    elif part in ('time',): test_list = [test.time for test in test_list]
-    elif part in ('start',): test_list = [test.start for test in test_list]
-    elif part in ('end',): test_list = [test.end for test in test_list]
-    elif part in ('note',): test_list = [test.note for test in test_list]
+    # Get a part of the class
+    if part in (None,):
+        pass
+    elif part in ('id',):
+        test_list = [test.id for test in test_list]
+    elif part in ('hisparc',):
+        test_list = [test.hisparc for test in test_list]
+    elif part in ('trigger',):
+        test_list = [test.trigger for test in test_list]
+    elif part in ('gps',):
+        test_list = [test.gps for test in test_list]
+    elif part in ('group',):
+        test_list = [test.group for test in test_list]
+    elif part in ('legend',):
+        test_list = [test.legend for test in test_list]
+    elif part in ('time',):
+        test_list = [test.time for test in test_list]
+    elif part in ('start',):
+        test_list = [test.start for test in test_list]
+    elif part in ('end',):
+        test_list = [test.end for test in test_list]
+    elif part in ('note',):
+        test_list = [test.note for test in test_list]
 
     if unique:
         test_list = sorted(set(test_list))

@@ -87,7 +87,6 @@ def get_close_triples(coordinates, min=MIN_DISTANCE, max=MAX_DISTANCE):
     return triples
 
 
-
 def distance(c1, c2):
     distance = sqrt(sum((c1 - c2) ** 2))
     return distance

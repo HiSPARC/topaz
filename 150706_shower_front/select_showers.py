@@ -14,6 +14,7 @@ from artist import Plot
 OVERVIEW = '/Users/arne/Datastore/CORSIKA/corsika_overview_150624.h5'
 LOCAL_STORE = '/Users/arne/Datastore/corsika_thickness/'
 
+
 def select_showers():
     with tables.open_file(OVERVIEW, 'r') as overview:
         sims = overview.get_node('/simulations')
@@ -83,12 +84,12 @@ def plot_thickness(seed):
             percentiles_t = percentile(t, [0, 50])
             ref_t, med_t = percentiles_t - time_first_interaction
             min_t.append(ref_t)
-#             lower_t.append(lsig2_t)
-#             low_t.append(lsig1_t)
+            # lower_t.append(lsig2_t)
+            # low_t.append(lsig1_t)
             median_t.append(med_t)
-#             high_t.append(hsig1_t)
-#             higher_t.append(hsig2_t)
-#             max_t.append(m_t)
+            # high_t.append(hsig1_t)
+            # higher_t.append(hsig2_t)
+            # max_t.append(m_t)
 
         energy = log10(header.energy)
         shower_size = log10(end.n_electrons_levels + end.n_muons_levels)
@@ -109,12 +110,12 @@ def plot_thickness(seed):
     plot2.set_ylabel(r'particle density')
     plot2.plot(distances, density, xerr=xerr, yerr=yerr, mark=None, markstyle='transparent', linestyle=None)
     plot2.draw_horizontal_line(2.46)
-#     plot2.draw_horizontal_line(0.6813)
+    # plot2.draw_horizontal_line(0.6813)
     plot2.save_as_pdf('plots/%.1f_%.1f_%s_dens.pdf' % (energy, shower_size, seed))
 
 if __name__ == "__main__":
-#     for seeds in select_showers():
-#         copy_shower(seeds)
+    # for seeds in select_showers():
+    #     copy_shower(seeds)
 
     for seeds in select_showers():
         plot_thickness(seeds)

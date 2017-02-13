@@ -46,7 +46,7 @@ def plot_and_fit_offsets(x, y, popt, d, id):
     plot.set_ylabel('Occurrence')
     plot.set_xlabel('$\Delta t$ [ns]')
     plot.set_ylimits(min=0)
-    plot.save_as_pdf('api_detector_offset_distribution_%s_' % id  +
+    plot.save_as_pdf('api_detector_offset_distribution_%s_' % id +
                      d.strftime('%Y%m%d'))
 
 

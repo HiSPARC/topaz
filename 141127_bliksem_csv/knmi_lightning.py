@@ -80,7 +80,7 @@ def data_path(date):
 def data_to_csv():
     for year in range(2004, 2013):
         print year
-        with open(LGT_PATH + 'robert_cc_%d.tsv' % year,'w') as output:
+        with open(LGT_PATH + 'robert_cc_%d.tsv' % year, 'w') as output:
             csvwriter = csv.writer(output, delimiter='\t')
             csvwriter.writerow(['timestamp', 'nanoseconds', 'latitude',
                                 'longitude', 'current'])

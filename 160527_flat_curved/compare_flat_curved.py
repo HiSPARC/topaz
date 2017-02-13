@@ -68,8 +68,8 @@ def reconstruct_simulations(data):
 
     # Reconstruct direction, then core, then direction again
     crec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
-                                     overwrite=True, progress=True,
-                                     destination='recs_curved', cluster=cluster)
+                                      overwrite=True, progress=True,
+                                      destination='recs_curved', cluster=cluster)
 #     crec.direction.curved = CurvedRegressionAlgorithm()
 #     crec.direction.direct = DirectAlgorithmCartesian
 #     crec.direction.fit = RegressionAlgorithm
@@ -110,7 +110,6 @@ def plot_results(data):
     plot.set_ylimits(0)
     plot.set_xlabel(r'Angle between [\si{\degree}]')
     plot.save_as_pdf('angle_between')
-
 
 
 def make_map(cluster):
@@ -162,7 +161,7 @@ def display_coincidences(cluster, coincidence_events, coincidence,
             latitudes.append(latitude)
             longitudes.append(longitude)
         t.extend(event_utils.relative_detector_arrival_times(
-                    event, ts0, DETECTOR_IDS, offsets=offsets[station_number]))
+            event, ts0, DETECTOR_IDS, offsets=offsets[station_number]))
         p.extend(event_utils.detector_densities(event, DETECTOR_IDS))
 
     image = map.to_pil()
@@ -299,7 +298,7 @@ def plot_distance_vs_delay(data):
         for station_number, event in coincidence_events:
             station = cluster.get_station(station_number)
             t = event_utils.relative_detector_arrival_times(event, ref_extts,
-                        offsets=offsets[station_number], detector_ids=DETECTOR_IDS)
+                                                            offsets=offsets[station_number], detector_ids=DETECTOR_IDS)
             core_distances = []
             for i, d in enumerate(station.detectors):
                 x, y, z = d.get_coordinates()

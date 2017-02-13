@@ -53,7 +53,6 @@ def reconstruct_simulations(data):
     nrec.reconstruct_directions()
     nrec.store_reconstructions()
 
-
     # Use subset of stations for reconstructions
     station_numbers = [501, 503, 506]
 
@@ -76,10 +75,10 @@ def reconstruct_simulations(data):
                                       overwrite=True, progress=True,
                                       destination='recs_sub_offset_alt', force_stale=True)
     arec.prepare_output()
-    arec.offsets =  {station.number: [station.gps_offset + d.offset +
-                                      d.get_coordinates()[2] / c
-                                      for d in station.detectors]
-                     for station in arec.cluster.stations}
+    arec.offsets = {station.number: [station.gps_offset + d.offset +
+                                     d.get_coordinates()[2] / c
+                                     for d in station.detectors]
+                    for station in arec.cluster.stations}
     arec.reconstruct_directions(station_numbers)
     arec.store_reconstructions()
 

@@ -24,8 +24,8 @@ def lengthy_cluster():
 
 
 def simulate_shower_front():
-#     cluster = lengthy_cluster()
-#     cluster = HiSPARCStations([504, 505])
+    # cluster = lengthy_cluster()
+    # cluster = HiSPARCStations([504, 505])
     cluster = ScienceParkCluster()
     with tables.open_file(PATH, 'w') as data:
         sim = FlatFrontSimulation(cluster, data, '/flat', int(3e5))

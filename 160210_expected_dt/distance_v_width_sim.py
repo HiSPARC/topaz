@@ -40,7 +40,7 @@ def plot_distance_width():
             dt = (ref_events.col('ext_timestamp').astype(int) -
                   events.col('ext_timestamp').astype(int))
             pre_width = std(dt)
-            counts, bins = histogram(dt, bins=linspace(-1.8*pre_width, 1.8*pre_width, 100), density=True)
+            counts, bins = histogram(dt, bins=linspace(-1.8 * pre_width, 1.8 * pre_width, 100), density=True)
             x = (bins[:-1] + bins[1:]) / 2
             popt, pcov = curve_fit(norm.pdf, x, counts, p0=(0., distances[-1]))
             widths.append(popt[1])

@@ -299,7 +299,6 @@ def plot_comparison(stats, field_name):
 #         plot.set_yticklabels_position(row, 0, 'right')
 #     plot.set_ylimits_for_all(None, -1e-4)
 
-
     if field_name == 'event_rate':
         label = r'Event rate [\si{\hertz}]'
     elif field_name == 'mpv':

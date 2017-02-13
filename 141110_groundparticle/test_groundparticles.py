@@ -20,8 +20,8 @@ def run_simulation():
     with tables.open_file(RESULT_PATH, 'w') as data:
         cluster = ScienceParkCluster()
         sim = GroundParticlesSimulationWithoutErrors(
-                CORSIKA_DATA, max_core_distance=500, cluster=cluster,
-                datafile=data, output_path='/', N=3000, seed=153957)
+            CORSIKA_DATA, max_core_distance=500, cluster=cluster,
+            datafile=data, output_path='/', N=3000, seed=153957)
         sim.run()
 
 
@@ -72,8 +72,8 @@ def rerun_shower():
     cluster = bla.root.coincidences._v_attrs.cluster
 
     sim = GroundParticlesSimulationWithoutErrors(
-            CORSIKA_DATA, 0, cluster, datafile=data, output_path='/',
-            N=100, seed=153957)
+        CORSIKA_DATA, 0, cluster, datafile=data, output_path='/',
+        N=100, seed=153957)
 
     shower_parameters = bla.root.coincidences.coincidences[0]
     alpha = shower_parameters['azimuth'] - sim.corsikafile.get_node_attr('/', 'event_header').azimuth
@@ -85,4 +85,3 @@ if __name__ == '__main__':
 
     run_simulation()
     scatter_n()
-

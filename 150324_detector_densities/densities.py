@@ -22,7 +22,7 @@ def plot_densities(data):
         for minn in [0, 1, 2, 4, 8, 16]:
             filter = (average_n > minn) & (n[0] > 0) & (n[1] > 0) & (n[2] > 0) & (n[3] > 0)
             plot = MultiPlot(4, 4, width=r'.25\linewidth',
-                                   height=r'.25\linewidth')
+                             height=r'.25\linewidth')
             for i in range(4):
                 for j in range(4):
                     if i < j:

@@ -11,6 +11,7 @@ from sapphire.utils import angle_between
 COLORS = ['black', 'teal', 'orange', 'purple', 'cyan', 'green', 'blue', 'red',
           'gray']
 
+
 def reconstruct_simulations(data):
     cluster = cluster_501_510()
     for station in cluster.stations:
@@ -26,11 +27,13 @@ def reconstruct_simulations(data):
         except:
             pass
 
+
 def offset(station):
     if station == 501:
         return [-1.064884, 0., 6.217017, 4.851398]
     elif station == 510:
         return [9.416971, 0., 9.298256, 8.447724]
+
 
 def cluster_501_510():
     station_size = 10.
@@ -42,6 +45,7 @@ def cluster_501_510():
     for n in [501, 510]:
         cluster._add_station((0, 0, 0), 0, detectors, number=n)
     return cluster
+
 
 def plot_reconstruction_accuracy(data, d):
 
@@ -75,7 +79,6 @@ def plot_reconstruction_accuracy(data, d):
     graph.set_label('Failed to reconstruct %d events' % failed)
     graph.save_as_pdf('coincidences_%s' % d)
 
-
     graph_recs = PolarPlot()
     azimuth = degrees(recs501.col('azimuth'))
     zenith = degrees(recs501.col('zenith'))
@@ -89,7 +92,7 @@ def plot_reconstruction_accuracy(data, d):
 
 if __name__ == '__main__':
     for d in ['c_501_510_141001_141011', 'c_501_510_141101_141111']:
-#         with tables.open_file('/Users/arne/Datastore/501_510/%s.h5' % d, 'a') as data:
-#             reconstruct_simulations(data)
+        # with tables.open_file('/Users/arne/Datastore/501_510/%s.h5' % d, 'a') as data:
+        #     reconstruct_simulations(data)
         with tables.open_file('/Users/arne/Datastore/501_510/%s.h5' % d, 'r') as data:
             plot_reconstruction_accuracy(data, d)

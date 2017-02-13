@@ -50,6 +50,7 @@ def calc_ephem():
 #     g = ephem.Galactic(e)
 #     print 'Galactic', g.lon, g.lat
 
+
 def calc_astropy():
     """Caclulate coordinates using AstroPy
 
@@ -115,4 +116,3 @@ if __name__ == '__main__':
     calc_ephem()
     calc_astropy()
     calc_sapphire()
-

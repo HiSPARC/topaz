@@ -99,7 +99,7 @@ def plot_energy_zenith(cq, particle=None):
 
     counts, e_bins, z_bins = numpy.histogram2d(energy, zenith,
                                                bins=[e_bins, z_bins])
-    graph = artist.Plot() # axis='semilogx'
+    graph = artist.Plot()  # axis='semilogx'
     graph.histogram2d(numpy.sqrt(counts), e_bins, z_bins,
                       type='area')
     graph.set_xlimits(min=10, max=19)

@@ -79,6 +79,7 @@ def get_station_locations(country=None, cluster=None, subcluster=None,
 
     return latitudes, longitudes
 
+
 def get_weather_locations():
     latitudes = []
     longitudes = []
@@ -117,7 +118,7 @@ def make_map(country=None, cluster=None, subcluster=None, station=None,
                      else get_station_locations)
 
     if (country is None and cluster is None and subcluster is None and
-                station is None and stations is None):
+            station is None and stations is None):
         latitudes, longitudes = ([], [])
     else:
         latitudes, longitudes = get_locations(country, cluster,
@@ -132,7 +133,6 @@ def make_map(country=None, cluster=None, subcluster=None, station=None,
         knmi_latitudes, knmi_longitudes = get_knmi_locations()
     else:
         knmi_latitudes, knmi_longitudes = ([], [])
-
 
     bounds = (min(latitudes + weather_latitudes + knmi_latitudes),
               min(longitudes + weather_longitudes + knmi_longitudes),
@@ -176,8 +176,6 @@ def make_map(country=None, cluster=None, subcluster=None, station=None,
     if weather:
         x, y = map.to_pixels(array(weather_latitudes), array(weather_longitudes))
         plot.scatter(x, map_h - y, markstyle="mark size=1.5pt, black!30!red, thick, opacity=0.9")
-
-
 
     plot.set_xlabel('Longitude [$^\circ$]')
     plot.set_xticks([xmin, xmax])

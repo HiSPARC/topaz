@@ -33,6 +33,7 @@ def download_dataset():
 # Already downloaded:
 # 1/2015 - 10/2015
 
+
 def get_data():
     dt_event = []
     with tables.open_file(DATA_PATH, 'r') as data:
@@ -60,4 +61,3 @@ if __name__ == "__main__":
     if 'dt_event' not in globals():
         dt_event = get_data()
     do_stuff(dt_event)
-

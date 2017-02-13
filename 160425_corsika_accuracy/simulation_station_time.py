@@ -113,7 +113,7 @@ def plot_arrival_time_distribution_v_distance(data, seeds):
         r = next(int(y[1:]) for y in group._v_pathname.split('/')
                  if y.startswith('r'))
         seeds = next(y[1:] for y in group._v_pathname.split('/')
-                 if y.startswith('s'))
+                     if y.startswith('s'))
 
         if cor_t is None:
             with tables.open_file(CORSIKA_DATA % seeds) as data:

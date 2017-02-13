@@ -57,7 +57,6 @@ def test_against_hor2eq():
         radec_actual = altaz.transform_to(radec_frame)
     print('Astropy: ', radec_actual)
 
-
     radec_expected = SkyCoord('00h13m14.1s  +15d11m0.3s', frame=radec_frame)
     print('Source:  ', radec_expected)
     distance = radec_actual.separation(radec_expected).to('arcsec')

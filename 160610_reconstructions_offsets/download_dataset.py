@@ -37,7 +37,6 @@ class CoinDirRecDirRef(CoincidenceDirectionReconstruction):
         return off
 
 
-
 def download_sciencepark_dataset_n3():
     """Download a dataset for analysis
 
@@ -56,9 +55,9 @@ def reconstruct_coincidences():
     cluster = ScienceParkCluster(station_numbers, force_stale=True)
 
     with tables.open_file(PATH, 'a') as data:
-#         rec = ReconstructESDCoincidences(data, destination='recs',
-#                                          overwrite=True, force_stale=True)
-#         rec.reconstruct_and_store(station_numbers)
+        # rec = ReconstructESDCoincidences(data, destination='recs',
+        #                                  overwrite=True, force_stale=True)
+        # rec.reconstruct_and_store(station_numbers)
 
         frec = ReconstructESDCoincidences(data, destination='recs_direct_offsets',
                                           overwrite=True, force_stale=True)

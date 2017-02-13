@@ -159,7 +159,7 @@ def zoom_pulse(raw_traces):
     plot.add_pin_at_xy(start * 2.5, high, 'high', location='above right', use_arrow=False)
 
     plot.set_ylimits(min=0)
-    plot.set_xlimits(min=start * 2.5, max=end * 2.5 -2.5)
+    plot.set_xlimits(min=start * 2.5, max=end * 2.5 - 2.5)
     plot.set_ylabel(r'Signal strength [ADC counts]')
     plot.set_xlabel(r'Sample [\si{\nano\second}]')
     plot.save_as_pdf('pulse')
@@ -188,4 +188,3 @@ if __name__ == "__main__":
     zoom_baseline(raw_traces)
     zoom_pulse(raw_traces)
 #     filtered_traces = filter_traces(raw_traces)
-

@@ -61,7 +61,7 @@ def plot_discrete(angles):
     graph.set_ylimits(0, np.pi / 2)
     graph.set_yticks([0, np.pi / 6, np.pi / 3, np.pi / 2])
     graph.set_ytick_labels([r'$0$', r'$\frac{1}{6}\pi$',
-                           r'$\frac{2}{6}\pi$', r'$\frac{1}{2}\pi$',])
+                            r'$\frac{2}{6}\pi$', r'$\frac{1}{2}\pi$', ])
     graph.set_ylabel('Zenith [rad]')
     graph.set_xlabel('Azimuth [rad]')
     graph.save_as_pdf('discrete_directions')

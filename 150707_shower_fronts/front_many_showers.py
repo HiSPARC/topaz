@@ -10,6 +10,7 @@ LOCAL_STORE = '/data/hisparc/corsika/data/{seed}/corsika.h5'
 CORE_DISTANCES = [3, 5, 7, 10, 20, 30, 50, 70, 100, 200, 300, 400, 500]
 ENERGIES = arange(15, 18, 1)
 
+
 def select_showers(e):
     with tables.open_file(OVERVIEW, 'r') as overview:
         sims = overview.get_node('/simulations')
@@ -87,5 +88,5 @@ def plot_distribution():
 
 
 if __name__ == "__main__":
-    #get_times()
+    # get_times()
     plot_distribution()

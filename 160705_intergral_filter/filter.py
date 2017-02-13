@@ -95,7 +95,7 @@ def compare_integrals(before, after):
         plot = MultiPlot(4, 1, width=r'.6\textwidth', height=r'.3\textwidth')
         bins = [linspace(100, 6000, 20), linspace(-150, 150, 20)]
         for i, splot in enumerate(plot.subplots):
-            c, x, y = histogram2d(before[:,i], after[:,i] - before[:,i], bins=bins)
+            c, x, y = histogram2d(before[:, i], after[:, i] - before[:, i], bins=bins)
 #             splot.histogram2d(c, x, y, bitmap=True, type='color', colormap='viridis')
             splot.histogram2d(c, x, y, type='area')
         plot.show_yticklabels_for_all(None)
@@ -104,7 +104,7 @@ def compare_integrals(before, after):
     else:
         plot = MultiPlot(4, 1, 'semilogx', width=r'.6\textwidth', height=r'.3\textwidth')
         for i, splot in enumerate(plot.subplots):
-            splot.scatter(before[:,i], after[:,i] - before[:,i],
+            splot.scatter(before[:, i], after[:, i] - before[:, i],
                           mark='o',
                           markstyle='mark size=0.6pt, very thin, '
                                     'semitransparent, %s' % COLORS[i])
@@ -116,8 +116,8 @@ def compare_integrals(before, after):
 
     plot = MultiPlot(4, 1, width=r'.6\textwidth', height=r'.3\textwidth')
     for i, splot in enumerate(plot.subplots):
-        filter = before[:,i] > 0  # Ignore detectors/events with no signal
-        c, bins = histogram(after[:,i][filter] - before[:,i][filter], linspace(-150, 150, 100))
+        filter = before[:, i] > 0  # Ignore detectors/events with no signal
+        c, bins = histogram(after[:, i][filter] - before[:, i][filter], linspace(-150, 150, 100))
         splot.histogram(c, bins, linestyle='%s' % COLORS[i])
     plot.show_yticklabels_for_all(None)
     plot.show_xticklabels(3, 0)

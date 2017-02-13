@@ -56,10 +56,10 @@ def calculate_delta():
     cable_length = 435.
     tests = test_log_david()
     with tables.open_file(DATA_PATH, 'r') as data_file, \
-         tables.open_file(DELTA_PATH, 'w') as delta_file:
+            tables.open_file(DELTA_PATH, 'w') as delta_file:
         for test in tests:
             table = delta_file.create_table('/t%d' % test.id, 'delta',
-                                           delta.DeltaVal, createparents=True)
+                                            delta.DeltaVal, createparents=True)
             ext_timestamps, deltas = delta.calculate(data_file, test.id)
             delta_row = table.row
 
@@ -82,9 +82,9 @@ def print_delta_results():
             ext_timestamps = [row['ext_timestamp'] for row in delta_table]
             deltas = [row['delta'] for row in delta_table]
         print "    % 3d  %s  % 7.2f  % 6.2f  % 4.2f" % (
-                test.id, test.group.ljust(13),
-                round(np.average(deltas), 2), round(np.std(deltas), 2),
-                (max(ext_timestamps) - min(ext_timestamps)) / 864e11)
+            test.id, test.group.ljust(13),
+            round(np.average(deltas), 2), round(np.std(deltas), 2),
+            (max(ext_timestamps) - min(ext_timestamps)) / 864e11)
 
 
 if __name__ in ('__main__'):

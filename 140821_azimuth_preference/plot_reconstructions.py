@@ -6,7 +6,7 @@ from artist import Plot
 from sapphire import ReconstructESDEvents
 
 with tables.open_file('/Users/arne/Datastore/esd/2013/10/2013_10_28.h5', 'r') as data:
-    for s in [501, 502, 503, 504,505, 506, 508, 509]:
+    for s in [501, 502, 503, 504, 505, 506, 508, 509]:
         rec = ReconstructESDEvents(data, '/hisparc/cluster_amsterdam/station_%d' % s, s)
         rec.reconstruct_directions(detector_ids=[0, 2, 3])
         azimuths = [degrees(a) for a, z in zip(rec.phi, rec.theta)

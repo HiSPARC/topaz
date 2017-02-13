@@ -53,7 +53,7 @@ def plot_ph(expected, measured, name, expected_err=[], measured_err=[]):
     plot.show_xticklabels(1, 0)
     plot.show_yticklabels_for_all(None)
 
-    plot.save_as_pdf('plots/data_ph_' +name)
+    plot.save_as_pdf('plots/data_ph_' + name)
 
 
 def plot_pi(expected, measured, name, expected_err=[], measured_err=[]):
@@ -81,7 +81,7 @@ def plot_pi(expected, measured, name, expected_err=[], measured_err=[]):
     plot.set_xlimits_for_all(None, 0, 60)
     plot.show_xticklabels(1, 0)
     plot.show_yticklabels_for_all(None)
-    plot.save_as_pdf('plots/data_pi_' +name)
+    plot.save_as_pdf('plots/data_pi_' + name)
 
 
 def plot_pi_ph(measured_pi, measured_ph, name, ratio, pi_err=[], ph_err=[]):
@@ -111,4 +111,4 @@ def plot_pi_ph(measured_pi, measured_ph, name, ratio, pi_err=[], ph_err=[]):
     plot.set_xlimits_for_all(None, 0, 5.5)
     plot.show_yticklabels_for_all(None)
     plot.show_xticklabels(1, 0)
-    plot.save_as_pdf('plots/data_piph_' +name)
+    plot.save_as_pdf('plots/data_piph_' + name)

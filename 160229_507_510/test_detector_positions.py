@@ -75,7 +75,6 @@ def plot_comparisons(data):
     r510z = r510.col('zenith').compress(subset510)
     filter510 = r510z > min_zenith
 
-
     for order in itertools.permutations(range(4), 4):
         r507 = data.get_node('/hisparc/cluster_amsterdam/station_507/',
                              REC_PATH % order)

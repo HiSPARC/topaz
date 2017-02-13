@@ -13,18 +13,19 @@ from smopy import Map, num2deg, TILE_SIZE
 
 
 COIN_DATA = '/Users/arne/Datastore/esd_coincidences/coincidences_n7_120101_140801.h5'
-OFFSETS =  {501: [-1.10338, 0.0000, 5.35711, 3.1686],
-            502: [-8.11711, -8.5528, -8.72451, -9.3388],
-            503: [-22.9796, -26.6098, -22.7522, -21.8723],
-            504: [-15.4349, -15.2281, -15.1860, -16.5545],
-            505: [-21.6035, -21.3060, -19.6826, -25.5366],
-            506: [-20.2320, -15.8309, -14.1818, -14.1548],
-            508: [-26.2402, -24.9859, -24.0131, -23.2882],
-            509: [-24.8369, -23.0218, -20.6011, -24.3757]}
+OFFSETS = {501: [-1.10338, 0.0000, 5.35711, 3.1686],
+           502: [-8.11711, -8.5528, -8.72451, -9.3388],
+           503: [-22.9796, -26.6098, -22.7522, -21.8723],
+           504: [-15.4349, -15.2281, -15.1860, -16.5545],
+           505: [-21.6035, -21.3060, -19.6826, -25.5366],
+           506: [-20.2320, -15.8309, -14.1818, -14.1548],
+           508: [-26.2402, -24.9859, -24.0131, -23.2882],
+           509: [-24.8369, -23.0218, -20.6011, -24.3757]}
 DETECTOR_IDS = [0, 1, 2, 3]
 STATIONS = [501, 502, 503, 504, 505, 506, 508, 509]
 CLUSTER = HiSPARCStations(STATIONS)
 COLORS = ['black', 'red!80!black', 'green!80!black', 'blue!80!black']
+
 
 def make_map(cluster=CLUSTER):
     latitudes = []
@@ -60,7 +61,7 @@ def display_coincidences(coincidence_events, reconstruction, c_id, map):
             latitudes.append(latitude)
             longitudes.append(longitude)
         t.extend(event_utils.relative_detector_arrival_times(
-                    event, ts0, DETECTOR_IDS, offsets=OFFSETS[station_number]))
+            event, ts0, DETECTOR_IDS, offsets=OFFSETS[station_number]))
         p.extend(event_utils.detector_densities(event, DETECTOR_IDS))
 
     image = map.to_pil()

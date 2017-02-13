@@ -108,7 +108,7 @@ def compare_ttrigger():
             bins = [linspace(0, 30, 100), arange(-11.25, 75, 2.5)]
             c, x, y = histogram2d(density, dt_trigger, bins=bins)
             # plot.histogram2d(c, x, y, bitmap=True, type='color', colormap='viridis')
-            plot.histogram2d(log10(c+0.01), x, y, type='area')
+            plot.histogram2d(log10(c + 0.01), x, y, type='area')
             plot.set_xlabel('Particle density')
             plot.set_ylabel('Difference in trigger time')
             plot.save_as_pdf('hist2d')

@@ -47,13 +47,13 @@ from sapphire.corsika.particles import name
 
 
 SEEDS = ['1115962_287886190', '402530248_77483417', '343495036_732802158',
-         '318293592_758814709', '772067892_538968191'] #, '477821264_628079401']
+         '318293592_758814709', '772067892_538968191']  # , '477821264_628079401']
 
 SEEDS_14 = ['651000510_222963176', '155366293_265066277', '758294490_567681579']
 SEEDS_15 = ['791363922_262129855', '291305112_897286854', '683790878_143722028']
 SEEDS_16 = ['149042664_130233131', '108507276_832136747', '458273069_189490816']
 
-SEEDS = SEEDS_16 # SEEDS_14 + SEEDS_15 + SEEDS_16
+SEEDS = SEEDS_16  # SEEDS_14 + SEEDS_15 + SEEDS_16
 
 OVERVIEW = '/Users/arne/Datastore/CORSIKA/corsika_overview.h5'
 PATH = '/Users/arne/Datastore/CORSIKA/%s/corsika.h5'
@@ -184,9 +184,9 @@ def plot_energy_v_time_for_bin(seeds, gamma_t, electrons_t, muons_t,
                       25)
 
     for splot, t_data, e_data, name in zip(plot.subplots,
-                                 [gamma_t, electrons_t, muons_t],
-                                 [gamma_e, electrons_e, muons_e],
-                                 ['Gamma', 'Electrons', 'Muons']):
+                                           [gamma_t, electrons_t, muons_t],
+                                           [gamma_e, electrons_e, muons_e],
+                                           ['Gamma', 'Electrons', 'Muons']):
         splot.set_ylabel(name)
         counts, e_bins, t_bins = histogram2d(e_data, t_data, bins=[e_bins, t_bins])
         splot.histogram2d(counts, e_bins, t_bins, type='color',
@@ -227,9 +227,9 @@ def plot_energy_v_time(seeds):
     t_bins = logspace(-1, 3, 25)
 
     for splot, t_data, e_data, name in zip(plot.subplots,
-                                 [gamma_t, electrons_t, muons_t],
-                                 [gamma_e, electrons_e, muons_e],
-                                 ['Gamma', 'Electrons', 'Muons']):
+                                           [gamma_t, electrons_t, muons_t],
+                                           [gamma_e, electrons_e, muons_e],
+                                           ['Gamma', 'Electrons', 'Muons']):
         splot.set_ylabel(name)
         counts, e_bins, t_bins = histogram2d(e_data, t_data, bins=[e_bins, t_bins])
         splot.histogram2d(counts, e_bins, t_bins, type='color',
@@ -268,9 +268,9 @@ def plot_energy_v_distance(seeds):
         e_bins = logspace(6, 12, 40)
 
         for splot, r_data, e_data, name in zip(plot.subplots,
-                                     [gamma_r, electrons_r, muons_r],
-                                     [gamma_e, electrons_e, muons_e],
-                                     ['Gamma', 'Electrons', 'Muons']):
+                                               [gamma_r, electrons_r, muons_r],
+                                               [gamma_e, electrons_e, muons_e],
+                                               ['Gamma', 'Electrons', 'Muons']):
             splot.set_ylabel(name)
             counts, r_bins, e_bins = histogram2d(r_data, e_data, bins=[r_bins, e_bins])
             splot.histogram2d(counts, r_bins, e_bins, type='color',

@@ -59,7 +59,8 @@ MULTI_LED = [((1, 2), 344, 0.),
              ((3, 4, 5, 6, 7, 8, 9), 1290, 0.),
              ((2, 3, 4, 5, 6, 7, 8, 9), 1380, 0.)]
 
-M_PH, M_PH_ERR, M_PI, M_PI_ERR, E_PH, E_PH_ERR, E_PI, E_PI_ERR = get_measured_expected(LED_PH, LED_PH_ERR, LED_PI, LED_PI_ERR, MULTI_LED)
+M_PH, M_PH_ERR, M_PI, M_PI_ERR, E_PH, E_PH_ERR, E_PI, E_PI_ERR = get_measured_expected(
+    LED_PH, LED_PH_ERR, LED_PI, LED_PI_ERR, MULTI_LED)
 RATIO = determine_pi_ph_ratio(LED_PI, LED_PH)
 
 

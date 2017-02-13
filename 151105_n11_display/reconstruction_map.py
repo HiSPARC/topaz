@@ -59,7 +59,7 @@ def display_coincidences(coincidence_events, c_id, map):
             latitudes.append(latitude)
             longitudes.append(longitude)
         t.extend(event_utils.relative_detector_arrival_times(
-                    event, ts0, DETECTOR_IDS))
+            event, ts0, DETECTOR_IDS))
         p.extend(event_utils.detector_densities(event, DETECTOR_IDS))
 
     image = map.to_pil()

@@ -44,7 +44,7 @@ def analyse_reconstructions(path):
     zenith = np.degrees(zen_in[0])
     label = r'$E=10^{%d}$eV, $\theta={%.1f}^{\circ}$' % (energy, zenith)
 
-    ## Azimuth
+    # Azimuth
     bins = np.linspace(-np.pi, np.pi, 21)
     acounts_out, bins = np.histogram(azi_out, bins)
     acounts_in, bins = np.histogram(azi_in, bins)
@@ -58,7 +58,7 @@ def analyse_reconstructions(path):
     plota.set_ylimits(min=0)
     plota.save_as_pdf('plots/azimuth_in_out_%s' % seed)
 
-    ## Zenith
+    # Zenith
     bins = np.linspace(0, np.pi / 2, 21)
     zcounts_out, bins = np.histogram(zen_out, bins)
     zcounts_in, bins = np.histogram(zen_in, bins)
@@ -72,7 +72,7 @@ def analyse_reconstructions(path):
     plotz.set_ylimits(min=0)
     plotz.save_as_pdf('plots/zenith_in_out_%s' % seed)
 
-    ## Angle between
+    # Angle between
     angle_distances = angle_between(zen_out, azi_out, zen_in, azi_in)
     if len(np.isfinite(angle_distances)):
         bins = np.linspace(0, np.pi / 2, 91)
@@ -87,12 +87,12 @@ def analyse_reconstructions(path):
         plotd.set_ylimits(min=0)
         plotd.save_as_pdf('plots/angle_between_in_out_%s' % seed)
 
-    ## Distance beween
+    # Distance beween
     filter = size_out != 1e6
     core_distances = np.sqrt((x_out.compress(filter) - x_in.compress(filter)) ** 2 +
                              (y_out.compress(filter) - y_in.compress(filter)) ** 2)
     if len(np.isfinite(core_distances)):
-        bins=np.linspace(0, 1000, 100)
+        bins = np.linspace(0, 1000, 100)
         counts, bins = np.histogram(core_distances, bins=bins)
         plotc = Plot()
         plotc.histogram(counts, bins)
@@ -102,14 +102,14 @@ def analyse_reconstructions(path):
         zenith = np.degrees(zen_in[0])
 #
         plotc.set_label(r'$E=10^{%d}$eV, $\theta={%.1f}^{\circ}$, 67\%% '
-                         'within \SI{%.1f}{\meter}' % (energy, zenith, sigma))
+                        'within \SI{%.1f}{\meter}' % (energy, zenith, sigma))
         plotc.set_xlabel(r'Distance between cores [\si{\meter}]')
         plotc.set_ylabel('Counts')
         plotc.set_xlimits(bins[0], bins[-1])
         plotc.set_ylimits(min=0)
         plotc.save_as_pdf('plots/core_distance_between_in_out_%s' % seed)
 
-    ## Core positions
+    # Core positions
     filter = size_out != 1e6
     plotc = Plot()
     for x0, x1, y0, y1 in zip(x_out, x_in, y_out, y_in):
@@ -120,7 +120,7 @@ def analyse_reconstructions(path):
     plotc.set_ylimits(min=0)
     plotc.save_as_pdf('plots/core_positions_in_out_%s' % seed)
 
-    ## Shower size
+    # Shower size
     relative_size = size_out.compress(filter) / size_in.compress(filter)
     counts, bins = np.histogram(relative_size, bins=np.logspace(-2, 2, 21))
     plots = Plot('semilogx')
@@ -130,7 +130,6 @@ def analyse_reconstructions(path):
     plots.set_xlimits(bins[0], bins[-1])
     plots.set_ylimits(min=0)
     plots.save_as_pdf('plots/size_in_out_%s' % seed)
-
 
     # Cleanup
     cq.finish()

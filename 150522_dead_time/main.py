@@ -47,14 +47,13 @@ def check_peaks():
     with tables.open_file(DATA, 'r') as data:
         for i in range(1, 5):
             # pin = data.get_node('/t%d' % i).events.col('integrals')[:,1]
-            npk = data.get_node('/t%d' % i).events.col('n_peaks')[:,1]
+            npk = data.get_node('/t%d' % i).events.col('n_peaks')[:, 1]
             print 'Test %d' % i
-            print 'Fraction of events with 1 pulse:  %.2f'  % (npk.tolist().count(1) / len(npk))
-            print 'Fraction of events with 2 pulses: %.2f'  % (npk.tolist().count(2) / len(npk))
+            print 'Fraction of events with 1 pulse:  %.2f' % (npk.tolist().count(1) / len(npk))
+            print 'Fraction of events with 2 pulses: %.2f' % (npk.tolist().count(2) / len(npk))
 
 
 def plot_traces():
-
 
     with tables.open_file(DATA, 'r') as data:
         for i, pre, coin, post in TIME_WINDOWS:
@@ -87,6 +86,6 @@ def plot_traces():
 
 if __name__ == "__main__":
     # download_tests()
-#     check_intervals()
+    # check_intervals()
     check_peaks()
     plot_traces()

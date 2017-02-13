@@ -72,7 +72,7 @@ def plot_distance_width():
 
                 table = get_station_dt(data, station)
                 ts1 = table[-1]['timestamp'] - WEEK
-                ts0 = ts1 - HALFYEAR # * max(1, (distance / 100))
+                ts0 = ts1 - HALFYEAR  # * max(1, (distance / 100))
                 dt = table.read_where('(timestamp > ts0) & (timestamp < ts1)',
                                       field='delta')
 

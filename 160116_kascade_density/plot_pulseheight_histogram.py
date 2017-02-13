@@ -21,13 +21,13 @@ def plot_pulseheight_histogram(data):
     plot.histogram(n_trunc, bins, linestyle='gray')
 
     plot.plot(x, s.conv_landau_for_x(x, mev_scale=mev_scale,
-                                      count_scale=count_scale, gauss_scale=.68),
-               mark=None)
+                                     count_scale=count_scale, gauss_scale=.68),
+              mark=None)
 #     plot.add_pin('convolved Landau', x=1.1, location='above right',
 #                   use_arrow=True)
 
     plot.plot(x, count_scale * s.landau_pdf(x * mev_scale), mark=None,
-               linestyle='black')
+              linestyle='black')
 #     plot.add_pin('Landau', x=1., location='above right', use_arrow=True)
 
     plot.set_xlabel(r"Number of particles")

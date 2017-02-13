@@ -1179,11 +1179,11 @@ def plot_angles():
                (32, 175, 155), (52, 175, 160),
                (32, 175, 165), (45, 175, 170),
                (50, 175, 175)]
-    counts = np.zeros([72,72])
+    counts = np.zeros([72, 72])
     for v, x, y in kascade:
         ix = (x + 180) / 5
         iy = (y + 180) / 5
-        counts[ix,iy] = v
+        counts[ix, iy] = v
     plota = Plot()
     plota.histogram2d(counts, np.linspace(-180, 180, 73), np.linspace(-180, 180, 73), type='reverse_bw', bitmap=True)
 #         plota.set_title('Reconstructed azimuths for events in coincidence (zenith gt .2 rad)')

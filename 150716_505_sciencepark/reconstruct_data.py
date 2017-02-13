@@ -11,8 +11,8 @@ DATA_PATH = '/Users/arne/Datastore/esd_coincidences/coincidences_n7_100101_14080
 
 def reconstruct_data(data):
 
-#     rec = ReconstructESDCoincidences(data, overwrite=True)
-#     rec.reconstruct_and_store()
+    # rec = ReconstructESDCoincidences(data, overwrite=True)
+    # rec.reconstruct_and_store()
 
     station_path = '/hisparc/cluster_amsterdam/station_505'
     rec = ReconstructESDEvents(data, station_path, 505, overwrite=True)

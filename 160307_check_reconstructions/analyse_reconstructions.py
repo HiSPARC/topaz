@@ -15,7 +15,7 @@ def analyse_reconstructions(data):
     succesful_direction = sum(~isnan(cq.reconstructions.col('zenith')))
     succesful_fraction = 100. * succesful_direction / total_count
     print '%.2f%% successful out of %d coincidences' % (succesful_fraction,
-                                                      total_count)
+                                                        total_count)
 
     rec_d = cq.data.get_node('/coincidences', 'reconstructions_detectors')
     total_count_d = rec_d.nrows

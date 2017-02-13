@@ -132,7 +132,7 @@ class EnergySensitivity(object):
             return 0
 
         p_stations = [self.detection_probability_for_station(detector_densities)
-                       for detector_densities in station_densities]
+                      for detector_densities in station_densities]
         p0_stations = [1. - p for p in p_stations]
         p_cluster = self.calculate_p(p_stations, p0_stations,
                                      self.min_stations)
@@ -178,7 +178,6 @@ class EnergySensitivity(object):
                 p_total += p_combination
 
         return p_total
-
 
     def P(self, detector_density):
         """Chance of at least one particle in detector"""
@@ -387,9 +386,9 @@ class StationPairAreaEnergySensitivity(StationPairEnergySensitivity):
         temp_multi_find_min_energy = partial(multi_find_min_energy, self)
         worker_pool = Pool()
         x_results = np.array(worker_pool.map(temp_multi_find_min_energy,
-                             [(x, self.yy[0]) for x in self.xx], chunksize=10))
+                                             [(x, self.yy[0]) for x in self.xx], chunksize=10))
         y_results = np.array(worker_pool.map(temp_multi_find_min_energy,
-                             [(self.xx[0], y) for y in self.yy], chunksize=10))
+                                             [(self.xx[0], y) for y in self.yy], chunksize=10))
         worker_pool.close()
         worker_pool.join()
 #         x_results = np.array([temp_multi_find_min_energy(xy) for xy in

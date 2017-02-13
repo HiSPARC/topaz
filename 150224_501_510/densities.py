@@ -23,8 +23,8 @@ def plot_densities(data):
     bins = np.logspace(np.log10(n_min), np.log10(n_max), 50)
 
     for minn in [0, 1, 2, 4, 8, 16]:
-#         poisson_errors = np.sqrt(bins)
-#         filter = sn501 > minn
+        # poisson_errors = np.sqrt(bins)
+        # filter = sn501 > minn
         filter = (sn501 > minn) & (sn510 > minn)
         plot = MultiPlot(4, 4, 'loglog',
                          width=r'.22\linewidth', height=r'.22\linewidth')
@@ -36,14 +36,14 @@ def plot_densities(data):
                 subplot = plot.get_subplot_at(i, j)
                 subplot.histogram2d(ncounts, x, y, type='reverse_bw',
                                     bitmap=True)
-#                 subplot.plot(bins - poisson_errors, bins + poisson_errors,
-#                              mark=None, linestyle='red')
-#                 subplot.plot(bins + poisson_errors, bins - poisson_errors,
-#                              mark=None, linestyle='red')
+                # subplot.plot(bins - poisson_errors, bins + poisson_errors,
+                #              mark=None, linestyle='red')
+                # subplot.plot(bins + poisson_errors, bins - poisson_errors,
+                #              mark=None, linestyle='red')
 
         plot.show_xticklabels_for_all([(3, 0), (3, 1), (3, 2), (3, 3)])
         plot.show_yticklabels_for_all([(0, 3), (1, 3), (2, 3), (3, 3)])
-    #     plot.set_title(0, 1, 'Particle counts for station 501 and 510')
+        # plot.set_title(0, 1, 'Particle counts for station 501 and 510')
         for i in range(4):
             plot.set_subplot_xlabel(0, i, 'detector %d' % (i + 1))
             plot.set_subplot_ylabel(i, 0, 'detector %d' % (i + 1))
@@ -51,12 +51,11 @@ def plot_densities(data):
         plot.set_ylabel('Number of particles 510')
         plot.save_as_pdf('n_minn%d_501_510_bins_log' % minn)
 
-
     ncounts, x, y = np.histogram2d(sn501, sn510, bins=bins)
     plot = Plot('loglog')
     plot.set_axis_equal()
     plot.histogram2d(ncounts, x, y, type='reverse_bw', bitmap=True)
-#     plot.set_title('Particle counts for station 501 and 510')
+    # plot.set_title('Particle counts for station 501 and 510')
     plot.set_xlabel('Particle density in 501')
     plot.set_ylabel('Particle density in 510')
     plot.save_as_pdf('n_501_510_sum_log')

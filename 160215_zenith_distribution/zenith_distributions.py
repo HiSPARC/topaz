@@ -124,7 +124,7 @@ def plot_zenith(angle_centers, mean_counts, std_counts):
     rangles = radians(angles)
 
     for fit_function in fit_functions:
-        popt, pcov = curve_fit(fit_function, angle_centers, mean_counts) #, sigma=std_counts)
+        popt, pcov = curve_fit(fit_function, angle_centers, mean_counts)  # , sigma=std_counts)
         print popt
 
         plot = Plot()
@@ -143,7 +143,6 @@ def plot_zenith(angle_centers, mean_counts, std_counts):
         plot.set_xlimits(0, 1)
         plot.set_xlabel(r'Zenith angle [$\sec \theta - 1$]')
         plot.save_as_pdf('zenith_distribution_sec_%s' % fit_function.func_name)
-
 
 
 def convert_angles(angles):

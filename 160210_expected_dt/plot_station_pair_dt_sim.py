@@ -23,10 +23,12 @@ def plot_fits(plot, counts, bins):
 
     colors = (c for c in ['gray', 'lightgray', 'blue', 'red'])
     x = (bins[:-1] + bins[1:]) / 2
-    for fit_f, p0, offset_idx in [#(gauss, (sum(counts), 0., 30), 1),
-                                  (norm.pdf, (0., 30.), 0),
-                                  #(t.pdf, (1., 0., 1.), 0),
-                                  (tl, (0., 450.), 0)]:
+    for fit_f, p0, offset_idx in [
+        # (gauss, (sum(counts), 0., 30), 1),
+        (norm.pdf, (0., 30.), 0),
+        # (t.pdf, (1., 0., 1.), 0),
+        (tl, (0., 450.), 0)
+    ]:
         popt, pcov = curve_fit(fit_f, x, counts, p0=p0)
         plot.plot(x - popt[offset_idx], fit_f(x, *popt), mark=None,
                   linestyle=colors.next())

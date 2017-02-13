@@ -33,9 +33,9 @@ def run_simulation():
         with tables.open_file(COMP_RESULT_PATH % complevel, 'w') as data:
             start = timer()
             sim = GroundParticlesSimulation(
-                    COMP_CORSIKA_DATA % complevel, max_core_distance=300,
-                    cluster=cluster, datafile=data, output_path='/', N=50,
-                    seed=42)
+                COMP_CORSIKA_DATA % complevel, max_core_distance=300,
+                cluster=cluster, datafile=data, output_path='/', N=50,
+                seed=42)
             sim.run()
             end = timer()
             sim.finish()
@@ -45,8 +45,8 @@ def run_simulation():
     with tables.open_file(RESULT_PATH, 'w') as data:
         start = timer()
         sim = GroundParticlesSimulation(
-                CORSIKA_DATA, max_core_distance=300, cluster=cluster,
-                datafile=data, output_path='/', N=50, seed=42)
+            CORSIKA_DATA, max_core_distance=300, cluster=cluster,
+            datafile=data, output_path='/', N=50, seed=42)
         sim.run()
         end = timer()
         sim.finish()

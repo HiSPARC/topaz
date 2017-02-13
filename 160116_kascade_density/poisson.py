@@ -10,7 +10,7 @@ from kascade_density import KascadeDensity
 MIN = 0
 MAX = 300
 STEP = 0.01
-SMALL_STEP = STEP # / 10.
+SMALL_STEP = STEP  # / 10.
 LAMBDA = arange(MIN, MAX, SMALL_STEP)
 
 KD = KascadeDensity()

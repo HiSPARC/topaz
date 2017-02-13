@@ -9,7 +9,7 @@ from testlist import get_tests
 from data import DATA_PATH
 
 
-DELTA_DATA =  '/Users/arne/Datastore/tijdtest/tijdtest_delta.h5'
+DELTA_DATA = '/Users/arne/Datastore/tijdtest/tijdtest_delta.h5'
 
 
 class DeltaVal(tables.IsDescription):
@@ -66,7 +66,7 @@ def store(id):
 
     print 'tt_delta: Storing deltas for test %s' % id
     with tables.open_file(DATA_PATH, 'r') as data_file, \
-         tables.open_file(DELTA_DATA, 'a') as delta_file:
+            tables.open_file(DELTA_DATA, 'a') as delta_file:
         table = delta_file.create_table('/t%d' % id, 'delta', DeltaVal,
                                         createparents=True)
         ext_timestamps, deltas = calculate(data_file, id)

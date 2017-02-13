@@ -38,12 +38,12 @@ def get_available_station_pairs():
     paths = glob(OFF_DATAPATH_GLOB)
     pairs = [(int(s1), int(s2))
              for s1, s2 in [re.findall(r'\d+', path)
-              for path in paths]]
+                            for path in paths]]
     return pairs
 
 
 def get_station_offsets(ref_station, station):
-    offsets = genfromtxt(DATA_PATH  % (ref_station, station), delimiter='\t',
+    offsets = genfromtxt(DATA_PATH % (ref_station, station), delimiter='\t',
                          names=('timestamp', 'offset'))
     return offsets
 

@@ -31,8 +31,8 @@ def plot_interaction_height(cq):
                 zeniths.append(z)
         if len(zeniths):
             plot.plot(zeniths + (e - 12) / 3., median_altitude)
-#             plot.shade_region(zeniths, min_altitude, max_altitude,
-#                               color='lightgray,semitransparent')
+            # plot.shade_region(zeniths, min_altitude, max_altitude,
+            #                   color='lightgray,semitransparent')
             plot.add_pin('%.1f' % e, relative_position=0)
     plot.set_ylabel(r'First interaction altitude [\si{\kilo\meter}]')
     plot.set_xlabel(r'Zenith [\si{\radian}]')
@@ -40,7 +40,7 @@ def plot_interaction_height(cq):
 
 
 def plot_interaction_altitude_distribution(cq):
-#     altitudes = cq.sims.col('first_interaction_altitude') / 1e3
+    # altitudes = cq.sims.col('first_interaction_altitude') / 1e3
     altitudes = cq.simulations(energy=15, zenith=22.5)['first_interaction_altitude'] / 1e3
     bins = arange(0, 100, 2)
     counts, bins = histogram(altitudes, bins, density=True)

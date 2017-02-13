@@ -53,7 +53,6 @@ def plot_station_offset_matrix():
             plot.show_yticklabels(row, 0)
             #plot.show_xticklabels(0, row)
 
-
         if type == 'offset':
             plot.set_ylimits_for_all(None, min=-70, max=70)
         else:
@@ -76,7 +75,6 @@ def plot_cuts_vertically(splot, stations, station, ref_station):
                                stations[ref_station].electronics['timestamp'])}
     for cut in cuts:
         splot.draw_vertical_line(cut, linestyle='red, ultra thin')
-
 
 
 if __name__ == "__main__":

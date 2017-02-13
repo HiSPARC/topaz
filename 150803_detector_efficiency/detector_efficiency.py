@@ -38,7 +38,7 @@ def detection_efficiency(path):
             query = '(%s)' % ' & '.join('(n%d != 0)' % d for d in [1, 3, 4])  # corners
         if STATION_NUMBER in [1]:
             query = ' | '.join(['(%s)' % ' & '.join('(n%d > .3)' % d for d in ids)
-                                for ids in combinations([1, 2, 3, 4], 3)]) # triangles
+                                for ids in combinations([1, 2, 3, 4], 3)])  # triangles
         if STATION_NUMBER in [2]:
             query = '(%s)' % ' & '.join('(n%d != 0)' % d for d in [1, 2])  # both detectors
         # Use query = 'timestamp > 0' to select all triggered events
@@ -102,7 +102,7 @@ def plot_effiencies():
         for i, zenith in enumerate(sorted(efficiencies[energy].keys())):
             if any(abs(zenith - z) < 0.1 for z in [0, 22.5, 37.5]):
                 plot.plot(CORE_DISTANCES, efficiencies[energy][zenith],
-#                           yerr=errors[energy][zenith],
+                          # yerr=errors[energy][zenith],
                           markstyle='mark size=1pt', linestyle='blue')
                 plot.add_pin(str(zenith), x=15, use_arrow=True)
             else:
@@ -148,7 +148,7 @@ def plot_david_data(plot):
 
 
 if __name__ == "__main__":
-#     reconstruct()
+    # reconstruct()
     for i in range(4):
         STATION_NUMBER = i
         plot_effiencies()

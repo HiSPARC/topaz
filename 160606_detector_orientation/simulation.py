@@ -22,7 +22,6 @@ CORSIKA_DATA_e15_z375 = '/Users/arne/Datastore/CORSIKA/312356151_602799693/corsi
 RESULT_DATA = '/Users/arne/Datastore/detector_orientation/sim.h5'
 
 
-
 def ThreeStationsOrientation(d=10):
 
     cluster = BaseCluster()

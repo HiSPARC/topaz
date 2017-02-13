@@ -35,10 +35,10 @@ def find_overlaps():
         events = data.root.s99.events
         s = Station(99)
         for i in range(events.nrows - 1):
-            if events[i+1]['ext_timestamp'] - events[i]['ext_timestamp'] > 1e4:
+            if events[i + 1]['ext_timestamp'] - events[i]['ext_timestamp'] > 1e4:
                 continue
             t1 = s.event_trace(events[i]['timestamp'], events[i]['nanoseconds'], True)
-            t2 = s.event_trace(events[i+1]['timestamp'], events[i+1]['nanoseconds'], True)
+            t2 = s.event_trace(events[i + 1]['timestamp'], events[i + 1]['nanoseconds'], True)
             overlap = longest_overlap(t1[0], t2[0])
             if overlap is not None:
                 print i, len(overlap) * 2.5, 'ns'

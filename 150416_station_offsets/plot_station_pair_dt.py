@@ -32,9 +32,8 @@ DATA_PATH = '/Users/arne/Datastore/station_offsets/'
 SIM_PATH = '/Users/arne/Datastore/expected_dt/test_station_dt_spa.h5'
 
 
-
 def get_station_dt(data, station):
-    table = data.get_node('/s%d' %station)
+    table = data.get_node('/s%d' % station)
     return table
 
 
@@ -47,11 +46,12 @@ def plot_fits(plot, counts, bins):
 
     colors = (c for c in ['gray', 'lightgray', 'blue', 'red'])
     x = (bins[:-1] + bins[1:]) / 2
-    for fit_f, p0, offset_idx in [#(gauss, (sum(counts), 0., 30), 1),
-                                  (norm.pdf, (0., 30.), 0),
-                                  #(t.pdf, (1., 0., 1.), 0),
-                                  #(tl, (0., 450.), 0)
-                                  ]:
+    for fit_f, p0, offset_idx in [
+        # (gauss, (sum(counts), 0., 30), 1),
+        (norm.pdf, (0., 30.), 0),
+        # (t.pdf, (1., 0., 1.), 0),
+        # (tl, (0., 450.), 0)
+    ]:
         popt, pcov = curve_fit(fit_f, x, counts, p0=p0)
         plot.plot(x - popt[offset_idx], fit_f(x, *popt), mark=None,
                   linestyle=colors.next())
@@ -63,7 +63,7 @@ def plot_fits(plot, counts, bins):
 
 def plot_offset_distributions():
     with tables.open_file(SIM_PATH, 'r') as sim_data:
-        for ref_station, station in itertools.combinations(SPA_STAT, 2): # [(504, 509)]:
+        for ref_station, station in itertools.combinations(SPA_STAT, 2):  # [(504, 509)]:
             if ref_station == 501 and station == 510:
                 continue
             with tables.open_file(DATA_PATH + 'dt_ref%d_%d.h5' % (ref_station, station), 'r') as data:
@@ -72,7 +72,7 @@ def plot_offset_distributions():
                 max_dt = max(distance / .3, 100) * 1.5
                 table = get_station_dt(data, station)
                 ts1 = table[-1]['timestamp'] - WEEK
-                ts0 = ts1 - YEAR # * max(1, (distance / 100))
+                ts0 = ts1 - YEAR  # * max(1, (distance / 100))
                 dt = table.read_where('(timestamp > ts0) & (timestamp < ts1)',
                                       field='delta')
 
@@ -81,7 +81,7 @@ def plot_offset_distributions():
                 sim_dt = (sim_ref_events.col('ext_timestamp').astype(int) -
                           sim_events.col('ext_timestamp').astype(int))
 
-                bins = arange(-2000, 2000.1, 30)  #linspace(-max_dt, max_dt, 150)
+                bins = arange(-2000, 2000.1, 30)  # linspace(-max_dt, max_dt, 150)
                 x = (bins[:-1] + bins[1:]) / 2
 
                 sim_counts, bins = histogram(sim_dt, bins=bins, density=True)

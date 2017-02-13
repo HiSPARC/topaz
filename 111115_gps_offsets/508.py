@@ -64,7 +64,7 @@ def calculate_delta():
     # Difference in length of cables to boxes in nano seconds, (swap - refr)
     tests = test_log_508()
     with tables.openFile(paths('temp'), 'r') as data_file, \
-         tables.openFile(paths('temp2'), 'w') as delta_file:
+            tables.openFile(paths('temp2'), 'w') as delta_file:
         for test in tests:
             table = delta_file.createTable('/t%d' % test.id, 'delta',
                                            delta.DeltaVal, createparents=True)
@@ -123,16 +123,16 @@ def print_delta_results():
             ext_timestamps = [row['ext_timestamp'] for row in delta_table]
             deltas = [row['delta'] for row in delta_table]
         print "    % 3d  %s  % 7.2f  % 6.2f  % 4.2f" % (
-                test.id, test.group.ljust(13),
-                round(np.average(deltas), 2), round(np.std(deltas), 2),
-                (max(ext_timestamps) - min(ext_timestamps)) / 864e11)
+            test.id, test.group.ljust(13),
+            round(np.average(deltas), 2), round(np.std(deltas), 2),
+            (max(ext_timestamps) - min(ext_timestamps)) / 864e11)
 
 
 def plot_delta_test():
     """ Plot the delta with std
 
     """
-    #Define Bins
+    # Define Bins
     low = -2000
     high = 2000
     bin_size = 10  # 2.5*n?
@@ -140,7 +140,7 @@ def plot_delta_test():
 
     tests = test_log_508()
 
-    #Begin Figure
+    # Begin Figure
     with pp.PlotFig(texttex=True, kind='pdf') as plot:
         for test in tests:
             with tables.openFile(paths('temp2'), 'r') as delta_file:
@@ -155,7 +155,7 @@ def plot_delta_test():
         plt.xlim(-2000, 2000)
         plt.ylim(0.0, 0.15)
 
-        #Save Figure
+        # Save Figure
         plot.path = paths('plot')
         plot.name = 'time_offset_508'
         plot.ltit = 'Tests'
@@ -164,7 +164,7 @@ def plot_delta_test():
 
 
 if __name__ in ('__main__'):
-    #download_data()
+    # download_data()
     calculate_delta()
     print_delta_results()
     plot_delta_test()

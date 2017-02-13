@@ -126,6 +126,7 @@ def find_n_coincidences(coinc, event_tables):
     else:
         return windows, counts, n_events
 
+
 def plot_background_v_window(plot, windows, n_stations):
     low_rate = 0.3
     high_rate = 0.8

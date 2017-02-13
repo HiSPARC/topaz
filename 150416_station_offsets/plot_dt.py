@@ -25,7 +25,7 @@ DATA_PATH = '/Users/arne/Datastore/station_offsets/'
 
 
 def get_station_dt(data, station):
-    table = data.get_node('/s%d' %station)
+    table = data.get_node('/s%d' % station)
     return table
 
 

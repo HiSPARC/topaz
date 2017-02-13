@@ -59,9 +59,11 @@ def plot_senstech_integral():
     plot = plot_fit_pulseheight(senstech_e_ph, senstech_m_ph)
     plot.save_as_pdf('plots/ph_sentech_integral')
 
+
 def plot_nikhef_final_integral():
     plot = plot_fit_pulseheight(nikhef_e_ph, nikhef_m_ph)
     plot.save_as_pdf('plots/ph_nikhef_final_integral')
+
 
 def plot_fitted_curves():
     plot_senstech_integral()

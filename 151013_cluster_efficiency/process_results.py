@@ -74,12 +74,12 @@ def get_combined_results():
 
 
 def make_plots():
-#     plot_input_v_reconstructed_zenith()
+    # plot_input_v_reconstructed_zenith()
     plot_input_v_reconstructed_azimuth()
-#     plot_input_detected_zenith_distribution()
-#     plot_input_zenith_distribution()
-#     plot_reconstructed_zenith_distribution()
-#     plot_detected_v_energy()
+    # plot_input_detected_zenith_distribution()
+    # plot_input_zenith_distribution()
+    # plot_reconstructed_zenith_distribution()
+    # plot_detected_v_energy()
 
 
 def plot_input_v_reconstructed_zenith():
@@ -95,9 +95,9 @@ def plot_input_v_reconstructed_zenith():
         splot.histogram2d(c, xb, yb, bitmap=True, type='reverse_bw')
         splot.plot([0, 60], [0, 60], linestyle='red', mark=None)
 
-#     plot.set_title('Input and detected zeniths for shower energy: %.1f' % e)
-#     plot.set_xlimits(0, 65)
-#     plot.set_ylimits(0)
+    # plot.set_title('Input and detected zeniths for shower energy: %.1f' % e)
+    # plot.set_xlimits(0, 65)
+    # plot.set_ylimits(0)
     plot.show_xticklabels_for_all([(1, 0), (0, 1)])
     plot.show_yticklabels_for_all([(1, 0), (0, 1)])
     plot.save_as_pdf('reconstructed_v_in_zenith.pdf')
@@ -130,7 +130,7 @@ def plot_input_detected_zenith_distribution():
         corrected_counts = where(isnan(c_in / c_init), 0, sin(radians(b[1:])) * c_in / c_init)
         plot.histogram(corrected_counts, b, linestyle=shades[i])
 
-#     plot.set_title('Input and detected zeniths for shower energy: %.1f' % e)
+    # plot.set_title('Input and detected zeniths for shower energy: %.1f' % e)
     plot.set_xlimits(0, 65)
     plot.set_ylimits(0)
     plot.save_as_pdf('e%.1f.pdf' % e)
@@ -174,7 +174,7 @@ def plot_detected_zenith_distribution():
 
 def plot_detected_v_energy():
     plot = Plot(width=r'.6\textwidth')
-#     plot.set_title('Detected core distances vs shower energy')
+    # plot.set_title('Detected core distances vs shower energy')
     c, xb, yb = histogram2d(r_in, energy_in,
                             bins=(arange(0, 600, 40), arange(15.75, 17.76, .5)))
     plot.histogram2d(c, xb, yb, bitmap=True)
@@ -185,15 +185,15 @@ def plot_detected_v_energy():
     plot.save_as_pdf('detected_v_energy')
 
     plot = Plot(width=r'.6\textwidth')
-#     plot.set_title('Detected core distances vs shower energy, scaled to bin area')
+    # plot.set_title('Detected core distances vs shower energy, scaled to bin area')
     counts, xbins, ybins = histogram2d(r_in, energy_in, bins=(arange(0, 600, 40), arange(15.75, 17.76, .5)))
-    plot.histogram2d((-counts.T/(pi * (xbins[:-1] ** 2 - xbins[1:] ** 2))).T, xbins, ybins, type='area')
+    plot.histogram2d((-counts.T / (pi * (xbins[:-1] ** 2 - xbins[1:] ** 2))).T, xbins, ybins, type='area')
     plot.set_yticks([16, 16.5, 17, 17.5])
     plot.set_ytick_labels(['$10^{%.1f}$' % e for e in [16, 16.5, 17, 17.5]])
     plot.set_ylabel(r'Shower energy [\si{\eV}]')
     plot.set_xlabel(r'Core distance [\si{\meter}]')
     plot.save_as_pdf('detected_v_energy_scaled_area')
-#     print counts.T/(pi * (xbins[:-1]**2 - xbins[1:] **2))
+    # print counts.T/(pi * (xbins[:-1]**2 - xbins[1:] **2))
 
 
 if __name__ == "__main__":

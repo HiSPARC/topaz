@@ -44,7 +44,7 @@ def plot_densities(data):
 
 
 if __name__ == '__main__':
-#     with tables.open_file(EVENTDATA_PATH, 'a') as data:
-#         get_data(data)
+    # with tables.open_file(EVENTDATA_PATH, 'a') as data:
+    #     get_data(data)
     with tables.open_file(EVENTDATA_PATH, 'r') as data:
         plot_densities(data)

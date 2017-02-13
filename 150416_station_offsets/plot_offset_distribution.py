@@ -21,7 +21,7 @@ def plot_distribution():
     offsets = []
     for path in glob(OFF_DATAPATH_GLOB):
         data = genfromtxt(path)
-        fdata = data[~isnan(data[:,1]),1]
+        fdata = data[~isnan(data[:, 1]), 1]
         if len(fdata):
             offsets.append(fdata[-1])
     mindt = -200

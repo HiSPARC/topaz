@@ -34,7 +34,7 @@ def plot_front_shapes():
 
             for i, file in enumerate(files):
                 detected_t = loadtxt(file, usecols=(1,))
-                t[:,i][:len(detected_t)] = detected_t
+                t[:, i][:len(detected_t)] = detected_t
 
             t_src = t.copy()
             for j in range(1, len(t)):

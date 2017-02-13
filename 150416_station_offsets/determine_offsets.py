@@ -40,7 +40,7 @@ def get_available_station_pairs():
     paths = glob(DT_DATAPATH_GLOB)
     pairs = [(int(s1), int(s2))
              for s1, s2 in [re.findall(r'\d+', path[:-3])
-              for path in paths]]
+                            for path in paths]]
     return pairs
 
 

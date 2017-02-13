@@ -22,8 +22,8 @@ def run_simulation():
     with tables.open_file(RESULT_PATH, 'w') as data:
         cluster = HiSPARCStations([501, 502, 503, 504, 505, 506, 508, 509])
         sim = GroundParticlesSimulation(
-                CORSIKA_DATA, max_core_distance=400, cluster=cluster,
-                datafile=data, output_path='/', N=5000)
+            CORSIKA_DATA, max_core_distance=400, cluster=cluster,
+            datafile=data, output_path='/', N=5000)
         sim.run()
 
 
@@ -85,6 +85,7 @@ def plot_cluster(graph, cluster):
             graph.plot([detector_x], [detector_y], mark='*', linestyle=None,
                        markstyle='mark size=.4pt,color=red')
 
+
 def plot_reconstruction_accuracy():
 
     combinations = ['~d1 | ~d2 | ~d3 | ~d4', 'd1 & d2 & d3 & d4']
@@ -143,6 +144,7 @@ def plot_reconstruction_accuracy():
             graph.set_label('Failed to reconstruct %d events' % failed)
             graph.save_as_pdf('s_%d' % station.number)
 
+
 def reconstruct_simulations():
     with tables.open_file(RESULT_PATH, 'a') as data:
         cluster = data.root.coincidences._v_attrs.cluster
@@ -173,8 +175,7 @@ def reconstruct_simulations():
             pass
 
 if __name__ == '__main__':
-
-#     run_simulation()
-#    reconstruct_simulations()
+    # run_simulation()
+    # reconstruct_simulations()
     scatter_n()
-#    plot_reconstruction_accuracy()
+    # plot_reconstruction_accuracy()
