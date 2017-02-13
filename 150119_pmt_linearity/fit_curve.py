@@ -24,10 +24,11 @@ def ice_cube_pmt(x, p0, p1, p2):
     return x * exp(p0 * ((x / p1) ** p2) / ((1. - x / p1) ** 0.25))
 
 
-ICE_CUBE_TEX = (r"$\mathrm{ln}V_{\mathrm{in}}=\mathrm{ln}V + "
-                r"\frac{p_0\left(\frac{V}{p_1}\right)^{p_2}}"
-                r"{\left(1-\frac{V}{p_1}\right)^{\frac{1}{4}}}$"
-                r", \scriptsize{($p_0=%.1f$, $p_1=%d$, $p_2=%.1f$)}")
+ICE_CUBE_TEX = r"""
+    $\mathrm{ln}V_{\mathrm{in}} = \mathrm{ln}V +
+     \frac{p_0\left(\frac{V}{p_1}\right)^{p_2}}
+          {\left(1-\frac{V}{p_1}\right)^{\frac{1}{4}}}$,
+     \scriptsize{($p_0 = %.1f$, $p_1 = %d$, $p_2 = %.1f$)}"""
 
 
 def ice_cube_pmt_p1(x, p0, p2, p3):
@@ -60,8 +61,21 @@ def log_lin(x, slope, intercept):
     return 10 ** (log10(x) * slope - intercept)
 
 
-def lin_erf_lin(x, smoothness, slope_high, intercept_high):
-    # Intercept point between the two linear lines.
+def linear_errorfunction_linear(x, smoothness, slope_high, intercept_high):
+    """Two connected linear functions, contributions determined by erf
+
+    Connect two linear lines by smoothing the points around the intersection.
+    The contribution from each line is determined using an error function.
+    In loglog space.
+
+    :param x: x coordinate at which to evaluate the function.
+    :param smoothness: the smoothness of the transition, spreading the
+                       error function.
+    :param slope_high: the slope of the upper (high x) linear line.
+    :param intercept_high: the y-intercept of the upper (high x) linear line.
+    :return: the y value at x.
+
+    """
     slope_low, intercept_low = (1., 0.)
     intercept = 10 ** ((intercept_high - intercept_low) /
                        (slope_high - slope_low))
@@ -199,7 +213,8 @@ def lin_fit(x, y, filter):
     :param err: uncertainties on y data.
 
     """
-    slope, intercept, r_value, p_value, std = linregress(x.compress(filter), y.compress(filter))
+    slope, intercept, r_value, p_value, std = linregress(x.compress(filter),
+                                                         y.compress(filter))
     return slope, intercept
 
 

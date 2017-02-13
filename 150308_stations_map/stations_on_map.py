@@ -23,7 +23,7 @@ from numpy import array
 from artist import Plot
 from sapphire import Network, Station, HiSPARCStations
 
-from smopy import Map, num2deg, TILE_SIZE
+from smopy import Map
 
 
 NETWORK = Network(force_stale=True)

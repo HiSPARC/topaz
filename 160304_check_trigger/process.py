@@ -5,8 +5,8 @@ from sapphire.analysis.process_events import ProcessEventsWithTriggerOffset
 
 
 if __name__ == "__main__":
-    with tables.open_file('data.h5', 'r') as source_file:
-        with tables.open_file('result_bad_thresholds.h5', 'w') as tmp_file:
+    with tables.open_file('/Users/arne/Datastore/check_trigger/data.h5', 'r') as source_file:
+        with tables.open_file('/Users/arne/Datastore/check_trigger/result_bad_thresholds.h5', 'w') as tmp_file:
             process = ProcessEventsFromSourceWithTriggerOffset(
                 source_file, tmp_file, '/s501', '/s501', progress=True)
             # These were the threshold for 501 when the mV values were
@@ -15,14 +15,14 @@ if __name__ == "__main__":
             process.thresholds = [(227, 323)] * 4
             process.process_and_store_results()
 
-        with tables.open_file('result_good_thresholds.h5', 'w') as tmp_file:
+        with tables.open_file('/Users/arne/Datastore/check_trigger/result_good_thresholds.h5', 'w') as tmp_file:
             # Use the trigger settings from the API.
             process = ProcessEventsFromSourceWithTriggerOffset(
                 source_file, tmp_file, '/s501', '/s501', 501, progress=True)
             process.process_and_store_results()
 
-    with tables.open_file('data.h5', 'r') as source_file:
-        with tables.open_file('result_bad_thresholds.h5', 'w') as tmp_file:
+    with tables.open_file('/Users/arne/Datastore/check_trigger/data.h5', 'r') as source_file:
+        with tables.open_file('/Users/arne/Datastore/check_trigger/result_bad_thresholds.h5', 'w') as tmp_file:
             process = ProcessEventsFromSourceWithTriggerOffset(
                 source_file, tmp_file, '/s501', '/s501', progress=True)
             # These were the threshold for 501 when the mV values were
@@ -31,13 +31,13 @@ if __name__ == "__main__":
             process.thresholds = [(227, 323)] * 4
             process.process_and_store_results()
 
-        with tables.open_file('result_good_thresholds.h5', 'w') as tmp_file:
+        with tables.open_file('/Users/arne/Datastore/check_trigger/result_good_thresholds.h5', 'w') as tmp_file:
             # Use the trigger settings from the API.
             process = ProcessEventsFromSourceWithTriggerOffset(
                 source_file, tmp_file, '/s501', '/s501', 501, progress=True)
             process.process_and_store_results()
 
-    with tables.open_file('data_502_1.h5', 'r') as source_file:
+    with tables.open_file('/Users/arne/Datastore/check_trigger/data_502_1.h5', 'r') as source_file:
         process = ProcessEventsWithTriggerOffset(source_file, '/s502', progress=True)
         # These were the default thresholds used before different thresholds
         # were supported.
@@ -62,7 +62,7 @@ if __name__ == "__main__":
         print 100. * sum(timings[:, 4] == -999) / len(timings),
         print '% trigger reconstructions failed'
 
-    with tables.open_file('data_502_2.h5', 'r') as source_file:
+    with tables.open_file('/Users/arne/Datastore/check_trigger/data_502_2.h5', 'r') as source_file:
         process = ProcessEventsWithTriggerOffset(source_file, '/s502', progress=True)
         # These were the default thresholds used before different thresholds
         # were supported.
