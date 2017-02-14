@@ -1,12 +1,10 @@
-import warnings
 import itertools
 
 import tables
 import numpy as np
-import pylab as plt
 
-from paths import paths
-import plot_pref as pp
+from artist import Plot
+
 from sapphire.esd import download_data
 from hisparc.analysis.coincidences import search_coincidences as search
 
@@ -14,10 +12,6 @@ from testlist import Tijdtest
 import data
 import delta
 from delta import DeltaVal
-
-from testlist import get_tests
-from delta import get
-from helper import nanoseconds_from_ext_timestamp, timestamps_from_ext_timestamp
 
 DATA_PATH = '/Users/arne/Datastore/gps_offsets/508_data.h5'
 DELTAS_PATH = '/Users/arne/Datastore/gps_offsets/508_deltas.h5'
@@ -34,10 +28,10 @@ def test_log_508():
         (2, '317', '502', '', (2013, 6, 19, 13, 0), (2013, 6, 29, 23, 0), ''),
         (3, '317', '505', '', (2013, 6, 19, 13, 0), (2013, 6, 29, 23, 0), ''),
         (4, '317', '506', '', (2013, 6, 19, 13, 0), (2013, 6, 29, 23, 0), ''),
-        (5, '317', '501', '', (2013, 6, 28,  0, 0), (2013, 6, 29, 23, 0), ''),
-        (6, '317', '502', '', (2013, 6, 28,  0, 0), (2013, 6, 29, 23, 0), ''),
-        (7, '317', '505', '', (2013, 6, 28,  0, 0), (2013, 6, 29, 23, 0), ''),
-        (8, '317', '506', '', (2013, 6, 28,  0, 0), (2013, 6, 29, 23, 0), ''))
+        (5, '317', '501', '', (2013, 6, 28, 0, 0), (2013, 6, 29, 23, 0), ''),
+        (6, '317', '502', '', (2013, 6, 28, 0, 0), (2013, 6, 29, 23, 0), ''),
+        (7, '317', '505', '', (2013, 6, 28, 0, 0), (2013, 6, 29, 23, 0), ''),
+        (8, '317', '506', '', (2013, 6, 28, 0, 0), (2013, 6, 29, 23, 0), ''))
 
     test_all = [Tijdtest(*test) for test in tests]
 
@@ -144,26 +138,23 @@ def plot_delta_test():
     tests = test_log_508()
 
     # Begin Figure
-    with pp.PlotFig(texttex=True, kind='pdf') as plot:
+    plot = Plot()
+    with tables.open_file(DELTAS_PATH, 'r') as delta_file:
         for test in tests:
-            with tables.open_file(DELTAS_PATH, 'r') as delta_file:
-                delta_table = delta_file.get_node('/t%d' % test.id, 'delta')
-                ext_timestamps = [row['ext_timestamp'] for row in delta_table]
-                deltas = [row['delta'] for row in delta_table]
-                plot.axe.hist(deltas, bins, normed=1, histtype='step', alpha=0.9,
-                              label=test.gps)
-        plt.title = 'Time difference coincidences 508'
-        plt.xlabel(r'$\Delta$ t (station - 508) [ns]')
-        plt.ylabel(r'p')
-        plt.xlim(-2000, 2000)
-        plt.ylim(0.0, 0.15)
+            delta_table = delta_file.get_node('/t%d' % test.id, 'delta')
+            ext_timestamps = [row['ext_timestamp'] for row in delta_table]
+            deltas = [row['delta'] for row in delta_table]
+            bins = np.arange(low - 0.5 * bin_size, high + bin_size, bin_size)
+            n, bins = np.histogram(deltas, bins)
+            plot.histogram(n, bins)
 
-        # Save Figure
-        plot.path = paths('plot')
-        plot.name = 'time_offset_508'
-        plot.ltit = 'Tests'
-
-    print 'Plotted histogram'
+    plot.set_title('Time difference coincidences 508')
+    plot.set_label(r'$\mu={1:.1f}$, $\sigma={2:.1f}$'.format(*popt))
+    plot.set_xlabel(r'$\Delta$ t (station - 508) [\SI{\ns}]')
+    plot.set_ylabel(r'p')
+    plot.set_xlimits(low, high)
+    plot.set_ylimits(min=0., max=0.15)
+    plot.save_as_pdf('plots/508/histogram.pdf')
 
 
 if __name__ in ('__main__'):

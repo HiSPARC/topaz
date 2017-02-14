@@ -1,6 +1,4 @@
-from paths import paths
 import tables
-import warnings
 import itertools
 
 import numpy as np
@@ -9,8 +7,7 @@ from sapphire.esd import download_data
 
 from testlist import Tijdtest
 import data
-import delta
-from delta import DeltaVal
+from delta import calculate, DeltaVal
 
 DATA_PATH = '/Users/arne/Datastore/tijdtest/tijdtest_data_david.h5'
 DELTA_PATH = '/Users/arne/Datastore/tijdtest/tijdtest_delta_david.h5'
@@ -59,8 +56,8 @@ def calculate_delta():
             tables.open_file(DELTA_PATH, 'w') as delta_file:
         for test in tests:
             table = delta_file.create_table('/t%d' % test.id, 'delta',
-                                            delta.DeltaVal, createparents=True)
-            ext_timestamps, deltas = delta.calculate(data_file, test.id)
+                                            DeltaVal, createparents=True)
+            ext_timestamps, deltas = calculate(data_file, test.id)
             delta_row = table.row
 
             for ext_timestamp, delta_val in itertools.izip(ext_timestamps, deltas):
