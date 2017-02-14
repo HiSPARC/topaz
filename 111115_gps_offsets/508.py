@@ -19,6 +19,9 @@ from testlist import get_tests
 from delta import get
 from helper import nanoseconds_from_ext_timestamp, timestamps_from_ext_timestamp
 
+DATA_PATH = '/Users/arne/Datastore/gps_offsets/508_data.h5'
+DELTAS_PATH = '/Users/arne/Datastore/gps_offsets/508_deltas.h5'
+
 
 def test_log_508():
     """ A log of davids tests
@@ -55,7 +58,7 @@ def download(storage, test):
 
 def download_data():
     tests = test_log_508()
-    with tables.openFile(paths('temp'), 'w') as storage:
+    with tables.open_file(DATA_PATH, 'w') as storage:
         for test in tests:
             download(storage, test)
 
@@ -63,8 +66,8 @@ def download_data():
 def calculate_delta():
     # Difference in length of cables to boxes in nano seconds, (swap - refr)
     tests = test_log_508()
-    with tables.openFile(paths('temp'), 'r') as data_file, \
-            tables.openFile(paths('temp2'), 'w') as delta_file:
+    with tables.openFile(DATA_PATH, 'r') as data_file, \
+            tables.openFile(DELTAS_PATH, 'w') as delta_file:
         for test in tests:
             table = delta_file.createTable('/t%d' % test.id, 'delta',
                                            delta.DeltaVal, createparents=True)
@@ -118,7 +121,7 @@ def print_delta_results():
     tests = test_log_508()
 
     for test in tests:
-        with tables.openFile(paths('temp2'), 'r') as delta_file:
+        with tables.openFile(DELTAS_PATH, 'r') as delta_file:
             delta_table = delta_file.getNode('/t%d' % test.id, 'delta')
             ext_timestamps = [row['ext_timestamp'] for row in delta_table]
             deltas = [row['delta'] for row in delta_table]
@@ -143,7 +146,7 @@ def plot_delta_test():
     # Begin Figure
     with pp.PlotFig(texttex=True, kind='pdf') as plot:
         for test in tests:
-            with tables.openFile(paths('temp2'), 'r') as delta_file:
+            with tables.open_file(DELTAS_PATH, 'r') as delta_file:
                 delta_table = delta_file.getNode('/t%d' % test.id, 'delta')
                 ext_timestamps = [row['ext_timestamp'] for row in delta_table]
                 deltas = [row['delta'] for row in delta_table]
@@ -164,7 +167,8 @@ def plot_delta_test():
 
 
 if __name__ in ('__main__'):
-    # download_data()
+    if not os.path.exists(DATA_PATH):
+        download_data()
     calculate_delta()
     print_delta_results()
     plot_delta_test()
