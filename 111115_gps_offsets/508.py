@@ -66,10 +66,10 @@ def download_data():
 def calculate_delta():
     # Difference in length of cables to boxes in nano seconds, (swap - refr)
     tests = test_log_508()
-    with tables.openFile(DATA_PATH, 'r') as data_file, \
-            tables.openFile(DELTAS_PATH, 'w') as delta_file:
+    with tables.open_file(DATA_PATH, 'r') as data_file, \
+            tables.open_file(DELTAS_PATH, 'w') as delta_file:
         for test in tests:
-            table = delta_file.createTable('/t%d' % test.id, 'delta',
+            table = delta_file.create_table('/t%d' % test.id, 'delta',
                                            delta.DeltaVal, createparents=True)
             ext_timestamps, deltas = calculate(data_file, test.id)
             delta_row = table.row
@@ -121,8 +121,8 @@ def print_delta_results():
     tests = test_log_508()
 
     for test in tests:
-        with tables.openFile(DELTAS_PATH, 'r') as delta_file:
-            delta_table = delta_file.getNode('/t%d' % test.id, 'delta')
+        with tables.open_file(DELTAS_PATH, 'r') as delta_file:
+            delta_table = delta_file.get_node('/t%d' % test.id, 'delta')
             ext_timestamps = [row['ext_timestamp'] for row in delta_table]
             deltas = [row['delta'] for row in delta_table]
         print "    % 3d  %s  % 7.2f  % 6.2f  % 4.2f" % (
@@ -147,7 +147,7 @@ def plot_delta_test():
     with pp.PlotFig(texttex=True, kind='pdf') as plot:
         for test in tests:
             with tables.open_file(DELTAS_PATH, 'r') as delta_file:
-                delta_table = delta_file.getNode('/t%d' % test.id, 'delta')
+                delta_table = delta_file.get_node('/t%d' % test.id, 'delta')
                 ext_timestamps = [row['ext_timestamp'] for row in delta_table]
                 deltas = [row['delta'] for row in delta_table]
                 plot.axe.hist(deltas, bins, normed=1, histtype='step', alpha=0.9,
