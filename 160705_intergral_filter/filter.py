@@ -5,7 +5,7 @@ import tables
 import datetime
 from numpy import array, histogram2d, histogram, linspace
 
-from artist import Plot, MultiPlot
+from artist import MultiPlot
 
 from sapphire import Station
 from sapphire.publicdb import download_data

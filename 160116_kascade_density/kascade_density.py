@@ -26,7 +26,7 @@ output can be converted back to the actual expected output.
 import tables
 from numpy import (histogram2d, histogram, linspace, logspace, array, where,
                    log10, inf, sqrt, abs, interp, diff, mean, median,
-                   empty_like, copyto, cos, zeros, arange, std, append)
+                   empty_like, copyto, cos, zeros, std, append)
 from scipy.stats import poisson, norm, binned_statistic
 
 from artist import Plot, MultiPlot

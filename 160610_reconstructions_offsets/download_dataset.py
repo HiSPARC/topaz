@@ -55,19 +55,22 @@ def reconstruct_coincidences():
     cluster = ScienceParkCluster(station_numbers, force_stale=True)
 
     with tables.open_file(PATH, 'a') as data:
-        # rec = ReconstructESDCoincidences(data, destination='recs',
-        #                                  overwrite=True, force_stale=True)
-        # rec.reconstruct_and_store(station_numbers)
+        # Use default
+        rec = ReconstructESDCoincidences(data, destination='recs',
+                                         overwrite=True, force_stale=True)
+        rec.reconstruct_and_store(station_numbers)
 
-        frec = ReconstructESDCoincidences(data, destination='recs_direct_offsets',
-                                          overwrite=True, force_stale=True)
-        frec.direction = CoinDirRecDirRef(frec.cluster)
-        frec.reconstruct_and_store(station_numbers)
+        # Use direct, not intermediate stations
+        rec = ReconstructESDCoincidences(data, destination='recs_direct_offsets',
+                                         overwrite=True, force_stale=True)
+        rec.direction = CoinDirRecDirRef(frec.cluster)
+        rec.reconstruct_and_store(station_numbers)
 
-        drec = ReconstructESDCoincidences(data, destination='recs_detector_offsets',
-                                          overwrite=True, force_stale=True)
-        drec.direction = CoinDirRecDetOff(drec.cluster)
-        drec.reconstruct_and_store(station_numbers)
+        # Only detector offsets
+        rec = ReconstructESDCoincidences(data, destination='recs_detector_offsets',
+                                         overwrite=True, force_stale=True)
+        rec.direction = CoinDirRecDetOff(drec.cluster)
+        rec.reconstruct_and_store(station_numbers)
 
 
 def plot_results():
@@ -93,6 +96,7 @@ def plot_azimuths(azimuth, name=''):
 
 
 if __name__ == "__main__":
-    # download_sciencepark_dataset_n3()
+    if not os.path.exists(PATH):
+        download_sciencepark_dataset_n3()
     reconstruct_coincidences()
     plot_results()

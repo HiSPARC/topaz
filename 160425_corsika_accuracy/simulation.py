@@ -124,19 +124,19 @@ def plot_zenith_core_distance_small():
         plot.save_as_pdf('plots/zenith_distance_e14_5_z0')
 
 
-# def plot_zenith_core_distance_small_2d():
-#     with tables.open_file(RESULT_DATA_SMALL, 'r') as data:
-#         sim = data.root.coincidences.coincidences.read_where('N == 1')
-#         core_distance = sqrt(sim['x'] ** 2 + sim['y'] ** 2)
-#         zenith = data.root.cluster_simulations.station_501.reconstructions.col('zenith')
-#         plot = Plot('semilogx')
-#         core_distance = core_distance[~isnan(zenith)]
-#         zenith = zenith[~isnan(zenith)]
-#         counts, x, y = histogram2d(core_distance, degrees(zenith), bins=50)
-#         plot.histogram2d(counts, x, y, type='color', bitmap=True)
-#         plot.set_xlabel(r'Core distance [\si{\meter}]')
-#         plot.set_ylabel(r'Reconstructed zenith [\si{\degree}]')
-#         plot.save_as_pdf('zenith_distance_e14_5_z0_2d')
+def plot_zenith_core_distance_small_2d():
+    with tables.open_file(RESULT_DATA_SMALL, 'r') as data:
+        sim = data.root.coincidences.coincidences.read_where('N == 1')
+        core_distance = sqrt(sim['x'] ** 2 + sim['y'] ** 2)
+        zenith = data.root.cluster_simulations.station_501.reconstructions.col('zenith')
+        plot = Plot('semilogx')
+        core_distance = core_distance[~isnan(zenith)]
+        zenith = zenith[~isnan(zenith)]
+        counts, x, y = histogram2d(core_distance, degrees(zenith), bins=50)
+        plot.histogram2d(counts, x, y, type='color', bitmap=True)
+        plot.set_xlabel(r'Core distance [\si{\meter}]')
+        plot.set_ylabel(r'Reconstructed zenith [\si{\degree}]')
+        plot.save_as_pdf('zenith_distance_e14_5_z0_2d')
 
 
 if __name__ == "__main__":

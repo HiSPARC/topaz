@@ -17,7 +17,7 @@ import os
 import tables
 from numpy import histogram, linspace, pi
 
-from artist import Plot, PolarPlot
+from artist import PolarPlot
 
 from sapphire import (ScienceParkCluster, GroundParticlesSimulation,
                       ReconstructESDCoincidences)
@@ -46,41 +46,41 @@ def reconstruct_simulations(data):
     rec.reconstruct_and_store()
 
     # Reconstruct without any offset
-    nrec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
-                                      overwrite=True, progress=True,
-                                      destination='recs_no_offset', force_stale=True)
-    nrec.prepare_output()
-    nrec.reconstruct_directions()
-    nrec.store_reconstructions()
+    rec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
+                                     overwrite=True, progress=True,
+                                     destination='recs_no_offset', force_stale=True)
+    rec.prepare_output()
+    rec.reconstruct_directions()
+    rec.store_reconstructions()
 
     # Use subset of stations for reconstructions
     station_numbers = [501, 503, 506]
 
     # Reconstruct using simulated offsets
-    srec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
-                                      overwrite=True, progress=True,
-                                      destination='recs_sub_offset', force_stale=True)
+    rec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
+                                     overwrite=True, progress=True,
+                                     destination='recs_sub_offset', force_stale=True)
     rec.reconstruct_and_store(station_numbers)
 
     # Reconstruct without any offset
-    nrec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
-                                      overwrite=True, progress=True,
-                                      destination='recs_sub_no_offset', force_stale=True)
-    nrec.prepare_output()
-    nrec.reconstruct_directions(station_numbers)
-    nrec.store_reconstructions()
+    rec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
+                                     overwrite=True, progress=True,
+                                     destination='recs_sub_no_offset', force_stale=True)
+    rec.prepare_output()
+    rec.reconstruct_directions(station_numbers)
+    rec.store_reconstructions()
 
     # Reconstruct using simulated offsets, and add offset for altitude (this is wrong)
-    arec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
-                                      overwrite=True, progress=True,
-                                      destination='recs_sub_offset_alt', force_stale=True)
-    arec.prepare_output()
-    arec.offsets = {station.number: [station.gps_offset + d.offset +
-                                     d.get_coordinates()[2] / c
-                                     for d in station.detectors]
-                    for station in arec.cluster.stations}
-    arec.reconstruct_directions(station_numbers)
-    arec.store_reconstructions()
+    rec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
+                                     overwrite=True, progress=True,
+                                     destination='recs_sub_offset_alt', force_stale=True)
+    rec.prepare_output()
+    rec.offsets = {station.number: [station.gps_offset + d.offset +
+                                    d.get_coordinates()[2] / c
+                                    for d in station.detectors]
+                   for station in arec.cluster.stations}
+    rec.reconstruct_directions(station_numbers)
+    rec.store_reconstructions()
 
 
 def plot_results(data):

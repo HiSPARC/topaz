@@ -6,26 +6,18 @@ For various combinations of stations in compact clusters
 - Use detector offsets from API
 
 """
-import itertools
 from datetime import datetime
-from bisect import bisect_right
-import csv
 import os
 import multiprocessing
 
-from numpy import nan, isnan, arange, histogram, linspace, genfromtxt
-from scipy.optimize import curve_fit
+from numpy import isnan
 import tables
 
-from artist import Plot
-
 from sapphire.transformations.clock import datetime_to_gps
-from sapphire import CoincidenceQuery, HiSPARCStations, Station
+from sapphire import CoincidenceQuery, Station
 from sapphire.analysis.event_utils import station_arrival_time
-from sapphire.analysis.calibration import determine_station_timing_offset
-from sapphire.utils import pbar, ERR
 
-from station_distances import close_pairs_in_network, distance_between_stations
+from station_distances import close_pairs_in_network
 
 """
 Reference stations

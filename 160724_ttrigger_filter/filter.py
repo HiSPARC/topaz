@@ -3,16 +3,14 @@ import zlib
 
 import tables
 import datetime
-from numpy import array, histogram2d, histogram, linspace, arange, log10, where
+from numpy import histogram2d, histogram, linspace, arange, log10, where
 
-from artist import Plot, MultiPlot
+from artist import Plot
 
 from sapphire import Station
 from sapphire.publicdb import download_data
-from sapphire.analysis.process_traces import TraceObservables, MeanFilter
+from sapphire.analysis.process_traces import MeanFilter
 from sapphire.analysis.process_events import ProcessEventsWithTriggerOffset
-from sapphire.utils import pbar
-
 
 DATA_PATH = '/Users/arne/Datastore/ttrigger_filter/data.h5'
 STATION = 505

@@ -1,18 +1,7 @@
-from datetime import date
-import os
-
-from numpy import (sum, sin, linspace, random, searchsorted, split, nan, array,
-                   empty, column_stack, ones_like)
+from numpy import sum, ones_like
 import tables
 
-from artist import Plot, MultiPlot
-
-from sapphire.transformations.clock import datetime_to_gps
-from sapphire.utils import pbar
-
-from download_dataset import STATIONS, START, END
-
-from determine_statistics import get_all_stats, BINS
+from determine_statistics import get_all_stats
 
 
 class DayFilter(object):
@@ -118,6 +107,11 @@ class EventFilter(object):
 
 
 def copy_selection(statistics):
+    """Copy the selected events to a new tables
+
+    WIP
+
+    """
     with tables.open_file(DATA_PATH) as source:
         with tables.open_file(FILTERED_PATH, 'w') as target:
             source

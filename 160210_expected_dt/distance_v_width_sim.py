@@ -5,10 +5,10 @@ Used to compare data to a simulation.
 """
 import itertools
 
-from numpy import sqrt, array, arange, histogram, std, linspace
+from numpy import arange, histogram, std, linspace
 import tables
 from scipy.optimize import curve_fit
-from scipy.stats import t, norm, tukeylambda, chi
+from scipy.stats import norm
 
 from artist import Plot
 
@@ -33,8 +33,6 @@ def plot_distance_width():
         for ref, other in itertools.combinations(station_groups, 2):
             ref_id, ref_events = ref
             id, events = other
-            ref_s = ref_events._v_parent._v_name[8:]
-            s = events._v_parent._v_name[8:]
             distances.append(cluster.calc_rphiz_for_stations(ref_id, id)[0])
 
             dt = (ref_events.col('ext_timestamp').astype(int) -

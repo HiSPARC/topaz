@@ -97,22 +97,22 @@ class EnergySensitivity(object):
 
     def find_min_energy(self, xc, yc):
         # Use bisection to quickly get the final energy
-        E = self.start_energy
+        energy = self.start_energy
         lo = self.min_energy
         hi = self.max_energy
         for _ in range(self.bisections):
-            Ne = 10 ** (np.log10(E) - 15 + 4.8)
-            station_densities = self.calculate_densities_for_cluster(xc, yc, Ne)
+            n_electrons = 10 ** (np.log10(energy) - 15 + 4.8)
+            station_densities = self.calculate_densities_for_cluster(xc, yc, n_electrons)
             p_cluster = self.detection_probability_for_cluster(station_densities)
             if p_cluster == self.detection_probability:
                 break
             elif p_cluster < self.detection_probability:
-                lo = E
+                lo = energy
             else:
-                hi = E
-            E = 10 ** ((np.log10(lo) + np.log10(hi)) / 2.0)
+                hi = energy
+            energy = 10 ** ((np.log10(lo) + np.log10(hi)) / 2.0)
 
-        return E
+        return energy
 
     def detection_probability_for_cluster(self, station_densities):
         """Determine the probability of 'coincidence'
@@ -189,21 +189,21 @@ class EnergySensitivity(object):
 
         return np.exp(-detector_density / 2.)
 
-    def calculate_densities_for_cluster(self, x, y, Ne):
-        densities = [self.calculate_densities_for_station(station, x, y, Ne)
+    def calculate_densities_for_cluster(self, x, y, n_electrons):
+        densities = [self.calculate_densities_for_station(station, x, y, n_electrons)
                      for station in self.cluster.stations]
 
         return densities
 
-    def calculate_densities_for_station(self, station, x, y, Ne):
-        densities = [self.calculate_densities_for_detector(detector, x, y, Ne)
+    def calculate_densities_for_station(self, station, x, y, n_electrons):
+        densities = [self.calculate_densities_for_detector(detector, x, y, n_electrons)
                      for detector in station.detectors]
 
         return densities
 
-    def calculate_densities_for_detector(self, detector, x, y, Ne):
+    def calculate_densities_for_detector(self, detector, x, y, n_electrons):
         r = self.calculate_detector_core_distance(detector, x, y)
-        density = self.ldf.calculate_ldf_value(r, Ne)
+        density = self.ldf.calculate_ldf_value(r, n_electrons)
 
         return density
 

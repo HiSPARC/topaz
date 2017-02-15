@@ -1,4 +1,4 @@
-from numpy import arange, where, zeros, array, nan
+from numpy import arange, where, array
 
 from artist import Plot
 
@@ -57,6 +57,6 @@ if __name__ == "__main__":
     if 'trace' not in globals():
         s = Station(510)
     plot_integral(trace, baseline)
-        trace, baseline, integral, pulseheight, filtered_trace = get_trace(s)
+    trace, baseline, integral, pulseheight, filtered_trace = get_trace(s)
     plot_filtered(filtered_trace)
     print '%d ADC, %d ADC.sample, %d ADC' % (baseline, integral, pulseheight)
