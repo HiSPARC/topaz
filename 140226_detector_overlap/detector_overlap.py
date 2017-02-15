@@ -6,7 +6,6 @@ and a rectangle with sides 1m by 0.5m with same origin but rotated.
 
 """
 
-import os
 import math
 from random import uniform
 
@@ -25,7 +24,7 @@ def run():
 
     angles = np.linspace(0, np.pi / 2., 50)
     overlap = []
-    N = 200000
+    n = 200000
 
     for i, angle in enumerate(angles):
         plt.figure()
@@ -34,7 +33,7 @@ def run():
         yin = []
         yout = []
         count = 0
-        for _ in xrange(N):
+        for _ in xrange(n):
             long = uniform(-detector_long, detector_long)
             short = uniform(-detector_short, detector_short)
             point = Point(long, short).rotate(angle)
@@ -45,7 +44,7 @@ def run():
             else:
                 xout.append(point.x)
                 yout.append(point.y)
-        overlap.append(count / (2. * N))
+        overlap.append(count / (2. * n))
         plt.text(.4, .6, ('Angle: %.2f deg\nOverlap: %.3f m**2' %
                           (np.degrees(angle), overlap[-1])), ha='left')
         plt.scatter(xin, yin, s=2, c='black')
@@ -62,6 +61,7 @@ def run():
     plt.figure()
     plt.plot(angles, overlap)
     plt.show()
+
 
 if __name__ == "__main__":
     run()

@@ -1,7 +1,4 @@
-from glob import glob
-import os
-
-from numpy import genfromtxt, zeros, histogram, arange, array
+from numpy import zeros, arange, array
 
 from sapphire import Station
 

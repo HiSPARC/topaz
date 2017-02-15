@@ -7,7 +7,7 @@ from numpy import histogram, pi, array, arange, linspace
 
 from artist import Plot, PolarPlot
 
-from sapphire import (GroundParticlesSimulation, HiSPARCStations
+from sapphire import (GroundParticlesSimulation, HiSPARCStations,
                       ReconstructESDEvents, ReconstructESDCoincidences)
 from sapphire.utils import angle_between
 
@@ -173,6 +173,7 @@ def reconstruct_simulations():
             rec_coins.store_reconstructions()
         except:
             pass
+
 
 if __name__ == '__main__':
     # run_simulation()

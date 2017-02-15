@@ -1,8 +1,5 @@
-from datetime import datetime
-
 import tables
-from numpy import (genfromtxt, histogram, linspace, pi, where, degrees,
-                   invert, array, arange, std, mean, histogram2d, nan)
+from numpy import genfromtxt, histogram, where, array, arange, histogram2d, nan
 from scipy.optimize import curve_fit
 
 from artist import Plot, MultiPlot

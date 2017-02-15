@@ -19,7 +19,6 @@ import datetime
 import tables
 
 from sapphire import download_coincidences
-from sapphire.utils import pbar
 from sapphire.transformations.clock import gps_to_datetime
 
 from eventtime_ranges import get_timestamp_ranges, get_total_exposure

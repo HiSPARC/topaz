@@ -20,8 +20,8 @@ from functools import partial
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 import numpy as np
-import tables
-import progressbar as pb
+
+from artist import Plot
 
 from sapphire import ScienceParkCluster, HiSPARCStations
 from sapphire.clusters import (SingleStation, SingleTwoDetectorStation,
@@ -156,7 +156,7 @@ class EnergySensitivity(object):
             # To few detectors
             return 0
 
-        p0_detectors = [self.P0(density) for density in detector_densities]
+        p0_detectors = [self.p0(density) for density in detector_densities]
         p_detectors = [1. - p0 for p0 in p0_detectors]
         p_station = self.calculate_p(p_detectors, p0_detectors,
                                      self.min_detectors)
@@ -179,12 +179,12 @@ class EnergySensitivity(object):
 
         return p_total
 
-    def P(self, detector_density):
+    def p(self, detector_density):
         """Chance of at least one particle in detector"""
 
-        return 1.0 - P0(detector_density)
+        return 1.0 - self.p0(detector_density)
 
-    def P0(self, detector_density):
+    def p0(self, detector_density):
         """Chance of detecting no particle in a detector"""
 
         return np.exp(-detector_density / 2.)
@@ -226,14 +226,14 @@ class EnergySensitivity(object):
 
     def plot_energy_acceptance(self):
         # Grid
-        min_E = np.log10(self.min_energy)
-        max_E = np.log10(self.max_energy)
-        levels = (max_E - min_E) * 3 + 1
-        label_levels = (max_E - min_E) + 1
+        min_energy = np.log10(self.min_energy)
+        max_energy = np.log10(self.max_energy)
+        levels = (max_energy - min_energy) * 3 + 1
+        label_levels = (max_energy - min_energy) + 1
         C = plt.contour(self.xx, self.yy, self.results,
-                        np.logspace(min_E, max_E, levels))
-        plt.clabel(C, np.logspace(min_E, max_E, label_levels), inline=1,
-                   fontsize=8, fmt='%.0e')
+                        np.logspace(min_energy, max_energy, levels))
+        plt.clabel(C, np.logspace(min_energy, max_energy, label_levels),
+                   inline=1, fontsize=8, fmt='%.0e')
 
     def draw_background_map(self):
         self_path = os.path.dirname(__file__)
@@ -252,7 +252,7 @@ class EnergySensitivity(object):
 class SingleStationSensitivity(EnergySensitivity):
 
     def __init__(self):
-        super(SingleFourEnergySensitivity, self).__init__()
+        super(SingleStationSensitivity, self).__init__()
 
         # Detectors
         self.cluster = SingleStation()
@@ -402,11 +402,10 @@ class StationPairAreaEnergySensitivity(StationPairEnergySensitivity):
         """Plot itnerpolated ellipses instead of contours"""
 
         # Grid
-        min_E = np.log10(self.min_energy)
-        max_E = np.log10(self.max_energy)
-        n_levels = (max_E - min_E) * 3 + 1
-        levels = np.logspace(min_E, max_E, n_levels)
-        label_levels = (max_E - min_E) + 1
+        min_energy = np.log10(self.min_energy)
+        max_energy = np.log10(self.max_energy)
+        n_levels = (max_energy - min_energy) * 3 + 1
+        levels = np.logspace(min_energy, max_energy, n_levels)
         x0 = self.xx[0]
         y0 = self.yy[0]
         for level in levels:
@@ -442,7 +441,7 @@ class DistancePairAreaEnergySensitivity(StationPairAreaEnergySensitivity):
         self.yy = np.arange(yc, self.max_radius + yc, self.step_size)
 
 
-def generate_regular_grid_positions(N, x0, y0=None, x1=None, y1=None):
+def generate_regular_grid_positions(n, x0, y0=None, x1=None, y1=None):
     """ Generate positions on a regular grid bound by (x0, y0) and (x1, y1)
 
     :return: x, y
@@ -455,21 +454,21 @@ def generate_regular_grid_positions(N, x0, y0=None, x1=None, y1=None):
         x1 = -x0
         y1 = -y0
 
-    N_x = np.sqrt(N)
-    N_y = N / N_x
+    n_x = np.sqrt(n)
+    n_y = n / n_x
 
-    for x in np.linspace(x0, x1, N_x):
-        for y in np.linspace(y0, y1, N_y):
+    for x in np.linspace(x0, x1, n_x):
+        for y in np.linspace(y0, y1, n_y):
             yield x, y
 
 
-def generate_positions(self, N, max_r):
+def generate_positions(self, n, max_r):
     """ Generate positions and an orientation uniformly on a circle
 
     :return: r, phi
 
     """
-    for i in range(N):
+    for i in range(n):
         phi = np.random.uniform(-np.pi, np.pi)
         r = np.sqrt(np.random.uniform(0, max_r ** 2))
         yield r, phi
@@ -488,7 +487,7 @@ def get_pair_distance_energy_array(distances, energies, n=8):
 
 def plot_results(distances, energies, results):
     plot = Plot('loglog')
-    plot.histogram2d(log10(results4[:-1, :-1] + 10), distances, energies,
+    plot.histogram2d(np.log10(results[:-1, :-1] + 10), distances, energies,
                      bitmap=True)
     plot.set_ylabel('Shower energy')
     plot.set_xlabel('Distance between stations')

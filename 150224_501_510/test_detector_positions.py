@@ -7,7 +7,6 @@ from artist import Plot
 
 from sapphire import HiSPARCStations, ReconstructESDEvents
 
-
 STATIONS = [501, 510]
 COINDATA_PATH = '/Users/arne/Datastore/501_510/c_501_510_150120_150201.h5'
 
@@ -45,7 +44,7 @@ def reconstruct_simulations(data):
         plot = Plot()
         plot.histogram2d(*histogram2d(rec_501.phi.compress(high_zenith),
                                       rec_510.phi.compress(high_zenith),
-                                      bins=linspace(-pi, pi, 100))
+                                      bins=linspace(-pi, pi, 100)))
         plot.save_as_pdf('order_%d%d%d%d' % order)
 
 

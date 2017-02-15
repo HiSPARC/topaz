@@ -1,7 +1,6 @@
 import os
 
 import tables
-import numpy
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 
@@ -22,8 +21,8 @@ def plot_time_slices(data):
     header = groundparticles._v_attrs.event_header
     step = 2000
     for t in range(times.min(), times.max(), step):
-        QUERY = QUERY_DETECTABLE + ' & ' + QUERY_TIMESLICE % (t, t + step)
-        filtered_particles = groundparticles.get_where_list(QUERY)
+        query = QUERY_DETECTABLE + ' & ' + QUERY_TIMESLICE % (t, t + step)
+        filtered_particles = groundparticles.get_where_list(query)
         detectable_x = groundparticles.read_coordinates(filtered_particles, field='x')
         detectable_y = groundparticles.read_coordinates(filtered_particles, field='y')
         plt.figure()

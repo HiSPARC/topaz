@@ -1,10 +1,7 @@
-import os
 from datetime import date
-from urllib import urlopen
 
 from artist import Plot
-from numpy import (genfromtxt, zeros, histogram, arange, where, uint32,
-                   average, max as npmax, argsort, array)
+from numpy import zeros, histogram, where, average, max as npmax, argsort, array
 from scipy.stats import binned_statistic
 
 from sapphire import Station, Network

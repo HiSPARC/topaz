@@ -1,13 +1,9 @@
-from math import cos, sin
-
 import tables
-from numpy import nanmin, isnan, array, arange, insert, append, sqrt
+from numpy import arange, append
 from artist import Plot
 
-from sapphire import Station, HiSPARCStations, CoincidenceQuery
+from sapphire import HiSPARCStations, CoincidenceQuery
 from sapphire.utils import distance_between
-from sapphire.analysis import event_utils
-from sapphire.transformations import geographic
 from sapphire.analysis.event_utils import relative_detector_arrival_times
 
 COIN_DATA = '/Users/arne/Datastore/esd_coincidences/coincidences_n7_120101_140801.h5'

@@ -3,7 +3,7 @@ import os
 import multiprocessing
 
 from scipy.stats import linregress
-from numpy import histogram, log, linspace, where, nan, mean
+from numpy import histogram, log, linspace, mean
 import tables
 
 from sapphire import HiSPARCNetwork

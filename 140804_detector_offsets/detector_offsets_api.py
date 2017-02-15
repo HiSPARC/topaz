@@ -5,7 +5,6 @@ from artist import Plot
 from numpy import histogram, arange, isnan, mean, std
 from scipy.optimize import curve_fit
 
-from sapphire.analysis.calibration import determine_detector_timing_offsets
 from sapphire.utils import gauss
 from sapphire.transformations.clock import datetime_to_gps
 from sapphire import Station, Network
