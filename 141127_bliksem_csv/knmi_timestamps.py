@@ -1,8 +1,6 @@
 import datetime
 import calendar
 
-import tables
-
 from sapphire.transformations import clock
 
 

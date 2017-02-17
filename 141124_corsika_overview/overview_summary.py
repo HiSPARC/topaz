@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import math
-import itertools
-
 from matplotlib import pyplot
 import numpy
 import tables
@@ -39,7 +36,6 @@ def print_overview(sims):
 
 
 def plot_number_of_particles(sims):
-    particles = sorted(set(sims.col('particle_id')))
     energies = sorted(set(sims.col('energy')))
     zeniths = sorted(set(sims.col('zenith')))
 

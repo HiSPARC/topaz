@@ -14,7 +14,7 @@ contributions.
 """
 import itertools
 
-from numpy import sqrt, array, std, histogram, linspace, arange, percentile
+from numpy import array, percentile
 from scipy.optimize import curve_fit
 from scipy.stats import norm
 import tables
@@ -79,10 +79,8 @@ def plot_distance_width():
 
                 high = 94
                 low = 6
-#                 width = curve_fit(norm.pdf, x, counts, p0=(0., distances[-1]))[0][1]
                 width = percentile(sorted(dt), high) - percentile(sorted(dt), low)
                 widths.append(width)
-#                 sim_width = curve_fit(norm.pdf, x, sim_counts, p0=(0., distances[-1]))[0][1]
                 sim_width = percentile(sim_dt, high) - percentile(sim_dt, low)
                 sim_widths.append(sim_width)
 

@@ -1,7 +1,5 @@
 from artist import Plot
-import tables
-from numpy import (log10, median, percentile, degrees, array, arange,
-                   histogram, logspace, linspace, mean, nan)
+from numpy import log10, median, percentile, arange, histogram, logspace, mean
 from scipy.optimize import curve_fit
 
 from sapphire import CorsikaQuery

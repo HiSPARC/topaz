@@ -75,8 +75,8 @@ def plot_traces():
                 plot.plot(range(len(trace)), trace, mark=None)
                 plot.set_label('%d' % extts)
                 microsec_to_sample = 400
-                plot.draw_vertical_line(pre * 400, linestyle='thick,red,semitransparent')
-                plot.draw_vertical_line((pre + coin) * 400, linestyle='thick,blue,semitransparent')
+                plot.draw_vertical_line(pre * microsec_to_sample, linestyle='thick,red,semitransparent')
+                plot.draw_vertical_line((pre + coin) * microsec_to_sample, linestyle='thick,blue,semitransparent')
                 plot.set_ylabel('Signal strength [ADCcounts]')
                 plot.set_xlabel('Sample [2.5ns]')
                 plot.set_ylimits(min=150, max=1500)

@@ -1,7 +1,6 @@
 from artist import Plot
-import tables
 from numpy import (median, percentile, histogram, arange, histogram2d,
-                   logspace, linspace, log10, floor, ceil)
+                   logspace, linspace)
 
 from sapphire import CorsikaQuery
 
@@ -13,7 +12,6 @@ OVERVIEW = '/Users/arne/Datastore/CORSIKA/corsika_overview.h5'
 
 def plot_interaction_height(cq):
     plot = Plot()
-    sims = cq.sims
 
     p = 'proton'
     for e in sorted(cq.available_parameters('energy', particle=p)):

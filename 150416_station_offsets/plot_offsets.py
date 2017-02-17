@@ -15,19 +15,15 @@ Causes for changing offsets at some points:
 - When swapping PMTs or a PMT is not working well (e.g. 503, 505, 508)
 
 """
-import itertools
 from datetime import date
-import csv
-import calendar
 from glob import glob
 import re
 
 from artist import Plot
-from numpy import nan, genfromtxt, histogram, arange
+from numpy import genfromtxt, histogram, arange
 
 from sapphire.api import Station
-from sapphire.transformations.clock import gps_to_datetime, datetime_to_gps
-
+from sapphire.transformations.clock import datetime_to_gps
 
 STATIONS = [501, 502, 503, 504, 505, 506, 508, 509, 510]
 OFF_DATAPATH_GLOB = '/Users/arne/Datastore/station_offsets/offsets_ref*_s*.tsv'

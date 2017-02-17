@@ -230,9 +230,9 @@ class EnergySensitivity(object):
         max_energy = np.log10(self.max_energy)
         levels = (max_energy - min_energy) * 3 + 1
         label_levels = (max_energy - min_energy) + 1
-        C = plt.contour(self.xx, self.yy, self.results,
-                        np.logspace(min_energy, max_energy, levels))
-        plt.clabel(C, np.logspace(min_energy, max_energy, label_levels),
+        contour = plt.contour(self.xx, self.yy, self.results,
+                              np.logspace(min_energy, max_energy, levels))
+        plt.clabel(contour, np.logspace(min_energy, max_energy, label_levels),
                    inline=1, fontsize=8, fmt='%.0e')
 
     def draw_background_map(self):

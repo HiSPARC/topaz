@@ -1,18 +1,15 @@
 """Show overall offset distribution
 """
 
-import itertools
-from datetime import date
-import csv
-import calendar
 from glob import glob
-import re
 
 from artist import Plot
-from numpy import nan, genfromtxt, histogram, arange, isnan, genfromtxt
+from numpy import genfromtxt, histogram, arange, isnan
 from scipy.optimize import curve_fit
 
 from sapphire.utils import gauss
+
+from plot_offsets import get_available_station_pairs
 
 OFF_DATAPATH_GLOB = '/Users/arne/Datastore/station_offsets/offsets_ref*_s*.tsv'
 
@@ -40,5 +37,4 @@ def plot_distribution():
 
 
 if __name__ == '__main__':
-    for ref_station, station in get_available_station_pairs():
-        plot_offset_timeline(ref_station, station)
+    plot_distribution()

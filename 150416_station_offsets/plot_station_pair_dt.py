@@ -1,13 +1,13 @@
 """Plot station dt distribution"""
 
 import itertools
-from datetime import datetime
 
 import tables
-from numpy import histogram, linspace, arange, sqrt
-from artist import MultiPlot
+from numpy import histogram, linspace, arange
 from scipy.optimize import curve_fit
 from scipy.stats import t, norm, tukeylambda
+
+from artist import MultiPlot
 
 from sapphire import HiSPARCStations
 from sapphire.utils import gauss

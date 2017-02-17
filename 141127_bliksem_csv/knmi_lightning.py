@@ -95,5 +95,6 @@ def data_to_csv():
                 else:
                     data.close()
 
+
 if __name__ == '__main__':
     data_to_csv()
