@@ -10,6 +10,7 @@
 .project
 .pydevproject
 .DS_Store
+Icon?
 
 build/
 
