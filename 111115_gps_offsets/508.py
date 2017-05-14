@@ -1,4 +1,5 @@
 import itertools
+import os
 
 import tables
 import numpy as np
@@ -9,7 +10,6 @@ from sapphire.esd import download_data
 from hisparc.analysis.coincidences import search_coincidences as search
 
 from testlist import Tijdtest
-import data
 import delta
 from delta import DeltaVal
 
@@ -50,7 +50,7 @@ def download(storage, test):
     download_data(storage, '/swap/t%d' % test.id, int(test.gps), test.start, test.end)
 
 
-def download_data():
+def download_test_data():
     tests = test_log_508()
     with tables.open_file(DATA_PATH, 'w') as storage:
         for test in tests:
@@ -64,7 +64,7 @@ def calculate_delta():
             tables.open_file(DELTAS_PATH, 'w') as delta_file:
         for test in tests:
             table = delta_file.create_table('/t%d' % test.id, 'delta',
-                                           delta.DeltaVal, createparents=True)
+                                            delta.DeltaVal, createparents=True)
             ext_timestamps, deltas = calculate(data_file, test.id)
             delta_row = table.row
 
@@ -149,7 +149,7 @@ def plot_delta_test():
             plot.histogram(n, bins)
 
     plot.set_title('Time difference coincidences 508')
-    plot.set_label(r'$\mu={1:.1f}$, $\sigma={2:.1f}$'.format(*popt))
+    # plot.set_label(r'$\mu={1:.1f}$, $\sigma={2:.1f}$'.format(*popt))
     plot.set_xlabel(r'$\Delta$ t (station - 508) [\SI{\ns}]')
     plot.set_ylabel(r'p')
     plot.set_xlimits(low, high)
@@ -159,7 +159,7 @@ def plot_delta_test():
 
 if __name__ in ('__main__'):
     if not os.path.exists(DATA_PATH):
-        download_data()
+        download_test_data()
     calculate_delta()
     print_delta_results()
     plot_delta_test()
