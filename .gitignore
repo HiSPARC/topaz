@@ -1,5 +1,6 @@
 # Plots and Figures
 *.pdf
+*.mov
 
 # Data
 *.h5
