@@ -1,9 +1,9 @@
-from artist import Plot
-import tables
 import numpy as np
+import tables
+
+from artist import Plot
 
 from sapphire import CoincidenceQuery
-
 
 EVENTDATA_PATHS = ['/Users/arne/Datastore/muonlab_test.h5',
                    '/Users/arne/Datastore/muonlab_test2.h5',

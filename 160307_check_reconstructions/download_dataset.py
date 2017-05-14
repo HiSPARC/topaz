@@ -1,11 +1,11 @@
-import os.path
-from datetime import datetime
 import multiprocessing
+import os.path
+
+from datetime import datetime
 
 import tables
 
 from sapphire import download_coincidences, download_data
-
 
 DATASTORE = "/Users/arne/Datastore/check_reconstructions"
 STATIONS = [501, 502, 503, 504, 505, 506, 508, 509, 510, 511]

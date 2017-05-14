@@ -1,13 +1,13 @@
-import os
 import glob
+import os
 
-import tables
-from artist import Plot
 import numpy as np
+import tables
+
+from artist import Plot
 
 from sapphire.analysis.coincidence_queries import CoincidenceQuery
 from sapphire.utils import angle_between
-
 
 PATHS = '/Users/arne/Datastore/science_park_corsika/*_*/result.h5'
 

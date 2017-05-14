@@ -1,4 +1,5 @@
 from datetime import datetime
+
 import tables
 
 from sapphire import download_coincidences, download_data

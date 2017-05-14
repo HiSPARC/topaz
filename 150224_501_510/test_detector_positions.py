@@ -1,7 +1,8 @@
 import itertools
 
-from numpy import linspace, pi, array, histogram2d
 import tables
+
+from numpy import array, histogram2d, linspace, pi
 
 from artist import Plot
 

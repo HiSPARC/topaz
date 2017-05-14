@@ -1,14 +1,14 @@
 import numpy as np
-from artist import Plot, MultiPlot
+
 from scipy.optimize import curve_fit
+
+from artist import MultiPlot, Plot
 
 from sapphire.utils import gauss
 
-from testlist import get_tests
 from delta import get
-from helper import (nanoseconds_from_ext_timestamp,
-                    timestamps_from_ext_timestamp)
-
+from helper import nanoseconds_from_ext_timestamp, timestamps_from_ext_timestamp
+from testlist import get_tests
 
 PLOT_PATH = 'plots/'
 

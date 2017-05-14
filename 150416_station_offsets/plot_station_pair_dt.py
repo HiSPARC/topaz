@@ -3,9 +3,10 @@
 import itertools
 
 import tables
-from numpy import histogram, linspace, arange
+
+from numpy import arange, histogram, linspace
 from scipy.optimize import curve_fit
-from scipy.stats import t, norm, tukeylambda
+from scipy.stats import norm, t, tukeylambda
 
 from artist import MultiPlot
 

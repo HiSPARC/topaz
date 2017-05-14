@@ -10,14 +10,15 @@ This script downloads the relevant data and looks for the size of the overlap
 in the traces.
 
 """
-from datetime import datetime
 import os
 
-from numpy import array
+from datetime import datetime
+
 import tables
 
-from sapphire import download_data, Station
+from numpy import array
 
+from sapphire import Station, download_data
 
 DATA = '/Users/arne/Datastore/event_overlap.h5'
 

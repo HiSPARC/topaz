@@ -1,7 +1,8 @@
-from numpy import genfromtxt, where, histogram, arange, convolve, ones
+from numpy import arange, convolve, genfromtxt, histogram, ones, where
 from scipy.optimize import curve_fit
 
 from artist import Plot
+
 from sapphire.utils import gauss
 
 

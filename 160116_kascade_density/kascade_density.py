@@ -24,12 +24,13 @@ output can be converted back to the actual expected output.
 
 """
 import tables
-from numpy import (histogram2d, histogram, linspace, logspace, array, where,
-                   log10, inf, sqrt, abs, interp, diff, mean, median,
-                   empty_like, copyto, cos, zeros, std, append)
-from scipy.stats import poisson, norm, binned_statistic
 
-from artist import Plot, MultiPlot
+from numpy import (
+    abs, append, array, copyto, cos, diff, empty_like, histogram, histogram2d, inf, interp, linspace, log10, logspace,
+    mean, median, sqrt, std, where, zeros)
+from scipy.stats import binned_statistic, norm, poisson
+
+from artist import MultiPlot, Plot
 
 from sapphire.analysis.find_mpv import FindMostProbableValueInSpectrum as FindMPV
 

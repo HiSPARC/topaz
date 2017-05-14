@@ -1,9 +1,9 @@
 import os
 
-import tables
 import matplotlib.pyplot as plt
-from matplotlib.colors import LogNorm
+import tables
 
+from matplotlib.colors import LogNorm
 
 SEED_NUMBERS = '231360773_763934896'
 DATA_PATH = '/Users/arne/Datastore/CORSIKA'

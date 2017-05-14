@@ -1,7 +1,6 @@
 import tables
 
-from sapphire import HiSPARCStations, CoincidencesESD
-
+from sapphire import CoincidencesESD, HiSPARCStations
 
 STATIONS = [501, 510]
 EVENTDATA_PATH = '/Users/arne/Datastore/501_510/e_501_510_141101_150201.h5'

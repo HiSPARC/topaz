@@ -1,11 +1,11 @@
 import numpy as np
-from numpy import linspace, pi, degrees, percentile, isfinite
 import tables
+
+from numpy import degrees, isfinite, linspace, percentile, pi
 
 from artist import Plot
 
 from sapphire.utils import angle_between
-
 
 STATIONS = [501, 510]
 COINDATA_PATH = '/Users/arne/Datastore/501_510/c_501_510_141101_150201.h5'

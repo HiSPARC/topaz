@@ -1,5 +1,6 @@
 import tables
-from numpy import histogram, degrees, isnan
+
+from numpy import degrees, histogram, isnan
 
 from artist import Plot
 

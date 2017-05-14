@@ -1,9 +1,9 @@
-import tables
-from artist import Plot
 import numpy as np
+import tables
 
-from sapphire import (CoincidenceQuery, ReconstructESDEvents,
-                      ReconstructESDCoincidences)
+from artist import Plot
+
+from sapphire import CoincidenceQuery, ReconstructESDCoincidences, ReconstructESDEvents
 from sapphire.utils import angle_between
 
 DATA_PATH = '/Users/arne/Datastore/esd_coincidences/coincidences_n7_100101_140801.h5'

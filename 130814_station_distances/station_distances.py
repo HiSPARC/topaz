@@ -8,11 +8,11 @@ a histogram to show these distances.
 """
 from itertools import combinations
 
-from artist import Plot
 import numpy
 
-from sapphire import (ScienceParkCluster, HiSPARCNetwork, HiSPARCStations,
-                      Network)
+from artist import Plot
+
+from sapphire import HiSPARCNetwork, HiSPARCStations, Network, ScienceParkCluster
 from sapphire.utils import c
 
 

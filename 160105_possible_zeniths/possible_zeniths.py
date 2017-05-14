@@ -5,7 +5,7 @@ the possible time differences and the theta angles those would result in if
 the shower azimuth was parallel to the line between the detectors.
 
 """
-from numpy import arange, arcsin, floor, degrees
+from numpy import arange, arcsin, degrees, floor
 
 from artist import Plot
 

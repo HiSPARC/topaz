@@ -5,13 +5,13 @@ Used to compare data to a simulation.
 """
 import itertools
 
-from numpy import arange, histogram, std, linspace
 import tables
+
+from numpy import arange, histogram, linspace, std
 from scipy.optimize import curve_fit
 from scipy.stats import norm
 
 from artist import Plot
-
 
 PATH = '/Users/arne/Datastore/expected_dt/test_station_dt_spa.h5'
 

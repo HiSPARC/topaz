@@ -2,7 +2,8 @@
 
 
 import tables
-from numpy import arange, save, load, sqrt, nan, isnan, histogram
+
+from numpy import arange, histogram, isnan, load, nan, save, sqrt
 
 from artist import Plot
 

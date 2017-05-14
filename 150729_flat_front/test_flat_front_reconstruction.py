@@ -1,9 +1,10 @@
 import tables
-from numpy import histogram, isnan, invert, array
+
+from numpy import array, histogram, invert, isnan
 
 from artist import Plot, PolarPlot
 
-from sapphire import FlatFrontSimulation, ReconstructESDEvents, HiSPARCStations
+from sapphire import FlatFrontSimulation, HiSPARCStations, ReconstructESDEvents
 from sapphire.utils import angle_between
 
 DATAPATH = '/tmp/test_simulation_reconstruction.h5'

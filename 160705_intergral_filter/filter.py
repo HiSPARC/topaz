@@ -1,17 +1,17 @@
+import datetime
 import os
 import zlib
 
 import tables
-import datetime
-from numpy import array, histogram2d, histogram, linspace
+
+from numpy import array, histogram, histogram2d, linspace
 
 from artist import MultiPlot
 
 from sapphire import Station
+from sapphire.analysis.process_traces import MeanFilter, TraceObservables
 from sapphire.publicdb import download_data
-from sapphire.analysis.process_traces import TraceObservables, MeanFilter
 from sapphire.utils import pbar
-
 
 DATA_PATH = '/Users/arne/Datastore/intergral_filter/data.h5'
 STATION = 505

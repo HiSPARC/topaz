@@ -1,4 +1,4 @@
-from numpy import array, arange
+from numpy import arange, array
 
 from artist import Plot
 

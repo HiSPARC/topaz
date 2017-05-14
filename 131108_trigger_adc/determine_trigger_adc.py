@@ -1,6 +1,7 @@
-import tables
 import zlib
+
 import numpy as np
+import tables
 
 
 def get_trace(blobs, idx):

@@ -1,13 +1,12 @@
 from datetime import datetime
 
 import tables
-from numpy import (genfromtxt, histogram, linspace, pi, where, degrees, arange,
-                   invert, array, percentile, isfinite)
+
+from numpy import arange, array, degrees, genfromtxt, histogram, invert, isfinite, linspace, percentile, pi, where
 
 from artist import Plot
 
-from sapphire import (download_data, ReconstructESDEvents, CoincidencesESD,
-                      CoincidenceQuery, HiSPARCStations)
+from sapphire import CoincidenceQuery, CoincidencesESD, HiSPARCStations, ReconstructESDEvents, download_data
 from sapphire.transformations.clock import gps_to_datetime
 from sapphire.utils import angle_between
 

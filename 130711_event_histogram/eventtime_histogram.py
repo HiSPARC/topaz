@@ -1,13 +1,13 @@
 import datetime
 
 import numpy as np
+
 from artist import Plot
 
 from sapphire import Station
 from sapphire.transformations.clock import datetime_to_gps, gps_to_datetime
 
 from get_aligned_eventtimes import get_aligned, get_station_numbers
-
 
 YEARS = range(2004, datetime.date.today().year + 1)
 YEARS_TICKS = np.array([datetime_to_gps(datetime.date(y, 1, 1)) for y in YEARS])

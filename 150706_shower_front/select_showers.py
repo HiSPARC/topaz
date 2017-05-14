@@ -1,12 +1,13 @@
-from operator import itemgetter
-import subprocess
 import os
+import subprocess
+
+from operator import itemgetter
 
 import tables
-from numpy import arange, percentile, logspace, sqrt, log10, pi, abs
+
+from numpy import abs, arange, log10, logspace, percentile, pi, sqrt
 
 from artist import Plot
-
 
 # proton = 14
 # iron = 5626

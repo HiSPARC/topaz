@@ -12,17 +12,17 @@ Uses stations 501 through 511 (except 507).
 """
 
 from __future__ import division
+
 import os
 
 import tables
+
 from numpy import histogram, linspace, pi
 
 from artist import PolarPlot
 
-from sapphire import (ScienceParkCluster, GroundParticlesSimulation,
-                      ReconstructESDCoincidences)
+from sapphire import GroundParticlesSimulation, ReconstructESDCoincidences, ScienceParkCluster
 from sapphire.utils import c
-
 
 RESULT_PATH = '/Users/arne/Datastore/simulation_offsets/simulation.h5'
 CORSIKA_PATH = '/Users/arne/Datastore/CORSIKA/79960790_507733806/corsika.h5'

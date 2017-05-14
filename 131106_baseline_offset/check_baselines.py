@@ -11,8 +11,8 @@
 import datetime
 import os
 
-import tables
 import numpy
+import tables
 
 DATASTORE = '/Users/arne/Datastore/'
 

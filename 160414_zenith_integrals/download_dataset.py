@@ -1,15 +1,16 @@
 import os.path
+
 from datetime import datetime
 
 import tables
-from numpy import histogram, linspace, cos, sin, pi, mean, sqrt, radians
+
+from numpy import cos, histogram, linspace, mean, pi, radians, sin, sqrt
 from numpy.random import normal
 
 from artist import Plot
 
-from sapphire import download_data, ReconstructESDEvents
+from sapphire import ReconstructESDEvents, download_data
 from sapphire.utils import norm_angle
-
 
 DATASTORE = "/Users/arne/Datastore/zenith_integrals"
 STATION_PATH = os.path.join(DATASTORE, 'dataset_spa_160101_160110.h5')

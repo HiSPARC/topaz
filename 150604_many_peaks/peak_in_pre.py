@@ -10,7 +10,9 @@ at.
 
 """
 import tables
+
 from numpy import arange
+
 from artist import Plot
 
 from sapphire import Station

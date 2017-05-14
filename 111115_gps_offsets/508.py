@@ -1,17 +1,18 @@
 import itertools
 import os
 
-import tables
 import numpy as np
+import tables
 
 from artist import Plot
 
-from sapphire.esd import download_data
 from hisparc.analysis.coincidences import search_coincidences as search
+from sapphire.esd import download_data
 
-from testlist import Tijdtest
 import delta
+
 from delta import DeltaVal
+from testlist import Tijdtest
 
 DATA_PATH = '/Users/arne/Datastore/gps_offsets/508_data.h5'
 DELTAS_PATH = '/Users/arne/Datastore/gps_offsets/508_deltas.h5'

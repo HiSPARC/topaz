@@ -1,6 +1,6 @@
+from numpy import arange, histogram, histogram2d, linspace, logspace, median, percentile
+
 from artist import Plot
-from numpy import (median, percentile, histogram, arange, histogram2d,
-                   logspace, linspace)
 
 from sapphire import CorsikaQuery
 

@@ -10,9 +10,10 @@ done;
 
 from glob import glob
 
-from artist import Plot
-from numpy import zeros, loadtxt, median, array, count_nonzero, arange
+from numpy import arange, array, count_nonzero, loadtxt, median, zeros
 from scipy.optimize import curve_fit
+
+from artist import Plot
 
 PATH = '/Users/arne/Datastore/corsika_accuracy/stripped/'
 

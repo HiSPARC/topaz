@@ -3,7 +3,9 @@
 from datetime import datetime
 
 import tables
-from numpy import histogram2d, linspace, arange
+
+from numpy import arange, histogram2d, linspace
+
 from artist import Plot
 
 from sapphire import HiSPARCStations

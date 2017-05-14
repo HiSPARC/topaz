@@ -3,9 +3,10 @@
 
 from glob import glob
 
-from artist import Plot
-from numpy import genfromtxt, histogram, arange, isnan
+from numpy import arange, genfromtxt, histogram, isnan
 from scipy.optimize import curve_fit
+
+from artist import Plot
 
 from sapphire.utils import gauss
 

@@ -4,12 +4,12 @@ Show which energy can be efficienctly detected by two detectors separated by
 distance d.
 
 """
-from numpy import linspace, logspace, array, exp, median, interp
+from numpy import array, exp, interp, linspace, logspace, median
 from scipy.stats import binned_statistic
 
 from artist import Plot
 
-from sapphire.simulations.ldf import NkgLdf, KascadeLdf, EllipsLdf
+from sapphire.simulations.ldf import EllipsLdf, KascadeLdf, NkgLdf
 
 
 def P_0(ldf, r, N):

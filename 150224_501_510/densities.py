@@ -1,8 +1,7 @@
 import numpy as np
 import tables
 
-from artist import Plot, MultiPlot
-
+from artist import MultiPlot, Plot
 
 COINDATA_PATH = '/Users/arne/Datastore/501_510/c_501_510_141101_150201.h5'
 

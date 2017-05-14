@@ -7,12 +7,12 @@ also uses the 2 additional muon paths for time differences.
 """
 import itertools
 
-from artist import Plot
-import tables
 import numpy as np
+import tables
+
+from artist import Plot
 
 from sapphire import CoincidenceQuery
-
 
 EVENTDATA_PATH = '/Users/arne/Datastore/muonlab_test3.h5'
 

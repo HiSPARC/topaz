@@ -12,21 +12,20 @@ machines and we want the tests to pass there.
 TODO: check if these tests pass on 32-bit machines and implement
 higher-precision checks on 64-bit machines.
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import calendar
 import datetime
 
 import numpy as np
 
-from astropy.tests.helper import pytest, catch_warnings
 from astropy import units as u
-from astropy.time import Time, TimeDelta
+from astropy.coordinates import Angle, EarthLocation, SkyCoord
 from astropy.coordinates.builtin_frames import AltAz
-from astropy.coordinates import EarthLocation
-from astropy.coordinates import Angle, SkyCoord
+from astropy.tests.helper import catch_warnings, pytest
+from astropy.time import Time, TimeDelta
 
-from sapphire.transformations import base, angles, celestial, clock
+from sapphire.transformations import angles, base, celestial, clock
 
 
 def test_against_hor2eq():

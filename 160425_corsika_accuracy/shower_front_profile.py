@@ -11,11 +11,12 @@ Moreover, the front is curved, further delayed at increasing core distances.
 from functools import partial
 
 import tables
-from numpy import (mean, median, logspace, percentile, append, degrees,
-                   linspace, histogram, histogram2d, log10, sqrt, nan)
+
+from numpy import (
+    append, degrees, histogram, histogram2d, linspace, log10, logspace, mean, median, nan, percentile, sqrt)
 from scipy.stats import binned_statistic
 
-from artist import Plot, MultiPlot
+from artist import MultiPlot, Plot
 
 from sapphire import CorsikaQuery
 from sapphire.corsika.particles import name

@@ -1,7 +1,6 @@
 import os
 
-from sapphire import CorsikaQuery
-from sapphire import qsub
+from sapphire import CorsikaQuery, qsub
 
 OVERVIEW = '/data/hisparc/corsika/corsika_overview.h5'
 SCRIPT = """\

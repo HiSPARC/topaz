@@ -1,9 +1,11 @@
-import os
 import glob
+import os
+
 from random import sample
 
-from numpy import log10
 import tables
+
+from numpy import log10
 
 OVERVIEW = '/data/hisparc/corsika/corsika_overview.h5'
 DATADIR = '/data/hisparc/corsika/data'

@@ -6,16 +6,17 @@ Smopy returns an OpenStreetMap tile image!
 Map tiles by CartoDB, under CC BY 3.0. Data by OpenStreetMap, under ODbL
 
 """
-# -----------------------------------------------------------------------------
+
 # Imports
 # -----------------------------------------------------------------------------
 from six import BytesIO
-from six.moves.urllib.request import urlopen
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 from PIL import Image
-import numpy as np
-import matplotlib.pyplot as plt
-
+# -----------------------------------------------------------------------------
+from six.moves.urllib.request import urlopen
 
 # -----------------------------------------------------------------------------
 # Constants

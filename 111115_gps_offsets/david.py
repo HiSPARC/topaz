@@ -1,13 +1,14 @@
-import tables
 import itertools
 
 import numpy as np
+import tables
 
 from sapphire.esd import download_data
 
-from testlist import Tijdtest
 import data
-from delta import calculate, DeltaVal
+
+from delta import DeltaVal, calculate
+from testlist import Tijdtest
 
 DATA_PATH = '/Users/arne/Datastore/tijdtest/tijdtest_data_david.h5'
 DELTA_PATH = '/Users/arne/Datastore/tijdtest/tijdtest_delta_david.h5'

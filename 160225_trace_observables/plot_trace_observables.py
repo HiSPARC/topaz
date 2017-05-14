@@ -1,10 +1,9 @@
-from numpy import arange, where, array
+from numpy import arange, array, where
 
 from artist import Plot
 
 from sapphire import Station
-from sapphire.analysis.process_traces import (BASELINE_THRESHOLD,
-                                              TraceObservables, MeanFilter)
+from sapphire.analysis.process_traces import BASELINE_THRESHOLD, MeanFilter, TraceObservables
 
 
 def get_trace(s):

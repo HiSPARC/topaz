@@ -14,15 +14,15 @@ contributions.
 """
 import itertools
 
+import tables
+
 from numpy import array, percentile
 from scipy.optimize import curve_fit
 from scipy.stats import norm
-import tables
 
 from artist import MultiPlot
 
 from sapphire import HiSPARCStations
-
 
 DATA_PATH = '/Users/arne/Datastore/station_offsets/'
 SIM_PATH = '/Users/arne/Datastore/expected_dt/test_station_dt_spa.h5'

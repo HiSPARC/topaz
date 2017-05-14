@@ -1,11 +1,13 @@
-import tables
 from math import cos, sin
-from numpy import nanmin, isnan
+
+import tables
+
+from numpy import isnan, nanmin
+
 from artist import Plot
 
-from sapphire import HiSPARCStations, CoincidenceQuery
+from sapphire import CoincidenceQuery, HiSPARCStations
 from sapphire.analysis import event_utils
-
 
 COIN_DATA = '/Users/arne/Datastore/esd_coincidences/coincidences_n7_120101_140801.h5'
 OFFSETS = {501: [-1.10338, 0.0000, 5.35711, 3.1686],

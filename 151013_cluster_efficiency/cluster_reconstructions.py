@@ -4,7 +4,7 @@ import glob
 
 import tables
 
-from sapphire import ReconstructESDEvents, ReconstructESDCoincidences
+from sapphire import ReconstructESDCoincidences, ReconstructESDEvents
 from sapphire.utils import pbar
 
 #PATHS = '/Users/arne/Datastore/cluster_efficiency/151013*.h5'

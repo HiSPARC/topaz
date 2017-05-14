@@ -7,15 +7,18 @@ Having run this script on several datasets the expected distribution
 has a mean of 0 ns and a sigma of 2.7 ns.
 
 """
-import tables
 from datetime import date
-from artist import Plot
-from numpy import histogram, arange
+
+import tables
+
+from numpy import arange, histogram
 from scipy.optimize import curve_fit
 
+from artist import Plot
+
 from sapphire.analysis.calibration import determine_detector_timing_offsets
-from sapphire.utils import gauss
 from sapphire.clusters import Station
+from sapphire.utils import gauss
 
 DATA_PATH = '/Users/arne/Datastore/esd/'
 BIN_WIDTH = 1.25

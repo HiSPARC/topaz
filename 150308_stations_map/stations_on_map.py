@@ -17,14 +17,15 @@ Examples::
 
 """
 import argparse
+
 from ast import literal_eval
+
 from numpy import array
-
-from artist import Plot
-from sapphire import Network, Station, HiSPARCStations
-
 from smopy import Map
 
+from artist import Plot
+
+from sapphire import HiSPARCStations, Network, Station
 
 NETWORK = Network(force_stale=True)
 

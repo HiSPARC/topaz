@@ -1,11 +1,13 @@
 import itertools
 
 import numpy as np
+
 from artist import Plot, PolarPlot
 
+from sapphire.analysis.direction_reconstruction import (
+    DirectAlgorithm, DirectAlgorithmCartesian2D, DirectAlgorithmCartesian3D)
 from sapphire.clusters import SingleDiamondStation
-from sapphire.analysis.direction_reconstruction import \
-    (DirectAlgorithm, DirectAlgorithmCartesian3D, DirectAlgorithmCartesian2D,
+
      FitAlgorithm)
 
 

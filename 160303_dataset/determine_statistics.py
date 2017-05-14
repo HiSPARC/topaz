@@ -1,19 +1,20 @@
-from datetime import date
-import os
 import csv
 import itertools
+import os
 
-from numpy import (sum, sin, arange, random, searchsorted, split, nan, array,
-                   empty, column_stack, genfromtxt, histogram2d)
+from datetime import date
+
 import tables
 
-from artist import Plot, MultiPlot
+from numpy import (
+    arange, array, column_stack, empty, genfromtxt, histogram2d, nan, random, searchsorted, sin, split, sum)
+
+from artist import MultiPlot, Plot
 
 from sapphire.transformations.clock import datetime_to_gps
 from sapphire.utils import pbar
 
-from download_dataset import STATIONS, START, END
-
+from download_dataset import END, START, STATIONS
 
 DATASTORE = "/Users/arne/Datastore/dataset"
 DATA_PATH = os.path.join(DATASTORE,

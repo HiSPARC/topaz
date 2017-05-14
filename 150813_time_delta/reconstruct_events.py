@@ -1,11 +1,12 @@
 from datetime import datetime
 
 import tables
-from numpy import genfromtxt, histogram, linspace, pi, where, degrees, invert
+
+from numpy import degrees, genfromtxt, histogram, invert, linspace, pi, where
 
 from artist import Plot
 
-from sapphire import download_data, ReconstructESDEvents
+from sapphire import ReconstructESDEvents, download_data
 from sapphire.transformations.clock import gps_to_datetime
 from sapphire.utils import angle_between
 

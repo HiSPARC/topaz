@@ -1,7 +1,8 @@
+from pprint import PrettyPrinter
+from random import sample
+
 from sapphire import HiSPARCStations, Station
 from sapphire.analysis.direction_reconstruction import CoincidenceDirectionReconstruction
-from random import sample
-from pprint import PrettyPrinter
 
 # SN = [501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511]
 SN = [501, 502, 503, 505, 506, 508, 510, 511]

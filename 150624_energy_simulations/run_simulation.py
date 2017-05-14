@@ -2,8 +2,7 @@ import warnings
 
 import tables
 
-from sapphire import HiSPARCStations, GroundParticlesSimulation
-
+from sapphire import GroundParticlesSimulation, HiSPARCStations
 
 if __name__ == "__main__":
     with warnings.catch_warnings():

@@ -14,6 +14,7 @@ The script will retrieve the traces for the event and plot them using artist.
 import argparse
 
 from numpy import arange
+
 from artist import Plot
 
 from sapphire import Station

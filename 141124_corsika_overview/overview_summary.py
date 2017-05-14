@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from matplotlib import pyplot
 import numpy
 import tables
+
+from matplotlib import pyplot
 
 from sapphire.corsika.particles import name
 

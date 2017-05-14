@@ -1,12 +1,12 @@
-from numpy import arange, histogram, pi, array, sqrt, degrees
 import tables
+
+from numpy import arange, array, degrees, histogram, pi, sqrt
 
 from artist import Plot, PolarPlot
 
-from sapphire.clusters import BaseCluster
 from sapphire import ReconstructESDEvents
+from sapphire.clusters import BaseCluster
 from sapphire.utils import angle_between
-
 
 COLORS = ['black', 'teal', 'orange', 'purple', 'cyan', 'green', 'blue', 'red',
           'gray']

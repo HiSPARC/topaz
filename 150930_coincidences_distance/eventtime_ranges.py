@@ -1,4 +1,4 @@
-from numpy import zeros, arange, array
+from numpy import arange, array, zeros
 
 from sapphire import Station
 

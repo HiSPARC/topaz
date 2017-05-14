@@ -1,7 +1,6 @@
-from numpy import (histogram, exp, inf, searchsorted, arange, where, append,
-                   cumsum, interp)
-from scipy.misc import factorial
+from numpy import append, arange, cumsum, exp, histogram, inf, interp, searchsorted, where
 from scipy.integrate import quad
+from scipy.misc import factorial
 
 from artist import Plot
 

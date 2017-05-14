@@ -2,15 +2,17 @@ from __future__ import division
 
 import glob
 import os
+
 from itertools import combinations
 
-from numpy import linspace, histogram, sqrt, log10, degrees, isnan, zeros, where
 import tables
 
-from artist import Plot
-from sapphire import ReconstructESDEvents, CorsikaQuery
-from sapphire.utils import angle_between, vector_length
+from numpy import degrees, histogram, isnan, linspace, log10, sqrt, where, zeros
 
+from artist import Plot
+
+from sapphire import CorsikaQuery, ReconstructESDEvents
+from sapphire.utils import angle_between, vector_length
 
 DATA = '/Users/arne/Datastore/efficiency/'
 PATHS = '/Users/arne/Datastore/efficienc*/*_*.h5'

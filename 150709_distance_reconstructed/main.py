@@ -1,10 +1,12 @@
 import tables
-from numpy import arange, append
+
+from numpy import append, arange
+
 from artist import Plot
 
-from sapphire import HiSPARCStations, CoincidenceQuery
-from sapphire.utils import distance_between
+from sapphire import CoincidenceQuery, HiSPARCStations
 from sapphire.analysis.event_utils import relative_detector_arrival_times
+from sapphire.utils import distance_between
 
 COIN_DATA = '/Users/arne/Datastore/esd_coincidences/coincidences_n7_120101_140801.h5'
 DETECTOR_IDS = [0, 1, 2, 3]

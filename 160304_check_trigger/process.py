@@ -3,7 +3,6 @@ import tables
 from sapphire import ProcessEventsFromSourceWithTriggerOffset
 from sapphire.analysis.process_events import ProcessEventsWithTriggerOffset
 
-
 if __name__ == "__main__":
     with tables.open_file('/Users/arne/Datastore/check_trigger/data.h5', 'r') as source_file:
         with tables.open_file('/Users/arne/Datastore/check_trigger/result_bad_thresholds.h5', 'w') as tmp_file:

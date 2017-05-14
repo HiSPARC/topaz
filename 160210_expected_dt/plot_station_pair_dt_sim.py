@@ -1,15 +1,15 @@
-import os
 import itertools
+import os
 
 import tables
-from scipy.optimize import curve_fit
-from scipy.stats import t, norm, tukeylambda, chi
-from numpy import arange, histogram
 
-from sapphire.utils import gauss
+from numpy import arange, histogram
+from scipy.optimize import curve_fit
+from scipy.stats import chi, norm, t, tukeylambda
 
 from artist import Plot
 
+from sapphire.utils import gauss
 
 PATH = '/Users/arne/Datastore/expected_dt/test_station_dt_spa.h5'
 

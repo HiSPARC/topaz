@@ -1,8 +1,9 @@
 import os
 
+from datetime import datetime
+
 from tables import open_file
 
-from datetime import datetime
 from sapphire import esd
 
 STATIONS = [501, 502, 503, 504, 505, 506, 508, 509, 510, 1006]

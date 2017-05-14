@@ -9,13 +9,12 @@ Using simulations with approximate median size for their zenith/energy/particle:
 
 """
 import tables
-from numpy import sqrt, degrees, histogram2d, isnan
+
+from numpy import degrees, histogram2d, isnan, sqrt
 
 from artist import Plot
 
-from sapphire import (GroundParticlesSimulation, HiSPARCStations,
-                      ReconstructESDEvents)
-
+from sapphire import GroundParticlesSimulation, HiSPARCStations, ReconstructESDEvents
 
 CORSIKA_DATA = '/Users/arne/Datastore/CORSIKA/477821264_628079401/corsika.h5'
 RESULT_DATA = '/Users/arne/Datastore/corsika_accuracy/sim.h5'

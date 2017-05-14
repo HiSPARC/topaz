@@ -9,12 +9,12 @@ contain another coincidences. e.g. 1, 3, 2 also includes 3, 2. This
 should perhaps be counted as only 1 coincidence.
 
 """
-import tables
 import numpy
+import tables
+
 from artist import MultiPlot
 
 from sapphire import CoincidencesESD
-
 
 EVENTDATA_PATH = '/Users/arne/Datastore/501_510/e_501_510_141101_150201.h5'
 

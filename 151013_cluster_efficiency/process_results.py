@@ -2,13 +2,13 @@ from __future__ import division
 
 import glob
 
-from numpy import (isnan, degrees, log10, array, sqrt, histogram, histogram2d,
-                   arange, where, sin, pi, radians, linspace)
 import tables
+
+from numpy import arange, array, degrees, histogram, histogram2d, isnan, linspace, log10, pi, radians, sin, sqrt, where
+
 from artist import MultiPlot, Plot
 
 from sapphire.utils import pbar
-
 
 # PATHS = '/Users/arne/Datastore/cluster_efficiency/151013*.h5'
 # PATHS = '/Users/arne/Datastore/cluster_efficiency/151014_*.h5'

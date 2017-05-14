@@ -1,7 +1,6 @@
 import tables
 
-from sapphire import HiSPARCStations, CoincidencesESD
-
+from sapphire import CoincidencesESD, HiSPARCStations
 
 STATIONS = [501, 510, 99]
 EVENTDATA_PATHS = ['/Users/arne/Datastore/muonlab_test.h5',

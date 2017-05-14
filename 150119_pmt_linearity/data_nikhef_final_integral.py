@@ -1,6 +1,5 @@
-from process import get_measured_expected, determine_pi_ph_ratio
 from plot_results import plot_ph, plot_pi, plot_pi_ph
-
+from process import determine_pi_ph_ratio, get_measured_expected
 
 LED_PH = [1, 155, 193, 155, 219, 233, 239, 169, 322, 160, 230,
           240, 285, 208, 222, 262, 174, 319, 168, 210, 216,

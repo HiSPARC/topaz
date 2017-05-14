@@ -6,8 +6,7 @@ import os
 
 import tables
 
-from sapphire import ReconstructESDEvents, ReconstructESDCoincidences
-
+from sapphire import ReconstructESDCoincidences, ReconstructESDEvents
 
 RESULT_PATH = '/Users/arne/Datastore/science_park_corsika/{seed}/result.h5'
 PATHS = '/Users/arne/Datastore/science_park_corsika/*_*/result.h5'

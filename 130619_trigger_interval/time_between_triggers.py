@@ -7,13 +7,12 @@ a station.
 import datetime
 import os
 
-import tables
 import numpy
+import tables
 
 from artist import Plot
 
 from sapphire import Station
-
 
 ESD_PATH = '/Users/arne/Datastore/esd'
 

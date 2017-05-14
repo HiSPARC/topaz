@@ -1,12 +1,12 @@
 import itertools
 
 import numpy as np
+
 from artist import Plot, PolarPlot
 
-from sapphire.clusters import SingleDiamondStation
 from sapphire.analysis.direction_reconstruction import DirectAlgorithmCartesian2D
+from sapphire.clusters import SingleDiamondStation
 from sapphire.utils import angle_between
-
 
 TIME_RESOLUTION = 2.5  # nanoseconds
 C = .3  # lightspeed m/ns

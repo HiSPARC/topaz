@@ -1,10 +1,10 @@
 import subprocess
 
 import tables
-from numpy import log10, loadtxt, uint32, float32, histogram
+
+from numpy import float32, histogram, loadtxt, log10, uint32
 
 from artist import Plot
-
 
 LOCAL_STORE = '/Users/arne/Datastore/time_logs/'
 TIME_LOG = '/Users/arne/Datastore/corsika_times.log'

@@ -1,6 +1,6 @@
 from numpy import linspace
 
-from artist import Plot, MultiPlot
+from artist import MultiPlot, Plot
 
 from fit_curve import fit_curve, fit_function
 

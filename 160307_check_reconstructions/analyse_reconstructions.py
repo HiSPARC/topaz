@@ -1,10 +1,10 @@
 import os.path
 
 import tables
+
 from numpy import isnan
 
 from sapphire import CoincidenceQuery
-
 
 DATASTORE = "/Users/arne/Datastore/check_reconstructions"
 

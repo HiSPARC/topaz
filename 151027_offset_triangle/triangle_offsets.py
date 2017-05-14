@@ -1,15 +1,14 @@
 """Check if the offsets remain consistent if calculated via other stations"""
 
-from itertools import combinations, permutations
-from functools import partial
 from datetime import datetime
+from functools import partial
+from itertools import combinations, permutations
 
-from numpy import histogram, histogram2d, isnan, array, nanmax, nanmean
+from numpy import array, histogram, histogram2d, isnan, nanmax, nanmean
 
 from artist import Plot
 
 from sapphire import Station, datetime_to_gps
-
 
 START = datetime_to_gps(datetime(2011, 6, 1))
 STOP = datetime_to_gps(datetime(2016, 2, 1))

@@ -14,15 +14,15 @@ contributions.
 """
 import itertools
 
-from numpy import sqrt, array, std, abs, histogram, linspace, arange
+import tables
+
+from numpy import abs, arange, array, histogram, linspace, sqrt, std
 from scipy.optimize import curve_fit
 from scipy.stats import norm
-import tables
 
 from artist import MultiPlot
 
 from sapphire import HiSPARCStations
-
 
 DATA_PATH = '/Users/arne/Datastore/station_offsets/'
 SIM_PATH = '/Users/arne/Datastore/expected_dt/test_station_dt_spa.h5'

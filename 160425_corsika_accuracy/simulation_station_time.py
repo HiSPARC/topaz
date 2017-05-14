@@ -17,19 +17,21 @@ This simultion currently ignores gammas
 
 """
 import sys
+
 from functools import partial
 
 import tables
-from numpy import logspace, log10, degrees, around, percentile, sqrt, array
+
+from numpy import around, array, degrees, log10, logspace, percentile, sqrt
 from scipy.stats import binned_statistic
 
-from artist import Plot, MultiPlot
+from artist import MultiPlot, Plot
 
 from sapphire import CorsikaQuery
-from sapphire.clusters import SingleDiamondStation
-from sapphire.simulations.groundparticles import FixedCoreDistanceSimulation
-from sapphire.corsika.particles import name
 from sapphire.analysis.event_utils import station_arrival_time
+from sapphire.clusters import SingleDiamondStation
+from sapphire.corsika.particles import name
+from sapphire.simulations.groundparticles import FixedCoreDistanceSimulation
 
 # local seeds
 SEEDS_14 = ['651000510_222963176', '155366293_265066277', '758294490_567681579']

@@ -1,10 +1,12 @@
 from __future__ import division
 
-from datetime import datetime
 import zlib
 
-import tables
+from datetime import datetime
+
 import numpy as np
+import tables
+
 from artist import Plot
 
 from sapphire.publicdb import download_data

@@ -3,8 +3,7 @@ import os.path
 import tables
 
 from sapphire import ReconstructESDCoincidences
-from sapphire.analysis.direction_reconstruction import (
-    CoincidenceDirectionReconstructionDetectors)
+from sapphire.analysis.direction_reconstruction import CoincidenceDirectionReconstructionDetectors
 
 DATASTORE = "/Users/arne/Datastore/check_reconstructions"
 

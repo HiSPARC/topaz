@@ -1,12 +1,12 @@
 import time
 
+from numpy import array, isnan, nanmin
+from smopy import TILE_SIZE, Map, num2deg
+
 from artist import Plot
-from numpy import array, nanmin, isnan
 
-from sapphire import Station, HiSPARCStations
+from sapphire import HiSPARCStations, Station
 from sapphire.transformations import geographic
-
-from smopy import Map, num2deg, TILE_SIZE
 
 STATIONS = [501, 502, 503, 504, 505, 506, 508, 509]
 CLUSTER = HiSPARCStations(STATIONS)

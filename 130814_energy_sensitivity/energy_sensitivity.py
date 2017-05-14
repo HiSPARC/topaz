@@ -13,19 +13,20 @@ Each combination is considered when determining the probability.
 """
 
 import os
+
+from functools import partial
 from itertools import combinations, product
 from multiprocessing import Pool
-from functools import partial
 
 import matplotlib.pyplot as plt
-from matplotlib.patches import Ellipse
 import numpy as np
+
+from matplotlib.patches import Ellipse
 
 from artist import Plot
 
-from sapphire import ScienceParkCluster, HiSPARCStations
-from sapphire.clusters import (SingleStation, SingleTwoDetectorStation,
-                               SingleDiamondStation, BaseCluster)
+from sapphire import HiSPARCStations, ScienceParkCluster
+from sapphire.clusters import BaseCluster, SingleDiamondStation, SingleStation, SingleTwoDetectorStation
 from sapphire.simulations.ldf import KascadeLdf
 from sapphire.utils import pbar
 

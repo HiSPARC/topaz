@@ -1,11 +1,11 @@
+from datetime import datetime
+
 import numpy as np
 import tables
 
-from sapphire import download_data
-from datetime import datetime
-
 from artist import Plot
 
+from sapphire import download_data
 
 EVENTDATA_PATH = '/Users/arne/Datastore/501_510/e_501_510_141101_150201.h5'
 

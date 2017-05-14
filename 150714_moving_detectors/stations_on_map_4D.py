@@ -1,12 +1,13 @@
 import argparse
+
 from itertools import cycle
 
 from numpy import array
+from smopy import Map
 
 from artist import Plot
-from sapphire import Network, Station, HiSPARCStations
 
-from smopy import Map
+from sapphire import HiSPARCStations, Network, Station
 
 
 def get_detector_locations(station):

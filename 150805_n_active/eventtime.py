@@ -4,7 +4,6 @@ import urllib
 from sapphire import Network
 from sapphire.utils import pbar
 
-
 BASE = 'http://data.hisparc.nl/show/source/eventtime/%d/'
 PATH = '/Users/arne/Datastore/publicdb_csv/eventtime/'
 

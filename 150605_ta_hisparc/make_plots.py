@@ -1,6 +1,6 @@
-import healpy as hp
 import os
 
+import healpy as hp
 
 SELF_PATH = os.path.dirname(__file__)
 FILES = ['heal157-smeared.fits', 'heal553-smeared.fits',

@@ -4,7 +4,6 @@ import tables
 
 from sapphire.corsika.corsika_queries import CorsikaQuery
 
-
 DATAPATH = '/data/hisparc/corsika/data/{seeds}/corsika.h5'
 
 

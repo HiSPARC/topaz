@@ -11,24 +11,23 @@ Uses stations 501 through 511 (except 507).
 """
 
 from __future__ import division
+
 import os
 
-import tables
 import numpy as np
+import tables
 
-from artist import Plot, MultiPlot
+from smopy import TILE_SIZE, Map, num2deg
 
-from sapphire import (ScienceParkCluster, GroundParticlesSimulation,
-                      ReconstructESDCoincidences, CoincidenceQuery)
+from artist import MultiPlot, Plot
+
+from sapphire import CoincidenceQuery, GroundParticlesSimulation, ReconstructESDCoincidences, ScienceParkCluster
 from sapphire.analysis import event_utils
 from sapphire.analysis.direction_reconstruction import (
     CurvedRegressionAlgorithm, DirectAlgorithmCartesian, RegressionAlgorithm)
-from sapphire.transformations import geographic
 from sapphire.simulations.showerfront import CorsikaStationFront
-from sapphire.utils import distance_between, angle_between, c
-
-from smopy import Map, num2deg, TILE_SIZE
-
+from sapphire.transformations import geographic
+from sapphire.utils import angle_between, c, distance_between
 
 RESULT_PATH_2D = '/Users/arne/Datastore/flat_curved/simulation_2D.h5'
 RESULT_PATH_3D = '/Users/arne/Datastore/flat_curved/simulation_3D.h5'

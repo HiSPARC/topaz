@@ -1,11 +1,11 @@
 import itertools
 
 import numpy as np
+
 from artist import PolarPlot
 
 from sapphire import HiSPARCStations
-from sapphire.analysis.direction_reconstruction import \
-    DirectAlgorithmCartesian3D
+from sapphire.analysis.direction_reconstruction import DirectAlgorithmCartesian3D
 from sapphire.utils import ceil_in_base
 
 STATION = 14001

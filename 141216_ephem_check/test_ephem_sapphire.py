@@ -1,16 +1,14 @@
 from datetime import datetime
 
-import numpy as np
 import ephem
+import numpy as np
 
 from astropy import units as u
-from astropy.time import Time, TimeGPS
+from astropy.coordinates import Angle, EarthLocation, SkyCoord
 from astropy.coordinates.builtin_frames import AltAz
-from astropy.coordinates import EarthLocation
-from astropy.coordinates import Angle, SkyCoord
+from astropy.time import Time, TimeGPS
 
-from sapphire.transformations import base, angles, celestial, clock
-
+from sapphire.transformations import angles, base, celestial, clock
 
 LATITUDE = 52.3562599596
 LONGITUDE = 4.95294402001

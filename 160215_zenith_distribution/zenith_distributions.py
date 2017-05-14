@@ -2,9 +2,9 @@
 
 from __future__ import division
 
-from scipy.stats import binned_statistic
+from numpy import arange, array, cos, exp, interp, radians, sin, std, sum
 from scipy.optimize import curve_fit
-from numpy import std, sin, cos, exp, arange, array, radians, interp, sum
+from scipy.stats import binned_statistic
 
 from artist import Plot
 

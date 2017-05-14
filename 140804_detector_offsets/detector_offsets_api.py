@@ -1,13 +1,15 @@
 """Plot distribution off detector offsets"""
 
 from datetime import date
-from artist import Plot
-from numpy import histogram, arange, isnan, mean, std
+
+from numpy import arange, histogram, isnan, mean, std
 from scipy.optimize import curve_fit
 
-from sapphire.utils import gauss
+from artist import Plot
+
+from sapphire import Network, Station
 from sapphire.transformations.clock import datetime_to_gps
-from sapphire import Station, Network
+from sapphire.utils import gauss
 
 BIN_WIDTH = 0.625
 

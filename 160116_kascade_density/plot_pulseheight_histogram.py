@@ -1,8 +1,10 @@
 import tables
-from numpy import where, mean, histogram, arange, linspace
+
+from numpy import arange, histogram, linspace, mean, where
+
+from artist import Plot
 
 from sapphire.analysis import landau
-from artist import Plot
 
 
 def plot_pulseheight_histogram(data):

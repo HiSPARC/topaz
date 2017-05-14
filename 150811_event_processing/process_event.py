@@ -1,6 +1,7 @@
 from itertools import chain
 
-from numpy import arange, nan, nanmin, nanmax, mean, array, around, sign
+from numpy import arange, around, array, mean, nan, nanmax, nanmin, sign
+
 from artist import Plot
 
 from sapphire import Station

@@ -13,21 +13,22 @@ from __future__ import division
 
 import os
 import warnings
+
 from functools import partial
 
 import tables
-from artist import Plot
-from numpy import (sqrt, logspace, log10, exp, sum, interp, savez, load,
-                   where, cos, pi, radians)
+
+from numpy import cos, exp, interp, load, log10, logspace, pi, radians, savez, sqrt, sum, where
 from scipy.optimize import curve_fit
+
+from artist import Plot
 
 from sapphire import HiSPARCNetwork
 from sapphire.utils import pbar
 
+from energy_sensitivity import get_pair_distance_energy_array
 from station_distances import close_pairs_in_network
 from variable_distance import min_max_distance_pair
-from energy_sensitivity import get_pair_distance_energy_array
-
 
 DATAPATH = '/Users/arne/Datastore/pairs/%d_%d.h5'
 NO_LAYOUT = [2, 3, 5, 7, 10, 13, 21, 22, 101, 103, 202, 203,

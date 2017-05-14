@@ -1,16 +1,15 @@
 from math import cos, sin
 
 import tables
-from numpy import nanmin, isnan, array, arange, insert, append
+
+from numpy import append, arange, array, insert, isnan, nanmin
+from smopy import TILE_SIZE, Map, num2deg
 
 from artist import Plot
 
-from sapphire import Station, HiSPARCStations, CoincidenceQuery
+from sapphire import CoincidenceQuery, HiSPARCStations, Station
 from sapphire.analysis import event_utils
 from sapphire.transformations import geographic
-
-from smopy import Map, num2deg, TILE_SIZE
-
 
 COIN_DATA = '/Users/arne/Datastore/esd_coincidences/sciencepark_n11_150701_151105.h5'
 # OFFSETS =  {501: [-1.10338, 0.0000, 5.35711, 3.1686],

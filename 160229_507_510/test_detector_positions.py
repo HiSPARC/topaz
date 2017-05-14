@@ -1,14 +1,14 @@
 import itertools
+
 from datetime import datetime
 
-from numpy import linspace, pi, array, histogram2d
 import tables
+
+from numpy import array, histogram2d, linspace, pi
 
 from artist import Plot
 
-from sapphire import (HiSPARCStations, ReconstructESDEvents,
-                      download_coincidences, Station)
-
+from sapphire import HiSPARCStations, ReconstructESDEvents, Station, download_coincidences
 
 STATIONS = [507, 510]
 COINDATA_PATH = '/Users/arne/Datastore/507_510/c_507_510.h5'

@@ -1,12 +1,13 @@
-from glob import glob
 import os
+
 from datetime import date
+from glob import glob
+
+from numpy import arange, argmax, genfromtxt, histogram, uint32, zeros
 
 from artist import Plot
-from numpy import genfromtxt, zeros, histogram, arange, uint32, argmax
 
 from sapphire.transformations.clock import datetime_to_gps
-
 
 PATH = '/Users/arne/Datastore/publicdb_csv/eventtime/*.tsv'
 

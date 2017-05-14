@@ -3,8 +3,7 @@
 """
 import tables
 
-from sapphire import ReconstructESDEvents, ReconstructESDCoincidences
-
+from sapphire import ReconstructESDCoincidences, ReconstructESDEvents
 
 RESULT_PATH = 'result_400_gen_16394.h5'
 

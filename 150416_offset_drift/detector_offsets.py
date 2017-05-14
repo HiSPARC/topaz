@@ -14,17 +14,20 @@ Causes for changing offsets at some points:
 - When swapping PMTs or a PMT is not working well (e.g. 503, 505, 508)
 
 """
-import os
-from datetime import date
 import csv
+import os
+
+from datetime import date
 
 import tables
-from artist import Plot
+
 from numpy import nan
 
-from sapphire.transformations.clock import datetime_to_gps
+from artist import Plot
+
 from sapphire.analysis.calibration import determine_detector_timing_offsets
 from sapphire.clusters import Station
+from sapphire.transformations.clock import datetime_to_gps
 from sapphire.utils import pbar
 
 DATA_PATH = '/Users/arne/Datastore/esd/'

@@ -24,15 +24,15 @@ Notes
 """
 import datetime
 import os
+
 from itertools import combinations
 
-import tables
 import numpy
+import tables
 
 from artist import MultiPlot
 
-from sapphire import Station, Network, Coincidences
-
+from sapphire import Coincidences, Network, Station
 
 ESD_PATH = '/Users/arne/Datastore/esd'
 

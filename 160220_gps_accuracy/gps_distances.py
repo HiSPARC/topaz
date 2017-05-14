@@ -17,7 +17,7 @@ Data contaminations:
   also filtered.
 
 """
-from numpy import percentile, array, mean, sqrt, histogram, arange
+from numpy import arange, array, histogram, mean, percentile, sqrt
 
 from artist import Plot
 

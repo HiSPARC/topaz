@@ -1,9 +1,9 @@
 import glob
 import os
 
-from numpy import log10, degrees
 import tables
 
+from numpy import degrees, log10
 
 if __name__ == "__main__":
     print "Simulations that did not complete:"

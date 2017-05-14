@@ -1,10 +1,12 @@
-from datetime import datetime
 import os
 
-import tables
-from numpy import interp, histogram, arange
+from datetime import datetime
 
-from sapphire import download_data, FindMostProbableValueInSpectrum
+import tables
+
+from numpy import arange, histogram, interp
+
+from sapphire import FindMostProbableValueInSpectrum, download_data
 
 DATA_PATH = '/Users/arne/Datastore/efficiency_temperature/data.h5'
 

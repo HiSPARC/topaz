@@ -1,10 +1,11 @@
-from numpy import arange, histogram
-from scipy.optimize import curve_fit
 import tables
 
-from sapphire.utils import gauss
+from numpy import arange, histogram
+from scipy.optimize import curve_fit
+
 from artist import Plot
 
+from sapphire.utils import gauss
 
 EVENTDATA_PATH = '/Users/arne/Datastore/501_510/e_501_510_141101_150201.h5'
 COLORS = ['black', 'green', 'blue', 'teal', 'orange', 'purple', 'cyan', 'red',

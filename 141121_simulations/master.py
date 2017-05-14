@@ -3,12 +3,12 @@ Run simulations, reconstruct the results and make some plots..
 
 """
 import tables
-from numpy import histogram, pi, array, arange, linspace
+
+from numpy import arange, array, histogram, linspace, pi
 
 from artist import Plot, PolarPlot
 
-from sapphire import (GroundParticlesSimulation, HiSPARCStations,
-                      ReconstructESDEvents, ReconstructESDCoincidences)
+from sapphire import GroundParticlesSimulation, HiSPARCStations, ReconstructESDCoincidences, ReconstructESDEvents
 from sapphire.utils import angle_between
 
 RESULT_PATH = 'result_400_gen_16394.h5'

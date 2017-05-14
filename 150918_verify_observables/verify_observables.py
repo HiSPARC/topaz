@@ -16,11 +16,12 @@ However, due to the tiny pulses these are uninteressting anyway.
 from datetime import datetime
 
 import tables
+
 from numpy.testing import assert_allclose
 
-from sapphire.publicdb import download_data
-from sapphire.analysis import process_traces
 from sapphire import ProcessEvents
+from sapphire.analysis import process_traces
+from sapphire.publicdb import download_data
 
 # 501 - HiSPARC III new DAQ disabled filter no data reduction
 # 510 - HiSPARC III old DAQ disabled filter with data reduction

@@ -2,14 +2,12 @@ import os
 
 import tables
 
-from sapphire.simulations.showerfront import (
-    FlatFrontSimulation, FlatFrontSimulationWithoutErrors,
-    FlatFrontSimulation2D, FlatFrontSimulation2DWithoutErrors,
-    ConeFrontSimulation)
-from sapphire.clusters import BaseCluster, ScienceParkCluster, HiSPARCStations
-
 from artist import Plot
 
+from sapphire.clusters import BaseCluster, HiSPARCStations, ScienceParkCluster
+from sapphire.simulations.showerfront import (
+    ConeFrontSimulation, FlatFrontSimulation, FlatFrontSimulation2D, FlatFrontSimulation2DWithoutErrors,
+    FlatFrontSimulationWithoutErrors)
 
 PATH = '/Users/arne/Datastore/expected_dt/test_station_dt_spa.h5'
 

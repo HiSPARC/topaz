@@ -1,12 +1,14 @@
 import itertools
 
-from numpy import arange, histogram, linspace
-from scipy.optimize import curve_fit
 import tables
 
-from sapphire import CoincidenceQuery
-from sapphire.utils import gauss, ERR
+from numpy import arange, histogram, linspace
+from scipy.optimize import curve_fit
+
 from artist import Plot
+
+from sapphire import CoincidenceQuery
+from sapphire.utils import ERR, gauss
 
 COLORS = ['black', 'teal', 'orange', 'purple', 'cyan', 'green', 'blue', 'red',
           'gray']

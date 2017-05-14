@@ -6,17 +6,19 @@ For various combinations of stations in compact clusters
 - Use detector offsets from API
 
 """
-import itertools
-from datetime import datetime, timedelta
 import csv
+import itertools
 import multiprocessing
-from glob import glob
 import re
 
-from numpy import nan, log10
+from datetime import datetime, timedelta
+from glob import glob
+
 import tables
 
-from sapphire import HiSPARCStations, HiSPARCNetwork
+from numpy import log10, nan
+
+from sapphire import HiSPARCNetwork, HiSPARCStations
 from sapphire.analysis.calibration import determine_station_timing_offset
 from sapphire.transformations.clock import datetime_to_gps
 

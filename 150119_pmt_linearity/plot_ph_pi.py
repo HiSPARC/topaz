@@ -1,12 +1,12 @@
 from artist import Plot
 
-from process import get_measured_expected, determine_pi_ph_ratio
-from plot_results import plot_ph, plot_pi, plot_pi_ph
-
 import data_nikhef_final_integral
 import data_nikhef_integral
 import data_nikhef_senstech_integral
 import data_senstech_integral
+
+from plot_results import plot_ph, plot_pi, plot_pi_ph
+from process import determine_pi_ph_ratio, get_measured_expected
 
 
 def plot_pi_ph(plot, test, mark='o'):

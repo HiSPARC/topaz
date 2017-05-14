@@ -1,13 +1,13 @@
 import csv
 import os
+
 from datetime import date, timedelta
 
-import tables
 import numpy as np
+import tables
 
 from date_generator import daterange
 from knmi_timestamps import get_gps_timestamp
-
 
 LGT_PATH = "/Users/arne/Datastore/Lightning/"
 

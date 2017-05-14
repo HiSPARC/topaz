@@ -1,14 +1,16 @@
 import os.path
+
 from datetime import datetime
 
 import tables
+
 from numpy import histogram, linspace, pi
 
-from sapphire import download_coincidences, ReconstructESDCoincidences, ScienceParkCluster
-from sapphire.analysis.direction_reconstruction import CoincidenceDirectionReconstruction
-from sapphire.utils import memoize
 from artist import PolarPlot
 
+from sapphire import ReconstructESDCoincidences, ScienceParkCluster, download_coincidences
+from sapphire.analysis.direction_reconstruction import CoincidenceDirectionReconstruction
+from sapphire.utils import memoize
 
 DATASTORE = "/Users/arne/Datastore/esd_coincidences"
 PATH = os.path.join(DATASTORE, 'sciencepark_n3_160110_160201.h5')

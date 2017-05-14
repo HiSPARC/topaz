@@ -1,8 +1,9 @@
 import tables
-from numpy import genfromtxt, histogram, where, array, arange, histogram2d, nan
+
+from numpy import arange, array, genfromtxt, histogram, histogram2d, nan, where
 from scipy.optimize import curve_fit
 
-from artist import Plot, MultiPlot
+from artist import MultiPlot, Plot
 
 from sapphire import load_data
 from sapphire.utils import gauss

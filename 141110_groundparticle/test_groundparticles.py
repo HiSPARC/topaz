@@ -9,8 +9,8 @@ import tables
 
 from artist import Plot
 
-from sapphire.simulations.groundparticles import GroundParticlesSimulationWithoutErrors
 from sapphire.clusters import BaseCluster, ScienceParkCluster
+from sapphire.simulations.groundparticles import GroundParticlesSimulationWithoutErrors
 
 RESULT_PATH = '/Users/arne/Datastore/temp/test_groundparticle_sim_square.h5'
 CORSIKA_DATA = '/Users/arne/Datastore/CORSIKA/821280921_182096636/corsika.h5'

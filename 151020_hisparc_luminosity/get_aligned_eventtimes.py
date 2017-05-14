@@ -1,13 +1,14 @@
 from datetime import date
 
-from artist import Plot
-from numpy import zeros, histogram, where, average, max as npmax, argsort, array
+from numpy import max as npmax
+from numpy import argsort, array, average, histogram, where, zeros
 from scipy.stats import binned_statistic
 
-from sapphire import Station, Network
-from sapphire.utils import pbar
-from sapphire.transformations.clock import datetime_to_gps
+from artist import Plot
 
+from sapphire import Network, Station
+from sapphire.transformations.clock import datetime_to_gps
+from sapphire.utils import pbar
 
 YEARS = range(2004, 2017)
 SPA_STATIONS = [501, 502, 503, 504, 505, 506, 508, 509, 510, 511]

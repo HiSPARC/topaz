@@ -1,14 +1,14 @@
 import tables
-from scipy.optimize import curve_fit
-from numpy import histogram
 
-from sapphire.simulations.showerfront import (FlatFrontSimulation,
-                                              FlatFrontSimulationWithoutErrors)
-from sapphire.clusters import SingleTwoDetectorStation, SingleStation
-from sapphire import ReconstructESDEvents
-from sapphire.utils import gauss
+from numpy import histogram
+from scipy.optimize import curve_fit
 
 from artist import Plot
+
+from sapphire import ReconstructESDEvents
+from sapphire.clusters import SingleStation, SingleTwoDetectorStation
+from sapphire.simulations.showerfront import FlatFrontSimulation, FlatFrontSimulationWithoutErrors
+from sapphire.utils import gauss
 
 cluster = SingleTwoDetectorStation()
 station = cluster.stations[0]

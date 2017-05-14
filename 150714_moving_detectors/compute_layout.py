@@ -9,7 +9,6 @@ from sapphire.clusters import HiSPARCStations
 from sapphire.transformations.axes import cartesian_to_compass
 from sapphire.transformations.clock import gps_to_datetime
 
-
 STATION = 501
 # Select the timestamp with the correct GPS location,
 # relative to the existing station layout.

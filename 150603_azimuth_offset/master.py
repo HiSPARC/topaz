@@ -8,7 +8,8 @@ real physics.
 
 """
 import tables
-from numpy import histogram, pi, linspace, random, sin
+
+from numpy import histogram, linspace, pi, random, sin
 
 from artist import Plot, PolarPlot
 

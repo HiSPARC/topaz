@@ -1,12 +1,13 @@
 import itertools
 
-from numpy import nan, histogram, linspace, array, where
-from scipy.optimize import curve_fit
 import tables
 
-from sapphire.utils import gauss, ERR
+from numpy import array, histogram, linspace, nan, where
+from scipy.optimize import curve_fit
+
 from artist import Plot
 
+from sapphire.utils import ERR, gauss
 
 COINDATA_PATH = '/Users/arne/Datastore/501_510/c_501_510_141101_150201.h5'
 DETECTOR_OFFSETS = {501: [-1.064884, 0., 6.217017, 4.851398],

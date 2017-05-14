@@ -7,8 +7,7 @@ from artist import MultiPlot
 from sapphire import Station
 from sapphire.transformations.clock import datetime_to_gps
 
-from download_dataset import STATIONS, START, END
-
+from download_dataset import END, START, STATIONS
 
 # STATIONS = STATIONS[-2:]
 START_TS = datetime_to_gps(date(*START, day=1))

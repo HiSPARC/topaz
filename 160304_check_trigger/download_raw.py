@@ -4,7 +4,6 @@ import tables
 
 from sapphire.publicdb import download_data
 
-
 if __name__ == "__main__":
     start = datetime.datetime(2015, 6, 3)
     end = datetime.datetime(2015, 6, 4)

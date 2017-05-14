@@ -1,11 +1,12 @@
-from datetime import datetime as dt
 import calendar
 
+from datetime import datetime as dt
+
 import tables
+
 from sapphire.esd import download_data
 
 from testlist import get_tests
-
 
 DATA_PATH = '/Users/arne/Datastore/tijdtest/tijdtest_data.h5'
 

@@ -8,15 +8,14 @@ general simulation, does it greatly affect efficiency?
 """
 import os
 
-import tables
 import numpy as np
+import tables
 
-from artist import Plot, MultiPlot
+from artist import MultiPlot, Plot
 
-from sapphire.simulations.groundparticles import DetectorBoundarySimulation
-from sapphire.simulations.detector import ErrorlessSimulation
 from sapphire.clusters import BaseCluster
-
+from sapphire.simulations.detector import ErrorlessSimulation
+from sapphire.simulations.groundparticles import DetectorBoundarySimulation
 
 CORSIKA_DATA_e15_z375 = '/Users/arne/Datastore/CORSIKA/312356151_602799693/corsika.h5'
 RESULT_DATA = '/Users/arne/Datastore/detector_orientation/sim.h5'

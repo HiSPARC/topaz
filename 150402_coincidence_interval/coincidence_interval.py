@@ -7,6 +7,7 @@ Be careful with adding 510.
 
 """
 import tables
+
 from numpy import histogram, logspace
 
 from artist import Plot

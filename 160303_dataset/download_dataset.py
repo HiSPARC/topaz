@@ -1,11 +1,11 @@
-import os.path
-from datetime import datetime
 import multiprocessing
+import os.path
+
+from datetime import datetime
 
 import tables
 
 from sapphire import download_coincidences, download_data
-
 
 DATASTORE = "/Users/arne/Datastore/dataset"
 STATION_PATH = os.path.join(DATASTORE, 'dataset_s%d_110601_160201.h5')

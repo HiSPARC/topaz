@@ -1,12 +1,12 @@
 import numpy as np
-from numpy import linspace, pi, degrees
-from scipy.stats import scoreatpercentile
 import tables
+
+from numpy import degrees, linspace, pi
+from scipy.stats import scoreatpercentile
 
 from artist import Plot
 
 from sapphire.utils import angle_between
-
 
 DATA_PATH = 'kascade.h5'
 

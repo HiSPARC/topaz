@@ -1,7 +1,8 @@
 """Arrival times of first particle in detector for certain core distances."""
 
 import tables
-from numpy import arange, save, load, sqrt, nan, isnan, histogram, median, std, mean
+
+from numpy import arange, histogram, isnan, load, mean, median, nan, save, sqrt, std
 
 from artist import Plot
 

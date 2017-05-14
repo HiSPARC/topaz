@@ -1,13 +1,16 @@
-from glob import glob
-import os
 import multiprocessing
+import os
 
-from scipy.stats import linregress
-from numpy import histogram, log, linspace, mean
+from glob import glob
+
 import tables
 
-from sapphire import HiSPARCNetwork
+from numpy import histogram, linspace, log, mean
+from scipy.stats import linregress
+
 from artist import Plot
+
+from sapphire import HiSPARCNetwork
 
 PATH = '/Users/arne/Datastore/pairs/*_*.h5'
 

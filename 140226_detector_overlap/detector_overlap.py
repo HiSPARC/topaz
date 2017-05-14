@@ -7,10 +7,12 @@ and a rectangle with sides 1m by 0.5m with same origin but rotated.
 """
 
 import math
+
 from random import uniform
 
-from matplotlib import pyplot as plt
 import numpy as np
+
+from matplotlib import pyplot as plt
 
 from pointrect import Point, Rect
 

@@ -1,13 +1,13 @@
-import warnings
-import tables
 import itertools
+import warnings
+
+import tables
+
 from sapphire.analysis.coincidences import CoincidencesESD
 
-from helper import (nanoseconds_from_ext_timestamp,
-                    timestamps_from_ext_timestamp)
-from testlist import get_tests
 from data import DATA_PATH
-
+from helper import nanoseconds_from_ext_timestamp, timestamps_from_ext_timestamp
+from testlist import get_tests
 
 DELTA_DATA = '/Users/arne/Datastore/tijdtest/tijdtest_delta.h5'
 

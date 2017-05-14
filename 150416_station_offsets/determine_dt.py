@@ -6,16 +6,18 @@ For various combinations of stations in compact clusters
 - Use detector offsets from API
 
 """
-from datetime import datetime
-import os
 import multiprocessing
+import os
 
-from numpy import isnan
+from datetime import datetime
+
 import tables
 
-from sapphire.transformations.clock import datetime_to_gps
+from numpy import isnan
+
 from sapphire import CoincidenceQuery, Station
 from sapphire.analysis.event_utils import station_arrival_time
+from sapphire.transformations.clock import datetime_to_gps
 
 from station_distances import close_pairs_in_network
 

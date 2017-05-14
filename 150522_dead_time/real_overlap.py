@@ -8,16 +8,16 @@ second event should start less than 6 us after the first.
 Todo: fix t_trigger reconstruction for station 501.
 
 """
-from glob import glob
-import os
 import datetime
+import os
+
+from glob import glob
 
 import tables
 
 from artist import Plot
 
 from sapphire import download_data
-
 
 DATA_PATH = '/Users/arne/Datastore/trigger_interval/data.h5'
 STATION = 501
