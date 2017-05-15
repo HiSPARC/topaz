@@ -1,6 +1,6 @@
 import tables
 
-from numpy import append, arange
+from numpy import arange
 
 from artist import Plot
 

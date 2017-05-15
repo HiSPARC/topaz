@@ -1,6 +1,6 @@
 from itertools import chain
 
-from numpy import arange, around, array, mean, nan, nanmax, nanmin, sign
+from numpy import arange, around, mean, nan, nanmax, nanmin, sign
 
 from artist import Plot
 

@@ -20,7 +20,7 @@ import re
 from datetime import date
 from glob import glob
 
-from numpy import arange, genfromtxt, histogram
+from numpy import genfromtxt
 
 from artist import Plot
 

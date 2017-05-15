@@ -1,7 +1,7 @@
 from datetime import date
 
 from numpy import max as npmax
-from numpy import argsort, array, average, histogram, where, zeros
+from numpy import argsort, array, average, where, zeros
 from scipy.stats import binned_statistic
 
 from artist import Plot

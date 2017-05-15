@@ -22,10 +22,10 @@ import numpy as np
 from astropy import units as u
 from astropy.coordinates import Angle, EarthLocation, SkyCoord
 from astropy.coordinates.builtin_frames import AltAz
-from astropy.tests.helper import catch_warnings, pytest
-from astropy.time import Time, TimeDelta
+from astropy.tests.helper import catch_warnings
+from astropy.time import Time
 
-from sapphire.transformations import angles, base, celestial, clock
+from sapphire.transformations import base, celestial, clock
 
 
 def test_against_hor2eq():

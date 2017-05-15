@@ -21,8 +21,6 @@ from datetime import date
 
 import tables
 
-from numpy import nan
-
 from artist import Plot
 
 from sapphire.analysis.calibration import determine_detector_timing_offsets

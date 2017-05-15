@@ -7,12 +7,12 @@ from itertools import combinations
 
 import tables
 
-from numpy import degrees, histogram, isnan, linspace, log10, sqrt, where, zeros
+from numpy import degrees, histogram, linspace, log10, sqrt
 
 from artist import Plot
 
-from sapphire import CorsikaQuery, ReconstructESDEvents
-from sapphire.utils import angle_between, vector_length
+from sapphire import CorsikaQuery
+from sapphire.utils import vector_length
 
 DATA = '/Users/arne/Datastore/efficiency/'
 PATHS = '/Users/arne/Datastore/efficienc*/*_*.h5'

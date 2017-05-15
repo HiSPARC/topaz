@@ -1,6 +1,6 @@
 import tables
 
-from numpy import arange, array, genfromtxt, histogram, histogram2d, nan, where
+from numpy import arange, array, genfromtxt, histogram, histogram2d, nan
 from scipy.optimize import curve_fit
 
 from artist import MultiPlot, Plot

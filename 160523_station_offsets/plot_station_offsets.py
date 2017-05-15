@@ -6,7 +6,7 @@ from numpy import array
 from artist import MultiPlot
 
 from sapphire import Station
-from sapphire.transformations.clock import datetime_to_gps, gps_to_datetime
+from sapphire.transformations.clock import datetime_to_gps
 
 YEARS = range(2011, date.today().year + 1)
 YEARS_TICKS = array([datetime_to_gps(date(y, 1, 1)) for y in YEARS])

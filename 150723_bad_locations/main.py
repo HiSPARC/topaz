@@ -5,7 +5,6 @@ import itertools
 import numpy
 
 from sapphire import Network, Station
-from sapphire.transformations.clock import gps_to_datetime
 
 COLORS = ['black', 'red', 'green', 'blue']
 

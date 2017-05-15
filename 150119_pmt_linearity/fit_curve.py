@@ -1,11 +1,9 @@
 from __future__ import division
 
-from numpy import abs, arctan, cos, diag, exp, linspace, log10, polyval, sqrt, where
+from numpy import abs, diag, exp, log10, polyval, sqrt, where
 from scipy.optimize import curve_fit
-from scipy.special import erf, erfc
+from scipy.special import erf
 from scipy.stats import linregress
-
-from artist import Plot
 
 P1 = 1e2
 

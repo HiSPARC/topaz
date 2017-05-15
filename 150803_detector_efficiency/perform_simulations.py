@@ -5,7 +5,7 @@ import os
 from numpy.random import choice
 
 from sapphire import CorsikaQuery
-from sapphire.qsub import check_queue, submit_job
+from sapphire.qsub import submit_job
 from sapphire.utils import pbar
 
 OVERVIEW = '/data/hisparc/corsika/corsika_overview.h5'

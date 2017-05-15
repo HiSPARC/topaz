@@ -10,7 +10,7 @@ done;
 
 from glob import glob
 
-from numpy import arange, array, count_nonzero, loadtxt, median, zeros
+from numpy import arange, count_nonzero, loadtxt, median, zeros
 from scipy.optimize import curve_fit
 
 from artist import Plot

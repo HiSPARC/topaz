@@ -16,7 +16,7 @@ from numpy import (
     append, degrees, histogram, histogram2d, linspace, log10, logspace, mean, median, nan, percentile, sqrt)
 from scipy.stats import binned_statistic
 
-from artist import MultiPlot, Plot
+from artist import MultiPlot
 
 from sapphire import CorsikaQuery
 from sapphire.corsika.particles import name

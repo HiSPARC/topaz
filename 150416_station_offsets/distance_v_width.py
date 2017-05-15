@@ -16,9 +16,8 @@ import itertools
 
 import tables
 
-from numpy import abs, arange, array, histogram, linspace, sqrt, std
+from numpy import abs, arange, array, histogram, std
 from scipy.optimize import curve_fit
-from scipy.stats import norm
 
 from artist import MultiPlot
 

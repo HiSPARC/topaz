@@ -1,4 +1,3 @@
-import numpy as np
 import tables
 
 from sapphire import HiSPARCStations, ReconstructESDEvents

@@ -10,8 +10,6 @@ from artist import Plot
 
 from sapphire.utils import gauss
 
-from plot_offsets import get_available_station_pairs
-
 OFF_DATAPATH_GLOB = '/Users/arne/Datastore/station_offsets/offsets_ref*_s*.tsv'
 
 

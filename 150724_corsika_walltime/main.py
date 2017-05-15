@@ -1,7 +1,5 @@
 import subprocess
 
-import tables
-
 from numpy import float32, histogram, loadtxt, log10, uint32
 
 from artist import Plot

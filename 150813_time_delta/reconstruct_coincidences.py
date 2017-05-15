@@ -1,6 +1,6 @@
 import tables
 
-from numpy import arange, array, degrees, genfromtxt, histogram, invert, isfinite, linspace, percentile, pi, where
+from numpy import arange, array, degrees, genfromtxt, histogram, isfinite, linspace, percentile, where
 
 from artist import Plot
 

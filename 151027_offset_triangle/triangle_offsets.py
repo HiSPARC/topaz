@@ -4,7 +4,7 @@ from datetime import datetime
 from functools import partial
 from itertools import combinations, permutations
 
-from numpy import array, histogram, histogram2d, isnan, nanmax, nanmean
+from numpy import array, histogram, histogram2d, isnan, nanmean
 
 from artist import Plot
 

@@ -2,7 +2,6 @@ import glob
 import os
 
 import numpy as np
-import tables
 
 from artist import Plot
 

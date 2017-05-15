@@ -11,7 +11,6 @@ from sapphire.esd import download_data
 
 import delta
 
-from delta import DeltaVal
 from testlist import Tijdtest
 
 DATA_PATH = '/Users/arne/Datastore/gps_offsets/508_data.h5'

@@ -5,9 +5,8 @@ from scipy.optimize import curve_fit
 
 from artist import Plot
 
-from sapphire import ReconstructESDEvents
-from sapphire.clusters import SingleStation, SingleTwoDetectorStation
-from sapphire.simulations.showerfront import FlatFrontSimulation, FlatFrontSimulationWithoutErrors
+from sapphire.clusters import SingleTwoDetectorStation
+from sapphire.simulations.showerfront import FlatFrontSimulation
 from sapphire.utils import gauss
 
 cluster = SingleTwoDetectorStation()

@@ -5,8 +5,6 @@ import tables
 
 from sapphire.esd import download_data
 
-import data
-
 from delta import DeltaVal, calculate
 from testlist import Tijdtest
 

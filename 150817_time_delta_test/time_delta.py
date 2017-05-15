@@ -1,4 +1,4 @@
-from numpy import arange, convolve, genfromtxt, histogram, ones, where
+from numpy import arange, convolve, genfromtxt, histogram, ones
 
 from artist import Plot
 

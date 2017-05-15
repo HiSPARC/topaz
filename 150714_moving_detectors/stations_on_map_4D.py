@@ -7,7 +7,7 @@ from smopy import Map
 
 from artist import Plot
 
-from sapphire import HiSPARCStations, Network, Station
+from sapphire import HiSPARCStations, Station
 
 
 def get_detector_locations(station):

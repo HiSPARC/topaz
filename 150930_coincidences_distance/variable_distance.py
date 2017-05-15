@@ -1,7 +1,5 @@
 import warnings
 
-from numpy import mean
-
 from artist import Plot
 
 from sapphire import HiSPARCStations

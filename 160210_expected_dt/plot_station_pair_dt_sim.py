@@ -4,11 +4,9 @@ import tables
 
 from numpy import arange, histogram
 from scipy.optimize import curve_fit
-from scipy.stats import chi, norm, t, tukeylambda
+from scipy.stats import norm, tukeylambda
 
 from artist import Plot
-
-from sapphire.utils import gauss
 
 PATH = '/Users/arne/Datastore/expected_dt/test_station_dt_spa.h5'
 

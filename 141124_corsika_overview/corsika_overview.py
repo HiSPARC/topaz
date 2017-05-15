@@ -13,7 +13,6 @@ import tables
 import artist
 
 from sapphire import CorsikaQuery
-from sapphire.corsika.particles import name
 
 OVERVIEW = '/Users/arne/Datastore/CORSIKA/corsika_overview.h5'
 

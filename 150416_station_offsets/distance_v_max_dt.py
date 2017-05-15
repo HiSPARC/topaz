@@ -18,7 +18,6 @@ import tables
 
 from numpy import array, percentile
 from scipy.optimize import curve_fit
-from scipy.stats import norm
 
 from artist import MultiPlot
 

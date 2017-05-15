@@ -7,7 +7,7 @@ from artist import MultiPlot, Plot
 from sapphire.utils import gauss
 
 from delta import get
-from helper import nanoseconds_from_ext_timestamp, timestamps_from_ext_timestamp
+from helper import nanoseconds_from_ext_timestamp
 from testlist import get_tests
 
 PLOT_PATH = 'plots/'

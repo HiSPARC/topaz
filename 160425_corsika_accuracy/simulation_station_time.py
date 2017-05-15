@@ -21,9 +21,8 @@ import sys
 import tables
 
 from numpy import around, array, degrees, log10, logspace, percentile, sqrt
-from scipy.stats import binned_statistic
 
-from artist import MultiPlot, Plot
+from artist import MultiPlot
 
 from sapphire import CorsikaQuery
 from sapphire.analysis.event_utils import station_arrival_time

@@ -4,8 +4,7 @@ Show which energy can be efficienctly detected by two detectors separated by
 distance d.
 
 """
-from numpy import array, exp, interp, linspace, logspace, median
-from scipy.stats import binned_statistic
+from numpy import array, exp, interp, linspace, logspace
 
 from artist import Plot
 

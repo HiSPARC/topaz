@@ -13,8 +13,6 @@ import os
 
 import tables
 
-from artist import Plot
-
 from sapphire import download_data
 
 DATA_PATH = '/Users/arne/Datastore/trigger_interval/data.h5'

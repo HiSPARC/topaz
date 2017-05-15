@@ -5,8 +5,7 @@ import data_nikhef_integral
 import data_nikhef_senstech_integral
 import data_senstech_integral
 
-from plot_results import plot_ph, plot_pi, plot_pi_ph
-from process import determine_pi_ph_ratio, get_measured_expected
+from plot_results import plot_pi_ph
 
 
 def plot_pi_ph(plot, test, mark='o'):

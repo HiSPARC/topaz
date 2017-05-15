@@ -1,4 +1,4 @@
-from numpy import arange, convolve, genfromtxt, histogram, ones, where
+from numpy import arange, convolve, genfromtxt, histogram, ones
 from scipy.optimize import curve_fit
 
 from artist import Plot

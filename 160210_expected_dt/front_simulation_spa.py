@@ -2,9 +2,7 @@ import os
 
 import tables
 
-from artist import Plot
-
-from sapphire.clusters import BaseCluster, HiSPARCStations, ScienceParkCluster
+from sapphire.clusters import BaseCluster, ScienceParkCluster
 from sapphire.simulations.showerfront import (
     ConeFrontSimulation, FlatFrontSimulation, FlatFrontSimulation2D, FlatFrontSimulation2DWithoutErrors,
     FlatFrontSimulationWithoutErrors)

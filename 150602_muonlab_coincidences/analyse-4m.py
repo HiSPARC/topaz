@@ -12,8 +12,6 @@ import tables
 
 from artist import Plot
 
-from sapphire import CoincidenceQuery
-
 EVENTDATA_PATH = '/Users/arne/Datastore/muonlab_test3.h5'
 
 

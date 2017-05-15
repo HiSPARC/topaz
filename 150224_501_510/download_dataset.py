@@ -2,7 +2,7 @@ from datetime import datetime
 
 import tables
 
-from sapphire import download_coincidences, download_data
+from sapphire import download_coincidences
 
 PATH = '/Users/arne/Datastore/501_510/'
 

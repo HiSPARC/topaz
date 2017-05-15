@@ -4,7 +4,7 @@ from datetime import datetime
 
 import tables
 
-from numpy import cos, histogram, linspace, mean, pi, radians, sin, sqrt
+from numpy import cos, histogram, linspace, mean, pi, radians, sqrt
 from numpy.random import normal
 
 from artist import Plot

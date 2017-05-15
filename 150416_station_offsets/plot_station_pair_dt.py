@@ -4,14 +4,13 @@ import itertools
 
 import tables
 
-from numpy import arange, histogram, linspace
+from numpy import arange, histogram
 from scipy.optimize import curve_fit
-from scipy.stats import norm, t, tukeylambda
+from scipy.stats import norm, tukeylambda
 
 from artist import MultiPlot
 
 from sapphire import HiSPARCStations
-from sapphire.utils import gauss
 
 from station_distances import horizontal_distance_between_stations
 

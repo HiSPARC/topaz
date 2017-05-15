@@ -11,7 +11,7 @@ import tables
 
 from numpy import histogram, linspace, pi, random, sin
 
-from artist import Plot, PolarPlot
+from artist import Plot
 
 from sapphire import FlatFrontSimulation, HiSPARCStations, ReconstructESDEvents
 

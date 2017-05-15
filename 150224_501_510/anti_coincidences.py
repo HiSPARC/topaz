@@ -4,8 +4,6 @@ from numpy import histogram, linspace
 
 from artist import Plot
 
-from sapphire import HiSPARCStations
-
 STATIONS = [501, 510]
 EVENTDATA_PATH = '/Users/arne/Datastore/501_510/e_501_510_141101_150201.h5'
 

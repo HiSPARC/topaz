@@ -15,7 +15,7 @@ from glob import glob
 
 import tables
 
-from numpy import log10, nan
+from numpy import nan
 
 from sapphire import HiSPARCNetwork, HiSPARCStations
 from sapphire.analysis.calibration import determine_station_timing_offset

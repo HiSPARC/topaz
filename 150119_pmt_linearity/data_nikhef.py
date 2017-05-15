@@ -1,6 +1,6 @@
 from __future__ import division
 
-from plot_results import plot_ph, plot_pi, plot_pi_ph
+from plot_results import plot_ph
 from process import determine_pi_ph_ratio, get_measured_expected
 
 led_direct_ph = [1, 225, 300, 225, 320, 250, 350, 375, 370, 340, 325,

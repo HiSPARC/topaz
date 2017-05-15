@@ -1,6 +1,6 @@
 import tables
 
-from numpy import arange, histogram, linspace, mean, where
+from numpy import arange, histogram, linspace, where
 
 from artist import Plot
 

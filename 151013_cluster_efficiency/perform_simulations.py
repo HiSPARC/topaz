@@ -9,7 +9,7 @@ detected zenith distribution on the ground.
 
 from __future__ import division
 
-from sapphire.qsub import check_queue, submit_job
+from sapphire.qsub import submit_job
 from sapphire.utils import pbar
 
 

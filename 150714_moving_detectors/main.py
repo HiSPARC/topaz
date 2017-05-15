@@ -1,7 +1,6 @@
 from artist import Plot
 
 from sapphire import HiSPARCStations
-from sapphire.transformations.clock import gps_to_datetime
 
 COLORS = ['black', 'red', 'green', 'blue']
 
