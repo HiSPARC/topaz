@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import tables
 
 from numpy import degrees, genfromtxt, histogram, invert, linspace, pi, where

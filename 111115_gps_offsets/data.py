@@ -1,7 +1,5 @@
 import calendar
 
-from datetime import datetime as dt
-
 import tables
 
 from sapphire.esd import download_data

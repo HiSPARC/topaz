@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import tables
 
 from numpy import arange, array, degrees, genfromtxt, histogram, invert, isfinite, linspace, percentile, pi, where

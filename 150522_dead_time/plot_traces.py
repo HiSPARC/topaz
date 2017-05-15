@@ -3,7 +3,6 @@
 This script is used to plot traces from multiple events which overlap.
 
 """
-import argparse
 
 from numpy import arange, array
 

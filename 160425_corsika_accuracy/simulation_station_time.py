@@ -18,8 +18,6 @@ This simultion currently ignores gammas
 """
 import sys
 
-from functools import partial
-
 import tables
 
 from numpy import around, array, degrees, log10, logspace, percentile, sqrt

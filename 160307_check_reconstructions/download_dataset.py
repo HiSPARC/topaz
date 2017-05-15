@@ -1,4 +1,3 @@
-import multiprocessing
 import os.path
 
 from datetime import datetime

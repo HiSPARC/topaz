@@ -1,5 +1,3 @@
-import os
-import subprocess
 import textwrap
 
 from sapphire import qsub

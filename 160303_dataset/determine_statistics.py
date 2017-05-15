@@ -1,5 +1,4 @@
 import csv
-import itertools
 import os
 
 from datetime import date

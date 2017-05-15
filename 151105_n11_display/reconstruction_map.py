@@ -1,5 +1,3 @@
-from math import cos, sin
-
 import tables
 
 from numpy import append, arange, array, insert, isnan, nanmin

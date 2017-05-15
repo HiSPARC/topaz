@@ -1,5 +1,4 @@
 from datetime import datetime as dt
-from re import sub
 
 
 class Tijdtest():

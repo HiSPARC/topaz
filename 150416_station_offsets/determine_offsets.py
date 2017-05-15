@@ -7,7 +7,6 @@ For various combinations of stations in compact clusters
 
 """
 import csv
-import itertools
 import multiprocessing
 import re
 

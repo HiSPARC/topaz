@@ -11,8 +11,6 @@ Todo: fix t_trigger reconstruction for station 501.
 import datetime
 import os
 
-from glob import glob
-
 import tables
 
 from artist import Plot
