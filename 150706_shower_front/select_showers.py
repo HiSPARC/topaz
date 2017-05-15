@@ -114,6 +114,7 @@ def plot_thickness(seed):
     # plot2.draw_horizontal_line(0.6813)
     plot2.save_as_pdf('plots/%.1f_%.1f_%s_dens.pdf' % (energy, shower_size, seed))
 
+
 if __name__ == "__main__":
     # for seeds in select_showers():
     #     copy_shower(seeds)

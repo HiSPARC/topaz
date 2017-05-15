@@ -90,6 +90,7 @@ def plot_reconstruction_accuracy(data, d):
     graph_recs.set_title('Reconstructions by 501')
     graph_recs.save_as_pdf('reconstructions_%s' % d)
 
+
 if __name__ == '__main__':
     for d in ['c_501_510_141001_141011', 'c_501_510_141101_141111']:
         # with tables.open_file('/Users/arne/Datastore/501_510/%s.h5' % d, 'a') as data:

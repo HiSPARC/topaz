@@ -8,6 +8,7 @@ def determine_failed_percentrage(status):
         print ('%5.2f%% failed trigger reconstructions with %s thresholds' %
                (100. * sum(t_trigger == -999) / len(t_trigger), status))
 
+
 if __name__ == "__main__":
     for status in ['good', 'bad']:
         determine_failed_percentrage(status)

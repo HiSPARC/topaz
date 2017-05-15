@@ -134,6 +134,7 @@ def analyse_reconstructions(path):
     # Cleanup
     cq.finish()
 
+
 if __name__ == '__main__':
     for path in glob.glob(PATHS):
         print path

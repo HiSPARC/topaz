@@ -43,6 +43,7 @@ def plot_min_max(variable_pairs):
     plot.set_ylabel(r'Distance between stations [\si{\meter}]')
     plot.save_as_pdf('min_max_distances')
 
+
 if __name__ == "__main__":
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")

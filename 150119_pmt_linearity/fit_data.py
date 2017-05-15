@@ -70,5 +70,6 @@ def plot_fitted_curves():
     plot_senstech_integral()
     plot_nikhef_final_integral()
 
+
 if __name__ == '__main__':
     plot_fitted_curves()
