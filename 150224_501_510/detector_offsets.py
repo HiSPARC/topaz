@@ -24,7 +24,7 @@ def determine_detector_timing_offsets(s, events):
     bins = arange(-100 + 1.25, 100, 2.5)
     col = (cl for cl in COLORS)
     graph = Plot()
-    ids = range(1, 5)
+    ids = list(range(1, 5))
     reference = 2
     for j in [1, 3, 4]:
         if j == reference:
@@ -33,15 +33,15 @@ def determine_detector_timing_offsets(s, events):
         tj = events.col('t%d' % j)
         dt = (tj - tref).compress((tref >= 0) & (tj >= 0))
         y, bins = histogram(dt, bins=bins)
-        c = col.next()
+        c = next(col)
         graph.histogram(y, bins, linestyle='%s' % c)
         x = (bins[:-1] + bins[1:]) / 2
         try:
             popt, pcov = curve_fit(gauss, x, y, p0=(len(dt), 0., 10.))
             graph.draw_vertical_line(popt[1], linestyle='%s' % c)
-            print '%d-%d: %f (%f)' % (j, reference, popt[1], popt[2])
+            print('%d-%d: %f (%f)' % (j, reference, popt[1], popt[2]))
         except (IndexError, RuntimeError):
-            print '%d-%d: failed' % (j, reference)
+            print('%d-%d: failed' % (j, reference))
     graph.set_title('Time difference, station %d' % (s))
     graph.set_xlimits(-100, 100)
     graph.set_ylimits(min=0)
@@ -53,6 +53,6 @@ def determine_detector_timing_offsets(s, events):
 if __name__ == '__main__':
     with tables.open_file(EVENTDATA_PATH, 'r') as data:
         for s in [501, 510]:
-            print 'Station: %d' % s
+            print('Station: %d' % s)
             e = data.get_node('/s%d/events' % s)
             determine_detector_timing_offsets(s, e)

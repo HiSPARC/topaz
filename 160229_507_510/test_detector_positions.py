@@ -38,7 +38,7 @@ def reconstruct_events(data):
     rec_510.phi = array(rec_510.phi)
 
     # Station 507
-    for order in itertools.permutations(range(4), 4):
+    for order in itertools.permutations(list(range(4)), 4):
         cluster = get_cluster()
         station = cluster.get_station(STATIONS[0])
         station_group = '/hisparc/cluster_amsterdam/station_%d' % station.number
@@ -75,7 +75,7 @@ def plot_comparisons(data):
     r510z = r510.col('zenith').compress(subset510)
     filter510 = r510z > min_zenith
 
-    for order in itertools.permutations(range(4), 4):
+    for order in itertools.permutations(list(range(4)), 4):
         r507 = data.get_node('/hisparc/cluster_amsterdam/station_507/',
                              REC_PATH % order)
         subset507 = [True] * r507.nrows

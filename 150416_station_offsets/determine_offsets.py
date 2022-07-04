@@ -62,7 +62,7 @@ def determine_offsets_for_pair(stations):
         start = datetime(2010, 1, 1)
         end = datetime(2015, 4, 1)
         for dt0 in (start + timedelta(days=x)
-                    for x in xrange(0, (end - start).days, 10)):
+                    for x in range(0, (end - start).days, 10)):
             ts0 = datetime_to_gps(dt0)
             CLUSTER.set_timestamp(ts0)
             # dz is z - z_ref

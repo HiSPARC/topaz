@@ -48,7 +48,7 @@ def get_times():
         for core_distance in CORE_DISTANCES:
             times = [get_first_median_particles(seed, core_distance)
                      for seed in select_showers(e)]
-            first_times, median_times = zip(*times)
+            first_times, median_times = list(zip(*times))
             first_times = [t for t in first_times if not isnan(t)]
             median_times = [t for t in median_times if not isnan(t)]
             first_path = ('/data/hisparc/adelaat/first_particle/first_{e}_{r}'

@@ -65,8 +65,8 @@ def plot_n_azimuth(path='/'):
         lr_azi = coin.read_where('s1', field='azimuth')
         sq_azi = coin.read_where('s2', field='azimuth')
         udlr_azi = coin.get_where_list('s0 & s1')
-        print ('Percentage detected in both %f ' %
-               (float(len(udlr_azi)) / len(in_azi)))
+        print(('Percentage detected in both %f ' %
+               (float(len(udlr_azi)) / len(in_azi))))
 
         bins = np.linspace(-np.pi, np.pi, 30)
         in_counts = np.histogram(in_azi, bins)[0].astype(float)
@@ -74,8 +74,8 @@ def plot_n_azimuth(path='/'):
         lr_counts = np.histogram(lr_azi, bins)[0].astype(float)
         sq_counts = np.histogram(sq_azi, bins)[0].astype(float)
 
-        print ('Detected: UD %d | LR %d | SQ %d' %
-               (sum(ud_counts), sum(lr_counts), sum(sq_counts)))
+        print(('Detected: UD %d | LR %d | SQ %d' %
+               (sum(ud_counts), sum(lr_counts), sum(sq_counts))))
 
         plot = Plot()
         plot.histogram(ud_counts / in_counts, bins, linestyle='black')
@@ -142,7 +142,7 @@ def plot_layouts(path='/'):
         plot = MultiPlot(3, 1, width=r'0.67\textwidth', height=r'.2\textwidth')
         for splot, station in zip(plot.subplots, cluster.stations):
             for detector in station.detectors:
-                x, y = zip(*detector.get_corners())
+                x, y = list(zip(*detector.get_corners()))
                 splot.plot(x + x[:1], y + y[:1], mark=None)
                 splot.set_axis_equal()
         plot.show_xticklabels_for_all([(2, 0)])

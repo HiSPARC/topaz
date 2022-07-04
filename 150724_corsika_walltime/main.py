@@ -52,9 +52,9 @@ def plot_times():
     plot = Plot('semilogx')
     data = read_times()
     walltimes = data['walltime'] / 60. / 60.  # To hours
-    print 'Total time: %d years.' % (sum(walltimes) / 24. / 365.)
-    print 'Longest job: %d hours.' % max(walltimes)
-    print 'Shortest job: %d seconds.' % (min(walltimes) * 60. * 60.)
+    print('Total time: %d years.' % (sum(walltimes) / 24. / 365.))
+    print('Longest job: %d hours.' % max(walltimes))
+    print('Shortest job: %d seconds.' % (min(walltimes) * 60. * 60.))
     counts, bins = histogram(log10(walltimes), bins=300)
     plot.histogram(counts, 10 ** bins, linestyle='fill=black')
     plot.add_pin_at_xy(4, max(counts), 'short', location='above left', use_arrow=False)

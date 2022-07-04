@@ -17,11 +17,11 @@ def download_sciencepark_dataset_n11():
     Coincidences with at least 11 events in a coincidence are included.
 
     """
-    stations = range(501, 512)
+    stations = list(range(501, 512))
     start = (2015, 6)
     end = (2015, 12)
     path = os.path.join(DATASTORE, 'sciencepark_n11_150701_151105.h5')
-    print "Downloading n11 Science Park dataset."
+    print("Downloading n11 Science Park dataset.")
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(start, end):
             download_coincidences(data, stations=stations, start=startdt,

@@ -19,7 +19,7 @@ COIN_DATA = '/Users/arne/Datastore/esd_coincidences/sciencepark_n11_150701_15110
 #             508: [-26.2402, -24.9859, -24.0131, -23.2882],
 #             509: [-24.8369, -23.0218, -20.6011, -24.3757]}
 DETECTOR_IDS = [0, 1, 2, 3]
-STATIONS = range(501, 512)
+STATIONS = list(range(501, 512))
 CLUSTER = HiSPARCStations(STATIONS)
 COLORS = ['black', 'red!80!black', 'green!80!black', 'blue!80!black']
 

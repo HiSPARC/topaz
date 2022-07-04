@@ -13,7 +13,7 @@ def detect_problems(station):
     try:
         gps_locations = station.gps_locations
     except:
-        print station.station, 'no GPS locations'
+        print(station.station, 'no GPS locations')
         return
 
     if len(gps_locations) < 2:
@@ -22,7 +22,7 @@ def detect_problems(station):
     for p1, p2 in itertools.combinations(gps_locations, 2):
         d = distance(p1, p2)
         if d > .25:
-            print station.station, d
+            print(station.station, d)
             break
 
 

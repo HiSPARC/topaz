@@ -1,5 +1,5 @@
 import os
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from sapphire import Network
 from sapphire.utils import pbar
@@ -14,4 +14,4 @@ if __name__ == "__main__":
     for sn in pbar(station_numbers):
         path = PATH + '%d.tsv' % sn
         if not os.path.exists(path):
-            urllib.urlretrieve(BASE % sn, path)
+            urllib.request.urlretrieve(BASE % sn, path)

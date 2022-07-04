@@ -54,21 +54,21 @@ if __name__ == "__main__":
     start = argmax(timestamps > datetime_to_gps(date(2008, 9, 26)))
     counts, bins = histogram(summed_data[start:], bins=bins)
     counts_in_years = counts / 24. / 365.
-    print [(i, sum(counts_in_years[i:])) for i in range(11)]
+    print([(i, sum(counts_in_years[i:])) for i in range(11)])
     plot.histogram(counts_in_years, bins)
 
     # Exluding data from before 08-03-2010
     start = argmax(timestamps > datetime_to_gps(date(2010, 3, 8)))
     counts, bins = histogram(summed_data[start:], bins=bins)
     counts_in_years = counts / 24. / 365.
-    print [(i, sum(counts_in_years[i:])) for i in range(11)]
+    print([(i, sum(counts_in_years[i:])) for i in range(11)])
     plot.histogram(counts_in_years, bins, linestyle='blue')
 
     # Exluding data from before 01-07-2011
     start = argmax(timestamps > datetime_to_gps(date(2011, 7, 1)))
     counts, bins = histogram(summed_data[start:], bins=bins)
     counts_in_years = counts / 24. / 365.
-    print [(i, sum(counts_in_years[i:])) for i in range(11)]
+    print([(i, sum(counts_in_years[i:])) for i in range(11)])
     plot.histogram(counts_in_years, bins, linestyle='red')
 
     plot.set_ylimits(min=0)

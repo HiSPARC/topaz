@@ -13,7 +13,7 @@ DATA = 'data_coin.h5'
 
 
 def download_dataset():
-    print 'Downloading data . . .'
+    print('Downloading data . . .')
     with tables.open_file(DATA, 'w'):
         # Clear previous data
         pass
@@ -57,7 +57,7 @@ def download_dataset():
 
 
 def find_coincidences():
-    print 'Coincidences . . .'
+    print('Coincidences . . .')
     with tables.open_file(DATA, 'a') as data:
         cluster = HiSPARCStations(STATIONS)
         coin = CoincidencesESD(data, '/coincidences', ['/s%d' % s for s in STATIONS])
@@ -71,7 +71,7 @@ def find_coincidences():
 
 
 def reconstruct_events():
-    print 'Reconstructions . . .'
+    print('Reconstructions . . .')
     with tables.open_file(DATA, 'a') as data:
         for station in STATIONS:
             rec = ReconstructESDEvents(data, '/s%d_original' % station, station, overwrite=True)
@@ -81,7 +81,7 @@ def reconstruct_events():
 
 
 def plot_reconstructions():
-    print 'Plotting . . .'
+    print('Plotting . . .')
     plot = Plot()
     bins = linspace(0, 90, 30)  # Degrees
     plot.set_ylimits(min=0)
@@ -121,7 +121,7 @@ def plot_reconstructions():
 
         # Compare angles between old and new
         d_angle = angle_between(zen501, azi501, zen510, azi510)
-        print c_group, r'67\%% within %.1f degrees' % degrees(percentile(d_angle[isfinite(d_angle)], 67))
+        print(c_group, r'67\%% within %.1f degrees' % degrees(percentile(d_angle[isfinite(d_angle)], 67)))
         plot.histogram(*histogram(degrees(d_angle), bins=bins), linestyle=colors[i])
     plot.save_as_pdf('angle_between_501_510')
 
@@ -181,14 +181,14 @@ def print_coincident_time_delta():
 
 def print_offsets():
     with tables.open_file(DATA, 'r') as data:
-        print '501'
-        print data.root.s501.detector_offsets[:]
-        print 'without time_delta'
-        print data.root.s501_original.detector_offsets[:]
-        print '510'
-        print data.root.s510.detector_offsets[:]
-        print 'without time_delta'
-        print data.root.s510_original.detector_offsets[:]
+        print('501')
+        print(data.root.s501.detector_offsets[:])
+        print('without time_delta')
+        print(data.root.s501_original.detector_offsets[:])
+        print('510')
+        print(data.root.s510.detector_offsets[:])
+        print('without time_delta')
+        print(data.root.s510_original.detector_offsets[:])
 
 
 if __name__ == "__main__":

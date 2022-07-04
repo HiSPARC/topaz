@@ -10,7 +10,7 @@ determined based on the time between coincidences. This is then plotted
 against the distance between the stations.
 
 """
-from __future__ import division
+
 
 import datetime
 import multiprocessing
@@ -48,9 +48,9 @@ def download_coincidences_pair(pair):
     path = DATAPATH % tuple(pair)
     tmp_path = path + '_tmp'
     if os.path.exists(path):
-        print 'Skipping', pair
+        print('Skipping', pair)
         return
-    print 'Starting', pair, datetime.datetime.now()
+    print('Starting', pair, datetime.datetime.now())
     distance = distance_between_stations(*pair)
     timestamp_ranges = get_timestamp_ranges(pair)
     total_exposure = get_total_exposure(timestamp_ranges)
@@ -65,7 +65,7 @@ def download_coincidences_pair(pair):
         try:
             coin = data.get_node('/coincidences')
         except tables.NoSuchNodeError:
-            print 'No coincidences for', pair
+            print('No coincidences for', pair)
             os.rename(tmp_path, path)
             return
         rate = coin.coincidences.nrows / total_exposure
@@ -73,7 +73,7 @@ def download_coincidences_pair(pair):
         data.set_node_attr('/', 'n_coincidences', coin.coincidences.nrows)
     os.rename(tmp_path, path)
     determine_rate(path)
-    print 'Finished', pair, datetime.datetime.now()
+    print('Finished', pair, datetime.datetime.now())
 
 
 if __name__ == "__main__":

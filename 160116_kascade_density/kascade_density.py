@@ -509,7 +509,7 @@ class KascadeDensity(object):
         bins = linspace(0, 20, 150)
         plot.histogram(*histogram(n, bins=bins))
         plot.draw_vertical_line(1)
-        for j, density in enumerate(range(1, 8) + [15] + [20]):
+        for j, density in enumerate(list(range(1, 8)) + [15] + [20]):
             n_slice = n.compress(abs(ref_n - density) < padding)
             counts, bins = histogram(n_slice, bins=bins)
             plot.histogram(counts, bins + (j / 100.), linestyle=colors[j % len(colors)])
@@ -550,7 +550,7 @@ class KascadeDensity(object):
             splot = plot.get_subplot_at(i / 2, i % 2)
             splot.histogram(*histogram(ni[:, i], bins=bins))
             splot.draw_vertical_line(1)
-            for j, density in enumerate(range(1, 8) + [15] + [20]):
+            for j, density in enumerate(list(range(1, 8)) + [15] + [20]):
                 ni_slice = ni[:, i].compress(abs(ref_ni[:, i] - density) < padding)
                 counts, bins = histogram(ni_slice, bins=bins)
                 splot.histogram(counts, bins + (j / 100.), linestyle=colors[j % len(colors)])

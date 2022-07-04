@@ -14,7 +14,7 @@ def plot_fit(plot, expected, measured, measured_err=[]):
 
     """
     popt, perr = fit_curve(measured, expected, p0=(1., 1.1, 1.), err=measured_err)
-    print popt, perr
+    print(popt, perr)
     outputs = linspace(0.01, max(measured) + 0.2, 500)
     # Plot fit line
     splot = plot.get_subplot_at(0, 0)

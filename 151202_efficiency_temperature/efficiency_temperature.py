@@ -13,7 +13,7 @@ DATA_PATH = '/Users/arne/Datastore/efficiency_temperature/data.h5'
 
 def get_weather_data_dataset():
     if os.path.exists(DATA_PATH):
-        print 'Datafile already exists, skipping download'
+        print('Datafile already exists, skipping download')
         return
 
     with tables.open_file(DATA_PATH, 'a') as data:

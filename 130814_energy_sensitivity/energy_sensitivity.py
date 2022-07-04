@@ -167,7 +167,7 @@ class EnergySensitivity(object):
         n_p = len(p)
         p_total = 0
         for n in range(min_n, n_p + 1):
-            for i in combinations(range(n_p), n):
+            for i in combinations(list(range(n_p)), n):
                 p_combination = 1.
                 for j in range(n_p):
                     if j in i:

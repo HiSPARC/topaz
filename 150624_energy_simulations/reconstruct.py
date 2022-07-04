@@ -32,5 +32,5 @@ def reconstruct_simulations(seed):
 if __name__ == '__main__':
     for path in glob.glob(PATHS):
         seed = os.path.basename(os.path.dirname(path))
-        print seed
+        print(seed)
         reconstruct_simulations(seed)

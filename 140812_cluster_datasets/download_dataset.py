@@ -22,7 +22,7 @@ def download_sciencepark_dataset():
     """
     stations = [501, 502, 503, 504, 505, 506, 508, 509, 510]
     path = os.path.join(DATASTORE, 'sciencepark_n2_100101_150401.h5')
-    print "Downloading Science Park dataset."
+    print("Downloading Science Park dataset.")
     with tables.open_file(path, 'a') as data:
         download_coincidences(data, stations=stations,
                               start=datetime(2010, 1, 1),
@@ -42,7 +42,7 @@ def download_sciencepark_dataset_n7():
     start = (2012, 1)
     end = (2015, 4)
     path = os.path.join(DATASTORE, 'sciencepark_n7_120101_150401.h5')
-    print "Downloading n7 Science Park dataset."
+    print("Downloading n7 Science Park dataset.")
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(start, end):
             download_coincidences(data, stations=stations, start=startdt,
@@ -62,7 +62,7 @@ def download_aarhus_dataset():
     start = (2012, 1)
     end = (2015, 4)
     path = os.path.join(DATASTORE, 'aarhus_n2_120101_140801.h5')
-    print "Downloading Aarhus dataset."
+    print("Downloading Aarhus dataset.")
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(start, end):
             download_coincidences(data, stations=stations, start=startdt,
@@ -83,7 +83,7 @@ def download_zaanlands_dataset():
     start = (2012, 6)
     end = (2015, 4)
     path = os.path.join(DATASTORE, 'zaanlands_n2_120601_140801.h5')
-    print "Downloading Zaanlands dataset."
+    print("Downloading Zaanlands dataset.")
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(start, end):
             download_coincidences(data, stations=stations, start=startdt,
@@ -104,7 +104,7 @@ def download_twente_dataset():
     start = (2011, 8)
     end = (2015, 4)
     path = os.path.join(DATASTORE, 'twente_n2_110801_140801.h5')
-    print "Downloading Twente dataset."
+    print("Downloading Twente dataset.")
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(start, end):
             download_coincidences(data, stations=stations, start=startdt,
@@ -126,7 +126,7 @@ def download_eindhoven_dataset():
     start = (2011, 10)
     end = (2015, 4)
     path = os.path.join(DATASTORE, 'eindhoven_n2_111001_140801.h5')
-    print "Downloading Eindhoven dataset."
+    print("Downloading Eindhoven dataset.")
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(start, end):
             download_coincidences(data, stations=stations, start=startdt,
@@ -148,7 +148,7 @@ def download_alphen_dataset():
     start = (2010, 12)
     end = (2015, 4)
     path = os.path.join(DATASTORE, 'alphen_n2_101201_140801.h5')
-    print "Downloading Alphen ad Rijn dataset."
+    print("Downloading Alphen ad Rijn dataset.")
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(start, end):
             download_coincidences(data, stations=stations, start=startdt,

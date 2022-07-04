@@ -1,4 +1,4 @@
-from __future__ import division
+
 
 import glob
 
@@ -67,7 +67,7 @@ def get_combined_results():
     size_init = array(size_init)
     r_init = array(r_init)
 
-    print sum(filter), len(filter)
+    print(sum(filter), len(filter))
 
     return (zenith, zenith_in, azimuth, azimuth_in, energy_in, size_in, r_in,
             zenith_init, azimuth_init, energy_init, size_init, r_init)

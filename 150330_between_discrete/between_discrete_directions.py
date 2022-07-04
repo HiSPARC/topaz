@@ -45,7 +45,7 @@ def ceil_in_base(value, base):
 def reconstruct_for_detectors(ids):
     times = generate_discrete_times(station, detector_ids=ids)
     detectors = [station.detectors[id].get_coordinates() for id in ids]
-    x, y, z = zip(*detectors)
+    x, y, z = list(zip(*detectors))
 
     angles = (dirrec.reconstruct_common((0,) + t, x, y, z) for t in times)
     angles = set([(round(t, 5), round(p, 5)) for t, p in angles
@@ -54,7 +54,7 @@ def reconstruct_for_detectors(ids):
 
 
 def plot_discrete(angles):
-    theta, phi = zip(*angles)
+    theta, phi = list(zip(*angles))
     graph = PolarPlot(use_radians=True)
     graph.scatter(phi, theta, markstyle='mark size=.5pt')
 
@@ -68,7 +68,7 @@ def plot_discrete(angles):
 
 
 def angles_between_discrete(angles):
-    theta, phi = zip(*angles)
+    theta, phi = list(zip(*angles))
     distances = angle_between(0., 0., np.array(theta), np.array(phi))
     counts, bins = np.histogram(distances, bins=np.linspace(0, np.pi, 721))
     plotd = Plot()

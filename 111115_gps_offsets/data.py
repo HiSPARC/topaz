@@ -4,7 +4,7 @@ import tables
 
 from sapphire.esd import download_data
 
-from testlist import get_tests
+from .testlist import get_tests
 
 DATA_PATH = '/Users/arne/Datastore/tijdtest/tijdtest_data.h5'
 
@@ -16,7 +16,7 @@ def download(storage, test):
     reference station into storage.
 
     """
-    print 'tt_data: Downloading data for test %d: %s' % (test.id, test.group)
+    print('tt_data: Downloading data for test %d: %s' % (test.id, test.group))
     download_data(storage, '/refr/t%d' % test.id, 95, test.start, test.end)
     download_data(storage, '/swap/t%d' % test.id, 94, test.start, test.end)
 
@@ -72,7 +72,7 @@ def append_new(id=None, path=None):
                     download(data_file, test)
                     added = "tt_data: Added new data"
 
-    print added
+    print(added)
 
 
 def get_ids(path=None):
@@ -105,7 +105,7 @@ def download_all(path=None):
     with tables.open_file(path, 'w'):
         pass
     append_new()
-    print 'tt_data: Downloaded entire Tijd Test'
+    print('tt_data: Downloaded entire Tijd Test')
 
 
 def remove(id, path=None):
@@ -119,15 +119,15 @@ def remove(id, path=None):
         try:
             data_file.get_node('/swap/t%d' % id, 'events')
             data_file.remove_node('/swap/t%d' % id, recursive=True)
-            print "tt_data: Removed table /swap/t%d" % id
+            print("tt_data: Removed table /swap/t%d" % id)
         except tables.NoSuchNodeError:
-            print "tt_data: No such table in swap"
+            print("tt_data: No such table in swap")
         try:
             data_file.get_node('/refr/t%d' % id, 'events')
             data_file.remove_node('/refr/t%d' % id, recursive=True)
-            print "tt_data: Removed table /refr/t%d" % id
+            print("tt_data: Removed table /refr/t%d" % id)
         except tables.NoSuchNodeError:
-            print "tt_data: No such table in refr"
+            print("tt_data: No such table in refr")
 
 
 def reassign(old_id, new_id, path=None):
@@ -141,15 +141,15 @@ def reassign(old_id, new_id, path=None):
         try:
             data_file.get_node('/swap/t%d' % old_id, 'events')
             data_file.rename_node('/swap/t%d' % old_id, 't%d' % new_id)
-            print "tt_data: Renamed table /swap/t%d to t%d" % (old_id, new_id)
+            print("tt_data: Renamed table /swap/t%d to t%d" % (old_id, new_id))
         except tables.NoSuchNodeError:
-            print "tt_data: No such table in swap"
+            print("tt_data: No such table in swap")
         try:
             data_file.get_node('/refr/t%d' % old_id, 'events')
             data_file.rename_node('/refr/t%d' % old_id, 't%d' % new_id)
-            print "tt_data: Renamed table /refr/t%d to t%d" % (old_id, new_id)
+            print("tt_data: Renamed table /refr/t%d to t%d" % (old_id, new_id))
         except tables.NoSuchNodeError:
-            print "tt_data: No such table in refr"
+            print("tt_data: No such table in refr")
 
 
 if __name__ == '__main__':

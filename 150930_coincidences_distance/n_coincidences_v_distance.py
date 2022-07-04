@@ -9,7 +9,7 @@ the number of found coincidences. This is then plotted against the distance
 between the stations.
 
 """
-from __future__ import division
+
 
 import os
 import warnings
@@ -152,7 +152,7 @@ def expected_rate(distances, coincidence_rates, background,
 
     scaling = partial(scale_rate, sim_distances, sim_rates, background)
     popt, pcov = curve_fit(scaling, distances, log10(coincidence_rates), [1.])
-    print n, popt
+    print(n, popt)
 
     return popt[0] * sim_rates + background
 
@@ -199,7 +199,7 @@ def plot_coincidence_rate_distance(data, sim_data):
     for rates, name in [(coincidence_rates, 'coincidence'),
                         (interval_rates, 'interval')]:
         plot = Plot('loglog')
-        for n in distances.keys():
+        for n in list(distances.keys()):
             plot.draw_horizontal_line(background[n], 'dashed,' + colors[n])
 
 #         for n in distances.keys():
@@ -210,7 +210,7 @@ def plot_coincidence_rate_distance(data, sim_data):
             plot.plot(sim_distances, expected_rates, linestyle=colors[n],
                       mark=None, markstyle='mark size=0.5pt')
 
-        for n in distances.keys():
+        for n in list(distances.keys()):
             plot.scatter(distances[n], rates[n],
                          xerr=distance_errors[n], yerr=rate_errors[n],
                          mark=markers[n],
@@ -240,7 +240,7 @@ def plot_coincidence_v_interval_rate(data):
     plot = Plot('loglog')
 
     plot.plot([1e-7, 1e-1], [1e-7, 1e-1], mark=None)
-    for n in distances.keys():
+    for n in list(distances.keys()):
         plot.scatter(interval_rates[n], coincidence_rates[n],
                      yerr=rate_errors[n], mark=markers[n],
                      markstyle='%s, thin, mark size=.75pt' % colors[n])

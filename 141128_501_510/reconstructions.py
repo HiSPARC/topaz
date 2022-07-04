@@ -59,8 +59,8 @@ def plot_reconstruction_accuracy(data, d):
     filtered_501 = [(row['zenith'], row['azimuth']) for row in recs501 if row['id'] in ids]
     filtered_510 = [(row['zenith'], row['azimuth']) for row in recs510 if row['id'] in ids]
 
-    zen501, azi501 = zip(*filtered_501)
-    zen510, azi510 = zip(*filtered_510)
+    zen501, azi501 = list(zip(*filtered_501))
+    zen510, azi510 = list(zip(*filtered_510))
     zen501 = array(zen501)
     azi501 = array(azi501)
     zen510 = array(zen510)

@@ -18,7 +18,7 @@ def analyse(name):
     x = (bins[1:] + bins[:-1]) / 2.
     popt, pcov = curve_fit(gauss, x, counts, p0=(sum(counts), 0., 2.5))
     plot.plot(x, gauss(x, *popt), mark=None)
-    print popt
+    print(popt)
     plot.set_ylimits(min=0)
     plot.set_ylabel('Counts')
     plot.set_xlabel(r'Time delta [\si{\nano\second}]')

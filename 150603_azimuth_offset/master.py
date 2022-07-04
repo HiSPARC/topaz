@@ -88,7 +88,7 @@ def reconstruct_simulations():
                                               overwrite=True, progress=True,
                                               destination='reconstructions_offset')
             rec_events.reconstruct_and_store()
-            print rec_events.offsets
+            print(rec_events.offsets)
             rec_events = ReconstructESDEvents(data, station_group, station,
                                               overwrite=True, progress=True,
                                               destination='reconstructions_no_offset')
@@ -96,7 +96,7 @@ def reconstruct_simulations():
             rec_events.store_offsets()
             rec_events.reconstruct_directions()
             rec_events.store_reconstructions()
-            print rec_events.offsets
+            print(rec_events.offsets)
 
 
 def plot_azimuth(azimuth, name=''):

@@ -38,7 +38,7 @@ def copy_shower(seeds):
            '{local}').format(seeds=seeds, local=LOCAL_STORE)
     result = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
     if not result == '':
-        print 'Error occured: %s' % seeds
+        print('Error occured: %s' % seeds)
         raise Exception
 
 

@@ -54,7 +54,7 @@ def data_file(date):
         datafile = tables.open_file(filepath, 'r')
         return datafile
     except IOError:
-        print "No datefile for %s." % date.strftime('%Y_%-m_%-d')
+        print("No datefile for %s." % date.strftime('%Y_%-m_%-d'))
         raise
 
 
@@ -79,7 +79,7 @@ def data_path(date):
 
 def data_to_csv():
     for year in range(2004, 2013):
-        print year
+        print(year)
         with open(LGT_PATH + 'robert_cc_%d.tsv' % year, 'w') as output:
             csvwriter = csv.writer(output, delimiter='\t')
             csvwriter.writerow(['timestamp', 'nanoseconds', 'latitude',

@@ -88,8 +88,8 @@ def plot_reconstructions():
 
 def print_offsets():
     with tables.open_file('data.h5', 'r') as data:
-        print data.root.s501.detector_offsets[:]
-        print data.root.s501_original.detector_offsets[:]
+        print(data.root.s501.detector_offsets[:])
+        print(data.root.s501_original.detector_offsets[:])
 
 
 if __name__ == "__main__":

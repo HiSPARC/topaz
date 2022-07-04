@@ -99,8 +99,8 @@ def compare_ttrigger():
 
         density = (processed.col('n1') + processed.col('n2') +
                    processed.col('n3') + processed.col('n4')) / 2
-        print 'Density range:', density.min(), density.max()
-        print 'dt trigger range:', dt_trigger.min(), dt_trigger.max()
+        print('Density range:', density.min(), density.max())
+        print('dt trigger range:', dt_trigger.min(), dt_trigger.max())
 
         if len(trig_proc) > 4000:
             plot = Plot()

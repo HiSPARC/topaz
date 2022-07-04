@@ -46,7 +46,7 @@ def close_pairs_in_cluster(cluster, min=MIN_DISTANCE, max=MAX_DISTANCE):
             # Valid GPS
             station_numbers.append(station.number)
             coordinates.append(array(station.calc_center_of_mass_coordinates()))
-    return get_close_pairs(zip(station_numbers, coordinates), min, max)
+    return get_close_pairs(list(zip(station_numbers, coordinates)), min, max)
 
 
 def get_close_pairs(coordinates, min=MIN_DISTANCE, max=MAX_DISTANCE):
@@ -77,7 +77,7 @@ def close_triples_in_cluster(cluster, min=MIN_DISTANCE, max=MAX_DISTANCE):
             # Not invalid GPS
             station_numbers.append(station.number)
             coordinates.append(array(station.calc_center_of_mass_coordinates()))
-    return get_close_triples(zip(station_numbers, coordinates), min, max)
+    return get_close_triples(list(zip(station_numbers, coordinates)), min, max)
 
 
 def get_close_triples(coordinates, min=MIN_DISTANCE, max=MAX_DISTANCE):

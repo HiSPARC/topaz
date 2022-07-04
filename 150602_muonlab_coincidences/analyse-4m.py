@@ -22,11 +22,11 @@ def analyse(data):
     # ...
 
     event_node = data.get_node('/station_99/events')
-    print 'Total number of events: %d' % event_node.nrows
+    print('Total number of events: %d' % event_node.nrows)
 
     plot = Plot()
     bins = np.arange(-100, 100, 2.5)
-    for i, j in itertools.combinations(range(4), 2):
+    for i, j in itertools.combinations(list(range(4)), 2):
         selection = event_node.read_where('(t%d > 0) & (t%d > 0)' % i, j)
         dt = selection['t%d' % i] - selection['t%d' % j]
         counts, bins = np.histogram(dt, bins=bins)

@@ -35,4 +35,4 @@ if __name__ == '__main__':
                                 lowest_max = min(max(trace), lowest_max)
                                 raise Exception
                 lowest_maximums.append([node._v_parent._v_name, lowest_max])
-                print lowest_maximums[-1]
+                print(lowest_maximums[-1])

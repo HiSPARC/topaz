@@ -42,10 +42,10 @@ def plot_distance_width():
             x = (bins[:-1] + bins[1:]) / 2
             popt, pcov = curve_fit(norm.pdf, x, counts, p0=(0., distances[-1]))
             widths.append(popt[1])
-            print std(dt), popt[1]
+            print(std(dt), popt[1])
 
     popt, pcov = curve_fit(lin, distances, widths, p0=(1.1, 1))
-    print popt, pcov
+    print(popt, pcov)
 
     plot = Plot()
     plot.scatter(distances, widths)

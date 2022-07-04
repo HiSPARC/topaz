@@ -42,7 +42,7 @@ def calc_ephem():
     ra, dec = observer.radec_of(H_AZIMUTH, H_ALTITUDE)
 #     print 'Ephem:   ', ra, dec
 #     print 'Ephem:    %10.6f %10.6f' % (ra.real, dec.real)
-    print 'Ephem:     %10.6f %10.6f' % (np.degrees(ra.real), np.degrees(dec.real))
+    print('Ephem:     %10.6f %10.6f' % (np.degrees(ra.real), np.degrees(dec.real)))
 
 #     e = ephem.Equatorial(ra, dec, epoch='2000')
 #     g = ephem.Galactic(e)
@@ -63,7 +63,7 @@ def calc_astropy():
     altaz = SkyCoord('%fd %fd' % (np.degrees(H_AZIMUTH), np.degrees(H_ALTITUDE)),
                      frame=altaz_frame)
     radec = altaz.transform_to('icrs')
-    print 'Astropy:   %10.6f %10.6f' % (radec.frame.ra.deg, radec.frame.dec.deg)
+    print('Astropy:   %10.6f %10.6f' % (radec.frame.ra.deg, radec.frame.dec.deg))
 
 
 def calc_sapphire():
@@ -76,41 +76,41 @@ def calc_sapphire():
     sra = base.decimal_to_sexagesimal(angles.radians_to_hours(ra))
     sdec = base.decimal_to_sexagesimal(np.degrees(dec))
 
-    print 'SAPPHiRE:  %10.6f %10.6f' % (np.degrees(ra), np.degrees(dec))
+    print('SAPPHiRE:  %10.6f %10.6f' % (np.degrees(ra), np.degrees(dec)))
 
 #     print 'SAPPHiRE:', '%d:%02d:%02.2f' % sra, '%d:%02d:%02.2f' % sdec
 #     print 'SAPPHiRE:  %10.6f %10.6f' % (ra, dec)
 
 
 def show_steps():
-    print
-    print 'WGS84'
-    print 'lat, lon, alt = ', LATITUDE, LONGITUDE, ALTITUDE
-    print
-    print 'ZenAzi'
-    print 'zenith = ', ZENITH
-    print 'azimuth = ', AZIMUTH
-    print
-    print 'Horizontal'
-    print 'altitude = ', H_ALTITUDE
-    print 'azimuth = ', H_AZIMUTH
-    print
-    print 'Time'
-    print 'GPS = ', GPS
-    print 'UTC = ', UTC
-    print
-    print 'JD = ', clock.datetime_to_juliandate(datetime.utcfromtimestamp(UTC))
+    print()
+    print('WGS84')
+    print('lat, lon, alt = ', LATITUDE, LONGITUDE, ALTITUDE)
+    print()
+    print('ZenAzi')
+    print('zenith = ', ZENITH)
+    print('azimuth = ', AZIMUTH)
+    print()
+    print('Horizontal')
+    print('altitude = ', H_ALTITUDE)
+    print('azimuth = ', H_AZIMUTH)
+    print()
+    print('Time')
+    print('GPS = ', GPS)
+    print('UTC = ', UTC)
+    print()
+    print('JD = ', clock.datetime_to_juliandate(datetime.utcfromtimestamp(UTC)))
     gmst = clock.utc_to_gmst(datetime.utcfromtimestamp(UTC))
-    print 'GMST = ', gmst, base.decimal_to_sexagesimal(gmst)
+    print('GMST = ', gmst, base.decimal_to_sexagesimal(gmst))
     lst = clock.gps_to_lst(GPS, LONGITUDE)
-    print 'LST = ', lst, base.decimal_to_sexagesimal(gmst)
-    print
+    print('LST = ', lst, base.decimal_to_sexagesimal(gmst))
+    print()
 
 
 if __name__ == '__main__':
     show_steps()
 
-    print 'Code base   right asc    declination'
+    print('Code base   right asc    declination')
     calc_ephem()
     calc_astropy()
     calc_sapphire()

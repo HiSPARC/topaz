@@ -27,16 +27,16 @@ if __name__ == "__main__":
     cluster.set_timestamp(OTHER_GPS)
     x1, y1 = station.get_xy_coordinates()
 
-    print 'Station layout was good on', gps_to_datetime(GOOD_GPS)
-    print 'Station layout to be calculated for', gps_to_datetime(OTHER_GPS)
+    print('Station layout was good on', gps_to_datetime(GOOD_GPS))
+    print('Station layout to be calculated for', gps_to_datetime(OTHER_GPS))
 
     dx = x1 - x0
     dy = y1 - y0
-    print 'GPS position moved by: %.3f m, %.3f m.' % (dx, dy)
+    print('GPS position moved by: %.3f m, %.3f m.' % (dx, dy))
 
-    print 'New relative detector coordinates'
+    print('New relative detector coordinates')
     cluster.set_timestamp(OTHER_GPS)
     for d in station.detectors:
         d.x[d.index] -= dx
         d.y[d.index] -= dy
-        print cartesian_to_compass(d.x[d.index], d.y[d.index], d.z[d.index])
+        print(cartesian_to_compass(d.x[d.index], d.y[d.index], d.z[d.index]))

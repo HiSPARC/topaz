@@ -48,7 +48,7 @@ def get_data():
 
 def do_stuff(dt_event):
     sorted_dt_event = sorted(dt_event)
-    print sorted_dt_event[:25]
+    print(sorted_dt_event[:25])
 
 
 if __name__ == "__main__":

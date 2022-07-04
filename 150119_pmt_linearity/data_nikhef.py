@@ -1,4 +1,4 @@
-from __future__ import division
+
 
 from plot_results import plot_ph
 from process import determine_pi_ph_ratio, get_measured_expected

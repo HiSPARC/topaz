@@ -54,7 +54,7 @@ def plot_fits(plot, counts, bins):
     ]:
         popt, pcov = curve_fit(fit_f, x, counts, p0=p0)
         plot.plot(x - popt[offset_idx], fit_f(x, *popt), mark=None,
-                  linestyle=colors.next())
+                  linestyle=next(colors))
         if fit_f == norm.pdf:
             plot.set_label('$\mu$: %.2f, $\sigma$: %.2f' % (popt[0], popt[1]))
             offset = popt[0]

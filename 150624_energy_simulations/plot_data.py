@@ -136,7 +136,7 @@ def analyse_reconstructions(path):
 
 if __name__ == '__main__':
     for path in glob.glob(PATHS):
-        print path
+        print(path)
         analyse_reconstructions(path)
 
 #     size_out, relative_size = analyse_reconstructions('/Users/arne/Datastore/science_park_corsika/574293039_83699616/result.h5')

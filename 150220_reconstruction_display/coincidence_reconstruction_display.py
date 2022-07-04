@@ -22,7 +22,7 @@ DETECTOR_IDS = [0, 1, 2, 3]
 
 
 def display_coincidences(coincidence_events, reconstruction, c_id):
-    cluster = HiSPARCStations(range(501, 511))
+    cluster = HiSPARCStations(list(range(501, 511)))
 
     ts0 = coincidence_events[0][1]['ext_timestamp']
 
@@ -92,7 +92,7 @@ if __name__ == '__main__':
         cq = CoincidenceQuery(data)
         for c_id in range(30):
             coincidence = cq.coincidences[c_id]
-            coincidence_events = cq.events_from_stations([coincidence],
-                                                         range(501, 511)).next()
+            coincidence_events = next(cq.events_from_stations([coincidence],
+                                                         list(range(501, 511))))
             reconstruction = cq._get_reconstruction(coincidence)
             display_coincidences(coincidence_events, reconstruction, c_id)

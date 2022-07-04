@@ -32,7 +32,7 @@ def scatter_n():
         for n in range(0, len(cluster.stations) + 1):
             graph = Plot()
             c = coincidences.read_where('N == n')
-            print 'N = %d: %d' % (n, len(c))
+            print('N = %d: %d' % (n, len(c)))
             graph.plot(c['x'], c['y'], mark='*', linestyle=None,
                        markstyle='mark size=.3pt')
             plot_cluster(graph, cluster)

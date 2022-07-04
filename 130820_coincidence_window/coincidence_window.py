@@ -99,7 +99,7 @@ def get_event_tables(data, cluster_groups, station_numbers):
         try:
             event_tables.append(coinc.data.get_node(station_group, 'events'))
         except tables.NoSuchNodeError:
-            print 'No events for: %s' % station_group
+            print('No events for: %s' % station_group)
 
     return coinc, event_tables
 
@@ -130,7 +130,7 @@ def find_n_coincidences(coinc, event_tables):
 def plot_background_v_window(plot, windows, n_stations):
     low_rate = 0.3
     high_rate = 0.8
-    n_pairs = len(list(combinations(range(n_stations), 2)))
+    n_pairs = len(list(combinations(list(range(n_stations)), 2)))
     background_rate_low_pair = 2 * windows * 1e-9 * low_rate ** 2 * 86400
     background_rate_high_pair = 2 * windows * 1e-9 * high_rate ** 2 * 86400
     background_rate_low = background_rate_low_pair * n_pairs

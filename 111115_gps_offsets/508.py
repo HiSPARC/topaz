@@ -9,9 +9,9 @@ from artist import Plot
 from hisparc.analysis.coincidences import search_coincidences as search
 from sapphire.esd import download_data
 
-import delta
+from . import delta
 
-from testlist import Tijdtest
+from .testlist import Tijdtest
 
 DATA_PATH = '/Users/arne/Datastore/gps_offsets/508_data.h5'
 DELTAS_PATH = '/Users/arne/Datastore/gps_offsets/508_deltas.h5'
@@ -45,7 +45,7 @@ def download(storage, test):
     reference station into storage.
 
     """
-    print 'tt_data: Downloading data for test %d: %s' % (test.id, test.group)
+    print('tt_data: Downloading data for test %d: %s' % (test.id, test.group))
     download_data(storage, '/refr/t%d' % test.id, 508, test.start, test.end)
     download_data(storage, '/swap/t%d' % test.id, int(test.gps), test.start, test.end)
 
@@ -68,7 +68,7 @@ def calculate_delta():
             ext_timestamps, deltas = calculate(data_file, test.id)
             delta_row = table.row
 
-            for ext_timestamp, delta_val in itertools.izip(ext_timestamps,
+            for ext_timestamp, delta_val in zip(ext_timestamps,
                                                            deltas):
                 delta_row['ext_timestamp'] = ext_timestamp
                 delta_row['delta'] = delta_val
@@ -93,9 +93,9 @@ def calculate(data, id):
     ext_timestamps = []
 
     for c in coincidences:
-        t0 = long(timestamps[c[0]][0])
+        t0 = int(timestamps[c[0]][0])
         station0 = timestamps[c[0]][1]
-        t1 = long(timestamps[c[1]][0])
+        t1 = int(timestamps[c[1]][0])
         station1 = timestamps[c[1]][1]
         # swap - refr
         if station0 == 0 and station1 == 1:
@@ -119,10 +119,10 @@ def print_delta_results():
             delta_table = delta_file.get_node('/t%d' % test.id, 'delta')
             ext_timestamps = [row['ext_timestamp'] for row in delta_table]
             deltas = [row['delta'] for row in delta_table]
-        print "    % 3d  %s  % 7.2f  % 6.2f  % 4.2f" % (
+        print("    % 3d  %s  % 7.2f  % 6.2f  % 4.2f" % (
             test.id, test.group.ljust(13),
             round(np.average(deltas), 2), round(np.std(deltas), 2),
-            (max(ext_timestamps) - min(ext_timestamps)) / 864e11)
+            (max(ext_timestamps) - min(ext_timestamps)) / 864e11))
 
 
 def plot_delta_test():

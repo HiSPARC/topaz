@@ -28,7 +28,7 @@ def download_data_for_station(station_number):
         return path
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(START, END):
-            print 'downloading', startdt.date(), enddt.date(), station_number
+            print('downloading', startdt.date(), enddt.date(), station_number)
             download_data(data, '/s%d' % station_number, station_number,
                           start=startdt, end=enddt,
                           type='events', progress=False)

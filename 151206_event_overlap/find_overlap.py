@@ -25,7 +25,7 @@ DATA = '/Users/arne/Datastore/event_overlap.h5'
 
 def get_data():
     if os.path.exists(DATA):
-        print 'data already exists'
+        print('data already exists')
         return
     with tables.open_file(DATA, 'w') as data:
         download_data(data, '/s99', 99, datetime(2015, 12, 4))
@@ -42,9 +42,9 @@ def find_overlaps():
             t2 = s.event_trace(events[i + 1]['timestamp'], events[i + 1]['nanoseconds'], True)
             overlap = longest_overlap(t1[0], t2[0])
             if overlap is not None:
-                print i, len(overlap) * 2.5, 'ns'
+                print(i, len(overlap) * 2.5, 'ns')
             else:
-                print i, 'No overlap'
+                print(i, 'No overlap')
 
 
 def longest_overlap(a, b):
@@ -65,7 +65,7 @@ def longest_overlap(a, b):
         max_length = len(a)
     else:
         max_length = len(b)
-    for i in xrange(max_length):
+    for i in range(max_length):
         if all(a[-max_length + i:] == b[:max_length - i]):
             return a[-max_length + i:]
 

@@ -14,12 +14,12 @@ if __name__ == "__main__":
     for e in [15, 15.5, 16, 16.5, 17]:
         sims = cq.simulations(zenith=0, energy=e, particle='proton')
         seeds_set = set(cq.seeds(sims))
-        print e
+        print(e)
         for n in range(min(20, len(seeds_set), qsub.check_queue('generic'))):
             seeds = seeds_set.pop()
             if os.path.exists('%s.h5' % seeds):
                 continue
-            print seeds,
+            print(seeds, end=' ')
             qsub.submit_job(SCRIPT.format(seeds=seeds),
                             'cors_accu_%s' % seeds, 'generic')
     cq.finish()

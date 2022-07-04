@@ -10,7 +10,7 @@ Uses stations 501 through 511 (except 507).
 
 """
 
-from __future__ import division
+
 
 import os
 

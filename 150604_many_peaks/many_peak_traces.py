@@ -11,7 +11,7 @@ COLORS = ['black', 'red!80!black', 'green!80!black', 'blue!80!black']
 
 def plot_n_peaks_histogram(events, station):
     plot = Plot('semilogy')
-    counts, bins = histogram(events.col('n_peaks').ravel(), bins=range(100))
+    counts, bins = histogram(events.col('n_peaks').ravel(), bins=list(range(100)))
     plot.histogram(counts, bins)
     plot.set_ylimits(min=0.5)
     plot.set_xlimits(min=0, max=100)

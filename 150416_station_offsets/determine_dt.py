@@ -105,7 +105,7 @@ def determine_dt_for_pair(stations):
     """
     path = DATA_PATH + 'dt_ref%d_%d.h5' % stations
     if os.path.exists(path):
-        print 'dt data already exists for %d-%d' % stations
+        print('dt data already exists for %d-%d' % stations)
         return
 
     ref_station, station = stations
@@ -121,8 +121,8 @@ def determine_dt_for_pair(stations):
                                                      ref_detector_offsets, detector_offsets)
                 store_dt(ref_station, station, ets, dt)
     except Exception as e:
-        print 'Failed for %d, %d' % stations
-        print e
+        print('Failed for %d, %d' % stations)
+        print(e)
         return
 
 

@@ -98,7 +98,7 @@ def reconstruct_observables():
                 except AssertionError:
                     wrong['integrals'] += 1
 #                     print 'integrals:', event['event_id'], to.integrals, event['integrals']
-            print 'station:', station, wrong, 'total:', pe.source.nrows
+            print('station:', station, wrong, 'total:', pe.source.nrows)
 
 
 if __name__ == "__main__":

@@ -25,11 +25,11 @@ def get_data():
 def get_aligned():
     data = get_data()
 
-    first = min(values['timestamp'][0] for values in data.values())
-    last = max(values['timestamp'][-1] for values in data.values())
+    first = min(values['timestamp'][0] for values in list(data.values()))
+    last = max(values['timestamp'][-1] for values in list(data.values()))
 
     timestamps = arange(first, last + 1, 3600)
-    extended_data = zeros((len(data.keys()), (last - first) / 3600 + 1))
+    extended_data = zeros((len(list(data.keys())), (last - first) / 3600 + 1))
 
     for i, sn in enumerate(data.keys()):
         start = (data[sn]['timestamp'][0] - first) / 3600

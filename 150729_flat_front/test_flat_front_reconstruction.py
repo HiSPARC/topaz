@@ -29,7 +29,7 @@ def reconstruct():
         rec = ReconstructESDEvents(data, STATION_PATH, station, overwrite=True)
         rec.prepare_output()
         rec.offsets = [d.offset for d in station.detectors]
-        rec.reconstruct_directions(detector_ids=range(4))
+        rec.reconstruct_directions(detector_ids=list(range(4)))
         rec.store_reconstructions()
 
 
@@ -46,7 +46,7 @@ def analyse():
         azimuth_re = reconstructions.col('azimuth')
 
     d_angle = angle_between(zenith_in, azimuth_in, zenith_re, azimuth_re)
-    print sum(isnan(d_angle))
+    print(sum(isnan(d_angle)))
 
     plot = Plot()
     counts, bins = histogram(d_angle[invert(isnan(d_angle))], bins=50)
@@ -78,7 +78,7 @@ def analyse():
     plot.save_as_pdf('azimuth')
 
     unique_coordinates = list({(z, a) for z, a in zip(zenith_re, azimuth_re)})
-    zenith_uni, azimuth_uni = zip(*unique_coordinates)
+    zenith_uni, azimuth_uni = list(zip(*unique_coordinates))
     plot = PolarPlot(use_radians=True)
     plot.scatter(array(azimuth_uni), array(zenith_uni),
                  markstyle='mark size=.75pt')

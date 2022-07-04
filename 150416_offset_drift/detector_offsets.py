@@ -45,8 +45,8 @@ def determine_offset(data, station):
 
 
 def plot_detector_offsets(offsets, type='month'):
-    d1, d2, d3, d4 = zip(*offsets)
-    x = range(len(d1))
+    d1, d2, d3, d4 = list(zip(*offsets))
+    x = list(range(len(d1)))
     graph = Plot()
     graph.plot(x, d1, markstyle='mark size=.5pt')
     graph.plot(x, d2, markstyle='mark size=.5pt', linestyle='red')

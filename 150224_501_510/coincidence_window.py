@@ -42,7 +42,7 @@ def get_event_tables(data, station_ids):
         try:
             event_tables.append(coinc.data.get_node(station_group, 'events'))
         except tables.NoSuchNodeError:
-            print 'No events for: %s' % station_group
+            print('No events for: %s' % station_group)
 
     return coinc, event_tables
 

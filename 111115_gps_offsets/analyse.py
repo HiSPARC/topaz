@@ -6,9 +6,9 @@ from artist import MultiPlot, Plot
 
 from sapphire.utils import gauss
 
-from delta import get
-from helper import nanoseconds_from_ext_timestamp
-from testlist import get_tests
+from .delta import get
+from .helper import nanoseconds_from_ext_timestamp
+from .testlist import get_tests
 
 PLOT_PATH = 'plots/'
 
@@ -25,10 +25,10 @@ def print_delta_results(ids=None):
 
     for id in ids:
         ext_timestamps, deltas = get(id)
-        print "    % 3d  %s  % 7.2f  % 6.2f  % 4.2f" % (
+        print("    % 3d  %s  % 7.2f  % 6.2f  % 4.2f" % (
             id, get_tests(id=id, part='group')[0].ljust(13),
             round(np.average(deltas), 2), round(np.std(deltas), 2),
-            (max(ext_timestamps) - min(ext_timestamps)) / 864e11)
+            (max(ext_timestamps) - min(ext_timestamps)) / 864e11))
 
 
 def print_pulse_frequency(ids=None):
@@ -41,14 +41,14 @@ def print_pulse_frequency(ids=None):
     if type(ids) is int:
         ids = [ids]
 
-    print "     id  his/gps/trg            mean           std           max           min"
+    print("     id  his/gps/trg            mean           std           max           min")
     for id in ids:
         ts, deltas = get(id)
         intervals = np.array(ts[1:]) - np.array(ts[:-1])
-        print "    % 3d  %s  % 12d  % 12d  % 12d  % 12d" % (
+        print("    % 3d  %s  % 12d  % 12d  % 12d  % 12d" % (
             id, get_tests(id=id, part='group')[0].ljust(13),
             round(np.average(intervals)), round(np.std(intervals)),
-            max(intervals), min(intervals))
+            max(intervals), min(intervals)))
 
 
 def plot_delta_test(ids, **kwargs):
@@ -70,8 +70,8 @@ def plot_delta_test(ids, **kwargs):
         ext_timestamps, deltas = get(id)
         n, bins = np.histogram(deltas, bins, density=True)
         plot.histogram(n, bins)
-    if kwargs.keys():
-        plot.set_title('Tijdtest ' + kwargs[kwargs.keys()[0]])
+    if list(kwargs.keys()):
+        plot.set_title('Tijdtest ' + kwargs[list(kwargs.keys())[0]])
     plot.set_xlabel(r'$\Delta$ t (swap - reference) [ns]')
     plot.set_ylabel(r'p')
     plot.set_xlimits(low, high)
@@ -80,11 +80,11 @@ def plot_delta_test(ids, **kwargs):
     # Save Figure
     if len(ids) == 1:
         name = 'tt_delta_hist_%03d' % ids[0]
-    elif kwargs.keys():
-        name = 'tt_delta_hist_' + kwargs[kwargs.keys()[0]]
+    elif list(kwargs.keys()):
+        name = 'tt_delta_hist_' + kwargs[list(kwargs.keys())[0]]
 
     plot.save_as_pdf(PLOT_PATH + name)
-    print 'tt_analyse: Plotted histogram'
+    print('tt_analyse: Plotted histogram')
 
 
 def plot_delta_histogram(ids, **kwargs):
@@ -109,8 +109,8 @@ def plot_delta_histogram(ids, **kwargs):
         popt, pcov = curve_fit(gauss, bin_centers, n, p0=[.15, np.mean(deltas), np.std(deltas)])
         plot.histogram(n, bins)
         plot.plot(bin_centers, gauss(bin_centers, *popt), mark=None, linestyle='gray')
-    if kwargs.keys():
-        plot.set_title('Tijdtest ' + kwargs[kwargs.keys()[0]])
+    if list(kwargs.keys()):
+        plot.set_title('Tijdtest ' + kwargs[list(kwargs.keys())[0]])
     plot.set_label(r'$\mu={1:.1f}$, $\sigma={2:.1f}$'.format(*popt))
     plot.set_xlabel(r'Time difference [ns]')
     plot.set_ylabel(r'Counts')
@@ -120,11 +120,11 @@ def plot_delta_histogram(ids, **kwargs):
     # Save Figure
     if len(ids) == 1:
         name = 'delta_histogram/tt_delta_hist_%03d' % ids[0]
-    elif kwargs.keys():
-        name = 'delta_histogram/tt_delta_hist_' + kwargs[kwargs.keys()[0]]
+    elif list(kwargs.keys()):
+        name = 'delta_histogram/tt_delta_hist_' + kwargs[list(kwargs.keys())[0]]
     plot.save_as_pdf(PLOT_PATH + name)
 
-    print 'tt_analyse: Plotted histogram'
+    print('tt_analyse: Plotted histogram')
 
 
 def plot_ns_histogram(ids, **kwargs):
@@ -148,8 +148,8 @@ def plot_ns_histogram(ids, **kwargs):
         n, bins = np.histogram(nanoseconds, bins, normed=1)
         plot.histogram(n, bins)
 
-    if kwargs.keys():
-        plot.set_title('Tijdtest ' + kwargs[kwargs.keys()[0]])
+    if list(kwargs.keys()):
+        plot.set_title('Tijdtest ' + kwargs[list(kwargs.keys())[0]])
     plot.set_xlabel(r'nanosecond part of timestamp [ns]')
     plot.set_ylabel(r'p')
     plot.set_xlimits(0, 1e9)
@@ -158,14 +158,14 @@ def plot_ns_histogram(ids, **kwargs):
     # Save Figure
     if len(ids) == 1:
         name = 'nanoseconds_histogram/tt_nanos_hist_%03d' % ids[0]
-    elif kwargs.keys():
-        name = 'nanoseconds_histogram/tt_nanos_hist_' + kwargs[kwargs.keys()[0]]
+    elif list(kwargs.keys()):
+        name = 'nanoseconds_histogram/tt_nanos_hist_' + kwargs[list(kwargs.keys())[0]]
     try:
         plot.save_as_pdf(PLOT_PATH + name)
     except:
-        print 'tt_analyse: Failed ns hist for %s' % str(ids)
+        print('tt_analyse: Failed ns hist for %s' % str(ids))
 
-    print 'tt_analyse: Plotted histogram'
+    print('tt_analyse: Plotted histogram')
 
 
 def plot_delta_time(ids, **kwargs):
@@ -185,8 +185,8 @@ def plot_delta_time(ids, **kwargs):
         skip = 3
         plot.plot(daystamps[:end:skip], deltas[:end:skip], mark=None, linestyle='very thin')
 
-    if kwargs.keys():
-        plot.set_title('Tijdtest delta time' + kwargs[kwargs.keys()[0]])
+    if list(kwargs.keys()):
+        plot.set_title('Tijdtest delta time' + kwargs[list(kwargs.keys())[0]])
     # plot.set_xlabel(r'Time in test [days]')
     plot.set_xlabel(r'Time in test [minutes]')
     plot.set_ylabel(r'$\Delta$ t (swap - reference) [\si{\ns}]')
@@ -199,11 +199,11 @@ def plot_delta_time(ids, **kwargs):
     # Save Figure
     if len(ids) == 1:
         name = 'delta_time/tt_delta_time_%03d' % ids[0]
-    elif kwargs.keys():
-        name = 'delta_time/tt_delta_time_' + kwargs[kwargs.keys()[0]]
+    elif list(kwargs.keys()):
+        name = 'delta_time/tt_delta_time_' + kwargs[list(kwargs.keys())[0]]
     plot.save_as_pdf(PLOT_PATH + name)
 
-    print 'tt_analyse: Plotted delta vs time'
+    print('tt_analyse: Plotted delta vs time')
 
 
 def plot_multi_delta_time(ids, **kwargs):
@@ -233,7 +233,7 @@ def plot_multi_delta_time(ids, **kwargs):
     name = 'delta_time/tt_delta_time_' + '_'.join([str(id) for id in ids])
     plot.save_as_pdf(PLOT_PATH + name)
 
-    print 'tt_analyse: Plotted delta vs time'
+    print('tt_analyse: Plotted delta vs time')
 
 
 def determine_stats(deltas):
@@ -253,13 +253,13 @@ def plot_box(ids, **kwargs):
     if type(ids) is int:
         ids = [ids]
 
-    x = range(len(ids))
+    x = list(range(len(ids)))
 
     # Begin Figure
     plot = Plot()
     data = [determine_stats([i for i in get(id)[1] if abs(i) < 100]) for id in ids]
 
-    low, high, avg, std = zip(*data)
+    low, high, avg, std = list(zip(*data))
 
     plot.plot(x, avg, yerr=std, mark='o', markstyle="mark size=1pt",
               linestyle=None)
@@ -275,11 +275,11 @@ def plot_box(ids, **kwargs):
     # Save Figure
     if len(ids) == 1:
         name = 'box/tt_offset_%03d' % ids[0]
-    elif kwargs.keys():
-        name = 'box/tt_offset_' + kwargs[kwargs.keys()[0]]
+    elif list(kwargs.keys()):
+        name = 'box/tt_offset_' + kwargs[list(kwargs.keys())[0]]
     plot.save_as_pdf(PLOT_PATH + name)
 
-    print 'tt_analyse: Plotted offsets'
+    print('tt_analyse: Plotted offsets')
 
 
 def plot_multi_box(ids1, ids2, **kwargs):
@@ -291,8 +291,8 @@ def plot_multi_box(ids1, ids2, **kwargs):
     plot = MultiPlot(1, 2)
     for splot, ids in zip(plot.subplots, [ids1, ids2]):
         data = [determine_stats([i for i in get(id)[1] if abs(i) < 100]) for id in ids]
-        low, high, avg, std = zip(*data)
-        x = range(len(ids))
+        low, high, avg, std = list(zip(*data))
+        x = list(range(len(ids)))
         splot.plot(x, avg, yerr=std, mark='o', markstyle="mark size=1pt",
                    linestyle=None)
         splot.scatter(x, low, mark='x', markstyle="mark size=.75pt")
@@ -310,11 +310,11 @@ def plot_multi_box(ids1, ids2, **kwargs):
     # Save Figure
     if len(ids) == 1:
         name = 'box/tt_offset_%03d' % ids[0]
-    elif kwargs.keys():
-        name = 'box/tt_offset_' + kwargs[kwargs.keys()[0]]
+    elif list(kwargs.keys()):
+        name = 'box/tt_offset_' + kwargs[list(kwargs.keys())[0]]
     plot.save_as_pdf(PLOT_PATH + name)
 
-    print 'tt_analyse: Plotted offsets'
+    print('tt_analyse: Plotted offsets')
 
 
 def plot_offset_distribution(ids, **kwargs):
@@ -331,8 +331,8 @@ def plot_offset_distribution(ids, **kwargs):
     popt, pcov = curve_fit(gauss, bin_centers, n, p0=[1., np.mean(offsets), np.std(offsets)])
     plot.plot(bin_centers, gauss(bin_centers, *popt), mark=None, linestyle='gray')
 
-    if kwargs.keys():
-        plot.set_title('Tijdtest offset distribution ' + kwargs[kwargs.keys()[0]])
+    if list(kwargs.keys()):
+        plot.set_title('Tijdtest offset distribution ' + kwargs[list(kwargs.keys())[0]])
     plot.set_label(r'$\mu={1:.1f}$, $\sigma={2:.1f}$'.format(*popt))
     plot.set_xlabel(r'Offset [\si{\nano\second}]')
     plot.set_ylabel(r'Counts')
@@ -340,11 +340,11 @@ def plot_offset_distribution(ids, **kwargs):
 
     # Save Figure
     name = 'box/tt_offset_distribution'
-    if kwargs.keys():
-        name += kwargs[kwargs.keys()[0]]
+    if list(kwargs.keys()):
+        name += kwargs[list(kwargs.keys())[0]]
     plot.save_as_pdf(PLOT_PATH + name)
 
-    print 'tt_analyse: Plotted offsets'
+    print('tt_analyse: Plotted offsets')
 
 
 if __name__ == '__main__':
@@ -399,4 +399,4 @@ if __name__ == '__main__':
     # groups = get_tests(part='group', subset='Bad', complement=False)
     # plot_delta_time(groups, name='Bad')
 
-    print 'Done'
+    print('Done')

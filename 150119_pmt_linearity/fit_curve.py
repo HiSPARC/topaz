@@ -1,4 +1,4 @@
-from __future__ import division
+
 
 from numpy import abs, diag, exp, log10, polyval, sqrt, where
 from scipy.optimize import curve_fit

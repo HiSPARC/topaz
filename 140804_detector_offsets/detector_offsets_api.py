@@ -22,7 +22,7 @@ def get_offsets_dict():
 
 def offsets_on_date(offsets, d, id):
     timestamp = datetime_to_gps(d)
-    return [o(timestamp)[id] for o in offsets.values()
+    return [o(timestamp)[id] for o in list(offsets.values())
             if not isnan(o(timestamp)[1])]
 
 
@@ -64,5 +64,5 @@ if __name__ == '__main__':
                 # plot_and_fit_offsets(xx, yy, popt, d, id)
                 mu.append(popt[1])
                 sigma.append(popt[2])
-        print ['Master', 'Reference', 'Slave', 'Slave'][id]
-        print 'mean: %.3f +/- %.3f, std:  %.3f +/- %.3f ' % (mean(mu), std(mu), mean(sigma), std(sigma))
+        print(['Master', 'Reference', 'Slave', 'Slave'][id])
+        print('mean: %.3f +/- %.3f, std:  %.3f +/- %.3f ' % (mean(mu), std(mu), mean(sigma), std(sigma)))

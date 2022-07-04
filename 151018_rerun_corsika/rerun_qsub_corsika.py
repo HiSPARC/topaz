@@ -24,7 +24,7 @@ class CorsikaRerun(CorsikaBatch):
         """Setup CORSIKA environment"""
 
         # Set umask
-        os.umask(002)
+        os.umask(0o02)
 
         # Setup directories
         self.make_rundir()

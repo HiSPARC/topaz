@@ -5,10 +5,10 @@ import numpy as np
 from artist import Plot, PolarPlot
 
 from sapphire.analysis.direction_reconstruction import (
-    DirectAlgorithm, DirectAlgorithmCartesian2D, DirectAlgorithmCartesian3D)
+    DirectAlgorithm, DirectAlgorithmCartesian2D, DirectAlgorithmCartesian3D,
+    FitAlgorithm
+)
 from sapphire.clusters import SingleDiamondStation
-
-     FitAlgorithm)
 
 
 TIME_RESOLUTION = 2.5  # nanoseconds
@@ -49,9 +49,9 @@ def reconstruct_for_detectors(ids):
     graph = PolarPlot(use_radians=True)
     times = generate_discrete_times(station, detector_ids=ids)
     detectors = [station.detectors[id].get_coordinates() for id in ids]
-    x, y, z = zip(*detectors)
+    x, y, z = list(zip(*detectors))
 
-    theta, phi = itertools.izip(*(dirrec.reconstruct_common((0,) + t, x, y, z)
+    theta, phi = zip(*(dirrec.reconstruct_common((0,) + t, x, y, z)
                                   for t in times))
 
     thetaa = [t for t in theta if not np.isnan(t)]
@@ -63,17 +63,17 @@ def reconstruct_for_detectors(ids):
     times = np.arange(-60, 60, TIME_RESOLUTION)
 
     for dt in (-2.5, 0, 2.5, 7.5, 15, 22.5, 30, 45):
-        theta, phi = itertools.izip(*(dirrec.reconstruct_common((t, 0, dt), x, y, z)
+        theta, phi = zip(*(dirrec.reconstruct_common((t, 0, dt), x, y, z)
                                       for t in times))
         thetaa = [t for t in theta if not np.isnan(t)]
         phia = [p for p in phi if not np.isnan(p)]
         graph.plot(phia, thetaa, mark=None, linestyle='solid,' + COLORS[ids[0]])
-        theta, phi = itertools.izip(*(dirrec.reconstruct_common((0, t, dt), x, y, z)
+        theta, phi = zip(*(dirrec.reconstruct_common((0, t, dt), x, y, z)
                                       for t in times))
         thetaa = [t for t in theta if not np.isnan(t)]
         phia = [p for p in phi if not np.isnan(p)]
         graph.plot(phia, thetaa, mark=None, linestyle='solid,' + COLORS[ids[1]])
-        theta, phi = itertools.izip(*(dirrec.reconstruct_common((0, dt, t), x, y, z)
+        theta, phi = zip(*(dirrec.reconstruct_common((0, dt, t), x, y, z)
                                       for t in times))
         thetaa = [t for t in theta if not np.isnan(t)]
         phia = [p for p in phi if not np.isnan(p)]
@@ -92,9 +92,9 @@ def discrete_directions():
     graph = PolarPlot(use_radians=True)
     times = generate_discrete_times(station, detector_ids=[0, 1, 2])
     detectors = [station.detectors[id].get_coordinates() for id in [0, 1, 2]]
-    x, y, z = zip(*detectors)
+    x, y, z = list(zip(*detectors))
 
-    theta, phi = itertools.izip(*(dirrec.reconstruct_common((0,) + t, x, y, z)
+    theta, phi = zip(*(dirrec.reconstruct_common((0,) + t, x, y, z)
                                   for t in times))
 
     thetaa = [t for t in theta if not np.isnan(t)]

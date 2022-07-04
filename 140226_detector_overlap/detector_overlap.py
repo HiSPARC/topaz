@@ -35,10 +35,10 @@ def run():
         yin = []
         yout = []
         count = 0
-        for _ in xrange(n):
+        for _ in range(n):
             long = uniform(-detector_long, detector_long)
             short = uniform(-detector_short, detector_short)
-            point = Point(long, short).rotate(angle)
+            point = Point(int, short).rotate(angle)
             if square.contains(point):
                 xin.append(point.x)
                 yin.append(point.y)

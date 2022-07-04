@@ -42,24 +42,24 @@ if __name__ == "__main__":
         # were supported.
         process.thresholds = [(253, 323)] * 4
         timings = process.process_traces()
-        print 100. * sum(timings[:, 4] == -999) / len(timings),
-        print '% trigger reconstructions failed'
+        print(100. * sum(timings[:, 4] == -999) / len(timings), end=' ')
+        print('% trigger reconstructions failed')
 
         process = ProcessEventsWithTriggerOffset(source_file, '/s502', progress=True)
         # These were the thresholds for 502 when values of 0 mV were
         # converted to 0 ADC counts.
         process.thresholds = [(0, 0)] * 4
         timings = process.process_traces()
-        print 100. * sum(timings[:, 4] == -999) / len(timings),
-        print '% trigger reconstructions failed'
+        print(100. * sum(timings[:, 4] == -999) / len(timings), end=' ')
+        print('% trigger reconstructions failed')
 
         process = ProcessEventsWithTriggerOffset(source_file, '/s502', progress=True)
         # These are the correct thresholds for 502 by converting values of 0 mV
         # 200 ADC counts.
         process.thresholds = [(200, 200)] * 4
         timings = process.process_traces()
-        print 100. * sum(timings[:, 4] == -999) / len(timings),
-        print '% trigger reconstructions failed'
+        print(100. * sum(timings[:, 4] == -999) / len(timings), end=' ')
+        print('% trigger reconstructions failed')
 
     with tables.open_file('/Users/arne/Datastore/check_trigger/data_502_2.h5', 'r') as source_file:
         process = ProcessEventsWithTriggerOffset(source_file, '/s502', progress=True)
@@ -67,21 +67,21 @@ if __name__ == "__main__":
         # were supported.
         process.thresholds = [(253, 323)] * 4
         timings = process.process_traces()
-        print 100. * sum(timings[:, 4] == -999) / len(timings),
-        print '% trigger reconstructions failed'
+        print(100. * sum(timings[:, 4] == -999) / len(timings), end=' ')
+        print('% trigger reconstructions failed')
 
         process = ProcessEventsWithTriggerOffset(source_file, '/s502', progress=True)
         # These were the thresholds for 502 when values of 0 mV were
         # converted to 0 ADC counts.
         process.thresholds = [(0, 0)] * 4
         timings = process.process_traces()
-        print 100. * sum(timings[:, 4] == -999) / len(timings),
-        print '% trigger reconstructions failed'
+        print(100. * sum(timings[:, 4] == -999) / len(timings), end=' ')
+        print('% trigger reconstructions failed')
 
         process = ProcessEventsWithTriggerOffset(source_file, '/s502', progress=True)
         # These are the correct thresholds for 502 by converting values of 0 mV
         # 200 ADC counts.
         process.thresholds = [(200, 200)] * 4
         timings = process.process_traces()
-        print 100. * sum(timings[:, 4] == -999) / len(timings),
-        print '% trigger reconstructions failed'
+        print(100. * sum(timings[:, 4] == -999) / len(timings), end=' ')
+        print('% trigger reconstructions failed')

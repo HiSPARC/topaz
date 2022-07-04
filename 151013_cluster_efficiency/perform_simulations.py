@@ -7,7 +7,7 @@ detected zenith distribution on the ground.
 
 """
 
-from __future__ import division
+
 
 from sapphire.qsub import submit_job
 from sapphire.utils import pbar
@@ -34,7 +34,7 @@ END
 
 
 def perform_simulations():
-    for id in pbar(range(10)):
+    for id in pbar(list(range(10))):
         script = SCRIPT.format(job_id=id)
         submit_job(script, 'spa_sim_%d' % id, 'long')
 

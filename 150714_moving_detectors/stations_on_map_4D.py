@@ -73,8 +73,8 @@ def make_map(station=None, label='map', detectors=False):
     if detectors:
         for xi, yi in zip(x, y):
             plot.scatter([xi], [map_h - yi],
-                         markstyle="%s, thick" % colors.next(),
-                         mark=marks.next())
+                         markstyle="%s, thick" % next(colors),
+                         mark=next(marks))
     else:
         plot.scatter(x, map_h - y, markstyle="black!50!green")
 

@@ -44,9 +44,9 @@ def reconstruct_for_detectors(station, ids, dirrec):
     graph = PolarPlot(use_radians=True)
     times = generate_discrete_times(station, detector_ids=ids)
     detectors = [station.detectors[id].get_coordinates() for id in ids]
-    x, y, z = zip(*detectors)
+    x, y, z = list(zip(*detectors))
 
-    theta, phi = itertools.izip(*(dirrec.reconstruct_common((0,) + t, x, y, z)
+    theta, phi = zip(*(dirrec.reconstruct_common((0,) + t, x, y, z)
                                   for t in times))
 
     thetaa = [t for t in theta if not np.isnan(t)]
@@ -68,5 +68,5 @@ if __name__ == '__main__':
     dirrec = DirectAlgorithmCartesian3D
     station = HiSPARCStations([STATION]).get_station(STATION)
 
-    for combo in itertools.combinations(range(4), 3):
+    for combo in itertools.combinations(list(range(4)), 3):
         reconstruct_for_detectors(station, combo, dirrec)

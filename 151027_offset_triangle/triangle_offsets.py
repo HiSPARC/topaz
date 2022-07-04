@@ -49,10 +49,10 @@ def get_aligned_errors(offsets, start=START, stop=STOP, step=STEP):
 def get_aligned_data(idx, offsets, start=START, stop=STOP, step=STEP):
     """Get dictionary of dictionaries with arrays with offsets or errors"""
 
-    timestamps = range(start, stop, step)
+    timestamps = list(range(start, stop, step))
     aoffsets = {ref: {s: array([o(ts)[0] for ts in timestamps])
-                      for s, o in stations.iteritems()}
-                for ref, stations in offsets.iteritems()}
+                      for s, o in stations.items()}
+                for ref, stations in offsets.items()}
     return aoffsets
 
 
@@ -66,8 +66,8 @@ def round_trip(offsets):
 
     """
     aoffsets = get_aligned_offsets(offsets, START, STOP, STEP)
-    timestamps = range(START, STOP, STEP)
-    stations = offsets.keys()
+    timestamps = list(range(START, STOP, STEP))
+    stations = list(offsets.keys())
     for n in [2, 3, 4, 5]:
         plot = Plot()
         ts = []
@@ -85,7 +85,7 @@ def round_trip(offsets):
         ts = ts.compress(~isnan(offs))
         offs = offs.compress(~isnan(offs))
         counts, xedges, yedges = histogram2d(ts, offs, bins=(timestamps[::4],
-                                                             range(-100, 101, 5)))
+                                                             list(range(-100, 101, 5))))
         plot.histogram2d(counts, xedges, yedges, bitmap=True, type='color',
                          colormap='viridis')
         plot.set_colorbar()
@@ -107,7 +107,7 @@ def offset_distribution(offsets):
     """
     aoffsets = get_aligned_offsets(offsets, START, STOP, STEP)
 
-    stations = offsets.keys()
+    stations = list(offsets.keys())
     for n in [2, 3, 4, 5]:
         plot = Plot()
         offs = []
@@ -117,7 +117,7 @@ def offset_distribution(offsets):
                     continue
                 offs.extend(aoffsets[ref][s[0]] + aoffsets[s[-1]][ref] +
                             sum(aoffsets[s[i]][s[i + 1]] for i in range(n - 1)))
-        plot.histogram(*histogram(offs, bins=range(-100, 100, 2)))
+        plot.histogram(*histogram(offs, bins=list(range(-100, 100, 2))))
         plot.set_xlimits(-100, 100)
         plot.set_ylimits(min=0)
         plot.set_title('n = %d' % n)
@@ -132,9 +132,9 @@ def stopover(offsets):
 
     """
     aoffsets = get_aligned_offsets(offsets, START, STOP, STEP)
-    timestamps = range(START, STOP, STEP)
+    timestamps = list(range(START, STOP, STEP))
 
-    stations = offsets.keys()
+    stations = list(offsets.keys())
     for from_station, to_station in combinations(stations, 2):
         plot = Plot()
         all_offs = []

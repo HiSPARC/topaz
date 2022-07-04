@@ -28,7 +28,7 @@ BINS = arange(START_TS, END_TS + 1, 86400)
 BIN_WIDTH = BINS[1] - BINS[0]
 COLORS = ['black', 'red', 'green', 'blue']
 
-YEARS = range(2011, date.today().year + 1)
+YEARS = list(range(2011, date.today().year + 1))
 YEARS_TICKS = array([datetime_to_gps(date(y, 1, 1)) for y in YEARS])
 YEARS_LABELS = [str(y) for y in YEARS]
 
@@ -94,7 +94,7 @@ def binned_stat_idx(events, idx_ranges):
         else:
             stats[field_name] = []
 
-    for start, stop in pbar(zip(idx_ranges[:-1], idx_ranges[1:])):
+    for start, stop in pbar(list(zip(idx_ranges[:-1], idx_ranges[1:]))):
         slice = events.read(start, stop)
         for field, field_name in zip(FIELDS, FIELD_NAMES):
             if field_name == 'event_rate':
@@ -189,12 +189,12 @@ def get_stat(station, field_name):
 
 
 def get_station_stats(station):
-    print 'Reading stats for %d' % station
+    print('Reading stats for %d' % station)
     try:
         stats = {field_name: get_stat(station, field_name)
                  for field_name in FIELD_NAMES}
     except (TypeError, IOError, AssertionError):
-        print 'Determining stats for %d' % station
+        print('Determining stats for %d' % station)
         with tables.open_file(DATA_PATH) as data:
             stats = determine_station_stats(data, station)
 

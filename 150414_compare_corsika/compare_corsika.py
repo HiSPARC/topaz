@@ -39,9 +39,9 @@ def run_simulation():
             sim.run()
             end = timer()
             sim.finish()
-            print complevel, end - start
+            print(complevel, end - start)
 
-    print 'This is the slow one..'
+    print('This is the slow one..')
     with tables.open_file(RESULT_PATH, 'w') as data:
         start = timer()
         sim = GroundParticlesSimulation(
@@ -50,7 +50,7 @@ def run_simulation():
         sim.run()
         end = timer()
         sim.finish()
-        print 'orig', end - start
+        print('orig', end - start)
 
 
 if __name__ == "__main__":

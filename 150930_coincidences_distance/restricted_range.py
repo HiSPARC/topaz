@@ -39,7 +39,7 @@ def coin_rate_since(start_ts=None):
         mts12 = modify_range(ts12, start_ts)
         tot12 = get_total_exposure(mts12)
         n_coin = get_coin_count(s1, s2, start_ts)
-        print s1, s2, tot12, n_coin, n_coin / tot12, tot12 / n_coin
+        print(s1, s2, tot12, n_coin, n_coin / tot12, tot12 / n_coin)
 
 
 def get_intervals(s1, s2):

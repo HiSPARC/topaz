@@ -35,7 +35,7 @@ if __name__ == "__main__":
                 if len(possible_seeds):
                     seeds.append(sample(possible_seeds, 1)[0])
                 else:
-                    print 'no suitable shower for E=%s, z=%.2f' % (e, z)
+                    print('no suitable shower for E=%s, z=%.2f' % (e, z))
 
     with open('seed_list.txt', 'w') as seed_list:
         for seed in seeds:

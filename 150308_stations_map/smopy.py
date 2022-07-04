@@ -282,7 +282,7 @@ class Map(object):
 
         self.z = self.get_allowed_zoom(z)
         if z > self.z:
-            print 'Lowered zoom level to keep map size reasonable'
+            print('Lowered zoom level to keep map size reasonable')
         else:
             self.z = z
         self.box_tile = get_tile_box(self.box, self.z)

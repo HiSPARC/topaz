@@ -1,6 +1,6 @@
 """Compare station zenith distribution to fits"""
 
-from __future__ import division
+
 
 from numpy import arange, array, cos, exp, interp, radians, sin, std, sum
 from scipy.optimize import curve_fit
@@ -124,14 +124,14 @@ def plot_zenith(angle_centers, mean_counts, std_counts):
 
     for fit_function in fit_functions:
         popt, pcov = curve_fit(fit_function, angle_centers, mean_counts)  # , sigma=std_counts)
-        print popt
+        print(popt)
 
         plot = Plot()
         plot.scatter(angle_centers, mean_counts, yerr=std_counts, markstyle='red')
         plot.plot(angles, fit_function(angles, *popt), mark=None)
         plot.set_ylabel('Counts')
         plot.set_xlabel(r'Zenith [\si{\degree}]')
-        plot.save_as_pdf('zenith_distribution_%s' % fit_function.func_name)
+        plot.save_as_pdf('zenith_distribution_%s' % fit_function.__name__)
 
         plot = Plot('semilogy')
         plot.scatter(sangle_centers, mean_counts / sin(rangle_centers), yerr=std_counts)
@@ -141,7 +141,7 @@ def plot_zenith(angle_centers, mean_counts, std_counts):
         plot.set_ylabel('Counts')
         plot.set_xlimits(0, 1)
         plot.set_xlabel(r'Zenith angle [$\sec \theta - 1$]')
-        plot.save_as_pdf('zenith_distribution_sec_%s' % fit_function.func_name)
+        plot.save_as_pdf('zenith_distribution_sec_%s' % fit_function.__name__)
 
 
 def convert_angles(angles):

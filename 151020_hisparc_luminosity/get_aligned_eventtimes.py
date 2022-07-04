@@ -10,7 +10,7 @@ from sapphire import Network, Station
 from sapphire.transformations.clock import datetime_to_gps
 from sapphire.utils import pbar
 
-YEARS = range(2004, 2017)
+YEARS = list(range(2004, 2017))
 SPA_STATIONS = [501, 502, 503, 504, 505, 506, 508, 509, 510, 511]
 
 
@@ -50,11 +50,11 @@ def get_aligned(data):
         - first and last timestamp of the array
 
     """
-    first = min(values['timestamp'][0] for values in data.values())
-    last = max(values['timestamp'][-1] for values in data.values())
+    first = min(values['timestamp'][0] for values in list(data.values()))
+    last = max(values['timestamp'][-1] for values in list(data.values()))
 
-    aligned_data = zeros((len(data.keys()), (last - first) / 3600 + 1))
-    aligned_data_all = zeros((len(data.keys()), (last - first) / 3600 + 1))
+    aligned_data = zeros((len(list(data.keys())), (last - first) / 3600 + 1))
+    aligned_data_all = zeros((len(list(data.keys())), (last - first) / 3600 + 1))
 
     for i, sn in enumerate(sorted(data.keys())):
         start = (data[sn]['timestamp'][0] - first) / 3600
@@ -153,6 +153,6 @@ if __name__ == "__main__":
     for i, d in enumerate([data, data_spa]):
         stations = sorted(d.keys())
         aligned_data, aligned_data_all, first, last = get_aligned(d)
-        timestamp = range(first, last + 1, 3600)
+        timestamp = list(range(first, last + 1, 3600))
         plot_active_stations(timestamp, stations, aligned_data, d, i)
         plot_luminosity(timestamp, aligned_data, aligned_data_all, i)

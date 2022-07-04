@@ -15,7 +15,7 @@ detectors = station.detectors
 
 sim_off = []
 rec_off = []
-zz = range(-20, 21, 2)
+zz = list(range(-20, 21, 2))
 
 
 with tables.open_file('test_showerfront_alt.h5', 'w') as data:
@@ -33,7 +33,7 @@ with tables.open_file('test_showerfront_alt.h5', 'w') as data:
 
         rec_off.append(popt[1])
 
-        print '% 3d: %f' % (z, popt[1])
+        print('% 3d: %f' % (z, popt[1]))
 
         plot = Plot()
         plot.histogram(*histogram(dt, bins=bins))

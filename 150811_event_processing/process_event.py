@@ -66,7 +66,7 @@ def mean_filter_with_threshold(trace, threshold=FILTER_THRESHOLD):
     else:
         filtered_trace.extend(trace[:4])
 
-    for i in xrange(4, len(trace)):
+    for i in range(4, len(trace)):
         if abs(trace[i] - trace[i - 1]) > 2 * threshold:
             filtered_trace.append(trace[i])
         elif sign(trace[i] - local_mean) == sign(trace[i - 1] - local_mean):
@@ -89,7 +89,7 @@ def mean_filter_without_threshold(trace):
     local_mean = mean(trace[:4])
     filtered_trace = [int(around(local_mean))] * 4
 
-    for i in xrange(4, len(trace)):
+    for i in range(4, len(trace)):
         local_mean = mean(trace[i - 4:i])
         if sign(trace[i] - local_mean) == sign(trace[i - 1] - local_mean):
             # Both values on same side of the local_mean
@@ -167,7 +167,7 @@ def zoom_pulse(raw_traces):
 
 
 def get_outer_limits(traces, threshold, padding=25):
-    starts, ends = zip(*[get_limits(trace, threshold) for trace in traces])
+    starts, ends = list(zip(*[get_limits(trace, threshold) for trace in traces]))
     start = max(0, nanmin(starts) - padding)
     end = min(len(traces[0]), nanmax(ends) + padding)
     return start, end

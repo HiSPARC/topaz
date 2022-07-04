@@ -1,4 +1,4 @@
-from __future__ import division
+
 
 import glob
 import os
@@ -86,10 +86,10 @@ def collect_efficiencies():
 
     efficiencies = {}
     errors = {}
-    for e in counts.keys():
+    for e in list(counts.keys()):
         efficiencies[e] = {}
         errors[e] = {}
-        for z in counts[e].keys():
+        for z in list(counts[e].keys()):
             efficiencies[e][z] = counts[e][z] / all_counts[e][z]
             errors[e][z] = sqrt(counts[e][z] + 1) / all_counts[e][z]
 
@@ -99,7 +99,7 @@ def collect_efficiencies():
 def plot_effiencies():
     efficiencies, errors = collect_efficiencies()
 
-    for energy in efficiencies.keys():
+    for energy in list(efficiencies.keys()):
         plot = Plot('semilogx')
         for i, zenith in enumerate(sorted(efficiencies[energy].keys())):
             if any(abs(zenith - z) < 0.1 for z in [0, 22.5, 37.5]):
@@ -126,27 +126,27 @@ def plot_david_data(plot):
     Source: DIR-plot_detection_efficiency_vs_R_for_angles-1.tex
 
     """
-    plot.plot(*zip((2.6315, 0.9995), (7.8947, 0.9947), (13.157, 0.9801),
+    plot.plot(*list(zip((2.6315, 0.9995), (7.8947, 0.9947), (13.157, 0.9801),
                    (18.421, 0.9382), (23.684, 0.8653), (28.947, 0.7636),
                    (34.210, 0.6515), (39.473, 0.5313), (44.736, 0.4243),
                    (50.000, 0.3287), (55.263, 0.2467), (60.526, 0.1798),
                    (65.789, 0.1270), (71.052, 0.0898), (76.315, 0.0624),
                    (81.578, 0.0445), (86.842, 0.0301), (92.105, 0.0220),
-                   (97.368, 0.0153)), linestyle='red', markstyle='mark size=1pt')
-    plot.plot(*zip((2.6315, 0.9642), (7.8947, 0.9242), (13.157, 0.8459),
+                   (97.368, 0.0153))), linestyle='red', markstyle='mark size=1pt')
+    plot.plot(*list(zip((2.6315, 0.9642), (7.8947, 0.9242), (13.157, 0.8459),
                    (18.421, 0.7405), (23.684, 0.6224), (28.947, 0.4870),
                    (34.210, 0.3705), (39.473, 0.2668), (44.736, 0.1909),
                    (50.000, 0.1269), (55.263, 0.0833), (60.526, 0.0533),
                    (65.789, 0.0366), (71.052, 0.0243), (76.315, 0.0161),
                    (81.578, 0.0115), (86.842, 0.0079), (92.105, 0.0047),
-                   (97.368, 0.0034)), linestyle='red', markstyle='mark size=1pt')
-    plot.plot(*zip((2.6315, 0.7180), (7.8947, 0.6214), (13.157, 0.4842),
+                   (97.368, 0.0034))), linestyle='red', markstyle='mark size=1pt')
+    plot.plot(*list(zip((2.6315, 0.7180), (7.8947, 0.6214), (13.157, 0.4842),
                    (18.421, 0.3441), (23.684, 0.2296), (28.947, 0.1414),
                    (34.210, 0.0882), (39.473, 0.0513), (44.736, 0.0317),
                    (50.000, 0.0193), (55.263, 0.0109), (60.526, 0.0071),
                    (65.789, 0.0043), (71.052, 0.0029), (76.315, 0.0021),
                    (81.578, 0.0012), (86.842, 0.0009), (92.105, 0.0006),
-                   (97.368, 0.0005)), linestyle='red', markstyle='mark size=1pt')
+                   (97.368, 0.0005))), linestyle='red', markstyle='mark size=1pt')
 
 
 if __name__ == "__main__":

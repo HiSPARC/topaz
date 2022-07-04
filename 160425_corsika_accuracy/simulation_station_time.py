@@ -142,7 +142,7 @@ def plot_arrival_time_distribution_v_distance(data, seeds):
     results = sorted(results)
 
     (core_distances, arrival_times_low, arrival_times, arrival_times_high,
-     efficiency) = zip(*results)
+     efficiency) = list(zip(*results))
 
     causal = causal_front(i, core_distances)
 
@@ -193,7 +193,7 @@ def plot_shower_profile(seeds, splot, core_distances, cor_t):
             quantiles = [25, 50, 75]
             t.append(percentile(lepton_t, q=quantiles))
 
-    t_low, t, t_high = zip(*t)
+    t_low, t, t_high = list(zip(*t))
     splot.plot(core_distances, t)
     splot.shade_region(core_distances, t_low, t_high)
 
@@ -211,7 +211,7 @@ if __name__ == "__main__":
         with tables.open_file(RESULT_SEED % seeds, 'r') as data:
             plot_arrival_time_distribution_v_distance(data, seeds)
     elif len(sys.argv) > 2:
-        print 'Wrong number of arguments'
+        print('Wrong number of arguments')
     else:
         # Local
         CORSIKA_DATA = '/Users/arne/Datastore/CORSIKA/%s/corsika.h5'

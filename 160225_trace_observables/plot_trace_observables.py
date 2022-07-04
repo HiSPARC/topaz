@@ -58,4 +58,4 @@ if __name__ == "__main__":
     plot_integral(trace, baseline)
     trace, baseline, integral, pulseheight, filtered_trace = get_trace(s)
     plot_filtered(filtered_trace)
-    print '%d ADC, %d ADC.sample, %d ADC' % (baseline, integral, pulseheight)
+    print('%d ADC, %d ADC.sample, %d ADC' % (baseline, integral, pulseheight))

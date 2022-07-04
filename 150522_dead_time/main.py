@@ -1,4 +1,4 @@
-from __future__ import division
+
 
 import zlib
 
@@ -50,9 +50,9 @@ def check_peaks():
         for i in range(1, 5):
             # pin = data.get_node('/t%d' % i).events.col('integrals')[:,1]
             npk = data.get_node('/t%d' % i).events.col('n_peaks')[:, 1]
-            print 'Test %d' % i
-            print 'Fraction of events with 1 pulse:  %.2f' % (npk.tolist().count(1) / len(npk))
-            print 'Fraction of events with 2 pulses: %.2f' % (npk.tolist().count(2) / len(npk))
+            print('Test %d' % i)
+            print('Fraction of events with 1 pulse:  %.2f' % (npk.tolist().count(1) / len(npk)))
+            print('Fraction of events with 2 pulses: %.2f' % (npk.tolist().count(2) / len(npk)))
 
 
 def plot_traces():
@@ -74,7 +74,7 @@ def plot_traces():
                     del trace[-1]
                 trace = [int(x) for x in trace]
                 plot = Plot()
-                plot.plot(range(len(trace)), trace, mark=None)
+                plot.plot(list(range(len(trace))), trace, mark=None)
                 plot.set_label('%d' % extts)
                 microsec_to_sample = 400
                 plot.draw_vertical_line(pre * microsec_to_sample, linestyle='thick,red,semitransparent')

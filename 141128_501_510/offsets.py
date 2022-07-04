@@ -26,18 +26,18 @@ def determine_detector_timing_offsets(d, s, events):
     bins = arange(-100 + 1.25, 100, 2.5)
     col = (cl for cl in COLORS)
     graph = Plot()
-    for i, j in itertools.combinations(range(1, 5), 2):
+    for i, j in itertools.combinations(list(range(1, 5)), 2):
         ti = events.col('t%d' % i)
         tj = events.col('t%d' % j)
         dt = (ti - tj).compress((ti >= 0) & (tj >= 0))
         y, bins = histogram(dt, bins=bins)
-        graph.histogram(y, bins, linestyle='color=%s' % col.next())
+        graph.histogram(y, bins, linestyle='color=%s' % next(col))
         x = (bins[:-1] + bins[1:]) / 2
         try:
             popt, pcov = curve_fit(gauss, x, y, p0=(len(dt), 0., 10.))
-            print '%d-%d: %f (%f)' % (i, j, popt[1], popt[2])
+            print('%d-%d: %f (%f)' % (i, j, popt[1], popt[2]))
         except (IndexError, RuntimeError):
-            print '%d-%d: failed' % (i, j)
+            print('%d-%d: failed' % (i, j))
     graph.set_title('Time difference, station %d' % (s))
     graph.set_label('%s' % d.replace('_', ' '))
     graph.set_xlimits(-100, 100)
@@ -121,7 +121,7 @@ def determine_station_timing_offsets(d, data):
         station_offset = 0.
     offsets[station] = [detector_offset + station_offset
                         for detector_offset in offsets[station]]
-    print 'Station 501 - 510: %f (%f)' % (popt[1], popt[2])
+    print('Station 501 - 510: %f (%f)' % (popt[1], popt[2]))
     graph = Plot()
     graph.histogram(y, bins)
     graph.set_title('Time difference, between station 501-510')
@@ -135,10 +135,10 @@ def determine_station_timing_offsets(d, data):
 
 if __name__ == '__main__':
     for d in ['e_501_510_141001_141011', 'e_501_510_141101_141111']:
-        print d
+        print(d)
         with tables.open_file('/Users/arne/Datastore/501_510/%s.h5' % d, 'r') as data:
             for s in [501, 510]:
-                print 'Station: %d' % s
+                print('Station: %d' % s)
                 e = data.get_node('/s%d/events' % s)
                 determine_detector_timing_offsets(d, s, e)
 

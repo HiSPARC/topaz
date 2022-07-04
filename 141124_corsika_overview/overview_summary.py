@@ -26,14 +26,14 @@ def print_overview(sims):
 
     prows = {particle: sims.read_where('particle_id==particle')
              for particle in particles}
-    for particle, rows in prows.iteritems():
-        print 'Particle: %s (%d)' % (name(particle), particle)
+    for particle, rows in prows.items():
+        print('Particle: %s (%d)' % (name(particle), particle))
         histogram = numpy.histogram2d(rows['energy'], rows['zenith'],
                                       bins=[e_bins, z_bins])
-        print 'Zenith >' + '% 6g° |' * len(zeniths) % tuple(numpy.degrees(zeniths))
-        print 'Energy v' + '---------' * len(zeniths)
+        print('Zenith >' + '% 6g° |' * len(zeniths) % tuple(numpy.degrees(zeniths)))
+        print('Energy v' + '---------' * len(zeniths))
         for energy, counts in zip(energies, histogram[0]):
-            print '% 7.1f:' % numpy.log10(energy) + '% 7d |' * len(counts) % tuple(counts)
+            print('% 7.1f:' % numpy.log10(energy) + '% 7d |' * len(counts) % tuple(counts))
 
 
 def plot_number_of_particles(sims):

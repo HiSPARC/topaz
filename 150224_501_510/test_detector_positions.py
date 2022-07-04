@@ -26,7 +26,7 @@ def reconstruct_simulations(data):
     rec_510.phi = array(rec_510.phi)
 
     # Station 501
-    for order in itertools.permutations(range(4), 4):
+    for order in itertools.permutations(list(range(4)), 4):
         cluster = get_cluster()
         station = cluster.get_station(STATIONS[0])
         station_group = '/hisparc/cluster_amsterdam/station_%d' % station.number

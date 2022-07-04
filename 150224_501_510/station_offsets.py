@@ -38,7 +38,7 @@ def determine_station_timing_offsets(data):
     min_t = t.min(axis=0)
 
     dt = []
-    for event, ref_event in itertools.izip(events, ref_events):
+    for event, ref_event in zip(events, ref_events):
         if (ref_event['t_trigger'] in ERR or event['t_trigger'] in ERR):
             dt.append(nan)
             continue
@@ -62,7 +62,7 @@ def determine_station_timing_offsets(data):
         plot.plot(bins, gauss(bins, *popt), mark=None, linestyle='gray')
     except RuntimeError:
         station_offset = 0.
-    print station_offset
+    print(station_offset)
 
     plot.set_title('Time difference, station 510-501')
     plot.set_xlimits(-50, 50)

@@ -14,16 +14,16 @@ def get_versions_django():
     for station in stations:
         try:
             config = Configuration.objects.filter(source__station=station).latest('timestamp')
-            print '% 5d' % station.number, config.mas_version
+            print('% 5d' % station.number, config.mas_version)
         except:
-            print '% 5d' % station.number, '--'
+            print('% 5d' % station.number, '--')
 
 
 def get_versions_api():
     station_numbers = Network().station_numbers()
     for station_number in station_numbers:
         config = Station(station_number).config()
-        print '% 5d' % station_number, config['mas_version']
+        print('% 5d' % station_number, config['mas_version'])
 
 
 if __name__ == '__main__':

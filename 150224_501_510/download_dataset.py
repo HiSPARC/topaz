@@ -11,7 +11,7 @@ def download_501_510_dataset():
     """Download a dataset for analysis
 
     """
-    print "Downloading 501-510 dataset."
+    print("Downloading 501-510 dataset.")
     stations = [501, 510]
 
     start = datetime(2015, 1, 20)

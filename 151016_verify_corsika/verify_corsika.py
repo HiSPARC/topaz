@@ -27,27 +27,27 @@ def verify_data():
     all_seeds = cq.seeds(cq.all_simulations(iterator=True), iterator=True)
     for seeds in all_seeds:
         path = DATAPATH.format(seeds=seeds)
-        print '%20s' % seeds,
+        print('%20s' % seeds, end=' ')
         try:
             verify_file(path)
-            print '.',
+            print('.', end=' ')
         except AssertionError:
             # Skip next tests
-            print 'E S S'
+            print('E S S')
             continue
 
         with tables.open_file(path, 'r') as data:
             try:
                 verify_table(data)
-                print '.',
+                print('.', end=' ')
             except tables.NoSuchNodeError:
-                print 'E',
+                print('E', end=' ')
             try:
                 verify_attrs(data)
-                print '.',
+                print('.', end=' ')
             except tables.AttributeError:
-                print 'E',
-        print
+                print('E', end=' ')
+        print()
 
 
 if __name__ == "__main__":

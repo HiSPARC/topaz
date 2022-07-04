@@ -32,7 +32,7 @@ def plot_time_slices(data):
         plt.annotate('%d < t < %d ns' % (t - times.min(), t - times.min() + step),
                      (0.05, 0.8), xycoords='axes fraction')
         plt.axis('equal')
-        plt.hist2d(detectable_x, detectable_y, bins=range(-4000, 4000, 50),
+        plt.hist2d(detectable_x, detectable_y, bins=list(range(-4000, 4000, 50)),
                    cmap='binary', norm=LogNorm(vmin=0.2, vmax=5000, clip=True))
         plt.colorbar()
         plt.show()

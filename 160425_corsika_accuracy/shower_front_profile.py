@@ -67,7 +67,7 @@ def plot_shower_profile(seeds):
 
         min_t = gp.col('t').min()
 
-        print 'Making plots for %s' % seeds
+        print('Making plots for %s' % seeds)
 
         gamma = gp.read_where('particle_id == 1')
         electrons = gp.read_where('(particle_id == 3) | (particle_id == 4)')
@@ -155,9 +155,9 @@ def plot_time_profile_for_bin(seeds, gamma_t, electrons_t, muons_t):
 def plot_energy_profile_for_bin(seeds, gamma_e, electrons_e, muons_e):
 
     plot = MultiPlot(3, 1, 'semilogx', height=r'.4\linewidth')
-    print ('Min gamma/electron energy: %d MeV,  %d MeV' %
-           (gamma_e.min() * 1e-6, electrons_e.min() * 1e-6))
-    print 'Min muon energy: %d MeV' % (muons_e.min() * 1e-6, )
+    print(('Min gamma/electron energy: %d MeV,  %d MeV' %
+           (gamma_e.min() * 1e-6, electrons_e.min() * 1e-6)))
+    print('Min muon energy: %d MeV' % (muons_e.min() * 1e-6, ))
     bins = logspace(6, 12, 40)
     for splot, data, particle_name in zip(plot.subplots,
                                           [gamma_e, electrons_e, muons_e],

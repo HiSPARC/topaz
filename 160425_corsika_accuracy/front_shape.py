@@ -58,7 +58,7 @@ def plot_front_shapes():
             popt, pcov = curve_fit(front_shape, r[:limit], mean_t[:limit])
 
             plot.plot(fit_r, front_shape(fit_r, *popt), linestyle='gray', mark=None)
-            print particle, energy, popt
+            print(particle, energy, popt)
             plot.set_ylimits(-10, 130)
             plot.set_xlimits(-10, 510)
             plot.set_ylabel(r'Delay [\si{\ns}]')

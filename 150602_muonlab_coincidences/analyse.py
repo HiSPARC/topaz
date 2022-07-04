@@ -12,7 +12,7 @@ EVENTDATA_PATHS = ['/Users/arne/Datastore/muonlab_test.h5',
 
 def analyse(data, id):
     event_node = data.get_node('/station_99/events')
-    print 'Total number of events: %d' % event_node.nrows
+    print('Total number of events: %d' % event_node.nrows)
     cq = CoincidenceQuery(data)
     coincidences = cq.all(stations=[99])
     coincident_events = cq.events_from_stations(coincidences, [99], n=1)
@@ -21,8 +21,8 @@ def analyse(data, id):
                  if i not in coincident_event_ids]
     events = event_node.read_coordinates(event_ids)
     coincident_events = event_node.read_coordinates(coincident_event_ids)
-    print 'Total number of events not in coincidence: %d' % len(events)
-    print 'Total number of events in coincidence: %d' % len(coincident_events)
+    print('Total number of events not in coincidence: %d' % len(events))
+    print('Total number of events in coincidence: %d' % len(coincident_events))
 
     cph1 = coincident_events['pulseheights'][:, 0]
     cph2 = coincident_events['pulseheights'][:, 1]

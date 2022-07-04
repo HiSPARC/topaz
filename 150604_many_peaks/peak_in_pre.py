@@ -49,12 +49,12 @@ if __name__ == "__main__":
         events = data.get_node('/hisparc/cluster_amsterdam/station_%d' % station, 'events')
         query = ' | '.join(['((t%d > 0) & (t%d < 900))' % (i, i) for i in range(1, 5)])
         pre_events = events.read_where(query)
-        print len(pre_events)
+        print(len(pre_events))
         for event in pre_events:
             plot_traces(event, station)
 
         t_trigger_events = pre_events.read_where('(t_trigger != -999_ & (t_trigger < 1000)')
         t_trigger_events.sort(order='t_trigger')
-        print len(t_trigger_events)
+        print(len(t_trigger_events))
         for event in t_trigger_events:
             plot_traces(event, station)

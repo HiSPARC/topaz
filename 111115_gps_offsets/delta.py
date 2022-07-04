@@ -5,9 +5,9 @@ import tables
 
 from sapphire.analysis.coincidences import CoincidencesESD
 
-from data import DATA_PATH
-from helper import nanoseconds_from_ext_timestamp, timestamps_from_ext_timestamp
-from testlist import get_tests
+from .data import DATA_PATH
+from .helper import nanoseconds_from_ext_timestamp, timestamps_from_ext_timestamp
+from .testlist import get_tests
 
 DELTA_DATA = '/Users/arne/Datastore/tijdtest/tijdtest_delta.h5'
 
@@ -64,7 +64,7 @@ def store(id):
     """
     warnings.simplefilter('ignore', tables.NaturalNameWarning)
 
-    print 'tt_delta: Storing deltas for test %s' % id
+    print('tt_delta: Storing deltas for test %s' % id)
     with tables.open_file(DATA_PATH, 'r') as data_file, \
             tables.open_file(DELTA_DATA, 'a') as delta_file:
         table = delta_file.create_table('/t%d' % id, 'delta', DeltaVal,
@@ -73,7 +73,7 @@ def store(id):
         timestamps = timestamps_from_ext_timestamp(ext_timestamps)
         nanoseconds = nanoseconds_from_ext_timestamp(ext_timestamps)
         delta_row = table.row
-        for ext_ts, ts, ns, delta in itertools.izip(ext_timestamps, timestamps,
+        for ext_ts, ts, ns, delta in zip(ext_timestamps, timestamps,
                                                     nanoseconds, deltas):
             delta_row['ext_timestamp'] = ext_ts
             delta_row['timestamp'] = ts
@@ -105,7 +105,7 @@ def append_new(id=None):
                     store(id)
                     added = "tt_delta: Added new deltas"
 
-    print added
+    print(added)
 
 
 def store_all():
@@ -115,7 +115,7 @@ def store_all():
     with tables.open_file(DELTA_DATA, 'w'):
         pass
     append_new()
-    print "tt_delta: Calculated deltas for entire Tijd Test"
+    print("tt_delta: Calculated deltas for entire Tijd Test")
 
 
 def get(id, path=None):
@@ -136,7 +136,7 @@ def get(id, path=None):
     else:
         ext_timestamps = []
         deltas = []
-        print "tt_delta: No such test"
+        print("tt_delta: No such test")
 
     return ext_timestamps, deltas
 
@@ -157,9 +157,9 @@ def remove(id):
         try:
             delta_file.get_node('/t%d' % id, 'delta')
             delta_file.remove_node('/t%d' % id, recursive=True)
-            print "tt_delta: Removed table /t%d" % id
+            print("tt_delta: Removed table /t%d" % id)
         except tables.NoSuchNodeError:
-            print "tt_delta: No such table"
+            print("tt_delta: No such table")
 
 
 if __name__ == '__main__':

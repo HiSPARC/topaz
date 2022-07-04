@@ -34,4 +34,4 @@ if __name__ == "__main__":
     if not os.path.exists(PATH):
         simulate_shower_front()
     else:
-        print "Data file already exists, doing nothing."
+        print("Data file already exists, doing nothing.")

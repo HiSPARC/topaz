@@ -87,7 +87,7 @@ def plot_distance_width():
     sim_widths = array(sim_widths)
 
     popt, pcov = curve_fit(lin, distances, widths, p0=(1.1, 1), sigma=array(distances) ** 0.3)
-    print popt, pcov
+    print(popt, pcov)
 
     plot = MultiPlot(2, 1)
     splot = plot.get_subplot_at(0, 0)

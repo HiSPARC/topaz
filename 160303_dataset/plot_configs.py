@@ -14,7 +14,7 @@ START_TS = datetime_to_gps(date(*START, day=1))
 END_TS = datetime_to_gps(date(*END, day=1))
 COLORS = ['black', 'red', 'green', 'blue']
 
-YEARS = range(2011, date.today().year + 1)
+YEARS = list(range(2011, date.today().year + 1))
 YEARS_TICKS = array([datetime_to_gps(date(y, 1, 1)) for y in YEARS])
 YEARS_LABELS = [str(y) for y in YEARS]
 

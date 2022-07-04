@@ -100,11 +100,11 @@ def test_log():
         (70, '341', 'test', 'PMT1', (2013, 1, 17, 12, 50), (2013, 1, 17, 13, 56), ''),
         (71, '341', 'test', 'PMT1', (2013, 1, 17, 13, 58), (2013, 1, 17, 14, 42), 'noalmanac'),
         (72, '341', 'test', 'PMT1', (2013, 1, 17, 14, 44), (2013, 1, 24, 11, 49), 'noalmanac'),
-        (73, '322', 'test', 'PMT1', (2013, 10, 31, 11, 03), (2013, 10, 31, 12, 28), ''),
+        (73, '322', 'test', 'PMT1', (2013, 10, 31, 11, 0o3), (2013, 10, 31, 12, 28), ''),
         (74, '323', 'test', 'PMT1', (2013, 10, 31, 12, 34), (2013, 10, 31, 14, 9), 'noalmanac'),
         (75, '346', 'test', 'PMT1', (2013, 10, 31, 14, 14), (2013, 10, 31, 14, 48), 'noalmanac'),
         # ( 76, '343', 'test', 'PMT1', (2013,11, 4, 11,26), (2013,11, 4, 12,35), 'nodata'),
-        (77, '303', 'test', 'PMT1', (2013, 11, 4, 16, 02), (2013, 11, 5, 10, 6), ''),
+        (77, '303', 'test', 'PMT1', (2013, 11, 4, 16, 0o2), (2013, 11, 5, 10, 6), ''),
         (78, '307', 'test', 'PMT1', (2013, 11, 5, 10, 38), (2013, 11, 5, 11, 13), 'noalmanac'),
         (79, '311', 'test', 'PMT1', (2013, 11, 5, 11, 34), (2013, 11, 5, 12, 10), 'noalmanac'),
         (80, '313', 'test', 'PMT1', (2013, 11, 5, 12, 15), (2013, 11, 5, 13, 7), 'noalmanac'),
@@ -230,7 +230,7 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
                      if test.group == ptest.group]
     elif complement and subset in ('NoAlmanac'):
         for test in test_list:
-            print 'subset%d' % test.id
+            print('subset%d' % test.id)
         test_list = [test
                      for test in test_all
                      for ptest in test_list
@@ -281,21 +281,21 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
 
 
 if __name__ in ('__main__'):
-    print ("Number of tests: %s (unique: %s)" %
+    print(("Number of tests: %s (unique: %s)" %
            (len(get_tests(subset='ALL', unique=False)),
-            len(get_tests(subset='ALL', unique=True))))
-    print ("Number of boxes: %s" %
-           len(get_tests(part='hisparc', unique=True)))
-    print ('HII:074:  %s' % ", ".join(get_tests(hisparc='074', part='group')))
-    print ('GPS:test: %s' % ", ".join(get_tests(gps='test', part='group')))
-    print ('TRG:EXT:  %s' % ", ".join(get_tests(trigger='EXT', part='group')))
-    print ('HII:053, TRG:EXT: %s' %
-           ", ".join(get_tests(hisparc='053', trigger='EXT', part='group')))
-    print ('GRP:018/501/PMT2: %s' %
-           ", ".join(get_tests(group='018/501/PMT2', part='group')))
-    print ("GPS:test +comp: %s" %
-           ", ".join(get_tests(subset='GPS', part='hisparc')))
-    print ("BadGPS: %s" %
-           ", ".join(get_tests(subset='Bad', part='hisparc')))
-    print ("TRG:EXT +comp: %s" %
-           ", ".join(get_tests(subset='EXT', part='group', complement=True)))
+            len(get_tests(subset='ALL', unique=True)))))
+    print(("Number of boxes: %s" %
+           len(get_tests(part='hisparc', unique=True))))
+    print(('HII:074:  %s' % ", ".join(get_tests(hisparc='074', part='group'))))
+    print(('GPS:test: %s' % ", ".join(get_tests(gps='test', part='group'))))
+    print(('TRG:EXT:  %s' % ", ".join(get_tests(trigger='EXT', part='group'))))
+    print(('HII:053, TRG:EXT: %s' %
+           ", ".join(get_tests(hisparc='053', trigger='EXT', part='group'))))
+    print(('GRP:018/501/PMT2: %s' %
+           ", ".join(get_tests(group='018/501/PMT2', part='group'))))
+    print(("GPS:test +comp: %s" %
+           ", ".join(get_tests(subset='GPS', part='hisparc'))))
+    print(("BadGPS: %s" %
+           ", ".join(get_tests(subset='Bad', part='hisparc'))))
+    print(("TRG:EXT +comp: %s" %
+           ", ".join(get_tests(subset='EXT', part='group', complement=True))))

@@ -45,7 +45,7 @@ def download_sciencepark_dataset_n3():
     To be used to check correctness of handling station timing offsets
 
     """
-    stations = range(501, 512)
+    stations = list(range(501, 512))
     start = datetime(2016, 1, 10)
     end = datetime(2016, 2, 1)
     with tables.open_file(PATH, 'w') as data:
