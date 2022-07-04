@@ -4,7 +4,7 @@ from scipy.misc import factorial
 
 from artist import Plot
 
-from kascade_density import KascadeDensity
+from .kascade_density import KascadeDensity
 
 MIN = 0
 MAX = 300

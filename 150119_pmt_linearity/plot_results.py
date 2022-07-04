@@ -2,7 +2,7 @@ from numpy import linspace
 
 from artist import MultiPlot
 
-from fit_curve import fit_curve, fit_function
+from .fit_curve import fit_curve, fit_function
 
 
 def plot_fit(plot, expected, measured, measured_err=[]):

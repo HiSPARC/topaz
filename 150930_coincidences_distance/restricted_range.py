@@ -5,7 +5,7 @@ import tables
 
 from sapphire.transformations.clock import datetime_to_gps
 
-from eventtime_ranges import get_timestamp_ranges, get_total_exposure
+from .eventtime_ranges import get_timestamp_ranges, get_total_exposure
 
 
 def modify_range(ts_range, start_ts):

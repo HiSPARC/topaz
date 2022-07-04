@@ -1,11 +1,8 @@
+from plot_results import plot_pi_ph
+
 from artist import Plot
 
-import data_nikhef_final_integral
-import data_nikhef_integral
-import data_nikhef_senstech_integral
-import data_senstech_integral
-
-from plot_results import plot_pi_ph
+from . import data_nikhef_final_integral, data_nikhef_integral, data_nikhef_senstech_integral, data_senstech_integral
 
 
 def plot_pi_ph(plot, test, mark='o'):

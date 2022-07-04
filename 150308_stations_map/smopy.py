@@ -7,17 +7,17 @@ Map tiles by CartoDB, under CC BY 3.0. Data by OpenStreetMap, under ODbL
 
 """
 
+from Pillow import Image
+
 # Imports
 # -----------------------------------------------------------------------------
 from six import BytesIO
 
-import matplotlib.pyplot as plt
-import numpy as np
-
-from PIL import Image
-
 # -----------------------------------------------------------------------------
 from six.moves.urllib.request import urlopen
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 # -----------------------------------------------------------------------------
 # Constants

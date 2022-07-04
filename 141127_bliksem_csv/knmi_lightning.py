@@ -6,8 +6,8 @@ from datetime import date, timedelta
 import numpy as np
 import tables
 
-from date_generator import daterange
-from knmi_timestamps import get_gps_timestamp
+from .date_generator import daterange
+from .knmi_timestamps import get_gps_timestamp
 
 LGT_PATH = "/Users/arne/Datastore/Lightning/"
 

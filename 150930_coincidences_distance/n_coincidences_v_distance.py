@@ -26,9 +26,9 @@ from artist import Plot
 from sapphire import HiSPARCNetwork
 from sapphire.utils import pbar
 
-from energy_sensitivity import get_pair_distance_energy_array
-from station_distances import close_pairs_in_network
-from variable_distance import min_max_distance_pair
+from .energy_sensitivity import get_pair_distance_energy_array
+from .station_distances import close_pairs_in_network
+from .variable_distance import min_max_distance_pair
 
 DATAPATH = '/Users/arne/Datastore/pairs/%d_%d.h5'
 NO_LAYOUT = [

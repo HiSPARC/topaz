@@ -12,7 +12,7 @@ from artist import MultiPlot
 
 from sapphire import HiSPARCStations
 
-from station_distances import horizontal_distance_between_stations
+from .station_distances import horizontal_distance_between_stations
 
 STATIONS = [502, 503, 504, 505, 506, 508, 509, 510]
 DAY = 86400.0

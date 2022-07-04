@@ -53,7 +53,7 @@ from artist import MultiPlot, Plot
 
 from sapphire.analysis.find_mpv import FindMostProbableValueInSpectrum as FindMPV
 
-from fit_curve import fit_curve, fit_function
+from .fit_curve import fit_curve, fit_function
 
 DATA_PATH = '/Users/arne/Datastore/kascade/kascade-reconstructions.h5'
 COLORS = ['black', 'red', 'green', 'blue']

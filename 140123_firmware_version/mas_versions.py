@@ -6,7 +6,7 @@ try:
 
     DJANGO = True
 except ImportError:
-    from sapphire import Station, Network
+    from sapphire import Network, Station
 
     DJANGO = False
 

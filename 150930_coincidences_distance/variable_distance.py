@@ -4,7 +4,7 @@ from artist import Plot
 
 from sapphire import HiSPARCStations
 
-from station_distances import close_pairs_in_network
+from .station_distances import close_pairs_in_network
 
 
 def variable_distance_pairs(pairs):

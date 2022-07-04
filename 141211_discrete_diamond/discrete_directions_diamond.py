@@ -12,7 +12,6 @@ from sapphire.analysis.direction_reconstruction import (
 )
 from sapphire.clusters import SingleDiamondStation
 
-
 TIME_RESOLUTION = 2.5  # nanoseconds
 C = 0.3  # lightspeed m/ns
 COLORS = ['black', 'red', 'green', 'blue']

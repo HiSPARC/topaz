@@ -2,11 +2,11 @@ from numpy import linspace
 
 from artist import Plot
 
-from data_nikhef_final_integral import E_PH as nikhef_e_ph
-from data_nikhef_final_integral import M_PH as nikhef_m_ph
-from data_senstech_integral import E_PH as senstech_e_ph
-from data_senstech_integral import M_PH as senstech_m_ph
-from fit_curve import P1, fit_curve, ice_cube_pmt_p1
+from .data_nikhef_final_integral import E_PH as nikhef_e_ph
+from .data_nikhef_final_integral import M_PH as nikhef_m_ph
+from .data_senstech_integral import E_PH as senstech_e_ph
+from .data_senstech_integral import M_PH as senstech_m_ph
+from .fit_curve import P1, fit_curve, ice_cube_pmt_p1
 
 FIT = (
     r"$\mathrm{ln}V_{\mathrm{in}}=\mathrm{ln}V + "

@@ -25,7 +25,7 @@ from artist import MultiPlot, Plot
 from sapphire.transformations.clock import datetime_to_gps
 from sapphire.utils import pbar
 
-from download_dataset import END, START, STATIONS
+from .download_dataset import END, START, STATIONS
 
 DATASTORE = "/Users/arne/Datastore/dataset"
 DATA_PATH = os.path.join(DATASTORE, 'dataset_sciencepark_stations_110601_160201.h5')

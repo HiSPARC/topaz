@@ -19,7 +19,7 @@ from sapphire import CoincidenceQuery, Station
 from sapphire.analysis.event_utils import station_arrival_time
 from sapphire.transformations.clock import datetime_to_gps
 
-from station_distances import close_pairs_in_network
+from .station_distances import close_pairs_in_network
 
 """
 Reference stations

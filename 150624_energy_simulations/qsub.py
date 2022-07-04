@@ -2,7 +2,6 @@ import textwrap
 
 from sapphire import qsub
 
-
 SCRIPT_TEMPLATE = textwrap.dedent(
     """\
     #!/usr/bin/env bash

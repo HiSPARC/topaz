@@ -14,7 +14,7 @@ import numpy as np
 
 from matplotlib import pyplot as plt
 
-from pointrect import Point, Rect
+from .pointrect import Point, Rect
 
 
 def run():

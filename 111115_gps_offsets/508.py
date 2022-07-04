@@ -10,7 +10,6 @@ from hisparc.analysis.coincidences import search_coincidences as search
 from sapphire.esd import download_data
 
 from . import delta
-
 from .testlist import Tijdtest
 
 DATA_PATH = '/Users/arne/Datastore/gps_offsets/508_data.h5'

@@ -2,7 +2,7 @@ import tables
 
 from numpy import ones_like, sum
 
-from determine_statistics import get_all_stats
+from .determine_statistics import get_all_stats
 
 
 class DayFilter:

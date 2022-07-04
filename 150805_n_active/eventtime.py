@@ -1,5 +1,7 @@
 import os
-import urllib.request, urllib.parse, urllib.error
+import urllib.error
+import urllib.parse
+import urllib.request
 
 from sapphire import Network
 from sapphire.utils import pbar

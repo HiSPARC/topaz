@@ -21,9 +21,9 @@ import tables
 from sapphire import download_coincidences
 from sapphire.transformations.clock import gps_to_datetime
 
-from eventtime_ranges import get_timestamp_ranges, get_total_exposure
-from rate_from_intervals import determine_rate
-from station_distances import close_pairs_in_network, distance_between_stations
+from .eventtime_ranges import get_timestamp_ranges, get_total_exposure
+from .rate_from_intervals import determine_rate
+from .station_distances import close_pairs_in_network, distance_between_stations
 
 DATAPATH = '/Users/arne/Datastore/pairs/%d_%d.h5'
 

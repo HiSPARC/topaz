@@ -23,11 +23,6 @@ The following modules are included:
     start and end date and time are known
 
 """
-from . import analyse
-from . import delta
-from . import data
-from . import helper
-from . import testlist
-from . import david
+from . import analyse, data, david, delta, helper, testlist
 
 __all__ = ['analyse', 'delta', 'data', 'helper', 'testlist', 'david']
