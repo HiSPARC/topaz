@@ -12,20 +12,7 @@ from functools import partial
 
 import tables
 
-from numpy import (
-    append,
-    degrees,
-    histogram,
-    histogram2d,
-    linspace,
-    log10,
-    logspace,
-    mean,
-    median,
-    nan,
-    percentile,
-    sqrt,
-)
+from numpy import degrees, histogram, histogram2d, log10, logspace, median, percentile, sqrt
 from scipy.stats import binned_statistic
 
 from artist import MultiPlot

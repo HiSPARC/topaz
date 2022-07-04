@@ -22,11 +22,6 @@ from artist import MultiPlot, Plot
 
 from sapphire import CoincidenceQuery, GroundParticlesSimulation, ReconstructESDCoincidences, ScienceParkCluster
 from sapphire.analysis import event_utils
-from sapphire.analysis.direction_reconstruction import (
-    CurvedRegressionAlgorithm,
-    DirectAlgorithmCartesian,
-    RegressionAlgorithm,
-)
 from sapphire.simulations.showerfront import CorsikaStationFront
 from sapphire.transformations import geographic
 from sapphire.utils import angle_between, c, distance_between

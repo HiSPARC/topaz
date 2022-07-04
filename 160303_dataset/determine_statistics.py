@@ -5,20 +5,7 @@ from datetime import date
 
 import tables
 
-from numpy import (
-    arange,
-    array,
-    column_stack,
-    empty,
-    genfromtxt,
-    histogram2d,
-    nan,
-    random,
-    searchsorted,
-    sin,
-    split,
-    sum,
-)
+from numpy import arange, array, column_stack, empty, genfromtxt, histogram2d, nan, searchsorted, split, sum
 
 from artist import MultiPlot, Plot
 

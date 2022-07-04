@@ -1,5 +1,3 @@
-import itertools
-
 import tables
 
 from numpy import array, histogram, linspace, nan, where

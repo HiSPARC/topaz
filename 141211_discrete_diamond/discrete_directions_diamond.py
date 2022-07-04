@@ -2,14 +2,9 @@ import itertools
 
 import numpy as np
 
-from artist import Plot, PolarPlot
+from artist import PolarPlot
 
-from sapphire.analysis.direction_reconstruction import (
-    DirectAlgorithm,
-    DirectAlgorithmCartesian2D,
-    DirectAlgorithmCartesian3D,
-    FitAlgorithm,
-)
+from sapphire.analysis.direction_reconstruction import DirectAlgorithmCartesian3D
 from sapphire.clusters import SingleDiamondStation
 
 TIME_RESOLUTION = 2.5  # nanoseconds

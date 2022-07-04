@@ -27,11 +27,9 @@ import tables
 
 from numpy import (
     abs,
-    append,
     array,
     copyto,
     cos,
-    diff,
     empty_like,
     histogram,
     histogram2d,
@@ -40,8 +38,6 @@ from numpy import (
     linspace,
     log10,
     logspace,
-    mean,
-    median,
     sqrt,
     std,
     where,
