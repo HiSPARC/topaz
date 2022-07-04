@@ -6,7 +6,19 @@ from datetime import date
 import tables
 
 from numpy import (
-    arange, array, column_stack, empty, genfromtxt, histogram2d, nan, random, searchsorted, sin, split, sum)
+    arange,
+    array,
+    column_stack,
+    empty,
+    genfromtxt,
+    histogram2d,
+    nan,
+    random,
+    searchsorted,
+    sin,
+    split,
+    sum,
+)
 
 from artist import MultiPlot, Plot
 
@@ -16,8 +28,7 @@ from sapphire.utils import pbar
 from download_dataset import END, START, STATIONS
 
 DATASTORE = "/Users/arne/Datastore/dataset"
-DATA_PATH = os.path.join(DATASTORE,
-                         'dataset_sciencepark_stations_110601_160201.h5')
+DATA_PATH = os.path.join(DATASTORE, 'dataset_sciencepark_stations_110601_160201.h5')
 COIN_PATH = os.path.join(DATASTORE, 'dataset_sciencepark_n2_110601_160201.h5')
 TSV_PATH = os.path.join(DATASTORE, 'stats/s%d_%s.tsv')
 
@@ -32,10 +43,7 @@ YEARS = list(range(2011, date.today().year + 1))
 YEARS_TICKS = array([datetime_to_gps(date(y, 1, 1)) for y in YEARS])
 YEARS_LABELS = [str(y) for y in YEARS]
 
-FIELDS = ['event_rate', 'mpv',
-          'integrals', 't_trigger',
-          ('t1', 't2', 't3', 't4'),
-          ('n1', 'n2', 'n3', 'n4')]
+FIELDS = ['event_rate', 'mpv', 'integrals', 't_trigger', ('t1', 't2', 't3', 't4'), ('n1', 'n2', 'n3', 'n4')]
 FIELD_NAMES = [''.join(field) for field in FIELDS]
 
 
@@ -43,7 +51,7 @@ def frac_bad(values):
     """Get fraction of bad values in an array"""
 
     if len(values):
-        return 100. * sum(values < 0, axis=0) / len(values)
+        return 100.0 * sum(values < 0, axis=0) / len(values)
     else:
         try:
             result = empty(values.shape[1])
@@ -67,13 +75,11 @@ def reconstruct_mpv(slice):
     mpvs = []
     for detector_id in range(4):
         try:
-            event = next(e for e in slice
-                         if e['n%d' % (detector_id + 1)] > 0.1)
+            event = next(e for e in slice if e['n%d' % (detector_id + 1)] > 0.1)
         except:
             mpvs.append(nan)
         else:
-            mpv = (event['integrals'][detector_id] /
-                   event['n%d' % (detector_id + 1)])
+            mpv = event['integrals'][detector_id] / event['n%d' % (detector_id + 1)]
             mpvs.append(int(mpv))
     return mpvs
 
@@ -154,8 +160,7 @@ def determine_all_stats(data):
     each station contains fields, which contain the statistics arrays.
 
     """
-    stats = {station: determine_station_stats(data, station)
-             for station in STATIONS}
+    stats = {station: determine_station_stats(data, station) for station in STATIONS}
 
     return stats
 
@@ -191,8 +196,7 @@ def get_stat(station, field_name):
 def get_station_stats(station):
     print('Reading stats for %d' % station)
     try:
-        stats = {field_name: get_stat(station, field_name)
-                 for field_name in FIELD_NAMES}
+        stats = {field_name: get_stat(station, field_name) for field_name in FIELD_NAMES}
     except (TypeError, OSError, AssertionError):
         print('Determining stats for %d' % station)
         with tables.open_file(DATA_PATH) as data:
@@ -211,21 +215,19 @@ def get_all_stats():
 def plot_timeline(stats, field_name):
     step = 0.2 * BIN_WIDTH
 
-    plot = MultiPlot(len(STATIONS), 1,
-                     width=r'.67\textwidth', height=r'.075\paperheight')
-#     if field_name in ['event_rate', 'mpv']:
-#         plot = MultiPlot(len(STATIONS), 1,
-#                          width=r'.67\textwidth', height=r'.05\paperheight')
-#     else:
-#         plot = MultiPlot(len(STATIONS), 1, 'semilogy',
-#                          width=r'.67\textwidth', height=r'.05\paperheight')
+    plot = MultiPlot(len(STATIONS), 1, width=r'.67\textwidth', height=r'.075\paperheight')
+    #     if field_name in ['event_rate', 'mpv']:
+    #         plot = MultiPlot(len(STATIONS), 1,
+    #                          width=r'.67\textwidth', height=r'.05\paperheight')
+    #     else:
+    #         plot = MultiPlot(len(STATIONS), 1, 'semilogy',
+    #                          width=r'.67\textwidth', height=r'.05\paperheight')
 
     for splot, station in zip(plot.subplots, STATIONS):
         stat = stats[station][field_name]
         if len(stat.shape) == 2:
             for i, s in enumerate(stat):
-                splot.histogram(s, BINS + (step * i),
-                                linestyle='thin,' + COLORS[i])
+                splot.histogram(s, BINS + (step * i), linestyle='thin,' + COLORS[i])
         else:
             splot.histogram(stat, BINS, linestyle='thin')
         splot.set_ylabel(r'%d' % station)
@@ -242,8 +244,8 @@ def plot_timeline(stats, field_name):
         plot.set_yticklabels_position(row, 0, 'right')
     plot.set_ylimits_for_all(None, -1e-4)
 
-#     if field_name not in ['event_rate', 'mpv']:
-#         plot.set_ylimits_for_all(None, 1e-4, 100)
+    #     if field_name not in ['event_rate', 'mpv']:
+    #         plot.set_ylimits_for_all(None, 1e-4, 100)
 
     plot.set_xlabel(r'Timestamp')
 
@@ -252,8 +254,7 @@ def plot_timeline(stats, field_name):
     elif field_name == 'mpv':
         ylabel = r'MPV [ADC.ns]'
     else:
-        ylabel = (r'Fraction of bad %s data [\si{\percent}]' %
-                  field_name.replace('_', ' '))
+        ylabel = r'Fraction of bad %s data [\si{\percent}]' % field_name.replace('_', ' ')
     plot.set_ylabel(ylabel)
 
     if field_name in ['event_rate', 'mpv']:
@@ -268,9 +269,8 @@ def plot_timelines(statistics):
 
 
 def plot_comparison(stats, field_name):
-    plot = MultiPlot(len(STATIONS), len(STATIONS),
-                     width=r'.06\textwidth', height=r'.06\textwidth')
-    bins = arange(0, 1.2, .03)
+    plot = MultiPlot(len(STATIONS), len(STATIONS), width=r'.06\textwidth', height=r'.06\textwidth')
+    bins = arange(0, 1.2, 0.03)
     for i, ref_station in enumerate(STATIONS):
         ref_stat = stats[ref_station][field_name][0]
         ref_filter = ref_stat > 0
@@ -287,25 +287,24 @@ def plot_comparison(stats, field_name):
             counts, xbin, ybin = histogram2d(tmp_stat, tmp_ref_stat, bins=bins)
             splot.histogram2d(counts, xbin, ybin, type='reverse_bw', bitmap=True)
             splot.plot([0, 1.2], [0, 1.2], mark=None, linestyle='red, very thin')
-#     plot.set_xlimits_for_all(None, min=bins[0], max=bins[-1])
-#     plot.set_ylimits_for_all(None, min=bins[0], max=bins[-1])
-#     plot.subplots[-1].set_xtick_labels(YEARS_LABELS)
-#     plot.subplots[-1].show_xticklabels()
-#
-#     plot.show_yticklabels_for_all(None)
-#     for row in range(0, len(plot.subplots), 2):
-#         plot.set_yticklabels_position(row, 0, 'left')
-#     for row in range(1, len(plot.subplots), 2):
-#         plot.set_yticklabels_position(row, 0, 'right')
-#     plot.set_ylimits_for_all(None, -1e-4)
+    #     plot.set_xlimits_for_all(None, min=bins[0], max=bins[-1])
+    #     plot.set_ylimits_for_all(None, min=bins[0], max=bins[-1])
+    #     plot.subplots[-1].set_xtick_labels(YEARS_LABELS)
+    #     plot.subplots[-1].show_xticklabels()
+    #
+    #     plot.show_yticklabels_for_all(None)
+    #     for row in range(0, len(plot.subplots), 2):
+    #         plot.set_yticklabels_position(row, 0, 'left')
+    #     for row in range(1, len(plot.subplots), 2):
+    #         plot.set_yticklabels_position(row, 0, 'right')
+    #     plot.set_ylimits_for_all(None, -1e-4)
 
     if field_name == 'event_rate':
         label = r'Event rate [\si{\hertz}]'
     elif field_name == 'mpv':
         label = r'MPV [ADC.ns]'
     else:
-        label = (r'Fraction of bad %s data [\si{\percent}]' %
-                 field_name.replace('_', ' '))
+        label = r'Fraction of bad %s data [\si{\percent}]' % field_name.replace('_', ' ')
     plot.set_ylabel(label)
     plot.set_xlabel(label)
 
@@ -317,7 +316,7 @@ def plot_comparison(stats, field_name):
 
 def plot_comparison_501_510(stats, field_name):
     plot = Plot()
-    bins = arange(0, 1, .02)
+    bins = arange(0, 1, 0.02)
 
     ref_stat = stats[501][field_name][0]
     stat = stats[510][field_name][0]
@@ -333,8 +332,7 @@ def plot_comparison_501_510(stats, field_name):
     elif field_name == 'mpv':
         label = r'MPV [ADC.ns]'
     else:
-        label = (r'Fraction of bad %s data [\si{\percent}]' %
-                 field_name.replace('_', ' '))
+        label = r'Fraction of bad %s data [\si{\percent}]' % field_name.replace('_', ' ')
     plot.set_ylabel(label)
     plot.set_xlabel(label)
 

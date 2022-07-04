@@ -3,7 +3,8 @@ import textwrap
 from sapphire import qsub
 
 
-SCRIPT_TEMPLATE = textwrap.dedent("""\
+SCRIPT_TEMPLATE = textwrap.dedent(
+    """\
     #!/usr/bin/env bash
     umask 002
     source activate /data/hisparc/corsika_env &> /dev/null
@@ -13,7 +14,8 @@ SCRIPT_TEMPLATE = textwrap.dedent("""\
     ln -s /data/hisparc/corsika/data/{seed}/corsika.h5 corsika.h5
     python ../run.py
     # To alleviate Stoomboot, make sure the job is not to short.
-    sleep $[ ( $RANDOM % 60 ) + 60 ]""")
+    sleep $[ ( $RANDOM % 60 ) + 60 ]"""
+)
 
 
 def submit_job(seed):

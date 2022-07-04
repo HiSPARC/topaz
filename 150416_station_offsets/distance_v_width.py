@@ -28,7 +28,7 @@ SIM_PATH = '/Users/arne/Datastore/expected_dt/test_station_dt_spa.h5'
 
 SPA_STAT = [501, 502, 503, 504, 505, 506, 508, 509, 510, 511]
 CLUSTER = HiSPARCStations(SPA_STAT)
-DAY = 86400.
+DAY = 86400.0
 HALF_DAY = DAY / 2
 WEEK = 7 * DAY
 FORTNIGHT = 2 * WEEK
@@ -72,13 +72,11 @@ def plot_distance_width():
                 table = get_station_dt(data, station)
                 ts1 = table[-1]['timestamp'] - WEEK
                 ts0 = ts1 - HALFYEAR  # * max(1, (distance / 100))
-                dt = table.read_where('(timestamp > ts0) & (timestamp < ts1)',
-                                      field='delta')
+                dt = table.read_where('(timestamp > ts0) & (timestamp < ts1)', field='delta')
 
                 sim_ref_events = sim_data.get_node('/flat/cluster_simulations/station_%d' % ref_station, 'events')
                 sim_events = sim_data.get_node('/flat/cluster_simulations/station_%d' % station, 'events')
-                sim_dt = (sim_ref_events.col('ext_timestamp').astype(int) -
-                          sim_events.col('ext_timestamp').astype(int))
+                sim_dt = sim_ref_events.col('ext_timestamp').astype(int) - sim_events.col('ext_timestamp').astype(int)
 
                 bins = arange(-2000, 2000.1, 30)
                 # bins = linspace(-max_dt, max_dt, 150)
@@ -88,10 +86,10 @@ def plot_distance_width():
                 sim_counts, bins = histogram(sim_dt, bins=bins, density=True)
                 counts, bins = histogram(dt, bins=bins, density=True)
 
-#                 width = curve_fit(norm.pdf, x, counts, p0=(0., distances[-1]))[0][1]
-#                 widths.append(width)
-#                 sim_width = curve_fit(norm.pdf, x, sim_counts, p0=(0., distances[-1]))[0][1]
-#                 sim_widths.append(sim_width)
+                #                 width = curve_fit(norm.pdf, x, counts, p0=(0., distances[-1]))[0][1]
+                #                 widths.append(width)
+                #                 sim_width = curve_fit(norm.pdf, x, sim_counts, p0=(0., distances[-1]))[0][1]
+                #                 sim_widths.append(sim_width)
                 window_width = distances[-1] * 3.5
                 width = std(dt.compress(abs(dt) < window_width))
                 widths.append(width)
@@ -101,10 +99,8 @@ def plot_distance_width():
     widths = array(widths)
     sim_widths = array(sim_widths)
 
-    popt, pcov = curve_fit(lin, distances, widths, p0=(1.1, 1),
-                           sigma=array(distances) ** 0.3)
-    popt, pcov = curve_fit(lin_origin, distances, widths, p0=(1.1),
-                           sigma=array(distances) ** 0.3)
+    popt, pcov = curve_fit(lin, distances, widths, p0=(1.1, 1), sigma=array(distances) ** 0.3)
+    popt, pcov = curve_fit(lin_origin, distances, widths, p0=(1.1), sigma=array(distances) ** 0.3)
     print(popt, pcov)
 
     plot = MultiPlot(2, 1)

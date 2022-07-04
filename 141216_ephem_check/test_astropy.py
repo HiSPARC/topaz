@@ -37,9 +37,7 @@ def test_against_hor2eq():
     print('IDL hor2eq')
     # Observatory position for `kpno` from here:
     # http://idlastro.gsfc.nasa.gov/ftp/pro/astro/observatory.pro
-    location = EarthLocation(lon=Angle('-111d36.0m'),
-                             lat=Angle('31d57.8m'),
-                             height=2120. * u.m)
+    location = EarthLocation(lon=Angle('-111d36.0m'), lat=Angle('31d57.8m'), height=2120.0 * u.m)
 
     # obstime = Time('2041-12-26 05:00:00')
     obstime = Time(2466879.7083333, format='jd')
@@ -65,7 +63,7 @@ def test_against_hor2eq():
     # radec_expected = ra=3.30875 deg, dec=15.183416666666666 deg
     # radec_actual = ra=3.3094193224314625 deg, dec=15.183757021354532 deg
     # distance = 2.6285 arcsec
-#     assert distance < 5 * u.arcsec
+    #     assert distance < 5 * u.arcsec
 
     # SAPPHiRE
     longitude = -111.6
@@ -77,10 +75,9 @@ def test_against_hor2eq():
     # Matches  LAST = +03 53 53.6  in the hor2eq.pro
     gps = clock.utc_to_gps(calendar.timegm(clock.juliandate_to_utc(jd).utctimetuple()))
     zenith, azimuth = celestial.horizontal_to_zenithazimuth(
-        np.radians(base.sexagesimal_to_decimal(*elevation)),
-        np.radians(base.sexagesimal_to_decimal(*azi)))
-    ra, dec = celestial.zenithazimuth_to_equatorial(longitude, latitude,
-                                                    gps, zenith, azimuth)
+        np.radians(base.sexagesimal_to_decimal(*elevation)), np.radians(base.sexagesimal_to_decimal(*azi))
+    )
+    ra, dec = celestial.zenithazimuth_to_equatorial(longitude, latitude, gps, zenith, azimuth)
 
     print('SAPPHiRE: ra={:f}, dec={:f}'.format(np.degrees(ra), np.degrees(dec)))
 
@@ -96,9 +93,7 @@ def test_against_pyephem():
     """
     print('PyEphem')
     obstime = Time('2011-09-18 08:50:00')
-    location = EarthLocation(lon=Angle('-109d24m53.1s'),
-                             lat=Angle('33d41m46.0s'),
-                             height=0. * u.m)
+    location = EarthLocation(lon=Angle('-109d24m53.1s'), lat=Angle('33d41m46.0s'), height=0.0 * u.m)
     # We are using the default pressure and temperature in PyEphem
     altaz_frame = AltAz(obstime=obstime, location=location)
 
@@ -118,7 +113,7 @@ def test_against_pyephem():
     radec_expected = SkyCoord('196.495372d -4.560694d', frame='icrs')
     distance = radec_actual.separation(radec_expected).to('arcsec')
     # Current value: 0.0031402822944751997 arcsec
-    #assert distance < 1 * u.arcsec
+    # assert distance < 1 * u.arcsec
 
     # SAPPHiRE
     longitude = base.sexagesimal_to_decimal(-109, -24, -53.1)
@@ -128,8 +123,7 @@ def test_against_pyephem():
     azi = np.radians(6.8927)
     gps = clock.utc_to_gps(calendar.timegm(utc.utctimetuple()))
     zenith, azimuth = celestial.horizontal_to_zenithazimuth(elevation, azi)
-    ra, dec = celestial.zenithazimuth_to_equatorial(longitude, latitude,
-                                                    gps, zenith, azimuth)
+    ra, dec = celestial.zenithazimuth_to_equatorial(longitude, latitude, gps, zenith, azimuth)
 
     print('SAPPHiRE: ra={:f}, dec={:f}'.format(np.degrees(ra), np.degrees(dec)))
 
@@ -143,9 +137,7 @@ def test_against_jpl_horizons():
     """
     print('NASA JPL')
     obstime = Time('1998-07-28 03:00')
-    location = EarthLocation(lon=Angle('248.405300d'),
-                             lat=Angle('31.9585d'),
-                             height=2.06 * u.km)
+    location = EarthLocation(lon=Angle('248.405300d'), lat=Angle('31.9585d'), height=2.06 * u.km)
     # No atmosphere
     altaz_frame = AltAz(obstime=obstime, location=location)
 
@@ -155,7 +147,7 @@ def test_against_jpl_horizons():
     radec_expected = SkyCoord('19h24m55.01s -40d56m28.9s', frame='icrs')
     print('Source:  ', radec_expected)
     distance = radec_actual.separation(radec_expected).to('arcsec')
-    #assert distance < 1 * u.arcsec
+    # assert distance < 1 * u.arcsec
 
     # SAPPHiRE
     longitude = 248.405300
@@ -165,8 +157,7 @@ def test_against_jpl_horizons():
     azi = np.radians(143.2970)
     gps = clock.utc_to_gps(calendar.timegm(utc.utctimetuple()))
     zenith, azimuth = celestial.horizontal_to_zenithazimuth(elevation, azi)
-    ra, dec = celestial.zenithazimuth_to_equatorial(longitude, latitude,
-                                                    gps, zenith, azimuth)
+    ra, dec = celestial.zenithazimuth_to_equatorial(longitude, latitude, gps, zenith, azimuth)
 
     print('SAPPHiRE: ra={:f}, dec={:f}'.format(np.degrees(ra), np.degrees(dec)))
 

@@ -39,9 +39,7 @@ CLUSTER = HiSPARCNetwork()
 
 def get_available_station_pairs():
     paths = glob(DT_DATAPATH_GLOB)
-    pairs = [(int(s1), int(s2))
-             for s1, s2 in [re.findall(r'\d+', path[:-3])
-                            for path in paths]]
+    pairs = [(int(s1), int(s2)) for s1, s2 in [re.findall(r'\d+', path[:-3]) for path in paths]]
     return pairs
 
 
@@ -61,17 +59,15 @@ def determine_offsets_for_pair(stations):
         offsets = []
         start = datetime(2010, 1, 1)
         end = datetime(2015, 4, 1)
-        for dt0 in (start + timedelta(days=x)
-                    for x in range(0, (end - start).days, 10)):
+        for dt0 in (start + timedelta(days=x) for x in range(0, (end - start).days, 10)):
             ts0 = datetime_to_gps(dt0)
             CLUSTER.set_timestamp(ts0)
             # dz is z - z_ref
             r, _, dz = CLUSTER.calc_rphiz_for_stations(
-                CLUSTER.get_station(ref_station).station_id,
-                CLUSTER.get_station(station).station_id)
-            ts1 = datetime_to_gps(dt0 + timedelta(days=max(int(r ** 1.12 / DAYS), 7)))
-            dt = table.read_where('(timestamp >= ts0) & (timestamp < ts1)',
-                                  field='delta')
+                CLUSTER.get_station(ref_station).station_id, CLUSTER.get_station(station).station_id
+            )
+            ts1 = datetime_to_gps(dt0 + timedelta(days=max(int(r**1.12 / DAYS), 7)))
+            dt = table.read_where('(timestamp >= ts0) & (timestamp < ts1)', field='delta')
             if len(dt) < 100:
                 s_off = nan
             else:

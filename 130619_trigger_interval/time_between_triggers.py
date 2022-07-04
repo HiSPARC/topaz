@@ -21,15 +21,12 @@ def main(station_number=501, date=datetime.date(2016, 2, 1)):
     filepath = os.path.join(ESD_PATH, date.strftime('%Y/%-m/%Y_%-m_%-d.h5'))
     with tables.open_file(filepath, 'r') as data:
         station = Station(station_number)
-        events = data.get_node('/hisparc/cluster_%s/station_%d' %
-                               (station.cluster().lower(), station_number),
-                               'events')
+        events = data.get_node('/hisparc/cluster_%s/station_%d' % (station.cluster().lower(), station_number), 'events')
         ext_timestamps = events.col('ext_timestamp')
     ext_timestamps.sort()
     difs = ext_timestamps[1:] - ext_timestamps[:-1]
 
-    print('Minimum: %d. Maximum: %d. n(diff < 100 us): %d' %
-           (min(difs), max(difs), len(numpy.where(difs < 1e5)[0])))
+    print('Minimum: %d. Maximum: %d. n(diff < 100 us): %d' % (min(difs), max(difs), len(numpy.where(difs < 1e5)[0])))
 
     bins = numpy.logspace(2, 11)
     plot = Plot('semilogx')

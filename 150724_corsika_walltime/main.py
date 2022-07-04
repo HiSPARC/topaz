@@ -17,10 +17,11 @@ def copy_time_logs():
     the server.
 
     """
-    cmd = ("rsync -qavz "
-           "--include '*/' --include 'time.log' --exclude '*' "
-           "adelaat@login.nikhef.nl:/data/hisparc/corsika/data/ "
-           + LOCAL_STORE)
+    cmd = (
+        "rsync -qavz "
+        "--include '*/' --include 'time.log' --exclude '*' "
+        "adelaat@login.nikhef.nl:/data/hisparc/corsika/data/ " + LOCAL_STORE
+    )
     run_cmd(cmd)
 
 
@@ -42,21 +43,21 @@ def run_cmd(cmd):
 
 
 def read_times():
-    data = loadtxt(TIME_LOG, delimiter=',',
-                   dtype={'names': ('seed1', 'seed2', 'walltime'),
-                          'formats': (uint32, uint32, float32)})
+    data = loadtxt(
+        TIME_LOG, delimiter=',', dtype={'names': ('seed1', 'seed2', 'walltime'), 'formats': (uint32, uint32, float32)}
+    )
     return data
 
 
 def plot_times():
     plot = Plot('semilogx')
     data = read_times()
-    walltimes = data['walltime'] / 60. / 60.  # To hours
-    print('Total time: %d years.' % (sum(walltimes) / 24. / 365.))
+    walltimes = data['walltime'] / 60.0 / 60.0  # To hours
+    print('Total time: %d years.' % (sum(walltimes) / 24.0 / 365.0))
     print('Longest job: %d hours.' % max(walltimes))
-    print('Shortest job: %d seconds.' % (min(walltimes) * 60. * 60.))
+    print('Shortest job: %d seconds.' % (min(walltimes) * 60.0 * 60.0))
     counts, bins = histogram(log10(walltimes), bins=300)
-    plot.histogram(counts, 10 ** bins, linestyle='fill=black')
+    plot.histogram(counts, 10**bins, linestyle='fill=black')
     plot.add_pin_at_xy(4, max(counts), 'short', location='above left', use_arrow=False)
     plot.draw_vertical_line(4, 'gray')
     plot.add_pin_at_xy(24, max(counts), 'generic', location='above left', use_arrow=False)

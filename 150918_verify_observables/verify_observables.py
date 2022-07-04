@@ -36,8 +36,7 @@ def download():
     end = datetime(2015, 9, 16, 0, 10)
     with tables.open_file(DATA_PATH, 'w') as data:
         for station in STATIONS:
-            download_data(data, '/s%d' % station, station, start, end,
-                          get_blobs=True)
+            download_data(data, '/s%d' % station, station, start, end, get_blobs=True)
 
 
 def reconstruct_observables():
@@ -61,8 +60,7 @@ def reconstruct_observables():
                 process_traces.LOW_THRESHOLD = default_low_ii
 
             pe = ProcessEvents(data, '/s%d' % station)
-            wrong = {'baseline': 0, 'std_dev': 0, 'n_peaks': 0,
-                     'pulseheights': 0, 'integrals': 0}
+            wrong = {'baseline': 0, 'std_dev': 0, 'n_peaks': 0, 'pulseheights': 0, 'integrals': 0}
             for event in pe.source:
                 traces = pe.get_traces_for_event(event)
                 to = process_traces.TraceObservables(traces)
@@ -82,22 +80,22 @@ def reconstruct_observables():
                     assert_allclose(to.std_dev, event['std_dev'], atol=0)
                 except AssertionError:
                     wrong['std_dev'] += 1
-#                     print 'std_dev:', event['event_id'], to.std_dev, event['std_dev']
+                #                     print 'std_dev:', event['event_id'], to.std_dev, event['std_dev']
                 try:
                     assert_allclose(to.n_peaks, event['n_peaks'], atol=0)
                 except AssertionError:
                     wrong['n_peaks'] += 1
-#                     print 'n_peaks:', event['event_id'], to.n_peaks, event['n_peaks']
+                #                     print 'n_peaks:', event['event_id'], to.n_peaks, event['n_peaks']
                 try:
                     assert_allclose(to.pulseheights, event['pulseheights'], atol=0)
                 except AssertionError:
                     wrong['pulseheights'] += 1
-#                     print 'pulseheights:', event['event_id'], to.pulseheights, event['pulseheights']
+                #                     print 'pulseheights:', event['event_id'], to.pulseheights, event['pulseheights']
                 try:
                     assert_allclose(to.integrals, event['integrals'], atol=0)
                 except AssertionError:
                     wrong['integrals'] += 1
-#                     print 'integrals:', event['event_id'], to.integrals, event['integrals']
+            #                     print 'integrals:', event['event_id'], to.integrals, event['integrals']
             print('station:', station, wrong, 'total:', pe.source.nrows)
 
 

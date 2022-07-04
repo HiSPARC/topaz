@@ -34,7 +34,7 @@ def plot_traces_with_many_peaks(events, station, min_peaks=10):
         plot.set_xlabel(r't [\si{n\second}]')
         plot.set_ylabel('Signal strength')
         plot.set_xlimits(min=0, max=2.5 * len(traces[0]))
-        plot.set_ylimits(min=0, max=2 ** 12)
+        plot.set_ylimits(min=0, max=2**12)
         plot.draw_horizontal_line(253, linestyle='gray')
         plot.draw_horizontal_line(323, linestyle='gray')
         plot.save_as_pdf('traces_%d_%d' % (station, event['ext_timestamp']))
@@ -43,7 +43,6 @@ def plot_traces_with_many_peaks(events, station, min_peaks=10):
 if __name__ == "__main__":
     with tables.open_file('/Users/arne/Datastore/esd/2015/4/2015_4_27.h5', 'r') as data:
         station = 504
-        events = data.get_node('/hisparc/cluster_amsterdam/station_%d' % station,
-                               'events')
+        events = data.get_node('/hisparc/cluster_amsterdam/station_%d' % station, 'events')
         plot_n_peaks_histogram(events, station)
         plot_traces_with_many_peaks(events, station)

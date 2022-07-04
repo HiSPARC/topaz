@@ -15,8 +15,7 @@ def load_dataset():
 
 
 def combine_delta_data():
-    delta_data = genfromtxt('data/time_delta.tsv', delimiter='\t', dtype=None,
-                            names=['ext_timestamp', 'time_delta'])
+    delta_data = genfromtxt('data/time_delta.tsv', delimiter='\t', dtype=None, names=['ext_timestamp', 'time_delta'])
     delta_data = {ets: td for ets, td in delta_data}
 
     tm = []
@@ -44,7 +43,7 @@ def combine_delta_data():
     td = td.compress(filter)
     te = te.compress(filter)
 
-    bins = arange(-10.25, 10.26, .5)
+    bins = arange(-10.25, 10.26, 0.5)
     mplot = MultiPlot(3, 2, width=r'.4\linewidth', height=r'.3\linewidth')
     mplot.show_xticklabels_for_all([(2, 0), (2, 1)])
     mplot.show_yticklabels_for_all([(0, 0), (1, 1), (2, 0)])
@@ -55,10 +54,9 @@ def combine_delta_data():
 
     plot = mplot.get_subplot_at(0, 0)
     counts, bins = histogram(tm - ts, bins=bins)
-    popt = fit_timing_offset(counts / 3., bins)
-    plot.set_label(r'$t_{M} - t_{S}$, $%.1f\pm%.1f$\si{\nano\second}, scaled' %
-                   (popt[1], popt[2]))
-    plot.histogram(counts / 3., bins)
+    popt = fit_timing_offset(counts / 3.0, bins)
+    plot.set_label(r'$t_{M} - t_{S}$, $%.1f\pm%.1f$\si{\nano\second}, scaled' % (popt[1], popt[2]))
+    plot.histogram(counts / 3.0, bins)
     plot.plot(bins, gauss(bins, *popt), mark=None, linestyle='gray')
 
     plot = mplot.get_subplot_at(1, 0)
@@ -68,8 +66,7 @@ def combine_delta_data():
     plot = mplot.get_subplot_at(2, 0)
     counts, bins = histogram(tm - (ts + td), bins=bins)
     popt = fit_timing_offset(counts, bins)
-    plot.set_label(r'$t_{M} - (t_{S} + t_{\delta})$, $%.1f\pm%.1f$\si{\nano\second}' %
-                   (popt[1], popt[2]))
+    plot.set_label(r'$t_{M} - (t_{S} + t_{\delta})$, $%.1f\pm%.1f$\si{\nano\second}' % (popt[1], popt[2]))
     plot.histogram(counts, bins)
     plot.plot(bins, gauss(bins, *popt), mark=None, linestyle='gray')
 
@@ -102,8 +99,7 @@ def fit_timing_offset(counts, bins):
     x = (bins[:-1] + bins[1:]) / 2
     filter = counts > 0
     try:
-        popt, pcov = curve_fit(gauss, x.compress(filter), y.compress(filter),
-                               p0=(sum(counts), 0., 2.5))
+        popt, pcov = curve_fit(gauss, x.compress(filter), y.compress(filter), p0=(sum(counts), 0.0, 2.5))
     except RuntimeError:
         return (nan, nan, nan)
     return popt

@@ -169,13 +169,13 @@ class Rect:
     def contains(self, pt):
         """Return true if a point is inside the rectangle."""
         x, y = pt.as_tuple()
-        return (self.left <= x <= self.right and
-                self.top <= y <= self.bottom)
+        return self.left <= x <= self.right and self.top <= y <= self.bottom
 
     def overlaps(self, other):
         """Return true if a rectangle overlaps this rectangle."""
-        return (self.right > other.left and self.left < other.right and
-                self.top < other.bottom and self.bottom > other.top)
+        return (
+            self.right > other.left and self.left < other.right and self.top < other.bottom and self.bottom > other.top
+        )
 
     def top_left(self):
         """Return the top-left corner as a Point."""
@@ -196,10 +196,9 @@ class Rect:
         return Rect(p1, p2)
 
     def __str__(self):
-        return "<Rect ({},{})-({},{})>".format(self.left, self.top,
-                                           self.right, self.bottom)
+        return "<Rect ({},{})-({},{})>".format(self.left, self.top, self.right, self.bottom)
 
     def __repr__(self):
-        return "{}({!r}, {!r})".format(self.__class__.__name__,
-                               Point(self.left, self.top),
-                               Point(self.right, self.bottom))
+        return "{}({!r}, {!r})".format(
+            self.__class__.__name__, Point(self.left, self.top), Point(self.right, self.bottom)
+        )

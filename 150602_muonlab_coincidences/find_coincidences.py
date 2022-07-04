@@ -3,9 +3,11 @@ import tables
 from sapphire import CoincidencesESD, HiSPARCStations
 
 STATIONS = [501, 510, 99]
-EVENTDATA_PATHS = ['/Users/arne/Datastore/muonlab_test.h5',
-                   '/Users/arne/Datastore/muonlab_test2.h5',
-                   '/Users/arne/Datastore/muonlab_test3.h5']
+EVENTDATA_PATHS = [
+    '/Users/arne/Datastore/muonlab_test.h5',
+    '/Users/arne/Datastore/muonlab_test2.h5',
+    '/Users/arne/Datastore/muonlab_test3.h5',
+]
 
 
 def analyse_coincidences(data):
@@ -14,8 +16,7 @@ def analyse_coincidences(data):
     station_groups = ['/station_%d' % number for number in STATIONS]
     cluster = get_cluster()
 
-    coin = CoincidencesESD(data, '/coincidences', station_groups,
-                           overwrite=True)
+    coin = CoincidencesESD(data, '/coincidences', station_groups, overwrite=True)
     coin.search_coincidences(window=2000)
     coin.store_coincidences(cluster)
 

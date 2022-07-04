@@ -14,9 +14,7 @@ PLOT_PATH = 'plots/'
 
 
 def print_delta_results(ids=None):
-    """ Prints the average delta, the standard deviation and length in days
-
-    """
+    """Prints the average delta, the standard deviation and length in days"""
     if not ids:
         ids = get_tests(part='id')
 
@@ -25,16 +23,20 @@ def print_delta_results(ids=None):
 
     for id in ids:
         ext_timestamps, deltas = get(id)
-        print("    % 3d  %s  % 7.2f  % 6.2f  % 4.2f" % (
-            id, get_tests(id=id, part='group')[0].ljust(13),
-            round(np.average(deltas), 2), round(np.std(deltas), 2),
-            (max(ext_timestamps) - min(ext_timestamps)) / 864e11))
+        print(
+            "    % 3d  %s  % 7.2f  % 6.2f  % 4.2f"
+            % (
+                id,
+                get_tests(id=id, part='group')[0].ljust(13),
+                round(np.average(deltas), 2),
+                round(np.std(deltas), 2),
+                (max(ext_timestamps) - min(ext_timestamps)) / 864e11,
+            )
+        )
 
 
 def print_pulse_frequency(ids=None):
-    """ Prints the average delta, the standard deviation and length in days
-
-    """
+    """Prints the average delta, the standard deviation and length in days"""
     if not ids:
         ids = get_tests(part='id')
 
@@ -45,16 +47,21 @@ def print_pulse_frequency(ids=None):
     for id in ids:
         ts, deltas = get(id)
         intervals = np.array(ts[1:]) - np.array(ts[:-1])
-        print("    % 3d  %s  % 12d  % 12d  % 12d  % 12d" % (
-            id, get_tests(id=id, part='group')[0].ljust(13),
-            round(np.average(intervals)), round(np.std(intervals)),
-            max(intervals), min(intervals)))
+        print(
+            "    % 3d  %s  % 12d  % 12d  % 12d  % 12d"
+            % (
+                id,
+                get_tests(id=id, part='group')[0].ljust(13),
+                round(np.average(intervals)),
+                round(np.std(intervals)),
+                max(intervals),
+                min(intervals),
+            )
+        )
 
 
 def plot_delta_test(ids, **kwargs):
-    """ Plot the delta with std
-
-    """
+    """Plot the delta with std"""
     if type(ids) is int:
         ids = [ids]
 
@@ -62,7 +69,7 @@ def plot_delta_test(ids, **kwargs):
     low = -200
     high = 200
     bin_size = 1
-    bins = np.arange(low - .5 * bin_size, high + bin_size, bin_size)
+    bins = np.arange(low - 0.5 * bin_size, high + bin_size, bin_size)
 
     # Begin Figure
     plot = Plot()
@@ -75,7 +82,7 @@ def plot_delta_test(ids, **kwargs):
     plot.set_xlabel(r'$\Delta$ t (swap - reference) [ns]')
     plot.set_ylabel(r'p')
     plot.set_xlimits(low, high)
-    plot.set_ylimits(0., .15)
+    plot.set_ylimits(0.0, 0.15)
 
     # Save Figure
     if len(ids) == 1:
@@ -88,9 +95,7 @@ def plot_delta_test(ids, **kwargs):
 
 
 def plot_delta_histogram(ids, **kwargs):
-    """ Plot a histogram of the deltas
-
-    """
+    """Plot a histogram of the deltas"""
     if type(ids) is int:
         ids = [ids]
 
@@ -103,10 +108,10 @@ def plot_delta_histogram(ids, **kwargs):
         ext_timestamps, deltas = get(id)
         low = floor(min(deltas))
         high = ceil(max(deltas))
-        bins = np.arange(low - .5 * bin_size, high + bin_size, bin_size)
+        bins = np.arange(low - 0.5 * bin_size, high + bin_size, bin_size)
         n, bins = np.histogram(deltas, bins)
         bin_centers = (bins[:-1] + bins[1:]) / 2
-        popt, pcov = curve_fit(gauss, bin_centers, n, p0=[.15, np.mean(deltas), np.std(deltas)])
+        popt, pcov = curve_fit(gauss, bin_centers, n, p0=[0.15, np.mean(deltas), np.std(deltas)])
         plot.histogram(n, bins)
         plot.plot(bin_centers, gauss(bin_centers, *popt), mark=None, linestyle='gray')
     if list(kwargs.keys()):
@@ -115,7 +120,7 @@ def plot_delta_histogram(ids, **kwargs):
     plot.set_xlabel(r'Time difference [ns]')
     plot.set_ylabel(r'Counts')
     plot.set_xlimits(low, high)
-    plot.set_ylimits(min=0.)
+    plot.set_ylimits(min=0.0)
 
     # Save Figure
     if len(ids) == 1:
@@ -128,9 +133,7 @@ def plot_delta_histogram(ids, **kwargs):
 
 
 def plot_ns_histogram(ids, **kwargs):
-    """ Plot a histogram of the nanosecond part of the ext_timestamps
-
-    """
+    """Plot a histogram of the nanosecond part of the ext_timestamps"""
     if type(ids) is int:
         ids = [ids]
 
@@ -153,7 +156,7 @@ def plot_ns_histogram(ids, **kwargs):
     plot.set_xlabel(r'nanosecond part of timestamp [ns]')
     plot.set_ylabel(r'p')
     plot.set_xlimits(0, 1e9)
-    plot.set_ylimits(.95e-9, 1.05e-9)
+    plot.set_ylimits(0.95e-9, 1.05e-9)
 
     # Save Figure
     if len(ids) == 1:
@@ -169,9 +172,7 @@ def plot_ns_histogram(ids, **kwargs):
 
 
 def plot_delta_time(ids, **kwargs):
-    """ Plot delta versus the timestamps
-
-    """
+    """Plot delta versus the timestamps"""
     if type(ids) is int:
         ids = [ids]
 
@@ -207,9 +208,7 @@ def plot_delta_time(ids, **kwargs):
 
 
 def plot_multi_delta_time(ids, **kwargs):
-    """ Plot delta versus the timestamps
-
-    """
+    """Plot delta versus the timestamps"""
     plot = MultiPlot(1, len(ids))
     for splot, id in zip(plot.subplots, ids):
         ext_timestamps, deltas = get(id)
@@ -219,9 +218,9 @@ def plot_multi_delta_time(ids, **kwargs):
             deltas = deltas[:idx]
             daystamps = daystamps[:idx]
         splot.plot(daystamps[::101], deltas[::101], mark=None, linestyle='very thin')
-#         splot.scatter(daystamps[::400], deltas[::400], mark='*',
-#                       markstyle="mark size=.1pt")
-        splot.set_axis_options(r'width=%.2f\textwidth' % (.9 / len(ids)))
+        #         splot.scatter(daystamps[::400], deltas[::400], mark='*',
+        #                       markstyle="mark size=.1pt")
+        splot.set_axis_options(r'width=%.2f\textwidth' % (0.9 / len(ids)))
 
         splot.set_xlimits(0, max(daystamps))
     plot.show_xticklabels_for_all()
@@ -238,7 +237,7 @@ def plot_multi_delta_time(ids, **kwargs):
 
 def determine_stats(deltas):
     if len(deltas):
-        low = np.percentile(deltas, .5)  # min(deltas)
+        low = np.percentile(deltas, 0.5)  # min(deltas)
         high = np.percentile(deltas, 99.5)  # max(deltas)
         avg = np.average(deltas)
         std = np.std(deltas)
@@ -261,13 +260,12 @@ def plot_box(ids, **kwargs):
 
     low, high, avg, std = list(zip(*data))
 
-    plot.plot(x, avg, yerr=std, mark='o', markstyle="mark size=1pt",
-              linestyle=None)
+    plot.plot(x, avg, yerr=std, mark='o', markstyle="mark size=1pt", linestyle=None)
     plot.scatter(x, low, mark='x', markstyle="mark size=.5pt")
     plot.scatter(x, high, mark='x', markstyle="mark size=.5pt")
 
-#     if kwargs.keys():
-#         plot.set_title('Tijdtest offsets ' + kwargs[kwargs.keys()[0]])
+    #     if kwargs.keys():
+    #         plot.set_title('Tijdtest offsets ' + kwargs[kwargs.keys()[0]])
     plot.set_xlabel(r'ids')
     plot.set_ylabel(r'$\Delta$ t (swap - reference) [\si{\nano\second}]')
     plot.set_ylimits(-80, 80)
@@ -293,12 +291,10 @@ def plot_multi_box(ids1, ids2, **kwargs):
         data = [determine_stats([i for i in get(id)[1] if abs(i) < 100]) for id in ids]
         low, high, avg, std = list(zip(*data))
         x = list(range(len(ids)))
-        splot.plot(x, avg, yerr=std, mark='o', markstyle="mark size=1pt",
-                   linestyle=None)
+        splot.plot(x, avg, yerr=std, mark='o', markstyle="mark size=1pt", linestyle=None)
         splot.scatter(x, low, mark='x', markstyle="mark size=.75pt")
         splot.scatter(x, high, mark='x', markstyle="mark size=.75pt")
-        splot.set_axis_options(r'height=.67\textwidth, width=%.2f\textwidth' %
-                               (len(ids) * .67 / li))
+        splot.set_axis_options(r'height=.67\textwidth, width=%.2f\textwidth' % (len(ids) * 0.67 / li))
         splot.set_xlimits(-0.5, len(ids) - 0.5)
         splot.set_xticks(x)
 
@@ -328,7 +324,7 @@ def plot_offset_distribution(ids, **kwargs):
     plot.histogram(n, bins)
 
     bin_centers = (bins[:-1] + bins[1:]) / 2
-    popt, pcov = curve_fit(gauss, bin_centers, n, p0=[1., np.mean(offsets), np.std(offsets)])
+    popt, pcov = curve_fit(gauss, bin_centers, n, p0=[1.0, np.mean(offsets), np.std(offsets)])
     plot.plot(bin_centers, gauss(bin_centers, *popt), mark=None, linestyle='gray')
 
     if list(kwargs.keys()):

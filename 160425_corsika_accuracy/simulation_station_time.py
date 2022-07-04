@@ -45,17 +45,17 @@ class ModSim(FixedCoreDistanceSimulation):
     @classmethod
     def simulate_detector_offsets(cls, n_detectors):
 
-        return [0.] * n_detectors
+        return [0.0] * n_detectors
 
     @classmethod
     def simulate_detector_offset(cls):
 
-        return 0.
+        return 0.0
 
     @classmethod
     def simulate_station_offset(cls):
 
-        return 0.
+        return 0.0
 
     @classmethod
     def simulate_detector_mips(cls, n, theta):
@@ -67,10 +67,15 @@ def do_simulations(data, seeds):
     cluster = SingleDiamondStation()
     distances = around(logspace(1.3, 2.7, 10))
     for distance in distances:
-        sim = ModSim(corsikafile_path=CORSIKA_DATA % seeds,
-                     max_core_distance=distance, cluster=cluster,
-                     data=data, N=5000, progress=False,
-                     output_path=make_sim_path(seeds, distance))
+        sim = ModSim(
+            corsikafile_path=CORSIKA_DATA % seeds,
+            max_core_distance=distance,
+            cluster=cluster,
+            data=data,
+            N=5000,
+            progress=False,
+            output_path=make_sim_path(seeds, distance),
+        )
         sim.run()
 
 
@@ -83,18 +88,28 @@ def get_info(seeds):
 
 def get_info_string(seeds):
     info = get_info(seeds)
-    return ('%s_E_%.1f_Z_%.1f_I_%d_%s' %
-            (name(info['particle_id']), log10(info['energy']),
-             degrees(info['zenith']), info['first_interaction_altitude'] / 1e3,
-             seeds))
+    return '%s_E_%.1f_Z_%.1f_I_%d_%s' % (
+        name(info['particle_id']),
+        log10(info['energy']),
+        degrees(info['zenith']),
+        info['first_interaction_altitude'] / 1e3,
+        seeds,
+    )
 
 
 def make_sim_path(seeds, distance):
     info = get_info(seeds)
-    return ('/%s/e%.1f/z%.1f/i%d/s%s/r%d' %
-            (name(info['particle_id']), log10(info['energy']),
-             degrees(info['zenith']), info['first_interaction_altitude'] / 1e3,
-             seeds, distance)).replace('.', '_')
+    return (
+        '/%s/e%.1f/z%.1f/i%d/s%s/r%d'
+        % (
+            name(info['particle_id']),
+            log10(info['energy']),
+            degrees(info['zenith']),
+            info['first_interaction_altitude'] / 1e3,
+            seeds,
+            distance,
+        )
+    ).replace('.', '_')
 
 
 def plot_arrival_time_distribution_v_distance(data, seeds):
@@ -103,16 +118,13 @@ def plot_arrival_time_distribution_v_distance(data, seeds):
     cor_t = None
 
     for group in data.walk_groups('/'):
-        if (seeds not in group._v_pathname or
-                group._v_name != 'coincidences'):
+        if seeds not in group._v_pathname or group._v_name != 'coincidences':
             continue
         coincidences = group.coincidences
         events = data.get_node(group.s_index[0]).events
 
-        r = next(int(y[1:]) for y in group._v_pathname.split('/')
-                 if y.startswith('r'))
-        seeds = next(y[1:] for y in group._v_pathname.split('/')
-                     if y.startswith('s'))
+        r = next(int(y[1:]) for y in group._v_pathname.split('/') if y.startswith('r'))
+        seeds = next(y[1:] for y in group._v_pathname.split('/') if y.startswith('s'))
 
         if cor_t is None:
             with tables.open_file(CORSIKA_DATA % seeds) as data:
@@ -120,13 +132,15 @@ def plot_arrival_time_distribution_v_distance(data, seeds):
                 query = '(x < 10) & (x > -10) & (r < 10)'
                 cor_t = gp.read_where(query, field='t').min()
 
-#         i = get_info(seeds)['first_interaction_altitude']
-#         cor_t = i / 0.299792458
+        #         i = get_info(seeds)['first_interaction_altitude']
+        #         cor_t = i / 0.299792458
 
         # Round ts to seconds because it is the ts for first event, not the shower
-        t = [station_arrival_time(event, int(cets['ext_timestamp'] / int(1e9)) * int(1e9),
-                                  detector_ids=[0, 1, 2, 3]) - cor_t
-             for event, cets in zip(events[:], coincidences.read_where('N == 1'))]
+        t = [
+            station_arrival_time(event, int(cets['ext_timestamp'] / int(1e9)) * int(1e9), detector_ids=[0, 1, 2, 3])
+            - cor_t
+            for event, cets in zip(events[:], coincidences.read_where('N == 1'))
+        ]
 
         if not len(t) or len(t) < 10:
             continue
@@ -141,8 +155,7 @@ def plot_arrival_time_distribution_v_distance(data, seeds):
 
     results = sorted(results)
 
-    (core_distances, arrival_times_low, arrival_times, arrival_times_high,
-     efficiency) = list(zip(*results))
+    (core_distances, arrival_times_low, arrival_times, arrival_times_high, efficiency) = list(zip(*results))
 
     causal = causal_front(i, core_distances)
 
@@ -152,8 +165,7 @@ def plot_arrival_time_distribution_v_distance(data, seeds):
     plot_shower_profile(seeds, splot, core_distances, cor_t)
     splot.plot(core_distances, causal, mark=None, linestyle='purple, dashed')
     splot.plot(core_distances, arrival_times, mark='*')
-    splot.shade_region(core_distances, arrival_times_low, arrival_times_high,
-                       color='blue, semitransparent')
+    splot.shade_region(core_distances, arrival_times_low, arrival_times_high, color='blue, semitransparent')
     splot.set_ylabel(r'Arrival time [\si{\ns}]')
 
     splot = plot.get_subplot_at(1, 0)
@@ -167,21 +179,22 @@ def plot_arrival_time_distribution_v_distance(data, seeds):
     plot.set_xlabel(r'Core distance [\si{\meter}]')
     plot.show_xticklabels(1, 0)
     plot.show_yticklabels_for_all()
-    plot.save_as_document('/data/hisparc/adelaat/corsika_accuracy/plots/%s.tex' %
-                          get_info_string(seeds))
+    plot.save_as_document('/data/hisparc/adelaat/corsika_accuracy/plots/%s.tex' % get_info_string(seeds))
 
 
 def causal_front(first_interaction_altitude, x):
     r = first_interaction_altitude
     x = array(x)
-    return r - sqrt(r ** 2 - x ** 2)
+    return r - sqrt(r**2 - x**2)
 
 
 def plot_shower_profile(seeds, splot, core_distances, cor_t):
 
-    query = ('((particle_id == 3) | (particle_id == 4) |'
-             ' (particle_id == 5) | (particle_id == 6)) & '
-             '(abs(r - core_distance) < 10)')
+    query = (
+        '((particle_id == 3) | (particle_id == 4) |'
+        ' (particle_id == 5) | (particle_id == 6)) & '
+        '(abs(r - core_distance) < 10)'
+    )
 
     with tables.open_file(CORSIKA_DATA % seeds) as data:
         gp = data.root.groundparticles
@@ -189,7 +202,7 @@ def plot_shower_profile(seeds, splot, core_distances, cor_t):
         t = []
 
         for core_distance in core_distances:
-            lepton_t = (gp.read_where(query, field='t') - cor_t)
+            lepton_t = gp.read_where(query, field='t') - cor_t
             quantiles = [25, 50, 75]
             t.append(percentile(lepton_t, q=quantiles))
 
@@ -206,8 +219,8 @@ if __name__ == "__main__":
         OVERVIEW = '/data/hisparc/corsika/corsika_overview.h5'
         seeds = sys.argv[1]
         filters = tables.Filters(complevel=1)
-#         with tables.open_file(RESULT_SEED % seeds, 'a', filters=filters) as data:
-#             do_simulations(data, seeds)
+        #         with tables.open_file(RESULT_SEED % seeds, 'a', filters=filters) as data:
+        #             do_simulations(data, seeds)
         with tables.open_file(RESULT_SEED % seeds, 'r') as data:
             plot_arrival_time_distribution_v_distance(data, seeds)
     elif len(sys.argv) > 2:

@@ -12,7 +12,6 @@ Uses stations 501 through 511 (except 507).
 """
 
 
-
 import os
 
 import tables
@@ -40,15 +39,20 @@ def perform_simulations(data):
 def reconstruct_simulations(data):
 
     # Reconstruct with simulated offsets
-    rec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
-                                     overwrite=True, progress=True,
-                                     destination='recs', force_stale=True)
+    rec = ReconstructESDCoincidences(
+        data, coincidences_group='/coincidences', overwrite=True, progress=True, destination='recs', force_stale=True
+    )
     rec.reconstruct_and_store()
 
     # Reconstruct without any offset
-    rec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
-                                     overwrite=True, progress=True,
-                                     destination='recs_no_offset', force_stale=True)
+    rec = ReconstructESDCoincidences(
+        data,
+        coincidences_group='/coincidences',
+        overwrite=True,
+        progress=True,
+        destination='recs_no_offset',
+        force_stale=True,
+    )
     rec.prepare_output()
     rec.reconstruct_directions()
     rec.store_reconstructions()
@@ -57,28 +61,43 @@ def reconstruct_simulations(data):
     station_numbers = [501, 503, 506]
 
     # Reconstruct using simulated offsets
-    rec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
-                                     overwrite=True, progress=True,
-                                     destination='recs_sub_offset', force_stale=True)
+    rec = ReconstructESDCoincidences(
+        data,
+        coincidences_group='/coincidences',
+        overwrite=True,
+        progress=True,
+        destination='recs_sub_offset',
+        force_stale=True,
+    )
     rec.reconstruct_and_store(station_numbers)
 
     # Reconstruct without any offset
-    rec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
-                                     overwrite=True, progress=True,
-                                     destination='recs_sub_no_offset', force_stale=True)
+    rec = ReconstructESDCoincidences(
+        data,
+        coincidences_group='/coincidences',
+        overwrite=True,
+        progress=True,
+        destination='recs_sub_no_offset',
+        force_stale=True,
+    )
     rec.prepare_output()
     rec.reconstruct_directions(station_numbers)
     rec.store_reconstructions()
 
     # Reconstruct using simulated offsets, and add offset for altitude (this is wrong)
-    rec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
-                                     overwrite=True, progress=True,
-                                     destination='recs_sub_offset_alt', force_stale=True)
+    rec = ReconstructESDCoincidences(
+        data,
+        coincidences_group='/coincidences',
+        overwrite=True,
+        progress=True,
+        destination='recs_sub_offset_alt',
+        force_stale=True,
+    )
     rec.prepare_output()
-    rec.offsets = {station.number: [station.gps_offset + d.offset +
-                                    d.get_coordinates()[2] / c
-                                    for d in station.detectors]
-                   for station in arec.cluster.stations}
+    rec.offsets = {
+        station.number: [station.gps_offset + d.offset + d.get_coordinates()[2] / c for d in station.detectors]
+        for station in arec.cluster.stations
+    }
     rec.reconstruct_directions(station_numbers)
     rec.store_reconstructions()
 
@@ -93,7 +112,11 @@ def plot_results(data):
 
     # Using subset of stations
     plot = PolarPlot(use_radians=True)
-    for rec_group, linestyle in [('recs_sub_offset', ''), ('recs_sub_no_offset', 'red'), ('recs_sub_offset_alt', 'green')]:
+    for rec_group, linestyle in [
+        ('recs_sub_offset', ''),
+        ('recs_sub_no_offset', 'red'),
+        ('recs_sub_offset_alt', 'green'),
+    ]:
         recs = data.get_node('/coincidences', rec_group)
         azimuth = recs.col('azimuth')
         plot_azimuths(plot, azimuth, linestyle)

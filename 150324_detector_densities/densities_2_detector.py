@@ -11,8 +11,7 @@ EVENTDATA_PATH = '/Users/arne/Datastore/501_510/e_501_510_141101_150201.h5'
 
 
 def get_data(data):
-    download_data(data, '/s1001', 1001,
-                  datetime(2015, 3, 1), datetime(2015, 3, 20))
+    download_data(data, '/s1001', 1001, datetime(2015, 3, 1), datetime(2015, 3, 20))
 
 
 def plot_densities(data):
@@ -31,11 +30,8 @@ def plot_densities(data):
         plot = Plot(width=r'.25\linewidth', height=r'.25\linewidth')
         i = 0
         j = 1
-        ncounts, x, y = np.histogram2d(n[i].compress(filter),
-                                       n[j].compress(filter),
-                                       bins=bins)
-        plot.histogram2d(ncounts, x, y, type='reverse_bw',
-                         bitmap=True)
+        ncounts, x, y = np.histogram2d(n[i].compress(filter), n[j].compress(filter), bins=bins)
+        plot.histogram2d(ncounts, x, y, type='reverse_bw', bitmap=True)
         plot.set_xlimits(min=0, max=n_max)
         plot.set_ylimits(min=0, max=n_max)
         plot.set_xlabel('Number of particles in detector 1')

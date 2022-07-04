@@ -31,12 +31,16 @@ def discharges(datafile, type=4):
     discharge_table = datafile.get_node('/discharge1')
     cg_idx = np.where(discharge_table.event_type[:] == type)
 
-    discharges = ((get_gps_timestamp(datafile, discharge_table.time_offset[idx])[0],
-                   get_gps_timestamp(datafile, discharge_table.time_offset[idx])[1],
-                   '%.6f' % discharge_table.latitude[idx],
-                   '%.6f' % discharge_table.longitude[idx],
-                   int(discharge_table.current[idx]))
-                  for idx in cg_idx[0])
+    discharges = (
+        (
+            get_gps_timestamp(datafile, discharge_table.time_offset[idx])[0],
+            get_gps_timestamp(datafile, discharge_table.time_offset[idx])[1],
+            '%.6f' % discharge_table.latitude[idx],
+            '%.6f' % discharge_table.longitude[idx],
+            int(discharge_table.current[idx]),
+        )
+        for idx in cg_idx[0]
+    )
 
     return discharges
 
@@ -82,8 +86,7 @@ def data_to_csv():
         print(year)
         with open(LGT_PATH + 'robert_cc_%d.tsv' % year, 'w') as output:
             csvwriter = csv.writer(output, delimiter='\t')
-            csvwriter.writerow(['timestamp', 'nanoseconds', 'latitude',
-                                'longitude', 'current'])
+            csvwriter.writerow(['timestamp', 'nanoseconds', 'latitude', 'longitude', 'current'])
 
             for d in daterange(date(year, 1, 1), date(year + 1, 1, 1)):
                 try:

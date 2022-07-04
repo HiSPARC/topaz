@@ -21,7 +21,7 @@ class DeltaVal(tables.IsDescription):
 
 
 def calculate(data, id):
-    """ Calculate the deltas for a test
+    """Calculate the deltas for a test
 
     The deltas are calculated by subtracting the timestamp of the reference
     from the timestamp of the swap. This means that in case of positive delta
@@ -59,22 +59,17 @@ def calculate(data, id):
 
 
 def store(id):
-    """ Stores the calculated deltas and timestamps in storage
-
-    """
+    """Stores the calculated deltas and timestamps in storage"""
     warnings.simplefilter('ignore', tables.NaturalNameWarning)
 
     print('tt_delta: Storing deltas for test %s' % id)
-    with tables.open_file(DATA_PATH, 'r') as data_file, \
-            tables.open_file(DELTA_DATA, 'a') as delta_file:
-        table = delta_file.create_table('/t%d' % id, 'delta', DeltaVal,
-                                        createparents=True)
+    with tables.open_file(DATA_PATH, 'r') as data_file, tables.open_file(DELTA_DATA, 'a') as delta_file:
+        table = delta_file.create_table('/t%d' % id, 'delta', DeltaVal, createparents=True)
         ext_timestamps, deltas = calculate(data_file, id)
         timestamps = timestamps_from_ext_timestamp(ext_timestamps)
         nanoseconds = nanoseconds_from_ext_timestamp(ext_timestamps)
         delta_row = table.row
-        for ext_ts, ts, ns, delta in zip(ext_timestamps, timestamps,
-                                                    nanoseconds, deltas):
+        for ext_ts, ts, ns, delta in zip(ext_timestamps, timestamps, nanoseconds, deltas):
             delta_row['ext_timestamp'] = ext_ts
             delta_row['timestamp'] = ts
             delta_row['nanoseconds'] = ns
@@ -86,9 +81,7 @@ def store(id):
 
 
 def append_new(id=None):
-    """ Add new deltas to the storage
-
-    """
+    """Add new deltas to the storage"""
     added = "tt_delta: No new deltas to be added"
     with tables.open_file(DELTA_DATA, 'a') as delta_file:
         if id:
@@ -109,9 +102,7 @@ def append_new(id=None):
 
 
 def store_all():
-    """" Calculate and store the deltas for all tests
-
-    """
+    """ " Calculate and store the deltas for all tests"""
     with tables.open_file(DELTA_DATA, 'w'):
         pass
     append_new()
@@ -119,9 +110,7 @@ def store_all():
 
 
 def get(id, path=None):
-    """ Get ext_timestamps and deltas from the storage
-
-    """
+    """Get ext_timestamps and deltas from the storage"""
     if not path:
         path = DELTA_DATA
 
@@ -142,9 +131,7 @@ def get(id, path=None):
 
 
 def get_ids():
-    """ Get list of all test ids in the data file
-
-    """
+    """Get list of all test ids in the data file"""
     with tables.open_file(DELTA_DATA, 'r') as delta_file:
         ids = [int(node._v_name[1:]) for node in delta_file.list_nodes('/')]
     ids.sort()

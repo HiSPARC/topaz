@@ -14,8 +14,7 @@ def reconstruct_data(data):
 
 
 def reconstruct_data_using_detectors(data):
-    rec_d = ReconstructESDCoincidences(data, overwrite=True,
-                                       destination='reconstructions_detectors')
+    rec_d = ReconstructESDCoincidences(data, overwrite=True, destination='reconstructions_detectors')
     rec_d.direction = CoincidenceDirectionReconstructionDetectors(rec_d.cluster)
     rec_d.reconstruct_and_store()
 

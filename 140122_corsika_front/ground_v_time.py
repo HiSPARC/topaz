@@ -9,9 +9,8 @@ SEED_NUMBERS = '231360773_763934896'
 DATA_PATH = '/Users/arne/Datastore/CORSIKA'
 DATA_FILE = os.path.join(DATA_PATH, SEED_NUMBERS, 'corsika.h5')
 
-QUERY_DETECTABLE = ('((particle_id == 2) | (particle_id == 3) | '
-                    ' (particle_id == 5) | (particle_id == 6))')
-QUERY_TIMESLICE = ('(t >= %s) & (t < %s)')
+QUERY_DETECTABLE = '((particle_id == 2) | (particle_id == 3) | ' ' (particle_id == 5) | (particle_id == 6))'
+QUERY_TIMESLICE = '(t >= %s) & (t < %s)'
 
 
 def plot_time_slices(data):
@@ -29,11 +28,17 @@ def plot_time_slices(data):
         plt.title('Energy: {:g} eV, Zenith: {:.1f}'.format(header.energy, header.theta_max))
         plt.xlabel('x (m)')
         plt.ylabel('y (m)')
-        plt.annotate('%d < t < %d ns' % (t - times.min(), t - times.min() + step),
-                     (0.05, 0.8), xycoords='axes fraction')
+        plt.annotate(
+            '%d < t < %d ns' % (t - times.min(), t - times.min() + step), (0.05, 0.8), xycoords='axes fraction'
+        )
         plt.axis('equal')
-        plt.hist2d(detectable_x, detectable_y, bins=list(range(-4000, 4000, 50)),
-                   cmap='binary', norm=LogNorm(vmin=0.2, vmax=5000, clip=True))
+        plt.hist2d(
+            detectable_x,
+            detectable_y,
+            bins=list(range(-4000, 4000, 50)),
+            cmap='binary',
+            norm=LogNorm(vmin=0.2, vmax=5000, clip=True),
+        )
         plt.colorbar()
         plt.show()
 

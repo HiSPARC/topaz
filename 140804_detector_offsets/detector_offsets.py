@@ -24,15 +24,12 @@ DATA_PATH = '/Users/arne/Datastore/esd/'
 BIN_WIDTH = 1.25
 
 O = (0, 0, 0)
-STATION = Station(None, 0, O,
-                  detectors=[(O, 'UD'), (O, 'UD'), (O, 'LR'), (O, 'LR')])
+STATION = Station(None, 0, O, detectors=[(O, 'UD'), (O, 'UD'), (O, 'LR'), (O, 'LR')])
 
 
 def determine_offset(data, s_path):
     events = data.get_node(s_path, 'events')
-    offsets = [offset
-               for offset in determine_detector_timing_offsets(events, STATION)
-               if offset != 0.0]
+    offsets = [offset for offset in determine_detector_timing_offsets(events, STATION) if offset != 0.0]
     return offsets
 
 
@@ -47,7 +44,7 @@ def fit_offsets(offsets):
     bins = arange(-50 + BIN_WIDTH / 2, 50, BIN_WIDTH)
     y, bins = histogram(offsets, bins=bins)
     x = (bins[:-1] + bins[1:]) / 2
-    popt, pcov = curve_fit(gauss, x, y, p0=(len(offsets), 0., 2.5))
+    popt, pcov = curve_fit(gauss, x, y, p0=(len(offsets), 0.0, 2.5))
     return x, y, popt
 
 
@@ -59,9 +56,17 @@ def plot_fit(x, y, popt, graph):
 
 if __name__ == '__main__':
 
-    dates = [(2013, 3, 19), (2013, 10, 28), (2014, 1, 1), (2014, 1, 2),
-             (2014, 1, 3), (2014, 1, 4), (2014, 1, 10), (2014, 1, 20),
-             (2014, 1, 30)]
+    dates = [
+        (2013, 3, 19),
+        (2013, 10, 28),
+        (2014, 1, 1),
+        (2014, 1, 2),
+        (2014, 1, 3),
+        (2014, 1, 4),
+        (2014, 1, 10),
+        (2014, 1, 20),
+        (2014, 1, 30),
+    ]
     files = [date(y, m, d) for y, m, d in dates]
     for f in files:
         path = DATA_PATH + f.strftime('%Y/%-m/%Y_%-m_%-d.h5')
@@ -75,5 +80,4 @@ if __name__ == '__main__':
         graph.set_ylabel('Occurrence')
         graph.set_xlabel(r'$\Delta t$ [ns]')
         graph.set_ylimits(min=0)
-        graph.save_as_pdf('detector_offset_distribution_' +
-                          f.strftime('%Y%m%d'))
+        graph.save_as_pdf('detector_offset_distribution_' + f.strftime('%Y%m%d'))

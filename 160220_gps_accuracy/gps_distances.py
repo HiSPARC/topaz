@@ -33,9 +33,7 @@ def calculate_distances_to_cm(network):
         x = array(station.x)
         y = array(station.y)
         z = array(station.z)
-        distances = sqrt((x - ref_x) ** 2 +
-                         (y - ref_y) ** 2 +
-                         (z - ref_z) ** 2)
+        distances = sqrt((x - ref_x) ** 2 + (y - ref_y) ** 2 + (z - ref_z) ** 2)
         close_by = distances < 15
         if len(close_by) > 3:
             # print station.number, len(close_by)
@@ -45,11 +43,12 @@ def calculate_distances_to_cm(network):
             center_mass_x = mean(filtered_x)
             center_mass_y = mean(filtered_y)
             center_mass_z = mean(filtered_z)
-            cm_distances = sqrt((filtered_x - center_mass_x) ** 2 +
-                                (filtered_y - center_mass_y) ** 2 +
-                                (filtered_z - center_mass_z) ** 2)
-            hor_distances = sqrt((filtered_x - center_mass_x) ** 2 +
-                                 (filtered_y - center_mass_y) ** 2)
+            cm_distances = sqrt(
+                (filtered_x - center_mass_x) ** 2
+                + (filtered_y - center_mass_y) ** 2
+                + (filtered_z - center_mass_z) ** 2
+            )
+            hor_distances = sqrt((filtered_x - center_mass_x) ** 2 + (filtered_y - center_mass_y) ** 2)
             ver_distances = sqrt((filtered_z - center_mass_z) ** 2)
             distr.extend(set(cm_distances.tolist()))
             dist_hor.extend(set(hor_distances.tolist()))

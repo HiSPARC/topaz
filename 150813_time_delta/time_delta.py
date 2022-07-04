@@ -7,16 +7,15 @@ from sapphire.utils import gauss
 
 
 def analyse(name):
-    data = genfromtxt('data/%s.tsv' % name, delimiter='\t', dtype=None,
-                      names=['ext_timestamp', 'time_delta'])
+    data = genfromtxt('data/%s.tsv' % name, delimiter='\t', dtype=None, names=['ext_timestamp', 'time_delta'])
     time_delta = data['time_delta']
 
     # Plot distribution
     counts, bins = histogram(time_delta, bins=arange(-10.5, 11.5, 1))
     plot = Plot()
     plot.histogram(counts, bins)
-    x = (bins[1:] + bins[:-1]) / 2.
-    popt, pcov = curve_fit(gauss, x, counts, p0=(sum(counts), 0., 2.5))
+    x = (bins[1:] + bins[:-1]) / 2.0
+    popt, pcov = curve_fit(gauss, x, counts, p0=(sum(counts), 0.0, 2.5))
     plot.plot(x, gauss(x, *popt), mark=None)
     print(popt)
     plot.set_ylimits(min=0)
@@ -29,8 +28,7 @@ def analyse(name):
     skip = 100
     moving_average = convolve(time_delta, ones((n,)) / n, mode='valid')
     plot = Plot()
-    timestamps = (data['ext_timestamp'][:-n + 1:skip] -
-                  data['ext_timestamp'][0]) / 1e9 / 3600.
+    timestamps = (data['ext_timestamp'][: -n + 1 : skip] - data['ext_timestamp'][0]) / 1e9 / 3600.0
     plot.plot(timestamps, moving_average[::skip], mark=None)
     plot.set_xlimits(min=0)
     plot.set_ylabel(r'time delta [\si{\nano\second}]')

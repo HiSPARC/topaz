@@ -8,8 +8,7 @@ from artist import Plot
 from sapphire.utils import gauss
 
 EVENTDATA_PATH = '/Users/arne/Datastore/501_510/e_501_510_141101_150201.h5'
-COLORS = ['black', 'green', 'blue', 'teal', 'orange', 'purple', 'cyan', 'red',
-          'gray']
+COLORS = ['black', 'green', 'blue', 'teal', 'orange', 'purple', 'cyan', 'red', 'gray']
 
 
 def determine_detector_timing_offsets(s, events):
@@ -37,7 +36,7 @@ def determine_detector_timing_offsets(s, events):
         graph.histogram(y, bins, linestyle='%s' % c)
         x = (bins[:-1] + bins[1:]) / 2
         try:
-            popt, pcov = curve_fit(gauss, x, y, p0=(len(dt), 0., 10.))
+            popt, pcov = curve_fit(gauss, x, y, p0=(len(dt), 0.0, 10.0))
             graph.draw_vertical_line(popt[1], linestyle='%s' % c)
             print('%d-%d: %f (%f)' % (j, reference, popt[1], popt[2]))
         except (IndexError, RuntimeError):

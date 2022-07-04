@@ -97,8 +97,7 @@ def compare_ttrigger():
         trig_filt = filtered.col('t_trigger')
         dt_trigger = trig_filt - trig_proc
 
-        density = (processed.col('n1') + processed.col('n2') +
-                   processed.col('n3') + processed.col('n4')) / 2
+        density = (processed.col('n1') + processed.col('n2') + processed.col('n3') + processed.col('n4')) / 2
         print('Density range:', density.min(), density.max())
         print('dt trigger range:', dt_trigger.min(), dt_trigger.max())
 
@@ -113,9 +112,7 @@ def compare_ttrigger():
             plot.save_as_pdf('hist2d')
         else:
             plot = Plot()
-            plot.scatter(density, dt_trigger,
-                         mark='o',
-                         markstyle='mark size=0.6pt, very thin, semitransparent')
+            plot.scatter(density, dt_trigger, mark='o', markstyle='mark size=0.6pt, very thin, semitransparent')
             plot.set_xlabel('Particle density')
             plot.set_ylabel('Difference in trigger time')
             plot.save_as_pdf('scatter')

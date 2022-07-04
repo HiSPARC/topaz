@@ -8,7 +8,6 @@ detected zenith distribution on the ground.
 """
 
 
-
 from sapphire.qsub import submit_job
 from sapphire.utils import pbar
 

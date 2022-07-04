@@ -13,10 +13,9 @@ SMALL_STEP = STEP  # / 10.
 LAMBDA = arange(MIN, MAX, SMALL_STEP)
 
 KD = KascadeDensity()
-KD_probability, KD_bins = histogram(KD.src_k, bins=arange(MIN, MAX, STEP),
-                                    density=True)
+KD_probability, KD_bins = histogram(KD.src_k, bins=arange(MIN, MAX, STEP), density=True)
 # To prevent bad index when using searchsorted add some zeros
-KD_probability = append(KD_probability, [0., 0.])
+KD_probability = append(KD_probability, [0.0, 0.0])
 
 
 def poisson(lamb, k):
@@ -28,7 +27,7 @@ def poisson(lamb, k):
     :param k: the detected number of particles
 
     """
-    return lamb ** k * exp(-lamb) / factorial(k)
+    return lamb**k * exp(-lamb) / factorial(k)
 
 
 def p_lambda(lamb):
@@ -41,7 +40,7 @@ def p_lambda(lamb):
 
     """
     idx = searchsorted(KD_bins, lamb)
-    return where(idx >= len(KD_probability) - 1, 0., KD_probability[idx])
+    return where(idx >= len(KD_probability) - 1, 0.0, KD_probability[idx])
 
 
 def integrand(lamb, k):
@@ -126,8 +125,7 @@ def percentile_high_density_for_n(k):
 
 
 def plot_contributions():
-    colors = ['red', 'blue', 'green', 'purple', 'gray', 'brown', 'cyan',
-              'magenta', 'orange', 'teal']
+    colors = ['red', 'blue', 'green', 'purple', 'gray', 'brown', 'cyan', 'magenta', 'orange', 'teal']
     lamb = arange(MIN, MAX, 0.1)
     plot = Plot('semilogy')
 
@@ -147,13 +145,13 @@ def plot_ranges():
     p_low = [percentile_low_density_for_n(ki) for ki in k]
     p_median = [median_density_for_n(ki) for ki in k]
     p_mean = [mean_density_for_n(ki) for ki in k]
-#     p_mpv = [most_probable_density_for_n(ki) for ki in k]
+    #     p_mpv = [most_probable_density_for_n(ki) for ki in k]
     p_high = [percentile_high_density_for_n(ki) for ki in k]
     plot = Plot(height=r'\defaultwidth')
     plot.plot([0, 1.5 * max(k)], [0, 1.5 * max(k)], mark=None, linestyle='dashed')
     plot.scatter(k, p_median)
-#     plot.plot(k, p_mean, mark=None, linestyle='green')
-#     plot.plot(k, p_mpv, mark=None, linestyle='red')
+    #     plot.plot(k, p_mean, mark=None, linestyle='green')
+    #     plot.plot(k, p_mpv, mark=None, linestyle='red')
     plot.shade_region(k, p_low, p_high)
     plot.set_xlimits(min(k) - 0.05 * max(k), 1.05 * max(k))
     plot.set_ylimits(min(k) - 0.05 * max(k), 1.05 * max(k))

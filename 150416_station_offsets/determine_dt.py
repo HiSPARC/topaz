@@ -66,10 +66,8 @@ def determine_time_differences(coin_events, ref_station, station, ref_d_off, d_o
         else:
             ref_id = 1
             id = 0
-        ref_t = station_arrival_time(events[ref_id][1], ref_ets, [0, 1, 2, 3],
-                                     ref_d_off(ref_ts))
-        t = station_arrival_time(events[id][1], ref_ets, [0, 1, 2, 3],
-                                 d_off(ref_ts))
+        ref_t = station_arrival_time(events[ref_id][1], ref_ets, [0, 1, 2, 3], ref_d_off(ref_ts))
+        t = station_arrival_time(events[id][1], ref_ets, [0, 1, 2, 3], d_off(ref_ts))
         if isnan(t) or isnan(ref_t):
             continue
         dt.append(t - ref_t)
@@ -84,8 +82,7 @@ def store_dt(ref_station, station, ext_timestamps, deltats):
         try:
             table = data.get_node('/s%d' % station)
         except tables.NoSuchNodeError:
-            table = data.create_table('/', 's%d' % station, DeltaVal,
-                                      createparents=True)
+            table = data.create_table('/', 's%d' % station, DeltaVal, createparents=True)
         for ets, deltat in zip(ext_timestamps, deltats):
             delta_row = table.row
             delta_row['ext_timestamp'] = ets
@@ -117,8 +114,9 @@ def determine_dt_for_pair(stations):
             for dt0, dt1 in monthrange((2004, 1), (2015, 9)):
                 coins = cq.all(stations, start=dt0, stop=dt1, iterator=True)
                 coin_events = cq.events_from_stations(coins, stations)
-                ets, dt = determine_time_differences(coin_events, ref_station, station,
-                                                     ref_detector_offsets, detector_offsets)
+                ets, dt = determine_time_differences(
+                    coin_events, ref_station, station, ref_detector_offsets, detector_offsets
+                )
                 store_dt(ref_station, station, ets, dt)
     except Exception as e:
         print('Failed for %d, %d' % stations)
@@ -156,8 +154,7 @@ def monthrange(start, stop):
         return
 
     if start == stop:
-        yield (datetime_to_gps(datetime(start[0], start[1], 1)),
-               datetime_to_gps(datetime(start[0], start[1] + 1, 1)))
+        yield (datetime_to_gps(datetime(start[0], start[1], 1)), datetime_to_gps(datetime(start[0], start[1] + 1, 1)))
         return
     else:
         current_year, current_month = start
@@ -169,8 +166,10 @@ def monthrange(start, stop):
             else:
                 next_year = current_year + 1
                 next_month = 1
-            yield (datetime_to_gps(datetime(current_year, current_month, 1)),
-                   datetime_to_gps(datetime(next_year, next_month, 1)))
+            yield (
+                datetime_to_gps(datetime(current_year, current_month, 1)),
+                datetime_to_gps(datetime(next_year, next_month, 1)),
+            )
 
             current_year = next_year
             current_month = next_month

@@ -29,10 +29,14 @@ def get_offsets():
         # (6.1, 0.72)
 
     """
-    offsets = {ref: {s: partial(Station(s, force_stale=True).station_timing_offset,
-                                reference_station=ref)
-                     for s in STATIONS if not s == ref}
-               for ref in STATIONS}
+    offsets = {
+        ref: {
+            s: partial(Station(s, force_stale=True).station_timing_offset, reference_station=ref)
+            for s in STATIONS
+            if not s == ref
+        }
+        for ref in STATIONS
+    }
     return offsets
 
 
@@ -50,9 +54,10 @@ def get_aligned_data(idx, offsets, start=START, stop=STOP, step=STEP):
     """Get dictionary of dictionaries with arrays with offsets or errors"""
 
     timestamps = list(range(start, stop, step))
-    aoffsets = {ref: {s: array([o(ts)[0] for ts in timestamps])
-                      for s, o in stations.items()}
-                for ref, stations in offsets.items()}
+    aoffsets = {
+        ref: {s: array([o(ts)[0] for ts in timestamps]) for s, o in stations.items()}
+        for ref, stations in offsets.items()
+    }
     return aoffsets
 
 
@@ -77,17 +82,16 @@ def round_trip(offsets):
             for s in combinations(stations, n):
                 if ref in s:
                     continue
-                offs.extend(aoffsets[ref][s[0]] + aoffsets[s[-1]][ref] +
-                            sum(aoffsets[s[i]][s[i + 1]] for i in range(n - 1)))
+                offs.extend(
+                    aoffsets[ref][s[0]] + aoffsets[s[-1]][ref] + sum(aoffsets[s[i]][s[i + 1]] for i in range(n - 1))
+                )
                 ts.extend(timestamps)
         ts = array(ts)
         offs = array(offs)
         ts = ts.compress(~isnan(offs))
         offs = offs.compress(~isnan(offs))
-        counts, xedges, yedges = histogram2d(ts, offs, bins=(timestamps[::4],
-                                                             list(range(-100, 101, 5))))
-        plot.histogram2d(counts, xedges, yedges, bitmap=True, type='color',
-                         colormap='viridis')
+        counts, xedges, yedges = histogram2d(ts, offs, bins=(timestamps[::4], list(range(-100, 101, 5))))
+        plot.histogram2d(counts, xedges, yedges, bitmap=True, type='color', colormap='viridis')
         plot.set_colorbar()
         plot.set_ylimits(-100, 100)
         plot.set_title('n = %d' % n)
@@ -115,8 +119,9 @@ def offset_distribution(offsets):
             for s in permutations(stations, n):
                 if ref in s:
                     continue
-                offs.extend(aoffsets[ref][s[0]] + aoffsets[s[-1]][ref] +
-                            sum(aoffsets[s[i]][s[i + 1]] for i in range(n - 1)))
+                offs.extend(
+                    aoffsets[ref][s[0]] + aoffsets[s[-1]][ref] + sum(aoffsets[s[i]][s[i + 1]] for i in range(n - 1))
+                )
         plot.histogram(*histogram(offs, bins=list(range(-100, 100, 2))))
         plot.set_xlimits(-100, 100)
         plot.set_ylimits(min=0)
@@ -142,13 +147,11 @@ def stopover(offsets):
         for i, via_station in enumerate(stations):
             if via_station in [from_station, to_station]:
                 continue
-            offs = (aoffsets[from_station][via_station] +
-                    aoffsets[via_station][to_station])
+            offs = aoffsets[from_station][via_station] + aoffsets[via_station][to_station]
 
             all_offs.append(offs)
 
-            plot.plot(timestamps, offs, linestyle='very thin, black!%d' % (i * 5 + 30),
-                      mark=None)
+            plot.plot(timestamps, offs, linestyle='very thin, black!%d' % (i * 5 + 30), mark=None)
 
         offs = aoffsets[from_station][to_station]
         plot.plot(timestamps, offs, linestyle='red', mark=None)
@@ -168,6 +171,6 @@ def stopover(offsets):
 if __name__ == "__main__":
     if 'offsets' not in globals():
         offsets = get_offsets()
-#     round_trip(offsets)
-#     offset_distribution(offsets)
+    #     round_trip(offsets)
+    #     offset_distribution(offsets)
     stopover(offsets)

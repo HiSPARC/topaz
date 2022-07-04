@@ -66,8 +66,8 @@ def longest_overlap(a, b):
     else:
         max_length = len(b)
     for i in range(max_length):
-        if all(a[-max_length + i:] == b[:max_length - i]):
-            return a[-max_length + i:]
+        if all(a[-max_length + i :] == b[: max_length - i]):
+            return a[-max_length + i :]
 
 
 if __name__ == "__main__":

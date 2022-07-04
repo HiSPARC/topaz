@@ -22,12 +22,10 @@ def print_overview(sims):
     e_bins = add_rightmost_bin(energies)
     z_bins = add_rightmost_bin(zeniths)
 
-    prows = {particle: sims.read_where('particle_id==particle')
-             for particle in particles}
+    prows = {particle: sims.read_where('particle_id==particle') for particle in particles}
     for particle, rows in prows.items():
         print('Particle: %s (%d)' % (name(particle), particle))
-        histogram = numpy.histogram2d(rows['energy'], rows['zenith'],
-                                      bins=[e_bins, z_bins])
+        histogram = numpy.histogram2d(rows['energy'], rows['zenith'], bins=[e_bins, z_bins])
         print('Zenith >' + '% 6g° |' * len(zeniths) % tuple(numpy.degrees(zeniths)))
         print('Energy v' + '---------' * len(zeniths))
         for energy, counts in zip(energies, histogram[0]):
@@ -46,26 +44,32 @@ def plot_number_of_particles(sims):
 
     energy = energies[3]
     for zenith in zeniths:
-        rows = [row for row in filtered_rows
-                if row['energy'] == energy and row['zenith'] == zenith]
+        rows = [row for row in filtered_rows if row['energy'] == energy and row['zenith'] == zenith]
         if len(rows) > 10:
             weights = numpy.ones(len(rows)) / float(len(rows))
-            ax1.hist([r['n_electron'] for r in rows], bins=ne_bins,
-                     histtype='step', weights=weights,
-                     label='{:4.1f} deg, {:.g} eV'.format(numpy.degrees(zenith), energy))
+            ax1.hist(
+                [r['n_electron'] for r in rows],
+                bins=ne_bins,
+                histtype='step',
+                weights=weights,
+                label='{:4.1f} deg, {:.g} eV'.format(numpy.degrees(zenith), energy),
+            )
     ax1.set_xscale('log')
     ax1.set_xlabel('Number of electrons')
     ax1.legend(loc=2)
 
     zenith = zeniths[3]
     for energy in energies:
-        rows = [row for row in filtered_rows
-                if row['energy'] == energy and row['zenith'] == zenith]
+        rows = [row for row in filtered_rows if row['energy'] == energy and row['zenith'] == zenith]
         if len(rows) > 10:
             weights = numpy.ones(len(rows)) / float(len(rows))
-            ax2.hist([r['n_muon'] for r in rows], bins=ne_bins,
-                     histtype='step', weights=weights,
-                     label='{:4.1f} deg, {:.g} eV'.format(numpy.degrees(zenith), energy))
+            ax2.hist(
+                [r['n_muon'] for r in rows],
+                bins=ne_bins,
+                histtype='step',
+                weights=weights,
+                label='{:4.1f} deg, {:.g} eV'.format(numpy.degrees(zenith), energy),
+            )
     ax2.set_xscale('log')
     ax2.set_xlabel('Number of electrons')
     ax2.legend(loc=2)

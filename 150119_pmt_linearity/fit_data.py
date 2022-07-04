@@ -8,10 +8,12 @@ from data_senstech_integral import E_PH as senstech_e_ph
 from data_senstech_integral import M_PH as senstech_m_ph
 from fit_curve import P1, fit_curve, ice_cube_pmt_p1
 
-FIT = (r"$\mathrm{ln}V_{\mathrm{in}}=\mathrm{ln}V + "
-       r"\frac{p_0\left(\frac{V}{p_1}\right)^{p_2}}"
-       r"{\left(1-\frac{V}{p_1}\right)^{\frac{1}{4}}}$"
-       r", \scriptsize{($p_0=%.1f$, $p_1=%d$, $p_2=%.1f$)}")
+FIT = (
+    r"$\mathrm{ln}V_{\mathrm{in}}=\mathrm{ln}V + "
+    r"\frac{p_0\left(\frac{V}{p_1}\right)^{p_2}}"
+    r"{\left(1-\frac{V}{p_1}\right)^{\frac{1}{4}}}$"
+    r", \scriptsize{($p_0=%.1f$, $p_1=%d$, $p_2=%.1f$)}"
+)
 
 
 def plot_compared():

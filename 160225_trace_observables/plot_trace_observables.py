@@ -17,8 +17,7 @@ def get_trace(s):
     pulseheights = to.pulseheights
     filter = MeanFilter()
     filtered_traces = filter.filter_traces(raw_traces)
-    return (array(raw_traces[d_id]), baselines[d_id], integrals[d_id],
-            pulseheights[d_id], array(filtered_traces[d_id]))
+    return (array(raw_traces[d_id]), baselines[d_id], integrals[d_id], pulseheights[d_id], array(filtered_traces[d_id]))
 
 
 def plot_integral(trace, baseline):
@@ -27,15 +26,13 @@ def plot_integral(trace, baseline):
     time = arange(0, len(trace) * 2.5, 2.5)
     plot.plot(time, trace, mark=None, linestyle='const plot')
     integral_trace = where(trace > baseline + BASELINE_THRESHOLD, trace, baseline)
-    plot.shade_region(time + 2.5, [baseline] * len(trace), integral_trace,
-                      color='lightgray, const plot')
+    plot.shade_region(time + 2.5, [baseline] * len(trace), integral_trace, color='lightgray, const plot')
 
     plot.draw_horizontal_line(baseline, linestyle='densely dashed, gray')
-    plot.draw_horizontal_line(baseline + BASELINE_THRESHOLD,
-                              linestyle='densely dotted, gray')
+    plot.draw_horizontal_line(baseline + BASELINE_THRESHOLD, linestyle='densely dotted, gray')
     plot.draw_horizontal_line(max(trace), linestyle='densely dashed, gray')
 
-#     plot.set_ylimits(0)
+    #     plot.set_ylimits(0)
     plot.set_xlabel(r'Trace time [\si{\ns}]')
     plot.set_ylabel(r'Signal strength [ADC]')
     plot.save_as_pdf('integral')

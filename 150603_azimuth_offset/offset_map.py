@@ -21,8 +21,7 @@ def make_map(cluster=CLUSTER):
             latitude, longitude, _ = detector.get_lla_coordinates()
             latitudes.append(latitude)
             longitudes.append(longitude)
-    map = Map((min(latitudes), min(longitudes),
-               max(latitudes), max(longitudes)))
+    map = Map((min(latitudes), min(longitudes), max(latitudes), max(longitudes)))
     return map
 
 
@@ -47,7 +46,7 @@ def display_offsets(map):
     image = map.to_pil()
 
     aspect = float(image.size[0]) / float(image.size[1])
-    height = .67 / aspect
+    height = 0.67 / aspect
     plot = Plot(height=r'%.2f\linewidth' % height)
 
     plot.draw_image(image, 0, 0, image.size[0], image.size[1])
@@ -74,9 +73,7 @@ def display_offsets(map):
     plot.set_axis_equal()
 
     nw = num2deg(map.xmin, map.ymin, map.z)
-    se = num2deg(map.xmin + image.size[0] / TILE_SIZE,
-                 map.ymin + image.size[1] / TILE_SIZE,
-                 map.z)
+    se = num2deg(map.xmin + image.size[0] / TILE_SIZE, map.ymin + image.size[1] / TILE_SIZE, map.z)
 
     transform = geographic.FromWGS84ToENUTransformation(cluster.lla)
     x0, y0, _ = transform.lla_to_enu((nw[0], nw[1], 0))

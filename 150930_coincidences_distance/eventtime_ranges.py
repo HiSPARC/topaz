@@ -6,15 +6,14 @@ from sapphire import Station
 def get_data(station_numbers):
     """Read the eventtime csv files for the given station numbers"""
 
-    return {number: Station(number, force_stale=True).event_time()
-            for number in station_numbers}
+    return {number: Station(number, force_stale=True).event_time() for number in station_numbers}
 
 
 def get_total_exposure(timestamp_ranges):
     """Get total exposure time of the timestamp ranges"""
 
     if not len(timestamp_ranges):
-        return 0.
+        return 0.0
     timestamp_ranges = array(timestamp_ranges)
     total_exposure = (timestamp_ranges[:, 1] - timestamp_ranges[:, 0]).sum()
     return total_exposure
@@ -43,8 +42,7 @@ def get_timestamp_ranges(station_numbers, min_n=None):
     for i, sn in enumerate(data.keys()):
         start = (data[sn]['timestamp'][0] - first) / 3600
         end = start + len(data[sn])
-        extended_data[i, start:end] = ((data[sn]['counts'] > 500) &
-                                       (data[sn]['counts'] < 5000))
+        extended_data[i, start:end] = (data[sn]['counts'] > 500) & (data[sn]['counts'] < 5000)
 
     flags = extended_data.sum(axis=0) >= min_n
     timestamp_ranges = get_ranges(timestamps, flags)

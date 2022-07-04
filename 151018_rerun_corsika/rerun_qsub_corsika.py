@@ -13,7 +13,6 @@ from sapphire.corsika.qsub_corsika import *
 
 
 class CorsikaRerun(CorsikaBatch):
-
     def __init__(self, seeds, queue='long'):
         self.seed1, self.seed2 = seeds.split('_')
         self.rundir = seeds + '/'

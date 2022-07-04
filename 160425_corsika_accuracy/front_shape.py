@@ -19,7 +19,7 @@ PATH = '/Users/arne/Datastore/corsika_accuracy/stripped/'
 
 
 def front_shape(r, a, b):
-    return a * (r ** b - 20 ** b)
+    return a * (r**b - 20**b)
 
 
 def plot_front_shapes():
@@ -35,7 +35,7 @@ def plot_front_shapes():
 
             for i, file in enumerate(files):
                 detected_t = loadtxt(file, usecols=(1,))
-                t[:, i][:len(detected_t)] = detected_t
+                t[:, i][: len(detected_t)] = detected_t
 
             t_src = t.copy()
             for j in range(1, len(t)):
@@ -45,14 +45,14 @@ def plot_front_shapes():
             try:
                 min_limit = 3
                 min_efficiency = 0.9
-                limit = min_limit + next(i for i, ti in enumerate(t_src[min_limit:])
-                                         if not count_nonzero(ti) > min_efficiency * len(files))
+                limit = min_limit + next(
+                    i for i, ti in enumerate(t_src[min_limit:]) if not count_nonzero(ti) > min_efficiency * len(files)
+                )
             except:
                 limit = len(r)
 
             plot = Plot()
-            plot.scatter(r[:limit], mean_t[:limit],
-                         yerr=t.std(axis=1)[:limit], xerr=[10] * limit)
+            plot.scatter(r[:limit], mean_t[:limit], yerr=t.std(axis=1)[:limit], xerr=[10] * limit)
             plot.scatter(r[:limit], median(t, axis=1)[:limit], mark='x')
 
             popt, pcov = curve_fit(front_shape, r[:limit], mean_t[:limit])

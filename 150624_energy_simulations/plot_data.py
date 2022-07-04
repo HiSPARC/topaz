@@ -88,20 +88,22 @@ def analyse_reconstructions(path):
 
     # Distance beween
     filter = size_out != 1e6
-    core_distances = np.sqrt((x_out.compress(filter) - x_in.compress(filter)) ** 2 +
-                             (y_out.compress(filter) - y_in.compress(filter)) ** 2)
+    core_distances = np.sqrt(
+        (x_out.compress(filter) - x_in.compress(filter)) ** 2 + (y_out.compress(filter) - y_in.compress(filter)) ** 2
+    )
     if len(np.isfinite(core_distances)):
         bins = np.linspace(0, 1000, 100)
         counts, bins = np.histogram(core_distances, bins=bins)
         plotc = Plot()
         plotc.histogram(counts, bins)
         sigma = np.percentile(core_distances[np.isfinite(core_distances)], 67)
-#
+        #
         energy = np.log10(energy_in[0])
         zenith = np.degrees(zen_in[0])
-#
-        plotc.set_label(r'$E=10^{%d}$eV, $\theta={%.1f}^{\circ}$, 67\%% '
-                        r'within \SI{%.1f}{\meter}' % (energy, zenith, sigma))
+        #
+        plotc.set_label(
+            r'$E=10^{%d}$eV, $\theta={%.1f}^{\circ}$, 67\%% ' r'within \SI{%.1f}{\meter}' % (energy, zenith, sigma)
+        )
         plotc.set_xlabel(r'Distance between cores [\si{\meter}]')
         plotc.set_ylabel('Counts')
         plotc.set_xlimits(bins[0], bins[-1])

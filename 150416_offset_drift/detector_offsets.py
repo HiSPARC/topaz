@@ -32,8 +32,7 @@ DATA_PATH = '/Users/arne/Datastore/esd/'
 STATIONS = [501, 502, 503, 504, 505, 506, 508, 509, 510, 1006]
 
 O = (0, 0, 0)
-STATION = Station(None, 0, O,
-                  detectors=[(O, 'UD'), (O, 'UD'), (O, 'LR'), (O, 'LR')])
+STATION = Station(None, 0, O, detectors=[(O, 'UD'), (O, 'UD'), (O, 'LR'), (O, 'LR')])
 LIMITS = 15
 
 

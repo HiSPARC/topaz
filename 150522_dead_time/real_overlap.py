@@ -22,9 +22,8 @@ STATION_GROUP = '/station_%d' % STATION
 
 def download_dataset():
     with tables.open_file(DATA_PATH, 'w') as data:
-        download_data(data, STATION_GROUP, STATION,
-                      datetime.datetime(2015, 1, 1),
-                      datetime.datetime(2015, 10, 1))
+        download_data(data, STATION_GROUP, STATION, datetime.datetime(2015, 1, 1), datetime.datetime(2015, 10, 1))
+
 
 # Already downloaded:
 # 1/2015 - 10/2015

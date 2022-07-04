@@ -37,8 +37,7 @@ class DayFilter:
         indicate problems, such as light leaks.
 
         """
-        return ((0.3 < self.stats['event_rate']) &
-                (self.stats['event_rate'] < 1.0))[0]
+        return ((0.3 < self.stats['event_rate']) & (self.stats['event_rate'] < 1.0))[0]
 
     def filter_trigger_time(self):
         """Filter event rate statistics
@@ -98,7 +97,7 @@ class EventFilter:
 
         # Remove events that would not have triggered after accouting for MPV
         # The trigger shouls actually trigger on number of particles, not an
-        # incorrectly calibrated pulseheight.
+        # incorrectly calibrated pulseheight.
         low = 0.3
         high = 0.6
 

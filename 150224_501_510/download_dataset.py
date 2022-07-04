@@ -8,9 +8,7 @@ PATH = '/Users/arne/Datastore/501_510/'
 
 
 def download_501_510_dataset():
-    """Download a dataset for analysis
-
-    """
+    """Download a dataset for analysis"""
     print("Downloading 501-510 dataset.")
     stations = [501, 510]
 
@@ -18,8 +16,9 @@ def download_501_510_dataset():
     end = datetime(2015, 2, 1)
 
     with tables.open_file(PATH + 'c_501_510_150120_150201.h5', 'a') as data:
-        download_coincidences(data, stations=stations, start=start, end=end,
-                              n=2)
+        download_coincidences(data, stations=stations, start=start, end=end, n=2)
+
+
 #
 #     with tables.open_file(PATH + 'e_501_510_141101_150201.h5', 'a') as data:
 #         for station in stations:

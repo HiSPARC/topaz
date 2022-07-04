@@ -24,9 +24,7 @@ def download_sciencepark_dataset():
     path = os.path.join(DATASTORE, 'sciencepark_n2_100101_150401.h5')
     print("Downloading Science Park dataset.")
     with tables.open_file(path, 'a') as data:
-        download_coincidences(data, stations=stations,
-                              start=datetime(2010, 1, 1),
-                              end=datetime(2015, 4, 1), n=2)
+        download_coincidences(data, stations=stations, start=datetime(2010, 1, 1), end=datetime(2015, 4, 1), n=2)
 
 
 def download_sciencepark_dataset_n7():
@@ -45,8 +43,7 @@ def download_sciencepark_dataset_n7():
     print("Downloading n7 Science Park dataset.")
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(start, end):
-            download_coincidences(data, stations=stations, start=startdt,
-                                  end=enddt, n=7)
+            download_coincidences(data, stations=stations, start=startdt, end=enddt, n=7)
 
 
 def download_aarhus_dataset():
@@ -65,8 +62,7 @@ def download_aarhus_dataset():
     print("Downloading Aarhus dataset.")
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(start, end):
-            download_coincidences(data, stations=stations, start=startdt,
-                                  end=enddt, n=2)
+            download_coincidences(data, stations=stations, start=startdt, end=enddt, n=2)
 
 
 def download_zaanlands_dataset():
@@ -86,8 +82,7 @@ def download_zaanlands_dataset():
     print("Downloading Zaanlands dataset.")
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(start, end):
-            download_coincidences(data, stations=stations, start=startdt,
-                                  end=enddt, n=2)
+            download_coincidences(data, stations=stations, start=startdt, end=enddt, n=2)
 
 
 def download_twente_dataset():
@@ -107,8 +102,7 @@ def download_twente_dataset():
     print("Downloading Twente dataset.")
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(start, end):
-            download_coincidences(data, stations=stations, start=startdt,
-                                  end=enddt, n=2)
+            download_coincidences(data, stations=stations, start=startdt, end=enddt, n=2)
 
 
 def download_eindhoven_dataset():
@@ -129,8 +123,7 @@ def download_eindhoven_dataset():
     print("Downloading Eindhoven dataset.")
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(start, end):
-            download_coincidences(data, stations=stations, start=startdt,
-                                  end=enddt, n=2)
+            download_coincidences(data, stations=stations, start=startdt, end=enddt, n=2)
 
 
 def download_alphen_dataset():
@@ -151,8 +144,7 @@ def download_alphen_dataset():
     print("Downloading Alphen ad Rijn dataset.")
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(start, end):
-            download_coincidences(data, stations=stations, start=startdt,
-                                  end=enddt, n=2)
+            download_coincidences(data, stations=stations, start=startdt, end=enddt, n=2)
 
 
 def monthrange(start, stop):
@@ -174,8 +166,7 @@ def monthrange(start, stop):
         return
 
     if start == stop:
-        yield (datetime(start[0], start[1], 1),
-               datetime(start[0], start[1] + 1, 1))
+        yield (datetime(start[0], start[1], 1), datetime(start[0], start[1] + 1, 1))
         return
     else:
         current_year, current_month = start
@@ -187,8 +178,7 @@ def monthrange(start, stop):
             else:
                 next_year = current_year + 1
                 next_month = 1
-            yield (datetime(current_year, current_month, 1),
-                   datetime(next_year, next_month, 1))
+            yield (datetime(current_year, current_month, 1), datetime(next_year, next_month, 1))
 
             current_year = next_year
             current_month = next_month

@@ -26,7 +26,7 @@ def P_2(ldf, r=10, N=10**4.07):
     return (1 - P_0(ldf, r, N)) ** 2
 
 
-def energy_to_size(E, a, b=1.):
+def energy_to_size(E, a, b=1.0):
     """Relation between shower size and energy
 
     size = 10 ** (energy ** b - a)
@@ -34,7 +34,7 @@ def energy_to_size(E, a, b=1.):
     :param E: log10 of the energy in eV.
 
     """
-    return 10 ** (E ** b - a)
+    return 10 ** (E**b - a)
 
 
 def plot_E_d_P(ldf):
@@ -64,7 +64,7 @@ def plot_E_d_P(ldf):
     plot.plot(mid, energies, linestyle='densely dashed', mark=None)
     plot.plot(high, energies, mark=None)
     plot.set_ylimits(13, 20)
-    plot.set_xlimits(1., 1e4)
+    plot.set_xlimits(1.0, 1e4)
 
     plot.set_xlabel(r'Core distance [\si{\meter}]')
     plot.set_ylabel(r'Energy [log10(E/\si{\eV})]')

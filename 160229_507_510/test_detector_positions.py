@@ -27,8 +27,7 @@ def reconstruct_events(data):
     cluster = get_cluster()
     station = cluster.get_station(STATIONS[1])
     station_group = '/hisparc/cluster_amsterdam/station_%d' % station.number
-    rec_510 = ReconstructESDEvents(data, station_group, station,
-                                   overwrite=True, progress=True)
+    rec_510 = ReconstructESDEvents(data, station_group, station, overwrite=True, progress=True)
     rec_510.prepare_output()
     rec_510.offsets = Station(station.number)
     rec_510.reconstruct_directions()
@@ -44,9 +43,9 @@ def reconstruct_events(data):
         station_group = '/hisparc/cluster_amsterdam/station_%d' % station.number
         station._detectors = [station.detectors[id] for id in order]
 
-        rec_507 = ReconstructESDEvents(data, station_group, station,
-                                       overwrite=True, progress=True,
-                                       destination=REC_PATH % order)
+        rec_507 = ReconstructESDEvents(
+            data, station_group, station, overwrite=True, progress=True, destination=REC_PATH % order
+        )
         rec_507.prepare_output()
         rec_507.offsets = Station(station.number)
         rec_507.reconstruct_directions(detector_ids=[order[0], order[1], order[3]])
@@ -62,11 +61,9 @@ def plot_comparisons(data):
     c_idx = data.root.coincidences.c_index[multi_cidx]
 
     min_zenith = 0.2
-    r510 = data.get_node('/hisparc/cluster_amsterdam/station_510/',
-                         'reconstructions')
+    r510 = data.get_node('/hisparc/cluster_amsterdam/station_510/', 'reconstructions')
     subset510 = [True] * r510.nrows
-    id510 = next(i for i, s in enumerate(data.root.coincidences.s_index[:])
-                 if s.endswith('_510'))
+    id510 = next(i for i, s in enumerate(data.root.coincidences.s_index[:]) if s.endswith('_510'))
     for cidx in c_idx:
         if sum(cidx[:, 0] == id510) > 1:
             eid = next(i for s, i in cidx if s == id510)
@@ -76,11 +73,9 @@ def plot_comparisons(data):
     filter510 = r510z > min_zenith
 
     for order in itertools.permutations(list(range(4)), 4):
-        r507 = data.get_node('/hisparc/cluster_amsterdam/station_507/',
-                             REC_PATH % order)
+        r507 = data.get_node('/hisparc/cluster_amsterdam/station_507/', REC_PATH % order)
         subset507 = [True] * r507.nrows
-        id507 = next(i for i, s in enumerate(data.root.coincidences.s_index[:])
-                     if s.endswith('_507'))
+        id507 = next(i for i, s in enumerate(data.root.coincidences.s_index[:]) if s.endswith('_507'))
         for cidx in c_idx:
             if sum(cidx[:, 0] == id507) > 1:
                 eid = next(i for s, i in cidx if s == id507)
@@ -94,17 +89,14 @@ def plot_comparisons(data):
         # on azimuth.
         filter = filter510 & filter507
 
-        counts, xbins, ybins = histogram2d(r507a.compress(filter),
-                                           r510a.compress(filter),
-                                           bins=linspace(-pi, pi, 40))
+        counts, xbins, ybins = histogram2d(r507a.compress(filter), r510a.compress(filter), bins=linspace(-pi, pi, 40))
         plot = Plot()
         plot.histogram2d(counts, xbins, ybins, bitmap=True, type='color')
         plot.set_ylabel(r'Azimuth 510 [\si{\radian}]')
         plot.set_xlabel(r'Azimuth 507 [\si{\radian}]')
         plot.save_as_pdf(REC_PATH % order)
 
-        counts, xbins, ybins = histogram2d(r507z, r510z,
-                                           bins=linspace(0, pi / 2., 40))
+        counts, xbins, ybins = histogram2d(r507z, r510z, bins=linspace(0, pi / 2.0, 40))
         plot = Plot()
         plot.histogram2d(counts, xbins, ybins, bitmap=True, type='color')
         plot.set_ylabel(r'Zenith 510 [\si{\radian}]')

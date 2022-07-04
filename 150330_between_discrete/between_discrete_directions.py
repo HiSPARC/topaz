@@ -9,7 +9,7 @@ from sapphire.clusters import SingleDiamondStation
 from sapphire.utils import angle_between
 
 TIME_RESOLUTION = 2.5  # nanoseconds
-C = .3  # lightspeed m/ns
+C = 0.3  # lightspeed m/ns
 COLORS = ['black', 'red', 'green', 'blue']
 
 
@@ -33,8 +33,7 @@ def station_size(station, detector_ids=[0, 2, 3]):
     :param detectors: list of :class:`sapphire.clusters.Detector` objects
 
     """
-    r = [station.calc_r_and_phi_for_detectors(d0, d1)[0]
-         for d0, d1 in itertools.combinations(detector_ids, 2)]
+    r = [station.calc_r_and_phi_for_detectors(d0, d1)[0] for d0, d1 in itertools.combinations(detector_ids, 2)]
     return max(r)
 
 
@@ -48,8 +47,7 @@ def reconstruct_for_detectors(ids):
     x, y, z = list(zip(*detectors))
 
     angles = (dirrec.reconstruct_common((0,) + t, x, y, z) for t in times)
-    angles = {(round(t, 5), round(p, 5)) for t, p in angles
-                  if not np.isnan(t) and not np.isnan(p)}
+    angles = {(round(t, 5), round(p, 5)) for t, p in angles if not np.isnan(t) and not np.isnan(p)}
     return angles
 
 
@@ -60,8 +58,14 @@ def plot_discrete(angles):
 
     graph.set_ylimits(0, np.pi / 2)
     graph.set_yticks([0, np.pi / 6, np.pi / 3, np.pi / 2])
-    graph.set_ytick_labels([r'$0$', r'$\frac{1}{6}\pi$',
-                            r'$\frac{2}{6}\pi$', r'$\frac{1}{2}\pi$', ])
+    graph.set_ytick_labels(
+        [
+            r'$0$',
+            r'$\frac{1}{6}\pi$',
+            r'$\frac{2}{6}\pi$',
+            r'$\frac{1}{2}\pi$',
+        ]
+    )
     graph.set_ylabel('Zenith [rad]')
     graph.set_xlabel('Azimuth [rad]')
     graph.save_as_pdf('discrete_directions')
@@ -69,7 +73,7 @@ def plot_discrete(angles):
 
 def angles_between_discrete(angles):
     theta, phi = list(zip(*angles))
-    distances = angle_between(0., 0., np.array(theta), np.array(phi))
+    distances = angle_between(0.0, 0.0, np.array(theta), np.array(phi))
     counts, bins = np.histogram(distances, bins=np.linspace(0, np.pi, 721))
     plotd = Plot()
     plotd.histogram(counts, np.degrees(bins))

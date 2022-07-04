@@ -15,22 +15,20 @@ BIN_WIDTH = 0.625
 
 
 def get_offsets_dict():
-    offsets = {s: Station(s).detector_timing_offset
-               for s in Network().station_numbers()}
+    offsets = {s: Station(s).detector_timing_offset for s in Network().station_numbers()}
     return offsets
 
 
 def offsets_on_date(offsets, d, id):
     timestamp = datetime_to_gps(d)
-    return [o(timestamp)[id] for o in list(offsets.values())
-            if not isnan(o(timestamp)[1])]
+    return [o(timestamp)[id] for o in list(offsets.values()) if not isnan(o(timestamp)[1])]
 
 
 def fit_offsets(offsets):
     bins = arange(-50 + BIN_WIDTH / 2, 50, BIN_WIDTH)
     y, bins = histogram(offsets, bins=bins)
     x = (bins[:-1] + bins[1:]) / 2
-    popt, pcov = curve_fit(gauss, x, y, p0=(len(offsets), 0., 2.5))
+    popt, pcov = curve_fit(gauss, x, y, p0=(len(offsets), 0.0, 2.5))
     return x, y, popt
 
 
@@ -47,8 +45,7 @@ def plot_and_fit_offsets(x, y, popt, d, id):
     plot.set_ylabel('Occurrence')
     plot.set_xlabel(r'$\Delta t$ [ns]')
     plot.set_ylimits(min=0)
-    plot.save_as_pdf('api_detector_offset_distribution_%s_' % id +
-                     d.strftime('%Y%m%d'))
+    plot.save_as_pdf('api_detector_offset_distribution_%s_' % id + d.strftime('%Y%m%d'))
 
 
 if __name__ == '__main__':

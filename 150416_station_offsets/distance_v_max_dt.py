@@ -28,7 +28,7 @@ SIM_PATH = '/Users/arne/Datastore/expected_dt/test_station_dt_spa.h5'
 
 SPA_STAT = [501, 502, 503, 504, 505, 506, 508, 509, 510, 511]
 CLUSTER = HiSPARCStations(SPA_STAT)
-DAY = 86400.
+DAY = 86400.0
 HALF_DAY = DAY / 2
 WEEK = 7 * DAY
 FORTNIGHT = 2 * WEEK
@@ -68,13 +68,11 @@ def plot_distance_width():
                 table = get_station_dt(data, station)
                 ts1 = table[-1]['timestamp'] - WEEK
                 ts0 = ts1 - HALFYEAR  # * max(1, (distance / 100))
-                dt = table.read_where('(timestamp > ts0) & (timestamp < ts1)',
-                                      field='delta')
+                dt = table.read_where('(timestamp > ts0) & (timestamp < ts1)', field='delta')
 
                 sim_ref_events = sim_data.get_node('/flat/cluster_simulations/station_%d' % ref_station, 'events')
                 sim_events = sim_data.get_node('/flat/cluster_simulations/station_%d' % station, 'events')
-                sim_dt = (sim_ref_events.col('ext_timestamp').astype(int) -
-                          sim_events.col('ext_timestamp').astype(int))
+                sim_dt = sim_ref_events.col('ext_timestamp').astype(int) - sim_events.col('ext_timestamp').astype(int)
 
                 high = 94
                 low = 6

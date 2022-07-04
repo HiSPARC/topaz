@@ -13,13 +13,11 @@ PATH = '/Users/arne/Datastore/publicdb_csv/eventtime/*.tsv'
 
 
 def read_eventtime(path):
-    return genfromtxt(path, delimiter='\t', dtype=uint32,
-                      names=['timestamp', 'counts'])
+    return genfromtxt(path, delimiter='\t', dtype=uint32, names=['timestamp', 'counts'])
 
 
 def get_data():
-    return {int(os.path.basename(path)[:-4]): read_eventtime(path)
-            for path in glob(PATH)}
+    return {int(os.path.basename(path)[:-4]): read_eventtime(path) for path in glob(PATH)}
 
 
 def get_aligned():
@@ -34,8 +32,7 @@ def get_aligned():
     for i, sn in enumerate(data.keys()):
         start = (data[sn]['timestamp'][0] - first) / 3600
         end = start + len(data[sn])
-        extended_data[i, start:end] = ((data[sn]['counts'] > 500) &
-                                       (data[sn]['counts'] < 5000))
+        extended_data[i, start:end] = (data[sn]['counts'] > 500) & (data[sn]['counts'] < 5000)
     return timestamps, extended_data
 
 
@@ -44,20 +41,20 @@ if __name__ == "__main__":
     summed_data = eventtime.sum(axis=0)
     plot = Plot()
 
-    counts, bins = histogram(summed_data, bins=arange(-.5, 100.5, 1))
-    counts_in_years = counts / 24. / 365.
+    counts, bins = histogram(summed_data, bins=arange(-0.5, 100.5, 1))
+    counts_in_years = counts / 24.0 / 365.0
     plot.histogram(counts_in_years, bins)
 
     # Exluding data from before 08-03-2010
     start = argmax(timestamps > datetime_to_gps(date(2010, 3, 8)))
     counts, bins = histogram(summed_data[start:], bins=bins)
-    counts_in_years = counts / 24. / 365.
+    counts_in_years = counts / 24.0 / 365.0
     plot.histogram(counts_in_years, bins, linestyle='blue')
 
     # Exluding data from before 01-07-2011
     start = argmax(timestamps > datetime_to_gps(date(2011, 7, 1)))
     counts, bins = histogram(summed_data[start:], bins=bins)
-    counts_in_years = counts / 24. / 365.
+    counts_in_years = counts / 24.0 / 365.0
     plot.histogram(counts_in_years, bins, linestyle='red')
 
     plot.set_ylimits(min=0)

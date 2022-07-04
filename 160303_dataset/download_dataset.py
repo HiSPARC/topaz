@@ -29,9 +29,9 @@ def download_data_for_station(station_number):
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(START, END):
             print('downloading', startdt.date(), enddt.date(), station_number)
-            download_data(data, '/s%d' % station_number, station_number,
-                          start=startdt, end=enddt,
-                          type='events', progress=False)
+            download_data(
+                data, '/s%d' % station_number, station_number, start=startdt, end=enddt, type='events', progress=False
+            )
     return path
 
 
@@ -48,8 +48,7 @@ def download_sciencepark_coincidences():
     path = COIN_PATH
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(START, END):
-            download_coincidences(data, stations=STATIONS,
-                                  start=startdt, end=enddt, n=2)
+            download_coincidences(data, stations=STATIONS, start=startdt, end=enddt, n=2)
 
 
 def monthrange(start, stop):
@@ -71,8 +70,7 @@ def monthrange(start, stop):
         return
 
     if start == stop:
-        yield (datetime(start[0], start[1], 1),
-               datetime(start[0], start[1] + 1, 1))
+        yield (datetime(start[0], start[1], 1), datetime(start[0], start[1] + 1, 1))
         return
     else:
         current_year, current_month = start
@@ -84,8 +82,7 @@ def monthrange(start, stop):
             else:
                 next_year = current_year + 1
                 next_month = 1
-            yield (datetime(current_year, current_month, 1),
-                   datetime(next_year, next_month, 1))
+            yield (datetime(current_year, current_month, 1), datetime(next_year, next_month, 1))
 
             current_year = next_year
             current_month = next_month

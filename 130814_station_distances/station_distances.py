@@ -36,12 +36,10 @@ def distances_stations(cluster, name=''):
     coordinates = []
     for station in cluster.stations:
         try:
-            numpy.testing.assert_allclose(station.get_lla_coordinates(),
-                                          (0., 0., 0.), atol=1e-7)
+            numpy.testing.assert_allclose(station.get_lla_coordinates(), (0.0, 0.0, 0.0), atol=1e-7)
         except AssertionError:
             # Not invalid GPS
-            coordinates.append(
-                numpy.array(station.calc_center_of_mass_coordinates()))
+            coordinates.append(numpy.array(station.calc_center_of_mass_coordinates()))
     distances = distance_combinations(coordinates)
     plot_station_distances(distances, name=name)
 

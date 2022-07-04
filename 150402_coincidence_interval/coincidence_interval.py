@@ -25,7 +25,7 @@ def plot_coincidence_intervals(coincidences):
         # The counts are multiplied by 3 ** n to make them more similar in size
         # Difference are cause by energy spectrum, station uptime and positions
         greyness = r'black!%d' % (n * 100 / maxn)
-        plot.histogram(counts * (3 ** n), bins, linestyle=greyness)
+        plot.histogram(counts * (3**n), bins, linestyle=greyness)
         plot.draw_vertical_line(bins[counts.argmax()], linestyle=greyness)
     plot.set_xlabel(r'Time between consecutive coincidences')
     plot.set_ylabel(r'Counts')
@@ -38,8 +38,7 @@ def coincidence_interval(coincidences, n):
     if n == 0:
         ets = coincidences.col('ext_timestamp')
     else:
-        ets = coincidences.read_where('(N == n) & s501 & ~s510 & ~s507',
-                                      field='ext_timestamp')
+        ets = coincidences.read_where('(N == n) & s501 & ~s510 & ~s507', field='ext_timestamp')
     dt = ets[1:] - ets[:-1]
     return dt
 

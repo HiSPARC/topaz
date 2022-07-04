@@ -5,9 +5,7 @@ from sapphire.transformations import clock
 
 
 def get_gps_timestamp(file, time_offset):
-    """Convert time_offsets to gps timestamps and nanoseconds
-
-    """
+    """Convert time_offsets to gps timestamps and nanoseconds"""
     reference_date = get_reference_datetime(file)
     absolute_date = get_absolute_datetime(reference_date, time_offset)
     timestamp, nanosecond = datetime_to_gpstimestamp_nanoseconds(absolute_date)

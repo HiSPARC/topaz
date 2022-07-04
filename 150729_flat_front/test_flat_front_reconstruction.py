@@ -80,8 +80,7 @@ def analyse():
     unique_coordinates = list({(z, a) for z, a in zip(zenith_re, azimuth_re)})
     zenith_uni, azimuth_uni = list(zip(*unique_coordinates))
     plot = PolarPlot(use_radians=True)
-    plot.scatter(array(azimuth_uni), array(zenith_uni),
-                 markstyle='mark size=.75pt')
+    plot.scatter(array(azimuth_uni), array(zenith_uni), markstyle='mark size=.75pt')
     plot.set_xlabel(r'Azimuth \si{\radian}')
     plot.set_ylabel(r'Zenith \si{\radian}')
     plot.save_as_pdf('polar')

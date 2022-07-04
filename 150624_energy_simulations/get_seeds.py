@@ -26,11 +26,8 @@ if __name__ == "__main__":
         sims = overview.get_node('/simulations')
         for e in set(log10(sims.col('energy'))):
             for z in set(sims.read_where('log10(energy) == e')['zenith']):
-                selection = sims.read_where('(log10(energy) == e) & '
-                                            '(zenith == z) & '
-                                            '(particle_id == 14)')
-                selected_seeds = ['%d_%d' % (row['seed1'], row['seed2'])
-                                  for row in selection]
+                selection = sims.read_where('(log10(energy) == e) & ' '(zenith == z) & ' '(particle_id == 14)')
+                selected_seeds = ['%d_%d' % (row['seed1'], row['seed2']) for row in selection]
                 possible_seeds = available_seeds.intersection(selected_seeds)
                 if len(possible_seeds):
                     seeds.append(sample(possible_seeds, 1)[0])

@@ -33,4 +33,4 @@ if __name__ == "__main__":
         events = data.root.hisparc.cluster_kascade.station_601.events
         integrals = events.read_coordinates(event_ids, 'integrals')
         data.create_array('/', 'reconstructions_integrals', integrals)
-        data.create_array('/', 'reconstructions_integrals_n', integrals / 5000.)
+        data.create_array('/', 'reconstructions_integrals_n', integrals / 5000.0)

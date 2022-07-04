@@ -10,7 +10,7 @@ DATA_PATH = '/Users/arne/Datastore/tijdtest/tijdtest_data.h5'
 
 
 def download(storage, test):
-    """ Download data from the tijdtest stations
+    """Download data from the tijdtest stations
 
     This will download data in the given date range from both the swap and
     reference station into storage.
@@ -22,7 +22,7 @@ def download(storage, test):
 
 
 def check_downloaded(storage, test):
-    """ Check if any data already exists in node for the given date range
+    """Check if any data already exists in node for the given date range
 
     This will simply look if there are any entries in the events table in the
     node 'id' that fall within the given date range (start-end).
@@ -76,17 +76,13 @@ def append_new(id=None, path=None):
 
 
 def get_ids(path=None):
-    """ Get list of all test ids in the data file
-
-    """
+    """Get list of all test ids in the data file"""
     if not path:
         path = DATA_PATH
 
     with tables.open_file(path, 'r') as data_file:
-        ids_swap = [int(node._v_name[1:])
-                    for node in data_file.list_nodes('/swap/')]
-        ids_refr = [int(node._v_name[1:])
-                    for node in data_file.list_nodes('/refr/')]
+        ids_swap = [int(node._v_name[1:]) for node in data_file.list_nodes('/swap/')]
+        ids_refr = [int(node._v_name[1:]) for node in data_file.list_nodes('/refr/')]
     ids_swap.sort()
     ids_refr.sort()
 
@@ -94,7 +90,7 @@ def get_ids(path=None):
 
 
 def download_all(path=None):
-    """ Download data for all tests in the testlist
+    """Download data for all tests in the testlist
 
     NOTE: If a datafile already exists, it will be overwritten
 
@@ -109,9 +105,7 @@ def download_all(path=None):
 
 
 def remove(id, path=None):
-    """ Remove nodes with downloaded data for given ids
-
-    """
+    """Remove nodes with downloaded data for given ids"""
     if not path:
         path = DATA_PATH
 
@@ -131,9 +125,7 @@ def remove(id, path=None):
 
 
 def reassign(old_id, new_id, path=None):
-    """ Reassign nodes by moving the table
-
-    """
+    """Reassign nodes by moving the table"""
     if not path:
         path = DATA_PATH
 

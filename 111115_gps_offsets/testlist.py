@@ -1,8 +1,7 @@
 from datetime import datetime as dt
 
 
-class Tijdtest():
-
+class Tijdtest:
     def __init__(self, id, hisparc, gps, trigger, start, end, note):
         self.id = id
         self.hisparc = hisparc
@@ -20,7 +19,7 @@ class Tijdtest():
 
 
 def test_log():
-    """ A log of all tests
+    """A log of all tests
 
     In this program is a list of all available tests from the tijdtest
     project.
@@ -122,17 +121,27 @@ def test_log():
         (92, '307', 'test', 'PMT1', (2013, 11, 5, 10, 43), (2013, 11, 5, 11, 13), 'subset78'),
         (93, '311', 'test', 'PMT1', (2013, 11, 5, 11, 40), (2013, 11, 5, 12, 10), 'subset79'),
         (94, '313', 'test', 'PMT1', (2013, 11, 5, 12, 22), (2013, 11, 5, 13, 7), 'subset80'),
-        (95, '304', 'test', 'PMT1', (2013, 11, 5, 13, 50), (2013, 11, 5, 14, 26), 'subset82'))
+        (95, '304', 'test', 'PMT1', (2013, 11, 5, 13, 50), (2013, 11, 5, 14, 26), 'subset82'),
+    )
 
     test_all = [Tijdtest(*test) for test in tests]
 
     return test_all
 
 
-def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
-              note=None, subset='ALL', complement=False, part=None,
-              unique=True):
-    """ Search available tests and return those that match request
+def get_tests(
+    id=None,
+    hisparc=None,
+    gps=None,
+    trigger=None,
+    group=None,
+    note=None,
+    subset='ALL',
+    complement=False,
+    part=None,
+    unique=True,
+):
+    """Search available tests and return those that match request
 
     Tests can be retrieved based on their parameters.
     The HiSPARC box number, the GPS used and the trigger of the swapped box.
@@ -158,84 +167,80 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
     if subset in ('ALL'):
         test_list = test_all
     elif subset in ('PMT'):
-        test_list = [test for test in test_all
-                     if ('PMT') in test.trigger and
-                        ('rext') not in test.note and
-                        ('bgps') not in test.note and
-                        ('ppsoff') not in test.note and
-                        ('longgps') not in test.note and
-                        ('noalmanac') not in test.note]
+        test_list = [
+            test
+            for test in test_all
+            if ('PMT') in test.trigger
+            and ('rext') not in test.note
+            and ('bgps') not in test.note
+            and ('ppsoff') not in test.note
+            and ('longgps') not in test.note
+            and ('noalmanac') not in test.note
+        ]
     elif subset in ('EXT'):
-        test_list = [test for test in test_all
-                     if ('EXT') in test.trigger or
-                        ('rext') in test.note]
+        test_list = [test for test in test_all if ('EXT') in test.trigger or ('rext') in test.note]
     elif subset in ('GPS'):
-        test_list = [test for test in test_all
-                     if ('test') in test.gps or
-                        ('r501') in test.note]
+        test_list = [test for test in test_all if ('test') in test.gps or ('r501') in test.note]
     elif subset in ('ownGPS'):
-        test_list = [test for test in test_all
-                     if (('test') in test.gps and
-                         ('r501') in test.note) or
-                        (('501') in test.gps and
-                         ('r501') not in test.note)]
+        test_list = [
+            test
+            for test in test_all
+            if (('test') in test.gps and ('r501') in test.note) or (('501') in test.gps and ('r501') not in test.note)
+        ]
     elif subset in ('sameGPS'):
-        test_list = [test for test in test_all
-                     if (('test') in test.gps and
-                         ('r501') not in test.note) or
-                        (('501') in test.gps and
-                         ('r501') in test.note)]
+        test_list = [
+            test
+            for test in test_all
+            if (('test') in test.gps and ('r501') not in test.note) or (('501') in test.gps and ('r501') in test.note)
+        ]
     elif subset in ('Bad'):
-        test_list = [test for test in test_all
-                     if ('sbgps') in test.note or
-                        ('rbgps') in test.note]
+        test_list = [test for test in test_all if ('sbgps') in test.note or ('rbgps') in test.note]
     elif subset in ('SLV'):
-        test_list = [test for test in test_all
-                     if ('slv') in test.note]
+        test_list = [test for test in test_all if ('slv') in test.note]
     elif subset in ('NoAlmanac'):
-        test_list = [test for test in test_all
-                     if ('noalmanac') in test.note]
+        test_list = [test for test in test_all if ('noalmanac') in test.note]
     elif subset in ('Good1'):
         # Tests with different GPS, otherwise normal conditions
-        test_list = [test for test in test_all
-                     if test.id in [1, 2, 4, 10, 12, 15, 16, 17, 25, 84]]
+        test_list = [test for test in test_all if test.id in [1, 2, 4, 10, 12, 15, 16, 17, 25, 84]]
     elif subset in ('Good2'):
         # Tests with GPS splitter, otherwise normal conditions
         # test 33 and 34 could be added, but the same units were also
         # tested with a different GPS: 4 and 10, which are in Good1
-        test_list = [test for test in test_all
-                     if test.id in [33, 34,
-                                    38, 39, 45, 47, 51, 52, 54, 55, 56, 57, 58,
-                                    73, 77, 81, 90, 91, 92, 93, 94, 95]]
+        test_list = [
+            test
+            for test in test_all
+            if test.id in [33, 34, 38, 39, 45, 47, 51, 52, 54, 55, 56, 57, 58, 73, 77, 81, 90, 91, 92, 93, 94, 95]
+        ]
     else:
         test_list = test_all
 
     if complement and subset in ('EXT'):
-        test_list = [test
-                     for test in test_all
-                     for ptest in test_list
-                     if test.group == ptest.group.replace('EXT', 'PMT2') or
-                     test.group == ptest.group.replace('EXT', 'PMT1') or
-                     test.group == ptest.group]
+        test_list = [
+            test
+            for test in test_all
+            for ptest in test_list
+            if test.group == ptest.group.replace('EXT', 'PMT2')
+            or test.group == ptest.group.replace('EXT', 'PMT1')
+            or test.group == ptest.group
+        ]
     elif complement and subset in ('GPS'):
-        test_list = [test
-                     for test in test_all
-                     for ptest in test_list
-                     if test.group == ptest.group.replace('test', '501') or
-                     test.group == ptest.group]
+        test_list = [
+            test
+            for test in test_all
+            for ptest in test_list
+            if test.group == ptest.group.replace('test', '501') or test.group == ptest.group
+        ]
     elif complement and subset in ('Bad'):
-        test_list = [test
-                     for test in test_all
-                     for ptest in test_list
-                     if test.group == ptest.group]
+        test_list = [test for test in test_all for ptest in test_list if test.group == ptest.group]
     elif complement and subset in ('NoAlmanac'):
         for test in test_list:
             print('subset%d' % test.id)
-        test_list = [test
-                     for test in test_all
-                     for ptest in test_list
-                     if 'subset%d' % ptest.id in test.note or
-                        test.id == ptest.id]
+        test_list = [
+            test
+            for test in test_all
+            for ptest in test_list
+            if 'subset%d' % ptest.id in test.note or test.id == ptest.id
+        ]
 
     if id:
         test_list = [test for test in test_list if id in [test.id]]
@@ -281,21 +286,16 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
 
 
 if __name__ in ('__main__'):
-    print("Number of tests: %s (unique: %s)" %
-           (len(get_tests(subset='ALL', unique=False)),
-            len(get_tests(subset='ALL', unique=True))))
-    print("Number of boxes: %s" %
-           len(get_tests(part='hisparc', unique=True)))
+    print(
+        "Number of tests: %s (unique: %s)"
+        % (len(get_tests(subset='ALL', unique=False)), len(get_tests(subset='ALL', unique=True)))
+    )
+    print("Number of boxes: %s" % len(get_tests(part='hisparc', unique=True)))
     print('HII:074:  %s' % ", ".join(get_tests(hisparc='074', part='group')))
     print('GPS:test: %s' % ", ".join(get_tests(gps='test', part='group')))
     print('TRG:EXT:  %s' % ", ".join(get_tests(trigger='EXT', part='group')))
-    print('HII:053, TRG:EXT: %s' %
-           ", ".join(get_tests(hisparc='053', trigger='EXT', part='group')))
-    print('GRP:018/501/PMT2: %s' %
-           ", ".join(get_tests(group='018/501/PMT2', part='group')))
-    print("GPS:test +comp: %s" %
-           ", ".join(get_tests(subset='GPS', part='hisparc')))
-    print("BadGPS: %s" %
-           ", ".join(get_tests(subset='Bad', part='hisparc')))
-    print("TRG:EXT +comp: %s" %
-           ", ".join(get_tests(subset='EXT', part='group', complement=True)))
+    print('HII:053, TRG:EXT: %s' % ", ".join(get_tests(hisparc='053', trigger='EXT', part='group')))
+    print('GRP:018/501/PMT2: %s' % ", ".join(get_tests(group='018/501/PMT2', part='group')))
+    print("GPS:test +comp: %s" % ", ".join(get_tests(subset='GPS', part='hisparc')))
+    print("BadGPS: %s" % ", ".join(get_tests(subset='Bad', part='hisparc')))
+    print("TRG:EXT +comp: %s" % ", ".join(get_tests(subset='EXT', part='group', complement=True)))

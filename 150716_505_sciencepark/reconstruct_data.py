@@ -38,19 +38,21 @@ def analyse_reconstructions(data):
     zens = s_recs['zenith']
     azis = s_recs['azimuth']
 
-    high_zenith = (zenc > .2) & (zens > .2)
+    high_zenith = (zenc > 0.2) & (zens > 0.2)
 
     for minn in [1, 2, 4, 8, 16]:
-        filter = (s_recs['min_n'] > minn)
+        filter = s_recs['min_n'] > minn
 
         length = len(azis.compress(high_zenith & filter))
-        shifts501 = np.random.normal(0, .06, length)
-        azicounts, x, y = np.histogram2d(azis.compress(high_zenith & filter) + shifts501,
-                                         azic.compress(high_zenith & filter),
-                                         bins=np.linspace(-np.pi, np.pi, 73))
+        shifts501 = np.random.normal(0, 0.06, length)
+        azicounts, x, y = np.histogram2d(
+            azis.compress(high_zenith & filter) + shifts501,
+            azic.compress(high_zenith & filter),
+            bins=np.linspace(-np.pi, np.pi, 73),
+        )
         plota = Plot()
         plota.histogram2d(azicounts, np.degrees(x), np.degrees(y), type='reverse_bw', bitmap=True)
-#         plota.set_title('Reconstructed azimuths for events in coincidence (zenith gt .2 rad)')
+        #         plota.set_title('Reconstructed azimuths for events in coincidence (zenith gt .2 rad)')
         plota.set_xlabel(r'$\phi_{505}$ [\si{\degree}]')
         plota.set_ylabel(r'$\phi_{Science Park}$ [\si{\degree}]')
         plota.set_xticks([-180, -90, 0, 90, 180])

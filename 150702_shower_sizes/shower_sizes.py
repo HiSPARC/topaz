@@ -11,13 +11,13 @@ from sapphire import CorsikaQuery
 OVERVIEW = '/Users/arne/Datastore/CORSIKA/corsika_overview.h5'
 
 
-def f(x, a, b=1.):
+def f(x, a, b=1.0):
     """Relation between shower size and energy
 
     size = 10 ** (energy ** b - a)
 
     """
-    return (x ** b - a)
+    return x**b - a
 
 
 def plot_shower_size(leptons=['electron', 'muon']):
@@ -40,8 +40,7 @@ def plot_shower_size(leptons=['electron', 'muon']):
             max_size.append(sizes[2] if sizes[2] else 0.1)
         if len(zeniths):
             plot.plot(zeniths, median_size, linestyle='very thin')
-            plot.shade_region(zeniths, min_size, max_size,
-                              color='lightgray, semitransparent')
+            plot.shade_region(zeniths, min_size, max_size, color='lightgray, semitransparent')
             plot.add_pin('%.1f' % e, relative_position=0)
 
     plot.set_xticks([t for t in arange(0, 60.1, 7.5)])
@@ -78,8 +77,7 @@ def plot_size_energy():
         zen_plot = Plot(axis='semilogy')
         shade = 'black!%f' % (100 - z)
 
-        energies = sorted(cq.available_parameters('energy', particle=p,
-                                                  zenith=z))
+        energies = sorted(cq.available_parameters('energy', particle=p, zenith=z))
         sizes_m = []
         sizes_e = []
         sizes_l = []
@@ -106,7 +104,7 @@ def plot_size_energy():
         plot.scatter(energies_l, sizes_l, mark='square', markstyle=shade)
 
         # Fit
-        initial = (10.2, 1.)
+        initial = (10.2, 1.0)
         popt_m, pcov_m = curve_fit(f, energies_m, log10(sizes_m), p0=initial)
         popt_e, pcov_e = curve_fit(f, energies_e, log10(sizes_e), p0=initial)
         popt, pcov = curve_fit(f, energies_l, log10(sizes_l), p0=initial)

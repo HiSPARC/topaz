@@ -6,9 +6,7 @@ from sapphire import download_coincidences, download_data
 
 
 def download_501_510_dataset():
-    """Download a dataset for analysis
-
-    """
+    """Download a dataset for analysis"""
     print("Downloading 501-510 dataset.")
     stations = [501, 510]
 

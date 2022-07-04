@@ -25,8 +25,7 @@ def ThreeStationsOrientation(d=10):
 
     cluster = BaseCluster()
     for i, orientation in enumerate(['UD', 'LR', 'UD']):
-        detectors = [((-d / 2., 0, 0), orientation),
-                     ((d / 2., 0, 0), orientation)]
+        detectors = [((-d / 2.0, 0, 0), orientation), ((d / 2.0, 0, 0), orientation)]
         cluster._add_station((0, 0, 0), 0, detectors, number=i)
         if i == 2:
             for d in cluster.stations[-1].detectors:
@@ -34,8 +33,7 @@ def ThreeStationsOrientation(d=10):
     return cluster
 
 
-class ErrorlessDetectorBoundarySimulation(ErrorlessSimulation,
-                                          DetectorBoundarySimulation):
+class ErrorlessDetectorBoundarySimulation(ErrorlessSimulation, DetectorBoundarySimulation):
 
     pass
 
@@ -43,17 +41,15 @@ class ErrorlessDetectorBoundarySimulation(ErrorlessSimulation,
 def do_simulation():
     with tables.open_file(RESULT_DATA, 'a') as data:
         cluster = ThreeStationsOrientation()
-        sim = ErrorlessDetectorBoundarySimulation(CORSIKA_DATA_e15_z375, 150,
-                                                  cluster, data, N=30000,
-                                                  progress=True,
-                                                  output_path='/')
+        sim = ErrorlessDetectorBoundarySimulation(
+            CORSIKA_DATA_e15_z375, 150, cluster, data, N=30000, progress=True, output_path='/'
+        )
         sim.run()
 
         cluster = ThreeStationsOrientation(5)
-        sim = ErrorlessDetectorBoundarySimulation(CORSIKA_DATA_e15_z375, 150,
-                                                  cluster, data, N=30000,
-                                                  progress=True,
-                                                  output_path='/d5')
+        sim = ErrorlessDetectorBoundarySimulation(
+            CORSIKA_DATA_e15_z375, 150, cluster, data, N=30000, progress=True, output_path='/d5'
+        )
         sim.run()
 
 
@@ -65,8 +61,7 @@ def plot_n_azimuth(path='/'):
         lr_azi = coin.read_where('s1', field='azimuth')
         sq_azi = coin.read_where('s2', field='azimuth')
         udlr_azi = coin.get_where_list('s0 & s1')
-        print('Percentage detected in both %f ' %
-               (float(len(udlr_azi)) / len(in_azi)))
+        print('Percentage detected in both %f ' % (float(len(udlr_azi)) / len(in_azi)))
 
         bins = np.linspace(-np.pi, np.pi, 30)
         in_counts = np.histogram(in_azi, bins)[0].astype(float)
@@ -74,8 +69,7 @@ def plot_n_azimuth(path='/'):
         lr_counts = np.histogram(lr_azi, bins)[0].astype(float)
         sq_counts = np.histogram(sq_azi, bins)[0].astype(float)
 
-        print('Detected: UD %d | LR %d | SQ %d' %
-               (sum(ud_counts), sum(lr_counts), sum(sq_counts)))
+        print('Detected: UD %d | LR %d | SQ %d' % (sum(ud_counts), sum(lr_counts), sum(sq_counts)))
 
         plot = Plot()
         plot.histogram(ud_counts / in_counts, bins, linestyle='black')
@@ -86,7 +80,7 @@ def plot_n_azimuth(path='/'):
         plot.set_ylabel(r'Percentage detected')
         plot.set_xlimits(bins[0], bins[-1])
         plot.draw_horizontal_line(0, linestyle='thin, gray')
-#         plot.set_ylimits(0)
+        #         plot.set_ylimits(0)
         plot.save_as_pdf('azimuth_percentage' + path.replace('/', '_'))
 
 

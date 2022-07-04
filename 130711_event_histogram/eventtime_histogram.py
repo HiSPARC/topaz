@@ -28,10 +28,10 @@ def normalize_event_rates(data, station_numbers):
     for i, s in enumerate(station_numbers):
         n = Station(s).n_detectors()
         if n == 2:
-            scaled_data[i] /= 1200.
+            scaled_data[i] /= 1200.0
         elif n == 4:
-            scaled_data[i] /= 2500.
-    scaled_data = np.where(scaled_data > 2., 2., scaled_data)
+            scaled_data[i] /= 2500.0
+    scaled_data = np.where(scaled_data > 2.0, 2.0, scaled_data)
 
     return scaled_data
 
@@ -44,16 +44,15 @@ def plot_histogram(data, timestamps, station_numbers):
 
     """
     plot = Plot(width=r'\linewidth', height=r'1.3\linewidth')
-    plot.histogram2d(data.T[::7][1:], timestamps[::7] / 1e9,
-                     np.arange(len(station_numbers) + 1),
-                     type='reverse_bw', bitmap=True)
+    plot.histogram2d(
+        data.T[::7][1:], timestamps[::7] / 1e9, np.arange(len(station_numbers) + 1), type='reverse_bw', bitmap=True
+    )
     plot.set_label(gps_to_datetime(timestamps[-1]).date().isoformat(), 'upper left')
     plot.set_xlimits(min=YEARS_TICKS[0] / 1e9, max=timestamps[-1] / 1e9)
     plot.set_xticks(YEARS_TICKS / 1e9)
     plot.set_xtick_labels(YEARS_LABELS)
     plot.set_yticks(np.arange(0.5, len(station_numbers) + 0.5))
-    plot.set_ytick_labels(['%d' % s for s in sorted(station_numbers)],
-                          style=r'font=\sffamily\tiny')
+    plot.set_ytick_labels(['%d' % s for s in sorted(station_numbers)], style=r'font=\sffamily\tiny')
     plot.set_axis_options('ytick pos=right')
     plot.save_as_pdf('eventtime_histogram_network_hour')
 

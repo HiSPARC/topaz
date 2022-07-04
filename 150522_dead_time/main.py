@@ -11,14 +11,13 @@ from sapphire.publicdb import download_data
 
 DATA = '/Users/arne/Datastore/dead_time.h5'
 STATION = 99
-TESTS = ((1, datetime(2015, 5, 22, 11, 10), datetime(2015, 5, 22, 11, 15)),
-         (2, datetime(2015, 5, 22, 11, 24), datetime(2015, 5, 22, 11, 26)),
-         (3, datetime(2015, 5, 22, 11, 27), datetime(2015, 5, 22, 11, 29)),
-         (4, datetime(2015, 5, 22, 11, 32), datetime(2015, 5, 22, 11, 34)))
-TIME_WINDOWS = ((1, 2., 1., 0.),
-                (2, 1., 1., 1.),
-                (3, 1., 1., 1.),
-                (4, .5, 1., 0.))
+TESTS = (
+    (1, datetime(2015, 5, 22, 11, 10), datetime(2015, 5, 22, 11, 15)),
+    (2, datetime(2015, 5, 22, 11, 24), datetime(2015, 5, 22, 11, 26)),
+    (3, datetime(2015, 5, 22, 11, 27), datetime(2015, 5, 22, 11, 29)),
+    (4, datetime(2015, 5, 22, 11, 32), datetime(2015, 5, 22, 11, 34)),
+)
+TIME_WINDOWS = ((1, 2.0, 1.0, 0.0), (2, 1.0, 1.0, 1.0), (3, 1.0, 1.0, 1.0), (4, 0.5, 1.0, 0.0))
 
 
 def download_tests():

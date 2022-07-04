@@ -38,16 +38,18 @@ def analyse_reconstructions(data):
     zens = s_recs.col('zenith')
     azis = s_recs.col('azimuth')
 
-    high_zenith = (zenc > .2) & (zens > .2)
+    high_zenith = (zenc > 0.2) & (zens > 0.2)
 
     for minn in [1, 2, 4, 8, 16]:
-        filter = (s_recs.col('min_n') > minn)
+        filter = s_recs.col('min_n') > minn
 
         length = len(azis.compress(high_zenith & filter))
-        shifts501 = np.random.normal(0, .06, length)
-        azicounts, x, y = np.histogram2d(azis.compress(high_zenith & filter) + shifts501,
-                                         azic.compress(high_zenith & filter),
-                                         bins=np.linspace(-np.pi, np.pi, 73))
+        shifts501 = np.random.normal(0, 0.06, length)
+        azicounts, x, y = np.histogram2d(
+            azis.compress(high_zenith & filter) + shifts501,
+            azic.compress(high_zenith & filter),
+            bins=np.linspace(-np.pi, np.pi, 73),
+        )
         plota = Plot()
         plota.histogram2d(azicounts, np.degrees(x), np.degrees(y), type='reverse_bw', bitmap=True)
         # plota.set_title('Reconstructed azimuths for events in coincidence (zenith gt .2 rad)')
@@ -58,11 +60,11 @@ def analyse_reconstructions(data):
         plota.save_as_pdf('azimuth_501_spa_minn%d' % minn)
 
         length = sum(filter)
-        shifts501 = np.random.normal(0, .04, length)
+        shifts501 = np.random.normal(0, 0.04, length)
 
-        zencounts, x, y = np.histogram2d(zens.compress(filter) + shifts501,
-                                         zenc.compress(filter),
-                                         bins=np.linspace(0, np.pi / 3., 41))
+        zencounts, x, y = np.histogram2d(
+            zens.compress(filter) + shifts501, zenc.compress(filter), bins=np.linspace(0, np.pi / 3.0, 41)
+        )
         plotz = Plot()
         plotz.histogram2d(zencounts, np.degrees(x), np.degrees(y), type='reverse_bw', bitmap=True)
         # plotz.set_title('Reconstructed zeniths for station events in coincidence')
@@ -72,8 +74,9 @@ def analyse_reconstructions(data):
         plotz.set_yticks([0, 15, 30, 45, 60])
         plotz.save_as_pdf('zenith_501_spa_minn%d' % minn)
 
-        distances = angle_between(zens.compress(filter), azis.compress(filter),
-                                  zenc.compress(filter), azic.compress(filter))
+        distances = angle_between(
+            zens.compress(filter), azis.compress(filter), zenc.compress(filter), azic.compress(filter)
+        )
         counts, bins = np.histogram(distances, bins=np.linspace(0, np.pi, 91))
         plotd = Plot()
         plotd.histogram(counts, np.degrees(bins))

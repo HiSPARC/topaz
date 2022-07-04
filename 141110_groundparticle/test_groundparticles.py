@@ -20,8 +20,8 @@ def run_simulation():
     with tables.open_file(RESULT_PATH, 'w') as data:
         cluster = ScienceParkCluster()
         sim = GroundParticlesSimulationWithoutErrors(
-            CORSIKA_DATA, max_core_distance=500, cluster=cluster,
-            datafile=data, output_path='/', N=3000, seed=153957)
+            CORSIKA_DATA, max_core_distance=500, cluster=cluster, datafile=data, output_path='/', N=3000, seed=153957
+        )
         sim.run()
 
 
@@ -33,8 +33,7 @@ def scatter_n():
             graph = Plot()
             c = coincidences.read_where('N == n')
             print('N = %d: %d' % (n, len(c)))
-            graph.plot(c['x'], c['y'], mark='*', linestyle=None,
-                       markstyle='mark size=.3pt')
+            graph.plot(c['x'], c['y'], mark='*', linestyle=None, markstyle='mark size=.3pt')
             plot_cluster(graph, cluster)
             r = 520
             graph.set_ylimits(-r, r)
@@ -48,8 +47,7 @@ def plot_cluster(graph, cluster):
     for station in cluster.stations:
         for detector in station.detectors:
             detector_x, detector_y = detector.get_xy_coordinates()
-            graph.plot([detector_x], [detector_y], mark='*', linestyle=None,
-                       markstyle='mark size=.4pt,color=red')
+            graph.plot([detector_x], [detector_y], mark='*', linestyle=None, markstyle='mark size=.4pt,color=red')
 
 
 def test_cluster():
@@ -72,8 +70,8 @@ def rerun_shower():
     cluster = bla.root.coincidences._v_attrs.cluster
 
     sim = GroundParticlesSimulationWithoutErrors(
-        CORSIKA_DATA, 0, cluster, datafile=data, output_path='/',
-        N=100, seed=153957)
+        CORSIKA_DATA, 0, cluster, datafile=data, output_path='/', N=100, seed=153957
+    )
 
     shower_parameters = bla.root.coincidences.coincidences[0]
     alpha = shower_parameters['azimuth'] - sim.corsikafile.get_node_attr('/', 'event_header').azimuth

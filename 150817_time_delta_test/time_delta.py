@@ -4,8 +4,7 @@ from artist import Plot
 
 
 def analyse(name):
-    data = genfromtxt('data/%s.tsv' % name, delimiter='\t', dtype=None,
-                      names=['ext_timestamp', 'time_delta'])
+    data = genfromtxt('data/%s.tsv' % name, delimiter='\t', dtype=None, names=['ext_timestamp', 'time_delta'])
     time_delta = data['time_delta']
 
     # Plot distribution
@@ -22,8 +21,7 @@ def analyse(name):
     skip = 20
     moving_average = convolve(time_delta, ones((n,)) / n, mode='valid')
     plot = Plot()
-    timestamps = (data['ext_timestamp'][:-n + 1:skip] -
-                  data['ext_timestamp'][0]) / 1e9 / 3600.
+    timestamps = (data['ext_timestamp'][: -n + 1 : skip] - data['ext_timestamp'][0]) / 1e9 / 3600.0
     plot.plot(timestamps, moving_average[::skip], mark=None)
     plot.set_xlimits(min=0)
     plot.set_ylabel(r'time delta [\si{\nano\second}]')

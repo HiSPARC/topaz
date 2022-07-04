@@ -15,8 +15,7 @@ def plot_pi_ph(plot, test, mark='o'):
     :param measured_ph: measured pulseheight.
 
     """
-    plot.scatter(test.M_PI, test.M_PH, xerr=test.M_PI_ERR, yerr=test.M_PH_ERR,
-                 mark=mark, markstyle='mark size=1.5pt')
+    plot.scatter(test.M_PI, test.M_PH, xerr=test.M_PI_ERR, yerr=test.M_PH_ERR, mark=mark, markstyle='mark size=1.5pt')
 
 
 def compared_nikhef_senstech():

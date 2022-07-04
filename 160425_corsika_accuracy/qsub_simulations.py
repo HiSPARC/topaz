@@ -20,6 +20,5 @@ if __name__ == "__main__":
             if os.path.exists('%s.h5' % seeds):
                 continue
             print(seeds, end=' ')
-            qsub.submit_job(SCRIPT.format(seeds=seeds),
-                            'cors_accu_%s' % seeds, 'generic')
+            qsub.submit_job(SCRIPT.format(seeds=seeds), 'cors_accu_%s' % seeds, 'generic')
     cq.finish()

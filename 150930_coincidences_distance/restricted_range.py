@@ -15,8 +15,7 @@ def modify_range(ts_range, start_ts):
     a range the start of that range is set to start_ts.
 
     """
-    return [(ts1 if ts1 > start_ts else start_ts, ts2)
-            for ts1, ts2 in ts_range if ts2 > start_ts]
+    return [(ts1 if ts1 > start_ts else start_ts, ts2) for ts1, ts2 in ts_range if ts2 > start_ts]
 
 
 def get_coin_count(s1, s2, start_ts):

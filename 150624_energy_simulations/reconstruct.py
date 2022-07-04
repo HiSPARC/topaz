@@ -17,13 +17,11 @@ def reconstruct_simulations(seed):
     with tables.open_file(path, 'a') as data:
         cluster = data.root.coincidences._v_attrs.cluster
 
-        rec_coins = ReconstructESDCoincidences(data, '/coincidences',
-                                               overwrite=True, progress=True,
-                                               cluster=cluster)
+        rec_coins = ReconstructESDCoincidences(data, '/coincidences', overwrite=True, progress=True, cluster=cluster)
         rec_coins.prepare_output()
-        rec_coins.offsets = {station.number: [d.offset + station.gps_offset
-                                              for d in station.detectors]
-                             for station in cluster.stations}
+        rec_coins.offsets = {
+            station.number: [d.offset + station.gps_offset for d in station.detectors] for station in cluster.stations
+        }
         rec_coins.reconstruct_directions()
         rec_coins.reconstruct_cores()
         rec_coins.store_reconstructions()

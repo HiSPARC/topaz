@@ -58,10 +58,9 @@ def download_coincidences_pair(pair):
         data.set_node_attr('/', 'total_exposure', total_exposure)
         data.set_node_attr('/', 'distance', distance)
         for ts_start, ts_end in timestamp_ranges:
-            download_coincidences(data, stations=list(pair),
-                                  start=gps_to_datetime(ts_start),
-                                  end=gps_to_datetime(ts_end),
-                                  progress=False)
+            download_coincidences(
+                data, stations=list(pair), start=gps_to_datetime(ts_start), end=gps_to_datetime(ts_end), progress=False
+            )
         try:
             coin = data.get_node('/coincidences')
         except tables.NoSuchNodeError:
@@ -79,6 +78,6 @@ def download_coincidences_pair(pair):
 if __name__ == "__main__":
     close_pairs = close_pairs_in_network(min=0, max=15e3)
     todo_pairs = [pair for pair in close_pairs if not os.path.exists(DATAPATH % tuple(pair))]
-#     print todo_pairs
-#     download_coincidences_pairs(todo_pairs)
+    #     print todo_pairs
+    #     download_coincidences_pairs(todo_pairs)
     download_coincidences_pairs_multi(todo_pairs)

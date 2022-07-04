@@ -13,7 +13,7 @@ def plot_fit(plot, expected, measured, measured_err=[]):
     :param measured: measured values.
 
     """
-    popt, perr = fit_curve(measured, expected, p0=(1., 1.1, 1.), err=measured_err)
+    popt, perr = fit_curve(measured, expected, p0=(1.0, 1.1, 1.0), err=measured_err)
     print(popt, perr)
     outputs = linspace(0.01, max(measured) + 0.2, 500)
     # Plot fit line
@@ -24,6 +24,8 @@ def plot_fit(plot, expected, measured, measured_err=[]):
     splot.scatter(measured, expected - fit_function(measured, *popt), markstyle='mark size=1pt')
     splot.draw_horizontal_line(0, linestyle='gray')
     splot.set_axis_options('height={2.5cm}')
+
+
 #     splot.set_xlimits(-15e-2, 15e-2)
 
 
@@ -37,8 +39,7 @@ def plot_ph(expected, measured, name, expected_err=[], measured_err=[]):
     """
     plot = MultiPlot(2, 1, height=r".67\linewidth")
     splot = plot.get_subplot_at(0, 0)
-    splot.scatter(measured, expected, xerr=measured_err, yerr=expected_err,
-                  markstyle='mark size=1pt')
+    splot.scatter(measured, expected, xerr=measured_err, yerr=expected_err, markstyle='mark size=1pt')
     splot.plot([0, 6], [0, 6], mark=None, linestyle='gray')
     plot_fit(plot, expected, measured, measured_err)
 
@@ -66,8 +67,7 @@ def plot_pi(expected, measured, name, expected_err=[], measured_err=[]):
     """
     plot = MultiPlot(2, 1, height=r".67\linewidth")
     splot = plot.get_subplot_at(0, 0)
-    splot.scatter(measured, expected, xerr=measured_err, yerr=expected_err,
-                  markstyle='mark size=1pt')
+    splot.scatter(measured, expected, xerr=measured_err, yerr=expected_err, markstyle='mark size=1pt')
     splot.plot([0, 120], [0, 120], mark=None, linestyle='gray')
     plot_fit(plot, expected, measured, measured_err)
 
@@ -96,8 +96,7 @@ def plot_pi_ph(measured_pi, measured_ph, name, ratio, pi_err=[], ph_err=[]):
     plot = MultiPlot(2, 1, height=r".67\linewidth")
 
     splot = plot.get_subplot_at(0, 0)
-    splot.scatter(measured_ph, measured_pi / ratio, xerr=ph_err,
-                  yerr=pi_err / ratio, markstyle='mark size=1pt')
+    splot.scatter(measured_ph, measured_pi / ratio, xerr=ph_err, yerr=pi_err / ratio, markstyle='mark size=1pt')
     splot.plot([0, 6], [0, 6], mark=None, linestyle='gray')
 
     plot_fit(plot, measured_pi / ratio, measured_ph, pi_err)

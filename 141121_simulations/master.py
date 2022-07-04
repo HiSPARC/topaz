@@ -14,16 +14,15 @@ from sapphire.utils import angle_between
 RESULT_PATH = 'result_400_gen_16394.h5'
 CORSIKA_DATA = 'corsika.h5'
 GRAYS = ['black', 'darkgray', 'gray', 'lightgray']
-COLORS = ['black', 'teal', 'orange', 'purple', 'cyan', 'green', 'blue', 'red',
-          'gray']
+COLORS = ['black', 'teal', 'orange', 'purple', 'cyan', 'green', 'blue', 'red', 'gray']
 
 
 def run_simulation():
     with tables.open_file(RESULT_PATH, 'w') as data:
         cluster = HiSPARCStations([501, 502, 503, 504, 505, 506, 508, 509])
         sim = GroundParticlesSimulation(
-            CORSIKA_DATA, max_core_distance=400, cluster=cluster,
-            datafile=data, output_path='/', N=5000)
+            CORSIKA_DATA, max_core_distance=400, cluster=cluster, datafile=data, output_path='/', N=5000
+        )
         sim.run()
 
 
@@ -37,11 +36,11 @@ def scatter_n():
             c = coincidences.read_where('N == n')
             if len(c) == 0:
                 continue
-            graph.plot(c['x'], c['y'], mark='*', linestyle=None,
-                       markstyle='mark size=.2pt,color=%s' % COLORS[n % len(COLORS)])
+            graph.plot(
+                c['x'], c['y'], mark='*', linestyle=None, markstyle='mark size=.2pt,color=%s' % COLORS[n % len(COLORS)]
+            )
             graph1 = Plot()
-            graph1.plot(c['x'], c['y'], mark='*', linestyle=None,
-                        markstyle='mark size=.2pt')
+            graph1.plot(c['x'], c['y'], mark='*', linestyle=None, markstyle='mark size=.2pt')
             plot_cluster(graph1, cluster)
             graph1.set_axis_equal()
             graph1.set_ylimits(-r, r)
@@ -63,8 +62,7 @@ def scatter_n():
         graph.set_xlimits(-r, r)
         graph.set_ylabel('y [m]')
         graph.set_xlabel('x [m]')
-        graph.set_title('Color indicates the number triggered stations by '
-                        'a shower.')
+        graph.set_title('Color indicates the number triggered stations by ' 'a shower.')
         graph.save_as_pdf('N')
 
 
@@ -82,8 +80,7 @@ def plot_cluster(graph, cluster):
     for station in cluster.stations:
         for detector in station.detectors:
             detector_x, detector_y = detector.get_xy_coordinates()
-            graph.plot([detector_x], [detector_y], mark='*', linestyle=None,
-                       markstyle='mark size=.4pt,color=red')
+            graph.plot([detector_x], [detector_y], mark='*', linestyle=None, markstyle='mark size=.4pt,color=red')
 
 
 def plot_reconstruction_accuracy():
@@ -95,14 +92,13 @@ def plot_reconstruction_accuracy():
         coincidences = data.root.coincidences.coincidences
         c_recs = data.root.coincidences.reconstructions
         graph = Plot()
-        da = angle_between(c_recs.col('zenith'),
-                           c_recs.col('azimuth'),
-                           c_recs.col('reference_zenith'),
-                           c_recs.col('reference_azimuth'))
+        da = angle_between(
+            c_recs.col('zenith'), c_recs.col('azimuth'), c_recs.col('reference_zenith'), c_recs.col('reference_azimuth')
+        )
         ids = c_recs.col('id')
         N = coincidences.read_coordinates(ids, field='N')
         for k, filter in enumerate([N == 3, N > 3]):
-            n, bins = histogram(da.compress(filter), bins=arange(0, pi, .1))
+            n, bins = histogram(da.compress(filter), bins=arange(0, pi, 0.1))
             graph.histogram(n, bins, linestyle=GRAYS[k % len(GRAYS)])
 
         failed = len(coincidences.get_where_list('N >= 3')) - c_recs.nrows
@@ -123,16 +119,13 @@ def plot_reconstruction_accuracy():
             graph = Plot()
             for k, combo in enumerate(combinations):
                 selected_reconstructions = recs.read_where(combo)
-                filtered_azimuth = array([reference_azimuth[i]
-                                          for i in selected_reconstructions['id']])
-                filtered_zenith = array([reference_zenith[i]
-                                         for i in selected_reconstructions['id']])
+                filtered_azimuth = array([reference_azimuth[i] for i in selected_reconstructions['id']])
+                filtered_zenith = array([reference_zenith[i] for i in selected_reconstructions['id']])
                 azimuth = selected_reconstructions['azimuth']
                 zenith = selected_reconstructions['zenith']
 
-                da = angle_between(zenith, azimuth,
-                                   filtered_zenith, filtered_azimuth)
-                n, bins = histogram(da, bins=arange(0, pi, .1))
+                da = angle_between(zenith, azimuth, filtered_zenith, filtered_azimuth)
+                n, bins = histogram(da, bins=arange(0, pi, 0.1))
                 graph.histogram(n, bins, linestyle=GRAYS[k % len(GRAYS)])
             failed = station_group.events.nrows - recs.nrows
 
@@ -151,8 +144,7 @@ def reconstruct_simulations():
 
         for station in cluster.stations:
             station_group = '/cluster_simulations/station_%d' % station.number
-            rec_events = ReconstructESDEvents(data, station_group, station,
-                                              overwrite=True, progress=True)
+            rec_events = ReconstructESDEvents(data, station_group, station, overwrite=True, progress=True)
             rec_events.prepare_output()
             rec_events.offsets = station.detector_offsets
             rec_events.store_offsets()
@@ -162,12 +154,11 @@ def reconstruct_simulations():
             except:
                 pass
 
-        rec_coins = ReconstructESDCoincidences(data, '/coincidences',
-                                               overwrite=True, progress=True)
+        rec_coins = ReconstructESDCoincidences(data, '/coincidences', overwrite=True, progress=True)
         rec_coins.prepare_output()
-        rec_coins.offsets = {station.number: [o + station.gps_offset
-                                              for o in station.detector_offsets]
-                             for station in cluster.stations}
+        rec_coins.offsets = {
+            station.number: [o + station.gps_offset for o in station.detector_offsets] for station in cluster.stations
+        }
         try:
             rec_coins.reconstruct_directions()
             rec_coins.store_reconstructions()

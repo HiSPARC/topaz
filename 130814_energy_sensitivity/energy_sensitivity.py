@@ -36,7 +36,6 @@ def multi_find_min_energy(cls, xy):
 
 
 class EnergySensitivity:
-
     def __init__(self):
         # Detectors
         stations = [501, 503, 506]
@@ -58,10 +57,8 @@ class EnergySensitivity:
 
         # Throw showers in a regular grid around center mass of the station
         xc, yc, _ = self.cluster.calc_center_of_mass_coordinates()
-        self.xx = np.linspace(-self.max_radius + xc, self.max_radius + xc,
-                              np.sqrt(self.grid_points))
-        self.yy = np.linspace(-self.max_radius + yc, self.max_radius + yc,
-                              np.sqrt(self.grid_points))
+        self.xx = np.linspace(-self.max_radius + xc, self.max_radius + xc, np.sqrt(self.grid_points))
+        self.yy = np.linspace(-self.max_radius + yc, self.max_radius + yc, np.sqrt(self.grid_points))
 
     def main(self):
         # Cache detector positions
@@ -74,7 +71,8 @@ class EnergySensitivity:
     def show_restults(self):
         self.plot_scintillators_in_cluster()
         self.plot_energy_acceptance()
-#         self.draw_background_map()
+
+    #         self.draw_background_map()
 
     def get_area_energy(self, energy):
         n_bins = np.sum(self.results < energy)
@@ -87,11 +85,10 @@ class EnergySensitivity:
 
         worker_pool = Pool()
         temp_multi_find_min_energy = partial(multi_find_min_energy, self)
-        results = worker_pool.map(temp_multi_find_min_energy,
-                                  product(self.xx, self.yy))
+        results = worker_pool.map(temp_multi_find_min_energy, product(self.xx, self.yy))
         worker_pool.close()
         worker_pool.join()
-#         results = [temp_multi_find_min_energy(xy) for xy in product(self.xx, self.yy)]
+        #         results = [temp_multi_find_min_energy(xy) for xy in product(self.xx, self.yy)]
         results = np.array(results).reshape((len(self.xx), len(self.yy))).T
 
         return results
@@ -132,11 +129,11 @@ class EnergySensitivity:
             # To few stations
             return 0
 
-        p_stations = [self.detection_probability_for_station(detector_densities)
-                      for detector_densities in station_densities]
-        p0_stations = [1. - p for p in p_stations]
-        p_cluster = self.calculate_p(p_stations, p0_stations,
-                                     self.min_stations)
+        p_stations = [
+            self.detection_probability_for_station(detector_densities) for detector_densities in station_densities
+        ]
+        p0_stations = [1.0 - p for p in p_stations]
+        p_cluster = self.calculate_p(p_stations, p0_stations, self.min_stations)
 
         return p_cluster
 
@@ -158,9 +155,8 @@ class EnergySensitivity:
             return 0
 
         p0_detectors = [self.p0(density) for density in detector_densities]
-        p_detectors = [1. - p0 for p0 in p0_detectors]
-        p_station = self.calculate_p(p_detectors, p0_detectors,
-                                     self.min_detectors)
+        p_detectors = [1.0 - p0 for p0 in p0_detectors]
+        p_station = self.calculate_p(p_detectors, p0_detectors, self.min_detectors)
         return p_station
 
     def calculate_p(self, p, p0, min_n):
@@ -168,7 +164,7 @@ class EnergySensitivity:
         p_total = 0
         for n in range(min_n, n_p + 1):
             for i in combinations(list(range(n_p)), n):
-                p_combination = 1.
+                p_combination = 1.0
                 for j in range(n_p):
                     if j in i:
                         # Probability of trigger
@@ -188,17 +184,19 @@ class EnergySensitivity:
     def p0(self, detector_density):
         """Chance of detecting no particle in a detector"""
 
-        return np.exp(-detector_density / 2.)
+        return np.exp(-detector_density / 2.0)
 
     def calculate_densities_for_cluster(self, x, y, n_electrons):
-        densities = [self.calculate_densities_for_station(station, x, y, n_electrons)
-                     for station in self.cluster.stations]
+        densities = [
+            self.calculate_densities_for_station(station, x, y, n_electrons) for station in self.cluster.stations
+        ]
 
         return densities
 
     def calculate_densities_for_station(self, station, x, y, n_electrons):
-        densities = [self.calculate_densities_for_detector(detector, x, y, n_electrons)
-                     for detector in station.detectors]
+        densities = [
+            self.calculate_densities_for_detector(detector, x, y, n_electrons) for detector in station.detectors
+        ]
 
         return densities
 
@@ -219,11 +217,9 @@ class EnergySensitivity:
         for station in self.cluster.stations:
             for detector in station.detectors:
                 detector_x, detector_y = detector.get_xy_coordinates()
-                plt.scatter(detector_x, detector_y, marker=',', c='r',
-                            edgecolor='none', s=6)
+                plt.scatter(detector_x, detector_y, marker=',', c='r', edgecolor='none', s=6)
             station_x, station_y, station_a = station.get_xyalpha_coordinates()
-            plt.scatter(station_x, station_y, marker=',', c='b',
-                        edgecolor='none', s=3)
+            plt.scatter(station_x, station_y, marker=',', c='b', edgecolor='none', s=3)
 
     def plot_energy_acceptance(self):
         # Grid
@@ -231,10 +227,8 @@ class EnergySensitivity:
         max_energy = np.log10(self.max_energy)
         levels = (max_energy - min_energy) * 3 + 1
         label_levels = (max_energy - min_energy) + 1
-        contour = plt.contour(self.xx, self.yy, self.results,
-                              np.logspace(min_energy, max_energy, levels))
-        plt.clabel(contour, np.logspace(min_energy, max_energy, label_levels),
-                   inline=1, fontsize=8, fmt='%.0e')
+        contour = plt.contour(self.xx, self.yy, self.results, np.logspace(min_energy, max_energy, levels))
+        plt.clabel(contour, np.logspace(min_energy, max_energy, label_levels), inline=1, fontsize=8, fmt='%.0e')
 
     def draw_background_map(self):
         self_path = os.path.dirname(__file__)
@@ -246,12 +240,10 @@ class EnergySensitivity:
         bg_scale = 1.092
         bg_width = background.shape[1] * bg_scale
         bg_height = background.shape[0] * bg_scale
-        plt.imshow(background, aspect='equal', alpha=0.5,
-                   extent=[-bg_width, bg_width, -bg_height, bg_height])
+        plt.imshow(background, aspect='equal', alpha=0.5, extent=[-bg_width, bg_width, -bg_height, bg_height])
 
 
 class SingleStationSensitivity(EnergySensitivity):
-
     def __init__(self):
         super().__init__()
 
@@ -263,7 +255,6 @@ class SingleStationSensitivity(EnergySensitivity):
 
 
 class SingleTwoEnergySensitivity(SingleStationSensitivity):
-
     def __init__(self):
         super().__init__()
 
@@ -272,7 +263,6 @@ class SingleTwoEnergySensitivity(SingleStationSensitivity):
 
 
 class SingleDiamondEnergySensitivity(SingleStationSensitivity):
-
     def __init__(self):
         super().__init__()
 
@@ -281,7 +271,6 @@ class SingleDiamondEnergySensitivity(SingleStationSensitivity):
 
 
 class StationPairEnergySensitivity(EnergySensitivity):
-
     def __init__(self, pair):
         super().__init__()
 
@@ -312,13 +301,13 @@ class StationPairEnergySensitivityQuarter(EnergySensitivity):
 
         # Shower parameters
         self.max_radius = 1e3
-        self.bin_size = 10.
-#         self.max_radius = bin_size * np.sqrt(self.grid_points)
+        self.bin_size = 10.0
+        #         self.max_radius = bin_size * np.sqrt(self.grid_points)
 
         # Throw showers in one grid around center mass of the stations
-#         xc, yc, _ = self.cluster.calc_center_of_mass_coordinates()
-#         self.xx = np.arange(-self.max_radius + xc, self.max_radius + xc, self.bin_size)
-#         self.yy = np.arange(-self.max_radius + yc, self.max_radius + yc, self.bin_size)
+        #         xc, yc, _ = self.cluster.calc_center_of_mass_coordinates()
+        #         self.xx = np.arange(-self.max_radius + xc, self.max_radius + xc, self.bin_size)
+        #         self.yy = np.arange(-self.max_radius + yc, self.max_radius + yc, self.bin_size)
 
         # Rotate cluster to make stations aligned along x for easy symmetry
         _, phi, _ = self.cluster.calc_rphiz_for_stations(0, 1)
@@ -326,8 +315,8 @@ class StationPairEnergySensitivityQuarter(EnergySensitivity):
 
         # Throw showers in one quarter from center mass of the stations
         xc, yc, _ = self.cluster.calc_center_of_mass_coordinates()
-        self.xx = np.arange(xc + self.bin_size / 2., self.max_radius + xc, self.bin_size)
-        self.yy = np.arange(yc + self.bin_size / 2., self.max_radius + yc, self.bin_size)
+        self.xx = np.arange(xc + self.bin_size / 2.0, self.max_radius + xc, self.bin_size)
+        self.yy = np.arange(yc + self.bin_size / 2.0, self.max_radius + yc, self.bin_size)
 
     def get_area_energy(self, energy):
         """Calculate area
@@ -336,7 +325,7 @@ class StationPairEnergySensitivityQuarter(EnergySensitivity):
 
         """
         area = super(StationPairEnergySensitivity, self).get_area_energy(energy)
-        area *= 4.
+        area *= 4.0
 
         return area
 
@@ -356,7 +345,7 @@ class StationPairAreaEnergySensitivity(StationPairEnergySensitivity):
 
         # Shower parameters
         self.max_radius = 25e3
-        self.step_size = 2.
+        self.step_size = 2.0
 
         # Rotate cluster to make stations aligned along x for easy symmetry
         _, phi, _ = self.cluster.calc_rphiz_for_stations(0, 1)
@@ -386,16 +375,18 @@ class StationPairAreaEnergySensitivity(StationPairEnergySensitivity):
 
         temp_multi_find_min_energy = partial(multi_find_min_energy, self)
         worker_pool = Pool()
-        x_results = np.array(worker_pool.map(temp_multi_find_min_energy,
-                                             [(x, self.yy[0]) for x in self.xx], chunksize=10))
-        y_results = np.array(worker_pool.map(temp_multi_find_min_energy,
-                                             [(self.xx[0], y) for y in self.yy], chunksize=10))
+        x_results = np.array(
+            worker_pool.map(temp_multi_find_min_energy, [(x, self.yy[0]) for x in self.xx], chunksize=10)
+        )
+        y_results = np.array(
+            worker_pool.map(temp_multi_find_min_energy, [(self.xx[0], y) for y in self.yy], chunksize=10)
+        )
         worker_pool.close()
         worker_pool.join()
-#         x_results = np.array([temp_multi_find_min_energy(xy) for xy in
-#                               [(x, self.yy[0]) for x in self.xx]])
-#         y_results = np.array([temp_multi_find_min_energy(xy) for xy in
-#                               [(self.xx[0], y) for y in self.yy]])
+        #         x_results = np.array([temp_multi_find_min_energy(xy) for xy in
+        #                               [(x, self.yy[0]) for x in self.xx]])
+        #         y_results = np.array([temp_multi_find_min_energy(xy) for xy in
+        #                               [(self.xx[0], y) for y in self.yy]])
 
         return (x_results, y_results)
 
@@ -412,8 +403,7 @@ class StationPairAreaEnergySensitivity(StationPairEnergySensitivity):
         for level in levels:
             a = np.interp(level, self.results[0], self.xx) - x0
             b = np.interp(level, self.results[1], self.yy) - y0
-            el = Ellipse(xy=(x0, y0), width=a * 2, height=b * 2,
-                         facecolor='none', edgecolor='red')
+            el = Ellipse(xy=(x0, y0), width=a * 2, height=b * 2, facecolor='none', edgecolor='red')
             ax = plt.gca()
             ax.add_artist(el)
         plt.axis('equal')
@@ -422,18 +412,17 @@ class StationPairAreaEnergySensitivity(StationPairEnergySensitivity):
 
 
 class DistancePairAreaEnergySensitivity(StationPairAreaEnergySensitivity):
-
     def __init__(self, distance, n):
         super().__init__([102, 103])
 
         self.cluster = BaseCluster()
         if n == 8:
-            self.cluster._add_station((distance / 2., 0, 0))
-            self.cluster._add_station((-distance / 2., 0, 0))
+            self.cluster._add_station((distance / 2.0, 0, 0))
+            self.cluster._add_station((-distance / 2.0, 0, 0))
         elif n == 4:
             detectors = [((-5, 0, 0), 'UD'), ((5, 0, 0), 'UD')]
-            self.cluster._add_station((distance / 2., 0, 0), detectors=detectors)
-            self.cluster._add_station((-distance / 2., 0, 0), detectors=detectors)
+            self.cluster._add_station((distance / 2.0, 0, 0), detectors=detectors)
+            self.cluster._add_station((-distance / 2.0, 0, 0), detectors=detectors)
 
         # Throw showers along axis between stations and parallel at point
         # between the stations
@@ -443,7 +432,7 @@ class DistancePairAreaEnergySensitivity(StationPairAreaEnergySensitivity):
 
 
 def generate_regular_grid_positions(n, x0, y0=None, x1=None, y1=None):
-    """ Generate positions on a regular grid bound by (x0, y0) and (x1, y1)
+    """Generate positions on a regular grid bound by (x0, y0) and (x1, y1)
 
     :return: x, y
 
@@ -464,14 +453,14 @@ def generate_regular_grid_positions(n, x0, y0=None, x1=None, y1=None):
 
 
 def generate_positions(self, n, max_r):
-    """ Generate positions and an orientation uniformly on a circle
+    """Generate positions and an orientation uniformly on a circle
 
     :return: r, phi
 
     """
     for i in range(n):
         phi = np.random.uniform(-np.pi, np.pi)
-        r = np.sqrt(np.random.uniform(0, max_r ** 2))
+        r = np.sqrt(np.random.uniform(0, max_r**2))
         yield r, phi
 
 
@@ -488,8 +477,7 @@ def get_pair_distance_energy_array(distances, energies, n=8):
 
 def plot_results(distances, energies, results):
     plot = Plot('loglog')
-    plot.histogram2d(np.log10(results[:-1, :-1] + 10), distances, energies,
-                     bitmap=True)
+    plot.histogram2d(np.log10(results[:-1, :-1] + 10), distances, energies, bitmap=True)
     plot.set_ylabel('Shower energy')
     plot.set_xlabel('Distance between stations')
     plot.save_as_pdf('distance_energy_v_area')

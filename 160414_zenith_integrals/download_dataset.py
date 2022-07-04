@@ -22,15 +22,15 @@ END = datetime(2016, 1, 5)
 def download_dataset():
     with tables.open_file(STATION_PATH, 'w') as data:
         for station_number in STATIONS:
-            download_data(data, '/s%d' % station_number, station_number,
-                          start=START, end=END, type='events', progress=True)
+            download_data(
+                data, '/s%d' % station_number, station_number, start=START, end=END, type='events', progress=True
+            )
 
 
 def reconstruct_data():
     for station_number in STATIONS:
         with tables.open_file(STATION_PATH, 'a') as data:
-            rec = ReconstructESDEvents(data, '/s%d' % station_number,
-                                       station_number, overwrite=True)
+            rec = ReconstructESDEvents(data, '/s%d' % station_number, station_number, overwrite=True)
             rec.reconstruct_and_store()
 
 
@@ -40,7 +40,7 @@ def plot_pulseintegrals():
     in_bins = linspace(1, 15000, 200)
     ph_bins = linspace(10, 1500, 200)
     az_bins = linspace(-pi, pi, 40)
-    ze_bins = linspace(0, pi / 2., 50)
+    ze_bins = linspace(0, pi / 2.0, 50)
     min_n = 1.5
     max_zenith = radians(45)
 

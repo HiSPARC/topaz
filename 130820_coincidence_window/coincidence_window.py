@@ -60,8 +60,7 @@ def coincidences_sciencepark():
     coincidences_stations(station_numbers, group_name=group_name)
 
 
-def coincidences_stations(station_numbers, group_name='Specific stations',
-                          date=None):
+def coincidences_stations(station_numbers, group_name='Specific stations', date=None):
     if date is None:
         date = datetime.date(2016, 2, 1)
     stations_with_data = []
@@ -83,14 +82,12 @@ def coincidences_stations(station_numbers, group_name='Specific stations',
         coinc, event_tables = get_event_tables(data, cluster_groups, stations_with_data)
         windows, counts, n_events = find_n_coincidences(coinc, event_tables)
         n_stations = len(stations_with_data)
-        plot_coinc_window(windows, counts, group_name, n_events, n_stations,
-                          date)
+        plot_coinc_window(windows, counts, group_name, n_events, n_stations, date)
     return windows, counts
 
 
 def get_event_tables(data, cluster_groups, station_numbers):
-    station_groups = ['/hisparc/cluster_%s/station_%d' % (c, s)
-                      for c, s in zip(cluster_groups, station_numbers)]
+    station_groups = ['/hisparc/cluster_%s/station_%d' % (c, s) for c, s in zip(cluster_groups, station_numbers)]
 
     coinc = Coincidences(data, None, station_groups)
 
@@ -131,8 +128,8 @@ def plot_background_v_window(plot, windows, n_stations):
     low_rate = 0.3
     high_rate = 0.8
     n_pairs = len(list(combinations(list(range(n_stations)), 2)))
-    background_rate_low_pair = 2 * windows * 1e-9 * low_rate ** 2 * 86400
-    background_rate_high_pair = 2 * windows * 1e-9 * high_rate ** 2 * 86400
+    background_rate_low_pair = 2 * windows * 1e-9 * low_rate**2 * 86400
+    background_rate_high_pair = 2 * windows * 1e-9 * high_rate**2 * 86400
     background_rate_low = background_rate_low_pair * n_pairs
     background_rate_high = background_rate_high_pair * n_pairs
     plot.shade_region(windows, background_rate_low, background_rate_high)
@@ -143,8 +140,7 @@ def plot_chosen_coincidence_window(plot):
     plot.draw_vertical_line(10e3)
 
 
-def plot_coinc_window(windows, counts, group_name='', n_events=0, n_stations=0,
-                      date=datetime.date.today()):
+def plot_coinc_window(windows, counts, group_name='', n_events=0, n_stations=0, date=datetime.date.today()):
     counts = numpy.array(counts)
     plot = MultiPlot(2, 1)
 
@@ -155,24 +151,24 @@ def plot_coinc_window(windows, counts, group_name='', n_events=0, n_stations=0,
     plot_chosen_coincidence_window(splot)
     splot = plot.get_subplot_at(1, 0)
     # dy
-#     splot.scatter(windows[:-1], counts[1:] - counts[:-1])
+    #     splot.scatter(windows[:-1], counts[1:] - counts[:-1])
     # dy/dx
-#     splot.scatter(windows[:-1],
-#                   (counts[1:] - counts[:-1]) /
-#                   (windows[1:] - windows[:-1]))
+    #     splot.scatter(windows[:-1],
+    #                   (counts[1:] - counts[:-1]) /
+    #                   (windows[1:] - windows[:-1]))
     # dy/dlogx
-#     splot.scatter(windows[:-1],
-#                   (counts[1:] - counts[:-1]) /
-#                   (numpy.log10(windows[1:]) - numpy.log10(windows[:-1])))
+    #     splot.scatter(windows[:-1],
+    #                   (counts[1:] - counts[:-1]) /
+    #                   (numpy.log10(windows[1:]) - numpy.log10(windows[:-1])))
     # dlogy/dlogx
-    splot.scatter(windows[:-1],
-                  (numpy.log10(counts[1:]) - numpy.log10(counts[:-1])) /
-                  (numpy.log10(windows[1:]) - numpy.log10(windows[:-1])))
+    splot.scatter(
+        windows[:-1],
+        (numpy.log10(counts[1:]) - numpy.log10(counts[:-1])) / (numpy.log10(windows[1:]) - numpy.log10(windows[:-1])),
+    )
     splot.set_axis_options(r'height=0.2\textwidth, xmode=log, ymode=normal')
-#     splot.set_axis_options(r'height=0.2\textwidth, xmode=log, ymode=log')
+    #     splot.set_axis_options(r'height=0.2\textwidth, xmode=log, ymode=log')
 
-    text = ('%s\nDate: %s\nTotal n events: %d' %
-            (group_name, date.isoformat(), n_events))
+    text = '%s\nDate: %s\nTotal n events: %d' % (group_name, date.isoformat(), n_events)
     plot.set_label(0, 0, text, 'upper left')
     plot.set_xlimits_for_all(min=0.5, max=1e14)
     plot.set_ylimits(0, 0, min=1, max=1e8)

@@ -38,13 +38,14 @@ if __name__ == '__main__':
     for i, station in enumerate(STATIONS, 1):
         with tables.open_file(DATA_PATH + 'dt_ref501_%d.h5' % station, 'r') as data:
             distance, _, _ = CLUSTER.calc_rphiz_for_stations(i, 0)
-            max_dt = max(distance / .3, 100) * 1.5
+            max_dt = max(distance / 0.3, 100) * 1.5
             table = get_station_dt(data, station)
             graph = Plot()
-            counts, x, y = histogram2d(table.col('timestamp'),
-                                       table.col('delta'),
-                                       bins=(arange(t_start, t_end, XWEEK),
-                                             linspace(-max_dt, max_dt, 150)))
+            counts, x, y = histogram2d(
+                table.col('timestamp'),
+                table.col('delta'),
+                bins=(arange(t_start, t_end, XWEEK), linspace(-max_dt, max_dt, 150)),
+            )
             graph.histogram2d(counts, x, y, bitmap=True, type='color')
             graph.set_ylabel(r'$\Delta t$ [ns]')
             graph.set_xlabel('Timestamp [s]')

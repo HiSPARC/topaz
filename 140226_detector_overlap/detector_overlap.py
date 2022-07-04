@@ -18,13 +18,12 @@ from pointrect import Point, Rect
 
 
 def run():
-    square_size = (math.sqrt(2) / 2.) / 2.
-    detector_long = 1. / 2.
-    detector_short = 0.5 / 2.
-    square = Rect(Point(-square_size, -square_size),
-                  Point(square_size, square_size))
+    square_size = (math.sqrt(2) / 2.0) / 2.0
+    detector_long = 1.0 / 2.0
+    detector_short = 0.5 / 2.0
+    square = Rect(Point(-square_size, -square_size), Point(square_size, square_size))
 
-    angles = np.linspace(0, np.pi / 2., 50)
+    angles = np.linspace(0, np.pi / 2.0, 50)
     overlap = []
     n = 200000
 
@@ -46,13 +45,14 @@ def run():
             else:
                 xout.append(point.x)
                 yout.append(point.y)
-        overlap.append(count / (2. * n))
-        plt.text(.4, .6, ('Angle: %.2f deg\nOverlap: %.3f m**2' %
-                          (np.degrees(angle), overlap[-1])), ha='left')
+        overlap.append(count / (2.0 * n))
+        plt.text(0.4, 0.6, ('Angle: %.2f deg\nOverlap: %.3f m**2' % (np.degrees(angle), overlap[-1])), ha='left')
         plt.scatter(xin, yin, s=2, c='black')
         plt.scatter(xout, yout, s=2, c='r')
-        plt.plot([-square_size, -square_size, square_size, square_size, -square_size],
-                 [-square_size, square_size, square_size, -square_size, -square_size])
+        plt.plot(
+            [-square_size, -square_size, square_size, square_size, -square_size],
+            [-square_size, square_size, square_size, -square_size, -square_size],
+        )
         plt.xlabel('x (m)')
         plt.xlabel('y (m)')
         plt.title('Overlap between straight square and rotated rectangle')

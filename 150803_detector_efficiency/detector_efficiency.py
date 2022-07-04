@@ -37,17 +37,16 @@ def detection_efficiency(path):
         if STATION_NUMBER in [0, 3]:
             query = '(%s)' % ' & '.join('(n%d != 0)' % d for d in [1, 3, 4])  # corners
         if STATION_NUMBER in [1]:
-            query = ' | '.join(['(%s)' % ' & '.join('(n%d > .3)' % d for d in ids)
-                                for ids in combinations([1, 2, 3, 4], 3)])  # triangles
+            query = ' | '.join(
+                ['(%s)' % ' & '.join('(n%d > .3)' % d for d in ids) for ids in combinations([1, 2, 3, 4], 3)]
+            )  # triangles
         if STATION_NUMBER in [2]:
             query = '(%s)' % ' & '.join('(n%d != 0)' % d for d in [1, 2])  # both detectors
         # Use query = 'timestamp > 0' to select all triggered events
         e = events.get_where_list(query)
         coins = coins[e]
-        all_counts, bins = histogram(vector_length(all_x, all_y),
-                                     bins=CORE_DISTANCE_BINS)
-        counts, bins = histogram(vector_length(coins['x'], coins['y']),
-                                 bins=CORE_DISTANCE_BINS)
+        all_counts, bins = histogram(vector_length(all_x, all_y), bins=CORE_DISTANCE_BINS)
+        counts, bins = histogram(vector_length(coins['x'], coins['y']), bins=CORE_DISTANCE_BINS)
 
         return counts, all_counts
 
@@ -101,9 +100,13 @@ def plot_effiencies():
         plot = Plot('semilogx')
         for i, zenith in enumerate(sorted(efficiencies[energy].keys())):
             if any(abs(zenith - z) < 0.1 for z in [0, 22.5, 37.5]):
-                plot.plot(CORE_DISTANCES, efficiencies[energy][zenith],
-                          # yerr=errors[energy][zenith],
-                          markstyle='mark size=1pt', linestyle='blue')
+                plot.plot(
+                    CORE_DISTANCES,
+                    efficiencies[energy][zenith],
+                    # yerr=errors[energy][zenith],
+                    markstyle='mark size=1pt',
+                    linestyle='blue',
+                )
                 plot.add_pin(str(zenith), x=15, use_arrow=True)
             else:
                 plot.plot(CORE_DISTANCES, efficiencies[energy][zenith], mark=None)
@@ -124,27 +127,87 @@ def plot_david_data(plot):
     Source: DIR-plot_detection_efficiency_vs_R_for_angles-1.tex
 
     """
-    plot.plot(*list(zip((2.6315, 0.9995), (7.8947, 0.9947), (13.157, 0.9801),
-                   (18.421, 0.9382), (23.684, 0.8653), (28.947, 0.7636),
-                   (34.210, 0.6515), (39.473, 0.5313), (44.736, 0.4243),
-                   (50.000, 0.3287), (55.263, 0.2467), (60.526, 0.1798),
-                   (65.789, 0.1270), (71.052, 0.0898), (76.315, 0.0624),
-                   (81.578, 0.0445), (86.842, 0.0301), (92.105, 0.0220),
-                   (97.368, 0.0153))), linestyle='red', markstyle='mark size=1pt')
-    plot.plot(*list(zip((2.6315, 0.9642), (7.8947, 0.9242), (13.157, 0.8459),
-                   (18.421, 0.7405), (23.684, 0.6224), (28.947, 0.4870),
-                   (34.210, 0.3705), (39.473, 0.2668), (44.736, 0.1909),
-                   (50.000, 0.1269), (55.263, 0.0833), (60.526, 0.0533),
-                   (65.789, 0.0366), (71.052, 0.0243), (76.315, 0.0161),
-                   (81.578, 0.0115), (86.842, 0.0079), (92.105, 0.0047),
-                   (97.368, 0.0034))), linestyle='red', markstyle='mark size=1pt')
-    plot.plot(*list(zip((2.6315, 0.7180), (7.8947, 0.6214), (13.157, 0.4842),
-                   (18.421, 0.3441), (23.684, 0.2296), (28.947, 0.1414),
-                   (34.210, 0.0882), (39.473, 0.0513), (44.736, 0.0317),
-                   (50.000, 0.0193), (55.263, 0.0109), (60.526, 0.0071),
-                   (65.789, 0.0043), (71.052, 0.0029), (76.315, 0.0021),
-                   (81.578, 0.0012), (86.842, 0.0009), (92.105, 0.0006),
-                   (97.368, 0.0005))), linestyle='red', markstyle='mark size=1pt')
+    plot.plot(
+        *list(
+            zip(
+                (2.6315, 0.9995),
+                (7.8947, 0.9947),
+                (13.157, 0.9801),
+                (18.421, 0.9382),
+                (23.684, 0.8653),
+                (28.947, 0.7636),
+                (34.210, 0.6515),
+                (39.473, 0.5313),
+                (44.736, 0.4243),
+                (50.000, 0.3287),
+                (55.263, 0.2467),
+                (60.526, 0.1798),
+                (65.789, 0.1270),
+                (71.052, 0.0898),
+                (76.315, 0.0624),
+                (81.578, 0.0445),
+                (86.842, 0.0301),
+                (92.105, 0.0220),
+                (97.368, 0.0153),
+            )
+        ),
+        linestyle='red',
+        markstyle='mark size=1pt',
+    )
+    plot.plot(
+        *list(
+            zip(
+                (2.6315, 0.9642),
+                (7.8947, 0.9242),
+                (13.157, 0.8459),
+                (18.421, 0.7405),
+                (23.684, 0.6224),
+                (28.947, 0.4870),
+                (34.210, 0.3705),
+                (39.473, 0.2668),
+                (44.736, 0.1909),
+                (50.000, 0.1269),
+                (55.263, 0.0833),
+                (60.526, 0.0533),
+                (65.789, 0.0366),
+                (71.052, 0.0243),
+                (76.315, 0.0161),
+                (81.578, 0.0115),
+                (86.842, 0.0079),
+                (92.105, 0.0047),
+                (97.368, 0.0034),
+            )
+        ),
+        linestyle='red',
+        markstyle='mark size=1pt',
+    )
+    plot.plot(
+        *list(
+            zip(
+                (2.6315, 0.7180),
+                (7.8947, 0.6214),
+                (13.157, 0.4842),
+                (18.421, 0.3441),
+                (23.684, 0.2296),
+                (28.947, 0.1414),
+                (34.210, 0.0882),
+                (39.473, 0.0513),
+                (44.736, 0.0317),
+                (50.000, 0.0193),
+                (55.263, 0.0109),
+                (60.526, 0.0071),
+                (65.789, 0.0043),
+                (71.052, 0.0029),
+                (76.315, 0.0021),
+                (81.578, 0.0012),
+                (86.842, 0.0009),
+                (92.105, 0.0006),
+                (97.368, 0.0005),
+            )
+        ),
+        linestyle='red',
+        markstyle='mark size=1pt',
+    )
 
 
 if __name__ == "__main__":

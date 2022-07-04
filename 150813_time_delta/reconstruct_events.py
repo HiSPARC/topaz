@@ -10,8 +10,7 @@ from sapphire.utils import angle_between
 
 
 def download_dataset():
-    delta_data = genfromtxt('time_delta_fixed.tsv', delimiter='\t', dtype=None,
-                            names=['ext_timestamp', 'time_delta'])
+    delta_data = genfromtxt('time_delta_fixed.tsv', delimiter='\t', dtype=None, names=['ext_timestamp', 'time_delta'])
     start = gps_to_datetime(delta_data['ext_timestamp'][0] / int(1e9))
     end = gps_to_datetime(delta_data['ext_timestamp'][-1] / int(1e9))
 
@@ -48,8 +47,7 @@ def plot_reconstructions():
         bins = linspace(-pi, pi, 20)  # Radians
         plot = Plot()
         plot.histogram(*histogram(rec.col('azimuth'), bins=bins))
-        plot.histogram(*histogram(reco.col('azimuth'), bins=bins),
-                       linestyle='red')
+        plot.histogram(*histogram(reco.col('azimuth'), bins=bins), linestyle='red')
         plot.set_ylimits(min=0)
         plot.set_xlimits(-pi, pi)
         plot.set_ylabel('counts')
@@ -60,8 +58,7 @@ def plot_reconstructions():
         bins = linspace(0, pi / 2, 20)  # Radians
         plot = Plot()
         plot.histogram(*histogram(rec.col('zenith'), bins=bins))
-        plot.histogram(*histogram(reco.col('zenith'), bins=bins),
-                       linestyle='red')
+        plot.histogram(*histogram(reco.col('zenith'), bins=bins), linestyle='red')
         plot.set_ylimits(min=0)
         plot.set_xlimits(0, pi / 2)
         plot.set_ylabel('counts')
@@ -71,14 +68,11 @@ def plot_reconstructions():
         # Compare angles between old and new
         bins = linspace(0, 20, 20)  # Degrees
         plot = Plot()
-        filter = (rec.col('zenith') > .5)
-        d_angle = angle_between(rec.col('zenith'), rec.col('azimuth'),
-                                reco.col('zenith'), reco.col('azimuth'))
+        filter = rec.col('zenith') > 0.5
+        d_angle = angle_between(rec.col('zenith'), rec.col('azimuth'), reco.col('zenith'), reco.col('azimuth'))
         plot.histogram(*histogram(degrees(d_angle), bins=bins))
-        plot.histogram(*histogram(degrees(d_angle).compress(filter),
-                                  bins=bins), linestyle='red')
-        plot.histogram(*histogram(degrees(d_angle).compress(invert(filter)),
-                                  bins=bins), linestyle='blue')
+        plot.histogram(*histogram(degrees(d_angle).compress(filter), bins=bins), linestyle='red')
+        plot.histogram(*histogram(degrees(d_angle).compress(invert(filter)), bins=bins), linestyle='blue')
         plot.set_ylimits(min=0)
         plot.set_xlimits(0, 20)
         plot.set_ylabel('counts')

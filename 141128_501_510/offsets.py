@@ -10,8 +10,7 @@ from artist import Plot
 from sapphire import CoincidenceQuery
 from sapphire.utils import ERR, gauss
 
-COLORS = ['black', 'teal', 'orange', 'purple', 'cyan', 'green', 'blue', 'red',
-          'gray']
+COLORS = ['black', 'teal', 'orange', 'purple', 'cyan', 'green', 'blue', 'red', 'gray']
 
 
 def determine_detector_timing_offsets(d, s, events):
@@ -34,7 +33,7 @@ def determine_detector_timing_offsets(d, s, events):
         graph.histogram(y, bins, linestyle='color=%s' % next(col))
         x = (bins[:-1] + bins[1:]) / 2
         try:
-            popt, pcov = curve_fit(gauss, x, y, p0=(len(dt), 0., 10.))
+            popt, pcov = curve_fit(gauss, x, y, p0=(len(dt), 0.0, 10.0))
             print('%d-%d: %f (%f)' % (i, j, popt[1], popt[2]))
         except (IndexError, RuntimeError):
             print('%d-%d: failed' % (i, j))
@@ -50,7 +49,7 @@ def determine_detector_timing_offsets(d, s, events):
 def determine_detector_timing_offsets2(events):
 
     bins = arange(-100 + 1.25, 100, 2.5)
-    offsets = [0., 0., 0., 0.]
+    offsets = [0.0, 0.0, 0.0, 0.0]
     ti = events.col('t1')
     for j in [1, 3, 4]:
         tj = events.col('t%d' % j)
@@ -58,7 +57,7 @@ def determine_detector_timing_offsets2(events):
         y, bins = histogram(dt, bins=bins)
         x = (bins[:-1] + bins[1:]) / 2
         try:
-            popt, pcov = curve_fit(gauss, x, y, p0=(len(dt), 0., 10.))
+            popt, pcov = curve_fit(gauss, x, y, p0=(len(dt), 0.0, 10.0))
             offsets[j] = popt[1]
         except (IndexError, RuntimeError):
             pass
@@ -96,31 +95,29 @@ def determine_station_timing_offsets(d, data):
             event = events[0][1]
 
         try:
-            ref_t = min(ref_event['t%d' % (i + 1)] - ref_d_off[i]
-                         for i in range(4)
-                         if ref_event['t%d' % (i + 1)] not in ERR)
-            t = min(event['t%d' % (i + 1)] - d_off[i]
-                     for i in range(4)
-                     if event['t%d' % (i + 1)] not in ERR)
+            ref_t = min(
+                ref_event['t%d' % (i + 1)] - ref_d_off[i] for i in range(4) if ref_event['t%d' % (i + 1)] not in ERR
+            )
+            t = min(event['t%d' % (i + 1)] - d_off[i] for i in range(4) if event['t%d' % (i + 1)] not in ERR)
         except ValueError:
             continue
-        if (ref_event['t_trigger'] in ERR or event['t_trigger'] in ERR):
+        if ref_event['t_trigger'] in ERR or event['t_trigger'] in ERR:
             continue
-        dt.append((int(event['ext_timestamp']) -
-                   int(ref_event['ext_timestamp'])) -
-                  (event['t_trigger'] - ref_event['t_trigger']) +
-                  (t - ref_t))
+        dt.append(
+            (int(event['ext_timestamp']) - int(ref_event['ext_timestamp']))
+            - (event['t_trigger'] - ref_event['t_trigger'])
+            + (t - ref_t)
+        )
 
     bins = linspace(-150, 150, 200)
     y, bins = histogram(dt, bins=bins)
     x = (bins[:-1] + bins[1:]) / 2
     try:
-        popt, pcov = curve_fit(gauss, x, y, p0=(len(dt), 0., 50))
+        popt, pcov = curve_fit(gauss, x, y, p0=(len(dt), 0.0, 50))
         station_offset = popt[1]
     except RuntimeError:
-        station_offset = 0.
-    offsets[station] = [detector_offset + station_offset
-                        for detector_offset in offsets[station]]
+        station_offset = 0.0
+    offsets[station] = [detector_offset + station_offset for detector_offset in offsets[station]]
     print('Station 501 - 510: {:f} ({:f})'.format(popt[1], popt[2]))
     graph = Plot()
     graph.histogram(y, bins)

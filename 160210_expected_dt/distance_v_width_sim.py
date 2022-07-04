@@ -27,20 +27,18 @@ def plot_distance_width():
 
     with tables.open_file(PATH, 'r') as data:
         cluster = data.root.coincidences._v_attrs.cluster
-        station_groups = [(id, data.get_node(sidx, 'events'))
-                          for id, sidx in enumerate(data.root.coincidences.s_index)]
+        station_groups = [(id, data.get_node(sidx, 'events')) for id, sidx in enumerate(data.root.coincidences.s_index)]
         bins = arange(-2000, 2000, 20)
         for ref, other in itertools.combinations(station_groups, 2):
             ref_id, ref_events = ref
             id, events = other
             distances.append(cluster.calc_rphiz_for_stations(ref_id, id)[0])
 
-            dt = (ref_events.col('ext_timestamp').astype(int) -
-                  events.col('ext_timestamp').astype(int))
+            dt = ref_events.col('ext_timestamp').astype(int) - events.col('ext_timestamp').astype(int)
             pre_width = std(dt)
             counts, bins = histogram(dt, bins=linspace(-1.8 * pre_width, 1.8 * pre_width, 100), density=True)
             x = (bins[:-1] + bins[1:]) / 2
-            popt, pcov = curve_fit(norm.pdf, x, counts, p0=(0., distances[-1]))
+            popt, pcov = curve_fit(norm.pdf, x, counts, p0=(0.0, distances[-1]))
             widths.append(popt[1])
             print(std(dt), popt[1])
 

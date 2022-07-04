@@ -19,8 +19,7 @@ def get_traces():
 def filter_traces(raw_traces, use_threshold=True, threshold=FILTER_THRESHOLD):
     """Apply the mean filter to multiple traces"""
 
-    return [filter_trace(raw_trace, use_threshold, threshold)
-            for raw_trace in raw_traces]
+    return [filter_trace(raw_trace, use_threshold, threshold) for raw_trace in raw_traces]
 
 
 def filter_trace(raw_trace, use_threshold=True, threshold=FILTER_THRESHOLD):
@@ -36,9 +35,7 @@ def filter_trace(raw_trace, use_threshold=True, threshold=FILTER_THRESHOLD):
     filtered_even = mean_filter(even_trace, use_threshold, threshold)
     filtered_odd = mean_filter(odd_trace, use_threshold, threshold)
 
-    recombined_trace = [v
-                        for eo in zip(filtered_even, filtered_odd)
-                        for v in eo]
+    recombined_trace = [v for eo in zip(filtered_even, filtered_odd) for v in eo]
     filtered_trace = mean_filter(recombined_trace, use_threshold, threshold)
     return filtered_trace
 
@@ -90,7 +87,7 @@ def mean_filter_without_threshold(trace):
     filtered_trace = [int(around(local_mean))] * 4
 
     for i in range(4, len(trace)):
-        local_mean = mean(trace[i - 4:i])
+        local_mean = mean(trace[i - 4 : i])
         if sign(trace[i] - local_mean) == sign(trace[i - 1] - local_mean):
             # Both values on same side of the local_mean
             filtered_trace.append(trace[i])
@@ -123,13 +120,13 @@ def zoom_baseline(raw_traces):
     plot = Plot()
     length = 500  # ns
 
-#     for i, raw_trace in enumerate(raw_traces):
-#         plot.plot(arange(0, length, 2.5), raw_trace[:int(length / 2.5)], mark=None, linestyle=COLORS[i])
+    #     for i, raw_trace in enumerate(raw_traces):
+    #         plot.plot(arange(0, length, 2.5), raw_trace[:int(length / 2.5)], mark=None, linestyle=COLORS[i])
 
-#     plot.plot(arange(0, length, 2.5), raw_traces[0][:int(length / 2.5)], mark=None, linestyle=COLORS[0])
+    #     plot.plot(arange(0, length, 2.5), raw_traces[0][:int(length / 2.5)], mark=None, linestyle=COLORS[0])
 
-    plot.plot(arange(0, length, 5), raw_traces[0][:int(length / 2.5):2], mark=None, linestyle=COLORS[0])
-    plot.plot(arange(2.5, length, 5), raw_traces[0][1:int(length / 2.5):2], mark=None, linestyle=COLORS[1])
+    plot.plot(arange(0, length, 5), raw_traces[0][: int(length / 2.5) : 2], mark=None, linestyle=COLORS[0])
+    plot.plot(arange(2.5, length, 5), raw_traces[0][1 : int(length / 2.5) : 2], mark=None, linestyle=COLORS[1])
 
     plot.set_ylimits(min=180, max=220)
     plot.set_xlimits(min=0, max=length)
@@ -185,7 +182,7 @@ def first_above_threshold(trace, threshold):
 
 if __name__ == "__main__":
     raw_traces = get_traces()
-#    plot_raw(raw_traces)
+    #    plot_raw(raw_traces)
     zoom_baseline(raw_traces)
     zoom_pulse(raw_traces)
 #     filtered_traces = filter_traces(raw_traces)

@@ -8,16 +8,14 @@ from sapphire import ReconstructESDEvents
 from sapphire.clusters import BaseCluster
 from sapphire.utils import angle_between
 
-COLORS = ['black', 'teal', 'orange', 'purple', 'cyan', 'green', 'blue', 'red',
-          'gray']
+COLORS = ['black', 'teal', 'orange', 'purple', 'cyan', 'green', 'blue', 'red', 'gray']
 
 
 def reconstruct_simulations(data):
     cluster = cluster_501_510()
     for station in cluster.stations:
         station_group = '/hisparc/cluster_amsterdam/station_%d' % station.number
-        rec_events = ReconstructESDEvents(data, station_group, station,
-                                          overwrite=True, progress=True)
+        rec_events = ReconstructESDEvents(data, station_group, station, overwrite=True, progress=True)
         rec_events.prepare_output()
         rec_events.offsets = offset(station.number)
         rec_events.store_offsets()
@@ -30,17 +28,16 @@ def reconstruct_simulations(data):
 
 def offset(station):
     if station == 501:
-        return [-1.064884, 0., 6.217017, 4.851398]
+        return [-1.064884, 0.0, 6.217017, 4.851398]
     elif station == 510:
-        return [9.416971, 0., 9.298256, 8.447724]
+        return [9.416971, 0.0, 9.298256, 8.447724]
 
 
 def cluster_501_510():
-    station_size = 10.
+    station_size = 10.0
     a = station_size / 2
     b = a * sqrt(3)
-    detectors = [((-a, 0.), 'UD'), ((a, 0.), 'UD'),
-                 ((a * 2, b), 'LR'), ((0., b), 'LR')]
+    detectors = [((-a, 0.0), 'UD'), ((a, 0.0), 'UD'), ((a * 2, b), 'LR'), ((0.0, b), 'LR')]
     cluster = BaseCluster()
     for n in [501, 510]:
         cluster._add_station((0, 0, 0), 0, detectors, number=n)
@@ -67,7 +64,7 @@ def plot_reconstruction_accuracy(data, d):
     azi510 = array(azi510)
     da = angle_between(zen501, azi501, zen510, azi510)
 
-    n, bins = histogram(da, bins=arange(0, pi, .1))
+    n, bins = histogram(da, bins=arange(0, pi, 0.1))
     graph.histogram(n, bins)
 
     failed = coincidences.nrows - len(ids)
@@ -82,8 +79,7 @@ def plot_reconstruction_accuracy(data, d):
     graph_recs = PolarPlot()
     azimuth = degrees(recs501.col('azimuth'))
     zenith = degrees(recs501.col('zenith'))
-    graph_recs.scatter(azimuth[:5000], zenith[:5000], mark='*',
-                       markstyle='mark size=.2pt')
+    graph_recs.scatter(azimuth[:5000], zenith[:5000], mark='*', markstyle='mark size=.2pt')
     graph_recs.set_ylimits(min=0, max=90)
     graph_recs.set_ylabel('Zenith [degrees]')
     graph_recs.set_xlabel('Azimuth [degrees]')

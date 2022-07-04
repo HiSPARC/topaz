@@ -22,37 +22,38 @@ def plot_angles(data):
     azikas = rec.col('reference_phi')
     min_n = rec.col('min_n134')
 
-    high_zenith = (zenhis > .2) & (zenkas > .2)
+    high_zenith = (zenhis > 0.2) & (zenkas > 0.2)
 
     for minn in [0, 1, 2, 4]:
-        filter = (min_n > minn)
+        filter = min_n > minn
 
-        azicounts, x, y = np.histogram2d(azihis.compress(high_zenith & filter),
-                                         azikas.compress(high_zenith & filter),
-                                         bins=np.linspace(-pi, pi, 73))
+        azicounts, x, y = np.histogram2d(
+            azihis.compress(high_zenith & filter), azikas.compress(high_zenith & filter), bins=np.linspace(-pi, pi, 73)
+        )
         plota = Plot()
         plota.histogram2d(azicounts, degrees(x), degrees(y), type='reverse_bw', bitmap=True)
-#         plota.set_title('Reconstructed azimuths for events in coincidence (zenith gt .2 rad)')
+        #         plota.set_title('Reconstructed azimuths for events in coincidence (zenith gt .2 rad)')
         plota.set_xlabel(r'$\phi_\textrm{HiSPARC}$ [\si{\degree}]')
         plota.set_ylabel(r'$\phi_\textrm{KASCADE}$ [\si{\degree}]')
         plota.set_xticks([-180, -90, 0, 90, 180])
         plota.set_yticks([-180, -90, 0, 90, 180])
         plota.save_as_pdf('azimuth_his_kas_minn%d' % minn)
 
-        zencounts, x, y = np.histogram2d(zenhis.compress(filter),
-                                         zenkas.compress(filter),
-                                         bins=np.linspace(0, pi / 3., 41))
+        zencounts, x, y = np.histogram2d(
+            zenhis.compress(filter), zenkas.compress(filter), bins=np.linspace(0, pi / 3.0, 41)
+        )
         plotz = Plot()
         plotz.histogram2d(zencounts, degrees(x), degrees(y), type='reverse_bw', bitmap=True)
-#         plotz.set_title('Reconstructed zeniths for station events in coincidence')
+        #         plotz.set_title('Reconstructed zeniths for station events in coincidence')
         plotz.set_xlabel(r'$\theta_\textrm{HiSPARC}$ [\si{\degree}]')
         plotz.set_ylabel(r'$\theta_\textrm{KASCADE}$ [\si{\degree}]')
         plotz.set_xticks([0, 15, 30, 45, 60])
         plotz.set_yticks([0, 15, 30, 45, 60])
         plotz.save_as_pdf('zenith_his_kas_minn%d' % minn)
 
-        distances = angle_between(zenhis.compress(filter), azihis.compress(filter),
-                                  zenkas.compress(filter), azikas.compress(filter))
+        distances = angle_between(
+            zenhis.compress(filter), azihis.compress(filter), zenkas.compress(filter), azikas.compress(filter)
+        )
         counts, bins = np.histogram(distances, bins=linspace(0, pi, 100))
         plotd = Plot()
         plotd.histogram(counts, degrees(bins))

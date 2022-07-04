@@ -26,8 +26,27 @@ output can be converted back to the actual expected output.
 import tables
 
 from numpy import (
-    abs, append, array, copyto, cos, diff, empty_like, histogram, histogram2d, inf, interp, linspace, log10, logspace,
-    mean, median, sqrt, std, where, zeros)
+    abs,
+    append,
+    array,
+    copyto,
+    cos,
+    diff,
+    empty_like,
+    histogram,
+    histogram2d,
+    inf,
+    interp,
+    linspace,
+    log10,
+    logspace,
+    mean,
+    median,
+    sqrt,
+    std,
+    where,
+    zeros,
+)
 from scipy.stats import binned_statistic, norm, poisson
 
 from artist import MultiPlot, Plot
@@ -39,8 +58,8 @@ from fit_curve import fit_curve, fit_function
 DATA_PATH = '/Users/arne/Datastore/kascade/kascade-reconstructions.h5'
 COLORS = ['black', 'red', 'green', 'blue']
 
-SRC_PH_MPV = 380.  # Pulseheight MPV used for n columns in data file
-SRC_PI_MPV = 5000.  # Pulseintegral MPV used for reconstructions_n in data file
+SRC_PH_MPV = 380.0  # Pulseheight MPV used for n columns in data file
+SRC_PI_MPV = 5000.0  # Pulseintegral MPV used for reconstructions_n in data file
 
 
 def get_out_for_in(actual_in, ref_in, ref_out):
@@ -75,25 +94,24 @@ def fit_mpv(n, bins):
 
 
 def residuals(yfit, ydata):
-    return ((yfit - ydata) ** 2 / ydata)
+    return (yfit - ydata) ** 2 / ydata
 
 
 class KascadeDensity:
-
     def __init__(self, data_path=DATA_PATH):
         self.lin_bins = linspace(0.5, 200.5, 201)
         narrow_bins = linspace(0.5, 30.5, 31)
-#         wide_bins = linspace(31.5, 40.5, 4)
+        #         wide_bins = linspace(31.5, 40.5, 4)
         self.slice_bins = narrow_bins  # append(narrow_bins, wide_bins)
-        self.slice_bins_c = (self.slice_bins[:-1] + self.slice_bins[1:]) / 2.
+        self.slice_bins_c = (self.slice_bins[:-1] + self.slice_bins[1:]) / 2.0
         self.ref_out = linspace(0.1, 200, 4000)
         self.ref_in_i = zeros((len(self.ref_out), 4))
-        self.log_bins = logspace(log10(self.lin_bins[0]),
-                                 log10(self.lin_bins[-1]), 100)
+        self.log_bins = logspace(log10(self.lin_bins[0]), log10(self.lin_bins[-1]), 100)
 
         with tables.open_file(DATA_PATH, 'r') as data:
             self.read_densities(data)
-#         self.process_densities()
+
+    #         self.process_densities()
 
     def read_densities(self, data):
         """Read and process data points"""
@@ -106,25 +124,23 @@ class KascadeDensity:
         n3 = recs.col('n3')
         n4 = recs.col('n4')
         self.src_pi = array([n1, n2, n3, n4]).T
-        self.src_pi[:, 1] = where(self.src_pi[:, 1] <= 0, 1e-2,
-                                  self.src_pi[:, 1])
-        self.src_p = self.src_pi.sum(axis=1) / 4.
+        self.src_pi[:, 1] = where(self.src_pi[:, 1] <= 0, 1e-2, self.src_pi[:, 1])
+        self.src_p = self.src_pi.sum(axis=1) / 4.0
         self.mpv_pi, _ = fit_mpvs(self.src_pi)
-        self.mpv_p = self.mpv_pi.sum(axis=1) / 4.
+        self.mpv_p = self.mpv_pi.sum(axis=1) / 4.0
 
         # Pulseintegral-based counts (integrals / 5000.)
         self.src_ni = array(data.root.reconstructions_integrals_n)
-        self.src_ni[:, 1] = where(self.src_ni[:, 1] <= 0, 1e-2,
-                                  self.src_ni[:, 1])
-        self.src_n = self.src_ni.sum(axis=1) / 4.
+        self.src_ni[:, 1] = where(self.src_ni[:, 1] <= 0, 1e-2, self.src_ni[:, 1])
+        self.src_n = self.src_ni.sum(axis=1) / 4.0
 
         # Fit MPV per channel
         self.mpv_ni, self.mpv = fit_mpvs(self.src_ni)
-        self.mpv_n = self.mpv_ni.sum(axis=1) / 4.
+        self.mpv_n = self.mpv_ni.sum(axis=1) / 4.0
 
         self.zenith = recs.col('reference_theta')
         self.src_ki = recs.col('k_dens_mu') + recs.col('k_dens_e')
-        self.src_k = self.src_ki.sum(axis=1) / 4.
+        self.src_k = self.src_ki.sum(axis=1) / 4.0
         self.cor_ki = (self.src_ki.T * cos(self.zenith)).T
         self.cor_k = self.src_k * cos(self.zenith)
 
@@ -132,15 +148,13 @@ class KascadeDensity:
         self.med_ki = zeros((len(self.slice_bins_c), 4))
         self.std_ki = zeros((len(self.slice_bins_c), 4))
         for i in range(4):
-            self.med_ki[:, i] = binned_statistic(self.mpv_ni[:, i], self.src_ki[:, i],
-                                                 statistic='mean', bins=self.slice_bins)[0]
-            std_ki = binned_statistic(self.mpv_ni[:, i], self.src_ki[:, i],
-                                      statistic=std, bins=self.slice_bins)[0]
+            self.med_ki[:, i] = binned_statistic(
+                self.mpv_ni[:, i], self.src_ki[:, i], statistic='mean', bins=self.slice_bins
+            )[0]
+            std_ki = binned_statistic(self.mpv_ni[:, i], self.src_ki[:, i], statistic=std, bins=self.slice_bins)[0]
             self.std_ki[:, i] = where(std_ki < self.med_ki[:, i], std_ki, self.med_ki[:, i] - 0.0001)
-        self.med_k = binned_statistic(self.mpv_n, self.src_k,
-                                      statistic='mean', bins=self.slice_bins)[0]
-        self.std_k = binned_statistic(self.mpv_n, self.src_k,
-                                      statistic=std, bins=self.slice_bins)[0]
+        self.med_k = binned_statistic(self.mpv_n, self.src_k, statistic='mean', bins=self.slice_bins)[0]
+        self.std_k = binned_statistic(self.mpv_n, self.src_k, statistic=std, bins=self.slice_bins)[0]
 
         # Fit PMT curve
         # Fit on the medians of slices, i.e. for given measured value what is
@@ -167,15 +181,15 @@ class KascadeDensity:
         """Determine errors on the data"""
 
         # Error due to PMT linearity and ADC/mV resolution
-#         self.lin_out_i = zeros((len(self.lin_bins), 4))
-#         for i in range(4):
-#             self.lin_out_i[:, i] = get_out_for_in(self.lin_bins, self.ref_in_i[:, i], self.ref_out)
-#         self.lin_out = get_out_for_in(self.lin_bins, self.ref_in, self.ref_out)
-#         self.dvindvout = (diff(self.lin_bins) / diff(self.lin_out_i[:,1])).tolist()  # dVin/dVout
-#         self.dvindvout.extend([self.dvindvout[-1]])
-#         self.dvindvout = array(self.dvindvout)
-#         self.sigma_Vout = 0.57 / 2.  # Error on Vout
-#         self.sigma_Vin = self.sigma_Vout * self.dvindvout
+        #         self.lin_out_i = zeros((len(self.lin_bins), 4))
+        #         for i in range(4):
+        #             self.lin_out_i[:, i] = get_out_for_in(self.lin_bins, self.ref_in_i[:, i], self.ref_out)
+        #         self.lin_out = get_out_for_in(self.lin_bins, self.ref_in, self.ref_out)
+        #         self.dvindvout = (diff(self.lin_bins) / diff(self.lin_out_i[:,1])).tolist()  # dVin/dVout
+        #         self.dvindvout.extend([self.dvindvout[-1]])
+        #         self.dvindvout = array(self.dvindvout)
+        #         self.sigma_Vout = 0.57 / 2.  # Error on Vout
+        #         self.sigma_Vin = self.sigma_Vout * self.dvindvout
 
         # Resolution of the detector
         sigma_res = 0.7
@@ -238,7 +252,7 @@ class KascadeDensity:
         self.plot_kas_contribution_station()
         self.plot_mpv_p_contribution_station()
 
-#         self.plot_derrivative_pmt()
+        #         self.plot_derrivative_pmt()
 
         self.plot_slice_src()
         self.plot_slice_mpv()
@@ -253,34 +267,33 @@ class KascadeDensity:
     def plot_errors_log(self, plot):
         """Add expected lines to hisparc v kascade density plot"""
 
-#         plot.plot(self.lin_bins - self.sigma_Vin, self.lin_bins, linestyle='thick, blue', mark=None)
-#         plot.plot(self.lin_bins + self.sigma_Vin, self.lin_bins, linestyle='thick, blue', mark=None)
-#         plot.shade_region(self.lin_bins, self.response_lower, self.response_upper, color='red, opacity=0.2')
-#         plot.plot(self.lin_bins, self.response_lower + 0.0001, linestyle='thick, red', mark=None)
-#         plot.plot(self.lin_bins, self.response_upper + 0.0001, linestyle='thick, red', mark=None)
-#         plot.plot(self.lin_bins, self.poisson_lower + 0.0001, linestyle='thick, green', mark=None)
-#         plot.plot(self.lin_bins, self.poisson_upper + 0.0001, linestyle='thick, green', mark=None)
+        #         plot.plot(self.lin_bins - self.sigma_Vin, self.lin_bins, linestyle='thick, blue', mark=None)
+        #         plot.plot(self.lin_bins + self.sigma_Vin, self.lin_bins, linestyle='thick, blue', mark=None)
+        #         plot.shade_region(self.lin_bins, self.response_lower, self.response_upper, color='red, opacity=0.2')
+        #         plot.plot(self.lin_bins, self.response_lower + 0.0001, linestyle='thick, red', mark=None)
+        #         plot.plot(self.lin_bins, self.response_upper + 0.0001, linestyle='thick, red', mark=None)
+        #         plot.plot(self.lin_bins, self.poisson_lower + 0.0001, linestyle='thick, green', mark=None)
+        #         plot.plot(self.lin_bins, self.poisson_upper + 0.0001, linestyle='thick, green', mark=None)
         plot.shade_region(self.lin_bins, self.poisson_lower, self.poisson_upper, color='green, opacity=0.2')
 
     def plot_2d_histogram_lines(self, plot, n, k_n):
         """Add expected lines to hisparc v kascade density plot"""
 
-#         plot.plot([-10, max(self.lin_bins)], [-10, max(self.lin_bins)], linestyle='thick, green', mark=None)
-#         plot.plot(self.lin_bins, self.lin_bins, xerr=self.sigma_Vin, linestyle='thick, blue', mark=None)
+        #         plot.plot([-10, max(self.lin_bins)], [-10, max(self.lin_bins)], linestyle='thick, green', mark=None)
+        #         plot.plot(self.lin_bins, self.lin_bins, xerr=self.sigma_Vin, linestyle='thick, blue', mark=None)
         plot.shade_region(self.lin_bins, self.response_lower, self.response_upper, color='red, opacity=0.2')
         plot.shade_region(self.lin_bins, self.poisson_lower, self.poisson_upper, color='green, opacity=0.2')
-#         plot.plot(self.lin_bins, self.response_lower, linestyle='thick, red', mark=None)
-#         plot.plot(self.lin_bins, self.response_upper, linestyle='thick, red', mark=None)
-#         plot.plot(self.lin_bins, self.poisson_lower, linestyle='thick, green', mark=None)
-#         plot.plot(self.lin_bins, self.poisson_upper, linestyle='thick, green', mark=None)
+
+    #         plot.plot(self.lin_bins, self.response_lower, linestyle='thick, red', mark=None)
+    #         plot.plot(self.lin_bins, self.response_upper, linestyle='thick, red', mark=None)
+    #         plot.plot(self.lin_bins, self.poisson_lower, linestyle='thick, green', mark=None)
+    #         plot.plot(self.lin_bins, self.poisson_upper, linestyle='thick, green', mark=None)
 
     def plot_hisparc_kascade_station(self, n, k_n):
         plot = Plot('loglog')
-        counts, xbins, ybins = histogram2d(n, k_n,
-                                           bins=self.log_bins, normed=True)
+        counts, xbins, ybins = histogram2d(n, k_n, bins=self.log_bins, normed=True)
         counts[counts == -inf] = 0
-        plot.histogram2d(counts, xbins, ybins,
-                         bitmap=True, type='reverse_bw')
+        plot.histogram2d(counts, xbins, ybins, bitmap=True, type='reverse_bw')
         self.plot_xy(plot)
         plot.set_xlabel(r'HiSPARC detected density [\si{\per\meter\squared}]')
         plot.set_ylabel(r'KASCADE predicted density [\si{\per\meter\squared}]')
@@ -292,10 +305,13 @@ class KascadeDensity:
         pin = self.ref_in.compress(filter & filter2)
         pout = self.ref_out.compress(filter & filter2)
         plot.plot(pout, pin, linestyle='blue', mark=None)
-        plot.scatter(self.slice_bins_c, self.med_k,
-                     xerr=(self.slice_bins[1:] - self.slice_bins[:-1]) / 2.,
-                     yerr=self.std_k,
-                     markstyle='red, mark size=.5pt')
+        plot.scatter(
+            self.slice_bins_c,
+            self.med_k,
+            xerr=(self.slice_bins[1:] - self.slice_bins[:-1]) / 2.0,
+            yerr=self.std_k,
+            markstyle='red, mark size=.5pt',
+        )
 
     def plot_src_hisparc_kascade_station(self):
         plot = self.plot_hisparc_kascade_station(self.src_n, self.src_k)
@@ -325,11 +341,9 @@ class KascadeDensity:
         plot = MultiPlot(2, 2, 'loglog', width=r'.3\linewidth', height=r'.3\linewidth')
         for i in range(4):
             splot = plot.get_subplot_at(i / 2, i % 2)
-            counts, xbins, ybins = histogram2d(ni[:, i], k_ni[:, i],
-                                               bins=self.log_bins, normed=True)
+            counts, xbins, ybins = histogram2d(ni[:, i], k_ni[:, i], bins=self.log_bins, normed=True)
             counts[counts == -inf] = 0
-            splot.histogram2d(counts, xbins, ybins,
-                              bitmap=True, type='reverse_bw')
+            splot.histogram2d(counts, xbins, ybins, bitmap=True, type='reverse_bw')
             self.plot_xy(splot)
 
         plot.show_xticklabels_for_all([(1, 0), (0, 1)])
@@ -346,10 +360,13 @@ class KascadeDensity:
             pout = self.ref_out.compress(filter & filter2)
             splot = plot.get_subplot_at(i / 2, i % 2)
             splot.plot(pout, pin, linestyle=COLORS[i], mark=None)
-            splot.scatter(self.slice_bins_c, self.med_ki[:, i],
-                          xerr=(self.slice_bins[1:] - self.slice_bins[:-1]) / 2.,
-                          yerr=self.std_ki[:, i],
-                          markstyle='red, mark size=.5pt')
+            splot.scatter(
+                self.slice_bins_c,
+                self.med_ki[:, i],
+                xerr=(self.slice_bins[1:] - self.slice_bins[:-1]) / 2.0,
+                yerr=self.std_ki[:, i],
+                markstyle='red, mark size=.5pt',
+            )
 
     def plot_src_hisparc_kascade_detector(self):
         plot = self.plot_hisparc_kascade_detector(self.src_ni, self.src_ki)
@@ -442,12 +459,15 @@ class KascadeDensity:
         for i in range(4):
             splot = plot.get_subplot_at(i / 2, i % 2)
             res = fit_function(self.slice_bins_c, *self.fit_i[i]) - self.med_ki[:, i]
-            splot.scatter(self.slice_bins_c, res,
-                          xerr=(self.slice_bins[1:] - self.slice_bins[:-1]) / 2.,
-                          yerr=self.std_ki[:, i],
-                          markstyle='red, mark size=1pt')
+            splot.scatter(
+                self.slice_bins_c,
+                res,
+                xerr=(self.slice_bins[1:] - self.slice_bins[:-1]) / 2.0,
+                yerr=self.std_ki[:, i],
+                markstyle='red, mark size=1pt',
+            )
             splot.draw_horizontal_line(0, linestyle='gray')
-#             splot.plot(self.lin_bins, fit_function(self.lin_bins, self.fit_i[i])
+        #             splot.plot(self.lin_bins, fit_function(self.lin_bins, self.fit_i[i])
 
         plot.set_ylimits_for_all(min=-30, max=30)
         plot.set_xlimits_for_all(min=0, max=max(self.slice_bins))
@@ -460,10 +480,13 @@ class KascadeDensity:
     def plot_fit_residuals_station(self):
         plot = Plot()
         res = fit_function(self.slice_bins_c, *self.fit) - self.med_k
-        plot.scatter(self.slice_bins_c, res,
-                     xerr=(self.slice_bins[1:] - self.slice_bins[:-1]) / 2.,
-                     yerr=self.std_k,
-                     markstyle='red, mark size=1pt')
+        plot.scatter(
+            self.slice_bins_c,
+            res,
+            xerr=(self.slice_bins[1:] - self.slice_bins[:-1]) / 2.0,
+            yerr=self.std_k,
+            markstyle='red, mark size=1pt',
+        )
         plot.draw_horizontal_line(0, linestyle='gray')
 
         plot.set_ylimits(min=-30, max=30)
@@ -477,12 +500,14 @@ class KascadeDensity:
         bins = linspace(0, 15, 150)
         plot = Plot()
         for density in densities:
-            padding = round(sqrt(density) / 2.)
-            counts, bins = histogram(n.compress(abs(self.src_k - density) < padding),
-                                     bins=bins, density=True)
+            padding = round(sqrt(density) / 2.0)
+            counts, bins = histogram(n.compress(abs(self.src_k - density) < padding), bins=bins, density=True)
             plot.histogram(counts, bins)
-            plot.add_pin(r'\SI[multi-part-units=single, separate-uncertainty]{%d\pm%d}{\per\meter\squared}' %
-                         (density, padding), 'above', bins[counts.argmax()])
+            plot.add_pin(
+                r'\SI[multi-part-units=single, separate-uncertainty]{%d\pm%d}{\per\meter\squared}' % (density, padding),
+                'above',
+                bins[counts.argmax()],
+            )
         plot.set_ylimits(min=0)
         plot.set_xlimits(min=bins[0], max=bins[-1])
         plot.set_xlabel(r'HiSPARC detected density [\si{\per\meter\squared}]')
@@ -503,8 +528,7 @@ class KascadeDensity:
 
     def plot_contribution_station(self, n, ref_n):
         plot = Plot('semilogy')
-        colors = ['red', 'blue', 'green', 'purple', 'gray', 'brown', 'cyan',
-                  'magenta', 'orange', 'teal']
+        colors = ['red', 'blue', 'green', 'purple', 'gray', 'brown', 'cyan', 'magenta', 'orange', 'teal']
         padding = 0.25
         bins = linspace(0, 20, 150)
         plot.histogram(*histogram(n, bins=bins))
@@ -512,7 +536,7 @@ class KascadeDensity:
         for j, density in enumerate(list(range(1, 8)) + [15] + [20]):
             n_slice = n.compress(abs(ref_n - density) < padding)
             counts, bins = histogram(n_slice, bins=bins)
-            plot.histogram(counts, bins + (j / 100.), linestyle=colors[j % len(colors)])
+            plot.histogram(counts, bins + (j / 100.0), linestyle=colors[j % len(colors)])
         plot.set_ylimits(min=0.9, max=1e5)
         plot.set_xlimits(min=bins[0], max=bins[-1])
         plot.set_xlabel(r'HiSPARC detected density [\si{\per\meter\squared}]')
@@ -542,8 +566,7 @@ class KascadeDensity:
 
     def plot_contribution_detector(self, ni, ref_ni):
         plot = MultiPlot(2, 2, 'semilogy', width=r'.3\linewidth', height=r'.3\linewidth')
-        colors = ['red', 'blue', 'green', 'purple', 'gray', 'brown', 'cyan',
-                  'magenta', 'orange', 'teal']
+        colors = ['red', 'blue', 'green', 'purple', 'gray', 'brown', 'cyan', 'magenta', 'orange', 'teal']
         padding = 0.2
         bins = linspace(0, 20, 100)
         for i in range(4):
@@ -553,7 +576,7 @@ class KascadeDensity:
             for j, density in enumerate(list(range(1, 8)) + [15] + [20]):
                 ni_slice = ni[:, i].compress(abs(ref_ni[:, i] - density) < padding)
                 counts, bins = histogram(ni_slice, bins=bins)
-                splot.histogram(counts, bins + (j / 100.), linestyle=colors[j % len(colors)])
+                splot.histogram(counts, bins + (j / 100.0), linestyle=colors[j % len(colors)])
         plot.set_ylimits_for_all(min=0.9, max=1e5)
         plot.set_xlimits_for_all(min=bins[0], max=bins[-1])
         plot.show_xticklabels_for_all([(1, 0), (0, 1)])
@@ -590,7 +613,7 @@ class KascadeDensity:
         plot.histogram(*histogram(n, bins=bins), linestyle='dotted')
         for i in range(4):
             plot.histogram(*histogram(ni[:, i], bins=bins), linestyle=COLORS[i])
-        plot.set_ylimits(min=.99, max=1e4)
+        plot.set_ylimits(min=0.99, max=1e4)
         plot.set_xlimits(min=bins[0], max=bins[-1])
         plot.set_ylabel(r'Counts')
         return plot
@@ -603,8 +626,7 @@ class KascadeDensity:
 
     def plot_src_n_histogram(self):
         bins = linspace(0, 4000, 200)
-        plot = self.plot_n_histogram(self.src_n * SRC_PH_MPV,
-                                     self.src_ni * SRC_PH_MPV, bins)
+        plot = self.plot_n_histogram(self.src_n * SRC_PH_MPV, self.src_ni * SRC_PH_MPV, bins)
         for i, mpv in enumerate(self.mpv):
             plot.draw_vertical_line(mpv, linestyle=COLORS[i])
         plot.set_xlabel(r'Pulseheight [ADC]')
@@ -636,8 +658,7 @@ class KascadeDensity:
         plot.plot(self.lin_bins, self.dvindvout, mark=None)
         plot.set_xlimits(min=self.lin_bins[0], max=self.lin_bins[-1])
         plot.set_xlabel(r'Particle density [\si{\per\meter\squared}]')
-        plot.set_ylabel(r'$\sigma V_{\mathrm{in}}\frac{\mathrm{d}V_{\mathrm{out}}}'
-                        r'{\mathrm{d}V_{\mathrm{in}}}$')
+        plot.set_ylabel(r'$\sigma V_{\mathrm{in}}\frac{\mathrm{d}V_{\mathrm{out}}}' r'{\mathrm{d}V_{\mathrm{in}}}$')
         plot.save_as_pdf('plots/derrivative_pmt_saturation')
 
 

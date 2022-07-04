@@ -59,9 +59,9 @@ def get_aligned(data):
     for i, sn in enumerate(sorted(data.keys())):
         start = (data[sn]['timestamp'][0] - first) / 3600
         end = start + len(data[sn])
-        aligned_data[i, start:end] = where((data[sn]['counts'] > 500) &
-                                           (data[sn]['counts'] < 5000),
-                                           data[sn]['counts'], 0)
+        aligned_data[i, start:end] = where(
+            (data[sn]['counts'] > 500) & (data[sn]['counts'] < 5000), data[sn]['counts'], 0
+        )
         aligned_data_all[i, start:end] = data[sn]['counts']
     return aligned_data, aligned_data_all, first, last
 
@@ -74,10 +74,9 @@ def plot_luminosity(timestamp, aligned_data, aligned_data_all, i):
     cumsummed_data = summed_data.cumsum()
 
     plot = Plot(width=r'.5\textwidth')
-#     plot.plot([t / 1e9 for t in timestamp[::100]], cumsummed_data_all[::100],
-#               linestyle='black!50!green, thick', mark=None)
-    plot.plot([t / 1e9 for t in timestamp[::100]], cumsummed_data[::100],
-              linestyle='thick', mark=None)
+    #     plot.plot([t / 1e9 for t in timestamp[::100]], cumsummed_data_all[::100],
+    #               linestyle='black!50!green, thick', mark=None)
+    plot.plot([t / 1e9 for t in timestamp[::100]], cumsummed_data[::100], linestyle='thick', mark=None)
     plot.set_xticks([datetime_to_gps(date(y, 1, 1)) / 1e9 for y in YEARS[::3]])
     plot.set_xtick_labels(['%d' % y for y in YEARS[::3]])
     plot.set_ylabel('Cummulative number of events')
@@ -120,22 +119,18 @@ def plot_active_stations(timestamps, stations, aligned_data, data, i):
 
     # Get maximinum number of simultaneaously active stations per 7 days
     n_active_aligned = (aligned_data != 0).sum(axis=0)
-    n_binned, t_binned, _ = binned_statistic(timestamps, n_active_aligned,
-                                             npmax,
-                                             bins=len(timestamps) / (7 * 24))
+    n_binned, t_binned, _ = binned_statistic(timestamps, n_active_aligned, npmax, bins=len(timestamps) / (7 * 24))
     # Get average number of detected events per 7 days
     # todo; scale 2/4 detector stations
     summed_data = aligned_data.sum(axis=0)
-    e_binned, t_binned, _ = binned_statistic(timestamps, summed_data,
-                                             average,
-                                             bins=len(timestamps) / (7 * 24))
+    e_binned, t_binned, _ = binned_statistic(timestamps, summed_data, average, bins=len(timestamps) / (7 * 24))
 
     plot = Plot(width=r'.5\textwidth')
-    plot.plot([t / 1e9 for t in sorted(first_ts + last_ts)], n_stations,
-              linestyle='gray, thick', mark=None, use_steps=True)
+    plot.plot(
+        [t / 1e9 for t in sorted(first_ts + last_ts)], n_stations, linestyle='gray, thick', mark=None, use_steps=True
+    )
     plot.histogram(n_binned, t_binned / 1e9, linestyle='thick')
-    plot.histogram(e_binned * max(n_binned) / max(e_binned), t_binned / 1e9,
-                   linestyle='blue')
+    plot.histogram(e_binned * max(n_binned) / max(e_binned), t_binned / 1e9, linestyle='blue')
     plot.set_axis_options('line join=round')
     plot.set_ylabel('Number of stations')
     plot.set_xlabel('Date')

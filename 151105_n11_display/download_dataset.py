@@ -24,8 +24,7 @@ def download_sciencepark_dataset_n11():
     print("Downloading n11 Science Park dataset.")
     with tables.open_file(path, 'a') as data:
         for startdt, enddt in monthrange(start, end):
-            download_coincidences(data, stations=stations, start=startdt,
-                                  end=enddt, n=11)
+            download_coincidences(data, stations=stations, start=startdt, end=enddt, n=11)
 
 
 def monthrange(start, stop):
@@ -47,8 +46,7 @@ def monthrange(start, stop):
         return
 
     if start == stop:
-        yield (datetime(start[0], start[1], 1),
-               datetime(start[0], start[1] + 1, 1))
+        yield (datetime(start[0], start[1], 1), datetime(start[0], start[1] + 1, 1))
         return
     else:
         current_year, current_month = start
@@ -60,8 +58,7 @@ def monthrange(start, stop):
             else:
                 next_year = current_year + 1
                 next_month = 1
-            yield (datetime(current_year, current_month, 1),
-                   datetime(next_year, next_month, 1))
+            yield (datetime(current_year, current_month, 1), datetime(next_year, next_month, 1))
 
             current_year = next_year
             current_month = next_month

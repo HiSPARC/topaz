@@ -10,7 +10,7 @@ from sapphire.utils import ceil_in_base
 
 STATION = 14001
 TIME_RESOLUTION = 2.5  # nanoseconds
-C = .3  # lightspeed m/ns
+C = 0.3  # lightspeed m/ns
 COLORS = ['black', 'red', 'green', 'blue']
 
 
@@ -35,8 +35,7 @@ def station_size(station, detector_ids=[0, 2, 3]):
     :param detector_ids: list of the detector ids to use.
 
     """
-    r = [station.calc_r_and_phi_for_detectors(d0, d1)[0]
-         for d0, d1 in itertools.combinations(detector_ids, 2)]
+    r = [station.calc_r_and_phi_for_detectors(d0, d1)[0] for d0, d1 in itertools.combinations(detector_ids, 2)]
     return max(r)
 
 
@@ -46,8 +45,7 @@ def reconstruct_for_detectors(station, ids, dirrec):
     detectors = [station.detectors[id].get_coordinates() for id in ids]
     x, y, z = list(zip(*detectors))
 
-    theta, phi = zip(*(dirrec.reconstruct_common((0,) + t, x, y, z)
-                                  for t in times))
+    theta, phi = zip(*(dirrec.reconstruct_common((0,) + t, x, y, z) for t in times))
 
     thetaa = [t for t in theta if not np.isnan(t)]
     phia = [p for p in phi if not np.isnan(p)]
@@ -55,12 +53,10 @@ def reconstruct_for_detectors(station, ids, dirrec):
 
     graph.set_ylimits(0, np.pi / 2)
     graph.set_yticks([0, np.pi / 6, np.pi / 3, np.pi / 2])
-    graph.set_ytick_labels([r'$0$', r'$\frac{1}{6}\pi$',
-                            r'$\frac{2}{6}\pi$', r'$\frac{1}{2}\pi$'])
+    graph.set_ytick_labels([r'$0$', r'$\frac{1}{6}\pi$', r'$\frac{2}{6}\pi$', r'$\frac{1}{2}\pi$'])
     graph.set_ylabel('Zenith [rad]')
     graph.set_xlabel('Azimuth [rad]')
-    graph.save_as_pdf('discrete_directions_%d_%s' %
-                      (station.number, '_'.join(str(i) for i in ids)))
+    graph.save_as_pdf('discrete_directions_%d_%s' % (station.number, '_'.join(str(i) for i in ids)))
 
 
 if __name__ == '__main__':

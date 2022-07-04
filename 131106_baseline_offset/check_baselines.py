@@ -30,9 +30,11 @@ def get_baseline_offsets(date):
         for node in data.walk_nodes('/hisparc'):
             if node._v_name == 'events':
                 baselines = node.col('baseline')
-                average_baselines = [int(round(mean_baseline - 200, 0))
-                                     for mean_baseline in numpy.mean(baselines, 0)
-                                     if not mean_baseline == -1]
+                average_baselines = [
+                    int(round(mean_baseline - 200, 0))
+                    for mean_baseline in numpy.mean(baselines, 0)
+                    if not mean_baseline == -1
+                ]
                 station_number = int(node._v_parent._v_name[8:])
                 offsets[station_number] = average_baselines
     return offsets
@@ -40,8 +42,7 @@ def get_baseline_offsets(date):
 
 def stations_with_large_offset(offsets):
     """Get stations where an average baseline has a large offset"""
-    stations = sorted(station for station, baselines in offsets.items()
-                       if numpy.max(numpy.abs(baselines)) > 5)
+    stations = sorted(station for station, baselines in offsets.items() if numpy.max(numpy.abs(baselines)) > 5)
     return stations
 
 

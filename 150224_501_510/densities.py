@@ -25,16 +25,12 @@ def plot_densities(data):
         # poisson_errors = np.sqrt(bins)
         # filter = sn501 > minn
         filter = (sn501 > minn) & (sn510 > minn)
-        plot = MultiPlot(4, 4, 'loglog',
-                         width=r'.22\linewidth', height=r'.22\linewidth')
+        plot = MultiPlot(4, 4, 'loglog', width=r'.22\linewidth', height=r'.22\linewidth')
         for i in range(4):
             for j in range(4):
-                ncounts, x, y = np.histogram2d(n501[i].compress(filter),
-                                               n510[j].compress(filter),
-                                               bins=bins)
+                ncounts, x, y = np.histogram2d(n501[i].compress(filter), n510[j].compress(filter), bins=bins)
                 subplot = plot.get_subplot_at(i, j)
-                subplot.histogram2d(ncounts, x, y, type='reverse_bw',
-                                    bitmap=True)
+                subplot.histogram2d(ncounts, x, y, type='reverse_bw', bitmap=True)
                 # subplot.plot(bins - poisson_errors, bins + poisson_errors,
                 #              mark=None, linestyle='red')
                 # subplot.plot(bins + poisson_errors, bins - poisson_errors,

@@ -36,16 +36,13 @@ def get_all_configs():
 
 def plot_configs_timeline(stats, field, field_name):
     step = 86400  # one day
-    plot = MultiPlot(len(STATIONS), 1,
-                     width=r'.67\textwidth', height=r'.05\paperheight')
+    plot = MultiPlot(len(STATIONS), 1, width=r'.67\textwidth', height=r'.05\paperheight')
     for splot, station in zip(plot.subplots, STATIONS):
         config = stats[station][field]
         for i in range(4):
             timestamps = list(config['timestamp'] + (i * step))
             timestamps.append(END_TS)
-            splot.histogram(config[field_name % (i + 1)],
-                            timestamps,
-                            linestyle=COLORS[i])
+            splot.histogram(config[field_name % (i + 1)], timestamps, linestyle=COLORS[i])
         splot.set_ylabel(r'%d' % station)
 
     plot.set_xlimits_for_all(None, min=START_TS, max=END_TS)

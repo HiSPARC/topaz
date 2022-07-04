@@ -36,8 +36,7 @@ def plot_traces(traces1, traces2, overlap=0, label=''):
     plot = Plot(width=r'1.\textwidth', height=r'.3\textwidth')
 
     times1 = arange(0, len(traces1[0]) * 2.5, 2.5)
-    times2 = arange((len(traces1[0]) - overlap) * 2.5,
-                    (len(traces1[0]) + len(traces2[0]) - overlap) * 2.5, 2.5)
+    times2 = arange((len(traces1[0]) - overlap) * 2.5, (len(traces1[0]) + len(traces2[0]) - overlap) * 2.5, 2.5)
 
     for i, trace in enumerate(traces1):
         plot.plot(times1, array(trace) + i * 20, linestyle='%s, ultra thin' % colors1[i], mark=None)

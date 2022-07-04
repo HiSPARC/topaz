@@ -27,8 +27,7 @@ class ModGroundParticlesSimulation(GroundParticlesSimulation):
     """Require three detection points in a station"""
 
     def simulate_trigger(self, detector_observables):
-        detectors_low = sum(True for observables in detector_observables
-                             if observables['n'] > 0.3)
+        detectors_low = sum(True for observables in detector_observables if observables['n'] > 0.3)
         if detectors_low >= 3:
             return True
         else:
@@ -38,16 +37,14 @@ class ModGroundParticlesSimulation(GroundParticlesSimulation):
 def do_simulation():
     with tables.open_file(RESULT_DATA, 'w') as data:
         cluster = HiSPARCStations([501], force_stale=True)
-        sim = ModGroundParticlesSimulation(CORSIKA_DATA, 400, cluster, data,
-                                           N=3000, progress=True)
+        sim = ModGroundParticlesSimulation(CORSIKA_DATA, 400, cluster, data, N=3000, progress=True)
         sim.run()
 
 
 def do_simulation_small():
     with tables.open_file(RESULT_DATA_SMALL, 'w') as data:
         cluster = HiSPARCStations([501], force_stale=True)
-        sim = ModGroundParticlesSimulation(CORSIKA_DATA_SMALL, 100, cluster, data,
-                                           N=4000, progress=True)
+        sim = ModGroundParticlesSimulation(CORSIKA_DATA_SMALL, 100, cluster, data, N=4000, progress=True)
         sim.run()
 
 
@@ -70,7 +67,7 @@ def do_reconstructions_small():
 def plot_zenith_density():
     with tables.open_file(RESULT_DATA, 'r') as data:
         e = data.root.cluster_simulations.station_501.events.read()
-        density = (e['n1'] + e['n2'] + e['n3'] + e['n4']) / 2.
+        density = (e['n1'] + e['n2'] + e['n3'] + e['n4']) / 2.0
         zenith = data.root.cluster_simulations.station_501.reconstructions.col('zenith')
         plot = Plot('semilogx')
         plot.scatter(density, degrees(zenith), markstyle='thin, mark size=.75pt')
@@ -84,7 +81,7 @@ def plot_zenith_density():
 def plot_zenith_density_small():
     with tables.open_file(RESULT_DATA_SMALL, 'r') as data:
         e = data.root.cluster_simulations.station_501.events.read()
-        density = (e['n1'] + e['n2'] + e['n3'] + e['n4']) / 2.
+        density = (e['n1'] + e['n2'] + e['n3'] + e['n4']) / 2.0
         zenith = data.root.cluster_simulations.station_501.reconstructions.col('zenith')
         plot = Plot('semilogx')
         plot.scatter(density, degrees(zenith), markstyle='thin, mark size=.75pt')

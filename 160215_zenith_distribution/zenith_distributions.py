@@ -1,7 +1,6 @@
 """Compare station zenith distribution to fits"""
 
 
-
 from numpy import arange, array, cos, exp, interp, radians, sin, std, sum
 from scipy.optimize import curve_fit
 from scipy.stats import binned_statistic
@@ -33,17 +32,15 @@ def get_zenith_distribution():
     angles += 1.5  # bin edges to bin centers
     angles_bins = arange(0, 91, 3)
 
-    mean_counts = binned_statistic(angles, counts,
-                                   statistic='mean', bins=angles_bins)[0]
-    std_counts = binned_statistic(angles, counts,
-                                  statistic=std, bins=angles_bins)[0]
-    angle_centers = (angles_bins[1:] + angles_bins[:-1]) / 2.
+    mean_counts = binned_statistic(angles, counts, statistic='mean', bins=angles_bins)[0]
+    std_counts = binned_statistic(angles, counts, statistic=std, bins=angles_bins)[0]
+    angle_centers = (angles_bins[1:] + angles_bins[:-1]) / 2.0
 
     return angle_centers, mean_counts, std_counts
 
 
 def rossi(x, a, b):
-    """ Rossi: zenith angle distribution
+    """Rossi: zenith angle distribution
 
     :param x: zenith in degrees.
 
@@ -54,7 +51,7 @@ def rossi(x, a, b):
 
 
 def iyono(x, a, b):
-    """ Iyono 2007: zenith angle distribution
+    """Iyono 2007: zenith angle distribution
 
     :param x: zenith in degrees.
 
@@ -66,7 +63,7 @@ def iyono(x, a, b):
 
 
 def ciampa(x, a, b, d):
-    """ Ciampa 1998: zenith angle distribution
+    """Ciampa 1998: zenith angle distribution
 
     :param x: zenith in degrees.
 
@@ -77,7 +74,7 @@ def ciampa(x, a, b, d):
 
 
 def mod_ciampa(x, a, b):
-    """ Based on Ciampa 1998: zenith angle distribution
+    """Based on Ciampa 1998: zenith angle distribution
 
     :param x: zenith in degrees.
 
@@ -90,20 +87,19 @@ def mod_ciampa(x, a, b):
 
 
 def mod_ciampa_conv_full(a, b, d):
-    """ Based on Ciampa 1998: zenith angle distribution
+    """Based on Ciampa 1998: zenith angle distribution
 
     Positive C parameter
 
     """
     x = arange(0.1, 85, 0.1)
     rx = radians(x)
-    result = sum((gauss(rx, mod_ciampa(xi, a, b), rxi, radians(d / cos(rxi)))
-                  for xi, rxi in zip(x, rx)), axis=0)
+    result = sum((gauss(rx, mod_ciampa(xi, a, b), rxi, radians(d / cos(rxi))) for xi, rxi in zip(x, rx)), axis=0)
     return rx, result
 
 
 def mod_ciampa_conv(x, a, b, d):
-    """ Based on Ciampa 1998: zenith angle distribution
+    """Based on Ciampa 1998: zenith angle distribution
 
     :param x: zenith in degrees.
 
@@ -145,7 +141,7 @@ def plot_zenith(angle_centers, mean_counts, std_counts):
 
 
 def convert_angles(angles):
-    return 1. / cos(radians(angles)) - 1
+    return 1.0 / cos(radians(angles)) - 1
 
 
 if __name__ == "__main__":

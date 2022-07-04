@@ -18,8 +18,9 @@ def download_dataset():
         # Clear previous data
         pass
     for station in STATIONS:
-        delta_data = genfromtxt('data/time_delta_%d.tsv' % station, delimiter='\t', dtype=None,
-                                names=['ext_timestamp', 'time_delta'])
+        delta_data = genfromtxt(
+            'data/time_delta_%d.tsv' % station, delimiter='\t', dtype=None, names=['ext_timestamp', 'time_delta']
+        )
         start = gps_to_datetime(delta_data['ext_timestamp'][0] / int(1e9))
         end = gps_to_datetime(delta_data['ext_timestamp'][-1] / int(1e9))
 
@@ -49,10 +50,8 @@ def download_dataset():
             assert all(events.col('ext_timestamp') == delta_data['ext_timestamp'])
             t3 = events.col('t3')
             t4 = events.col('t4')
-            events.modify_column(colname='t3',
-                                 column=where(t3 >= 0, t3 + time_delta, t3))
-            events.modify_column(colname='t4',
-                                 column=where(t4 >= 0, t4 + time_delta, t4))
+            events.modify_column(colname='t3', column=where(t3 >= 0, t3 + time_delta, t3))
+            events.modify_column(colname='t4', column=where(t4 >= 0, t4 + time_delta, t4))
             events.flush()
 
 
@@ -90,8 +89,9 @@ def plot_reconstructions():
     plot.set_xlabel(r'Angle between [\si{\degree}]')
     colors = ['black', 'red', 'green', 'blue']
 
-    for i, c_group in enumerate(['/coincidences', '/coincidences_original',
-                                 '/coincidences_501_original', '/coincidences_510_original']):
+    for i, c_group in enumerate(
+        ['/coincidences', '/coincidences_original', '/coincidences_501_original', '/coincidences_510_original']
+    ):
         cq = CoincidenceQuery(DATA, coincidence_group=c_group)
         coincidences = cq.all([501, 510], iterator=True)
         reconstructions = [cq._get_reconstructions(c) for c in coincidences]

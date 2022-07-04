@@ -11,7 +11,6 @@ Uses stations 501 through 511 (except 507).
 """
 
 
-
 import os
 
 import numpy as np
@@ -24,7 +23,10 @@ from artist import MultiPlot, Plot
 from sapphire import CoincidenceQuery, GroundParticlesSimulation, ReconstructESDCoincidences, ScienceParkCluster
 from sapphire.analysis import event_utils
 from sapphire.analysis.direction_reconstruction import (
-    CurvedRegressionAlgorithm, DirectAlgorithmCartesian, RegressionAlgorithm)
+    CurvedRegressionAlgorithm,
+    DirectAlgorithmCartesian,
+    RegressionAlgorithm,
+)
 from sapphire.simulations.showerfront import CorsikaStationFront
 from sapphire.transformations import geographic
 from sapphire.utils import angle_between, c, distance_between
@@ -49,16 +51,20 @@ def perform_simulations(data):
 
 def reconstruct_simulations(data):
     cluster = data.root.coincidences._v_attrs['cluster']
-    offsets = {s.number: [d.offset + s.gps_offset for d in s.detectors]
-               for s in cluster.stations}
+    offsets = {s.number: [d.offset + s.gps_offset for d in s.detectors] for s in cluster.stations}
 
     # Default reconstruction currently first direction then core
-    frec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
-                                      overwrite=True, progress=True,
-                                      destination='recs_flat', cluster=cluster)
-#     frec.direction.curved = CurvedRegressionAlgorithm()
-#     frec.direction.direct = DirectAlgorithmCartesian
-#     frec.direction.fit = RegressionAlgorithm
+    frec = ReconstructESDCoincidences(
+        data,
+        coincidences_group='/coincidences',
+        overwrite=True,
+        progress=True,
+        destination='recs_flat',
+        cluster=cluster,
+    )
+    #     frec.direction.curved = CurvedRegressionAlgorithm()
+    #     frec.direction.direct = DirectAlgorithmCartesian
+    #     frec.direction.fit = RegressionAlgorithm
     frec.prepare_output()
     frec.offsets = offsets
     frec.reconstruct_directions()
@@ -66,12 +72,17 @@ def reconstruct_simulations(data):
     frec.store_reconstructions()
 
     # Reconstruct direction, then core, then direction again
-    crec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
-                                      overwrite=True, progress=True,
-                                      destination='recs_curved', cluster=cluster)
-#     crec.direction.curved = CurvedRegressionAlgorithm()
-#     crec.direction.direct = DirectAlgorithmCartesian
-#     crec.direction.fit = RegressionAlgorithm
+    crec = ReconstructESDCoincidences(
+        data,
+        coincidences_group='/coincidences',
+        overwrite=True,
+        progress=True,
+        destination='recs_curved',
+        cluster=cluster,
+    )
+    #     crec.direction.curved = CurvedRegressionAlgorithm()
+    #     crec.direction.direct = DirectAlgorithmCartesian
+    #     crec.direction.fit = RegressionAlgorithm
     crec.prepare_output()
     crec.offsets = offsets
     crec.reconstruct_directions()
@@ -80,12 +91,12 @@ def reconstruct_simulations(data):
     crec.store_reconstructions()
 
     # Reconstruct directions using the input core
-    xrec = ReconstructESDCoincidences(data, coincidences_group='/coincidences',
-                                      overwrite=True, progress=True,
-                                      destination='recs_xy', cluster=cluster)
-#     xrec.direction.curved = CurvedRegressionAlgorithm()
-#     xrec.direction.direct = DirectAlgorithmCartesian
-#     xrec.direction.fit = RegressionAlgorithm
+    xrec = ReconstructESDCoincidences(
+        data, coincidences_group='/coincidences', overwrite=True, progress=True, destination='recs_xy', cluster=cluster
+    )
+    #     xrec.direction.curved = CurvedRegressionAlgorithm()
+    #     xrec.direction.direct = DirectAlgorithmCartesian
+    #     xrec.direction.fit = RegressionAlgorithm
     xrec.prepare_output()
     xrec.offsets = offsets
     xrec.core_x = xrec.cq.coincidences.col('x')
@@ -100,11 +111,12 @@ def plot_results(data):
     plot = Plot()
     for i, rec_path in enumerate(rec_paths):
         recs = data.get_node('/coincidences/%s' % rec_path)
-        angles = angle_between(recs.col('zenith'), recs.col('azimuth'),
-                               recs.col('reference_zenith'), recs.col('reference_azimuth'))
+        angles = angle_between(
+            recs.col('zenith'), recs.col('azimuth'), recs.col('reference_zenith'), recs.col('reference_azimuth')
+        )
         dangles = np.degrees(angles)
-        counts, bins = np.histogram(dangles, bins=np.arange(0, 25, .5))
-        plot.histogram(counts, bins + (i / 10.), linestyle=linestyles[i])
+        counts, bins = np.histogram(dangles, bins=np.arange(0, 25, 0.5))
+        plot.histogram(counts, bins + (i / 10.0), linestyle=linestyles[i])
     plot.set_xlimits(0, 25)
     plot.set_ylimits(0)
     plot.set_xlabel(r'Angle between [\si{\degree}]')
@@ -120,8 +132,7 @@ def make_map(cluster):
             latitude, longitude, _ = detector.get_lla_coordinates()
             latitudes.append(latitude)
             longitudes.append(longitude)
-    map = Map((min(latitudes), min(longitudes),
-               max(latitudes), max(longitudes)))
+    map = Map((min(latitudes), min(longitudes), max(latitudes), max(longitudes)))
     return map
 
 
@@ -138,14 +149,11 @@ def plot_map(data):
             break
         coincidence_events = next(cq.all_events([coincidence]))
         reconstruction = cq._get_reconstruction(coincidence)
-        display_coincidences(cluster, coincidence_events, coincidence,
-                             reconstruction, map)
+        display_coincidences(cluster, coincidence_events, coincidence, reconstruction, map)
 
 
-def display_coincidences(cluster, coincidence_events, coincidence,
-                         reconstruction, map):
-    offsets = {s.number: [d.offset + s.gps_offset for d in s.detectors]
-               for s in cluster.stations}
+def display_coincidences(cluster, coincidence_events, coincidence, reconstruction, map):
+    offsets = {s.number: [d.offset + s.gps_offset for d in s.detectors] for s in cluster.stations}
     ts0 = coincidence_events[0][1]['ext_timestamp']
 
     latitudes = []
@@ -159,8 +167,7 @@ def display_coincidences(cluster, coincidence_events, coincidence,
             latitude, longitude, _ = detector.get_lla_coordinates()
             latitudes.append(latitude)
             longitudes.append(longitude)
-        t.extend(event_utils.relative_detector_arrival_times(
-            event, ts0, DETECTOR_IDS, offsets=offsets[station_number]))
+        t.extend(event_utils.relative_detector_arrival_times(event, ts0, DETECTOR_IDS, offsets=offsets[station_number]))
         p.extend(event_utils.detector_densities(event, DETECTOR_IDS))
 
     image = map.to_pil()
@@ -169,8 +176,7 @@ def display_coincidences(cluster, coincidence_events, coincidence,
     aspect = float(map_w) / float(map_h)
     width = 0.67
     height = width / aspect
-    plot = Plot(width=r'%.2f\linewidth' % width,
-                height=r'%.2f\linewidth' % height)
+    plot = Plot(width=r'%.2f\linewidth' % width, height=r'%.2f\linewidth' % height)
 
     plot.draw_image(image, 0, 0, map_w, map_h)
 
@@ -204,11 +210,12 @@ def display_coincidences(cluster, coincidence_events, coincidence,
 
     core_lat, core_lon, _ = transform.enu_to_lla((core_x, core_y, 0))
     core_x, core_y = map.to_pixels(core_lat, core_lon)
-    plot.scatter([core_x], [image.size[1] - core_y], mark='10-pointed star',
-                 markstyle='red')
-    plot.plot([core_x, core_x + direction_length * dx],
-              [image.size[1] - core_y,
-               image.size[1] - (core_y - direction_length * dy)], mark=None)
+    plot.scatter([core_x], [image.size[1] - core_y], mark='10-pointed star', markstyle='red')
+    plot.plot(
+        [core_x, core_x + direction_length * dx],
+        [image.size[1] - core_y, image.size[1] - (core_y - direction_length * dy)],
+        mark=None,
+    )
 
     # Plot simulated core
     dx = np.cos(reconstruction['reference_azimuth'])
@@ -219,11 +226,12 @@ def display_coincidences(cluster, coincidence_events, coincidence,
 
     core_lat, core_lon, _ = transform.enu_to_lla((core_x, core_y, 0))
     core_x, core_y = map.to_pixels(core_lat, core_lon)
-    plot.scatter([core_x], [image.size[1] - core_y], mark='asterisk',
-                 markstyle='orange')
-    plot.plot([core_x, core_x + direction_length * dx],
-              [image.size[1] - core_y,
-               image.size[1] - (core_y - direction_length * dy)], mark=None)
+    plot.scatter([core_x], [image.size[1] - core_y], mark='asterisk', markstyle='orange')
+    plot.plot(
+        [core_x, core_x + direction_length * dx],
+        [image.size[1] - core_y, image.size[1] - (core_y - direction_length * dy)],
+        mark=None,
+    )
 
     plot.set_scalebar(location="lower left")
     plot.set_slimits(min=1, max=30)
@@ -232,9 +240,7 @@ def display_coincidences(cluster, coincidence_events, coincidence,
     plot.set_colormap('viridis')
 
     nw = num2deg(map.xmin, map.ymin, map.z)
-    se = num2deg(map.xmin + map_w / TILE_SIZE,
-                 map.ymin + map_h / TILE_SIZE,
-                 map.z)
+    se = num2deg(map.xmin + map_w / TILE_SIZE, map.ymin + map_h / TILE_SIZE, map.z)
 
     x0, y0, _ = transform.lla_to_enu((nw[0], nw[1], 0))
     x1, y1, _ = transform.lla_to_enu((se[0], se[1], 0))
@@ -251,24 +257,25 @@ def display_coincidences(cluster, coincidence_events, coincidence,
 
 
 def plot_distance_vs_delay(data):
-    colors = {501: 'black',
-              502: 'red!80!black',
-              503: 'blue!80!black',
-              504: 'green!80!black',
-              505: 'orange!80!black',
-              506: 'pink!80!black',
-              508: 'blue!40!black',
-              509: 'red!40!black',
-              510: 'green!40!black',
-              511: 'orange!40!black'}
+    colors = {
+        501: 'black',
+        502: 'red!80!black',
+        503: 'blue!80!black',
+        504: 'green!80!black',
+        505: 'orange!80!black',
+        506: 'pink!80!black',
+        508: 'blue!40!black',
+        509: 'red!40!black',
+        510: 'green!40!black',
+        511: 'orange!40!black',
+    }
 
     cq = CoincidenceQuery(data)
     cq.reconstructions = cq.data.get_node('/coincidences', 'recs_curved')
     cq.reconstructed = True
 
     cluster = data.root.coincidences._v_attrs['cluster']
-    offsets = {s.number: [d.offset + s.gps_offset for d in s.detectors]
-               for s in cluster.stations}
+    offsets = {s.number: [d.offset + s.gps_offset for d in s.detectors] for s in cluster.stations}
 
     front = CorsikaStationFront()
     front_r = np.arange(500)
@@ -296,8 +303,9 @@ def plot_distance_vs_delay(data):
 
         for station_number, event in coincidence_events:
             station = cluster.get_station(station_number)
-            t = event_utils.relative_detector_arrival_times(event, ref_extts,
-                                                            offsets=offsets[station_number], detector_ids=DETECTOR_IDS)
+            t = event_utils.relative_detector_arrival_times(
+                event, ref_extts, offsets=offsets[station_number], detector_ids=DETECTOR_IDS
+            )
             core_distances = []
             for i, d in enumerate(station.detectors):
                 x, y, z = d.get_coordinates()
@@ -305,8 +313,12 @@ def plot_distance_vs_delay(data):
                 t += d.get_coordinates()[-1] / c
             splot.scatter(core_distances, t, mark='o', markstyle=colors[station_number])
             splot.scatter([np.mean(core_distances)], [np.nanmin(t)], mark='*', markstyle=colors[station_number])
-            rplot.scatter([np.mean(core_distances)], [np.nanmin(t) - front.delay_at_r(np.mean(core_distances))],
-                          mark='*', markstyle=colors[station_number])
+            rplot.scatter(
+                [np.mean(core_distances)],
+                [np.nanmin(t) - front.delay_at_r(np.mean(core_distances))],
+                mark='*',
+                markstyle=colors[station_number],
+            )
 
         splot.set_ylabel('Relative arrival time [ns]')
         rplot.set_ylabel(r'Residuals')
@@ -326,9 +338,11 @@ if __name__ == "__main__":
         with tables.open_file(RESULT_PATH, 'w') as data:
             perform_simulations(data)
     with tables.open_file(RESULT_PATH, 'a') as data:
-        if ('/coincidences/recs_flat' not in data or
-                '/coincidences/recs_curved' not in data or
-                '/coincidences/recs_xy' not in data):
+        if (
+            '/coincidences/recs_flat' not in data
+            or '/coincidences/recs_curved' not in data
+            or '/coincidences/recs_xy' not in data
+        ):
             reconstruct_simulations(data)
     with tables.open_file(RESULT_PATH, 'r') as data:
         plot_results(data)

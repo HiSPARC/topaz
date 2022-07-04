@@ -18,15 +18,13 @@ MAX_DISTANCE = 2e3
 
 def distance_between_stations(s1, s2):
     cluster = HiSPARCStations([s1, s2], force_stale=True)
-    xyz = [array(s.calc_center_of_mass_coordinates())
-           for s in cluster.stations]
+    xyz = [array(s.calc_center_of_mass_coordinates()) for s in cluster.stations]
     return distance(*xyz)
 
 
 def horizontal_distance_between_stations(s1, s2):
     cluster = HiSPARCStations([s1, s2], force_stale=True)
-    xy = [array(s.calc_center_of_mass_coordinates()[:-1])
-          for s in cluster.stations]
+    xy = [array(s.calc_center_of_mass_coordinates()[:-1]) for s in cluster.stations]
     return distance(*xy)
 
 
@@ -40,8 +38,7 @@ def close_pairs_in_cluster(cluster, min=MIN_DISTANCE, max=MAX_DISTANCE):
     coordinates = []
     for station in cluster.stations:
         try:
-            testing.assert_allclose(station.get_lla_coordinates(),
-                                    (0., 0., 0.), atol=1e-7)
+            testing.assert_allclose(station.get_lla_coordinates(), (0.0, 0.0, 0.0), atol=1e-7)
         except AssertionError:
             # Valid GPS
             station_numbers.append(station.number)
@@ -50,8 +47,7 @@ def close_pairs_in_cluster(cluster, min=MIN_DISTANCE, max=MAX_DISTANCE):
 
 
 def get_close_pairs(coordinates, min=MIN_DISTANCE, max=MAX_DISTANCE):
-    pairs = [(sc1[0], sc2[0]) for sc1, sc2 in combinations(coordinates, 2)
-             if min < distance(sc1[1], sc2[1]) < max]
+    pairs = [(sc1[0], sc2[0]) for sc1, sc2 in combinations(coordinates, 2) if min < distance(sc1[1], sc2[1]) < max]
     return pairs
 
 
@@ -71,8 +67,7 @@ def close_triples_in_cluster(cluster, min=MIN_DISTANCE, max=MAX_DISTANCE):
     coordinates = []
     for station in cluster.stations:
         try:
-            testing.assert_allclose(station.get_lla_coordinates(),
-                                    (0., 0., 0.), atol=1e-7)
+            testing.assert_allclose(station.get_lla_coordinates(), (0.0, 0.0, 0.0), atol=1e-7)
         except AssertionError:
             # Not invalid GPS
             station_numbers.append(station.number)
@@ -81,9 +76,11 @@ def close_triples_in_cluster(cluster, min=MIN_DISTANCE, max=MAX_DISTANCE):
 
 
 def get_close_triples(coordinates, min=MIN_DISTANCE, max=MAX_DISTANCE):
-    triples = [(sc1[0], sc2[0], sc3[0]) for sc1, sc2, sc3 in combinations(coordinates, 3)
-               if all(min < distance(sp1, sp2) < max
-                      for sp1, sp2 in combinations((sc1[1], sc2[1], sc3[1]), 2))]
+    triples = [
+        (sc1[0], sc2[0], sc3[0])
+        for sc1, sc2, sc3 in combinations(coordinates, 3)
+        if all(min < distance(sp1, sp2) < max for sp1, sp2 in combinations((sc1[1], sc2[1], sc3[1]), 2))
+    ]
     return triples
 
 

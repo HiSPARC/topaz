@@ -29,7 +29,7 @@ with tables.open_file('test_showerfront_alt.h5', 'w') as data:
         bins = arange(-100 + 1.25, 100, 2.5)
         y, bins = histogram(dt, bins=bins)
         x = (bins[:-1] + bins[1:]) / 2
-        popt, pcov = curve_fit(gauss, x, y, p0=(len(dt), 0., 10.))
+        popt, pcov = curve_fit(gauss, x, y, p0=(len(dt), 0.0, 10.0))
 
         rec_off.append(popt[1])
 

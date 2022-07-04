@@ -55,8 +55,8 @@ def find_n_coincidences(coinc, event_tables):
     del timestamps
 
     ts_diff = ts_arr[1:, 0] - ts_arr[:-1, 0]
-#     not_same_station = ts_arr[1:, 1] != ts_arr[:-1, 1]
-#     ts_diff = ts_diff[not_same_station]
+    #     not_same_station = ts_arr[1:, 1] != ts_arr[:-1, 1]
+    #     ts_diff = ts_diff[not_same_station]
 
     del ts_arr
 
@@ -72,8 +72,7 @@ def find_n_coincidences(coinc, event_tables):
 
 def plot_coinc_window(windows, counts, n_events=0):
 
-    plot = MultiPlot(2, 1, axis='semilogx',
-                     width=r'.8\linewidth', height=r'.5\linewidth')
+    plot = MultiPlot(2, 1, axis='semilogx', width=r'.8\linewidth', height=r'.5\linewidth')
     plot.set_title(0, 0, 'Number of coincidences as function of coincidence window')
     plot.set_xlabel('Coincidence window (ns)')
     plot.show_xticklabels(1, 0)

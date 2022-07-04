@@ -33,8 +33,7 @@ def make_map(cluster=CLUSTER):
             latitude, longitude, _ = detector.get_lla_coordinates()
             latitudes.append(latitude)
             longitudes.append(longitude)
-    map = Map((min(latitudes), min(longitudes),
-               max(latitudes), max(longitudes)))
+    map = Map((min(latitudes), min(longitudes), max(latitudes), max(longitudes)))
     return map
 
 
@@ -55,8 +54,7 @@ def display_coincidences(coincidence_events, c_id, map):
             latitude, longitude, _ = detector.get_lla_coordinates()
             latitudes.append(latitude)
             longitudes.append(longitude)
-        t.extend(event_utils.relative_detector_arrival_times(
-            event, ts0, DETECTOR_IDS))
+        t.extend(event_utils.relative_detector_arrival_times(event, ts0, DETECTOR_IDS))
         p.extend(event_utils.detector_densities(event, DETECTOR_IDS))
 
     image = map.to_pil()
@@ -65,8 +63,7 @@ def display_coincidences(coincidence_events, c_id, map):
     aspect = float(map_w) / float(map_h)
     width = 0.67
     height = width / aspect
-    plot = Plot(width=r'%.2f\linewidth' % width,
-                height=r'%.2f\linewidth' % height)
+    plot = Plot(width=r'%.2f\linewidth' % width, height=r'%.2f\linewidth' % height)
 
     plot.draw_image(image, 0, 0, map_w, map_h)
 
@@ -97,9 +94,7 @@ def display_coincidences(coincidence_events, c_id, map):
     plot.set_axis_equal()
 
     nw = num2deg(map.xmin, map.ymin, map.z)
-    se = num2deg(map.xmin + map_w / TILE_SIZE,
-                 map.ymin + map_h / TILE_SIZE,
-                 map.z)
+    se = num2deg(map.xmin + map_w / TILE_SIZE, map.ymin + map_h / TILE_SIZE, map.z)
 
     x0, y0, _ = transform.lla_to_enu((nw[0], nw[1], 0))
     x1, y1, _ = transform.lla_to_enu((se[0], se[1], 0))
@@ -112,11 +107,10 @@ def display_coincidences(coincidence_events, c_id, map):
     plot.set_yticks([0, map_h])
     plot.set_ytick_labels([int(y1), int(y0)])
 
-
-#     plot.set_xlimits(min=-250, max=350)
-#     plot.set_ylimits(min=-250, max=250)
-#     plot.set_xlabel('x [\si{\meter}]')
-#     plot.set_ylabel('y [\si{\meter}]')
+    #     plot.set_xlimits(min=-250, max=350)
+    #     plot.set_ylimits(min=-250, max=250)
+    #     plot.set_xlabel('x [\si{\meter}]')
+    #     plot.set_ylabel('y [\si{\meter}]')
 
     plot.save_as_pdf('coincidences/event_display_%d_%d' % (c_id, ts0))
 
@@ -143,8 +137,7 @@ def plot_traces(coincidence_events):
                 trace = array(trace) / float(max(trace)) * 100
             trace = insert(trace, 0, 0)
             trace = append(trace, 0)
-            plot.plot(t, trace + (100 * j) + (500 * i), mark=None,
-                      linestyle=COLORS[j])
+            plot.plot(t, trace + (100 * j) + (500 * i), mark=None, linestyle=COLORS[j])
         tick_labels.append(station_number)
         tick_positions.append(500 * i)
 

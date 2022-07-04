@@ -31,17 +31,101 @@ from station_distances import close_pairs_in_network
 from variable_distance import min_max_distance_pair
 
 DATAPATH = '/Users/arne/Datastore/pairs/%d_%d.h5'
-NO_LAYOUT = [2, 3, 5, 7, 10, 13, 21, 22, 101, 103, 202, 203,
-             301, 303, 304, 305, 401, 1001, 1002, 1003, 1006, 1007, 1008, 1010,
-             2001, 2002, 2003, 2004, 2005, 2008, 2010, 2101, 2102, 2103, 2201,
-             3001, 3002, 3101, 3102, 3103, 3104, 3105, 3202, 3203, 3301, 3302,
-             3303, 3401, 3501, 3601,
-             4001, 4002, 4003, 4004, 7101, 7201, 7301, 7401,
-             8001, 8002, 8004, 8005, 8006, 8007, 8008, 8009, 8102, 8103, 8104,
-             8105, 8201, 8301, 8302, 8303,
-             13001, 13002, 13003, 13004, 13005, 13006, 13007, 13008, 13101,
-             13103, 13104, 13201, 13301, 13501, 14002, 14003,
-             20001, 20002, 20003]
+NO_LAYOUT = [
+    2,
+    3,
+    5,
+    7,
+    10,
+    13,
+    21,
+    22,
+    101,
+    103,
+    202,
+    203,
+    301,
+    303,
+    304,
+    305,
+    401,
+    1001,
+    1002,
+    1003,
+    1006,
+    1007,
+    1008,
+    1010,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2008,
+    2010,
+    2101,
+    2102,
+    2103,
+    2201,
+    3001,
+    3002,
+    3101,
+    3102,
+    3103,
+    3104,
+    3105,
+    3202,
+    3203,
+    3301,
+    3302,
+    3303,
+    3401,
+    3501,
+    3601,
+    4001,
+    4002,
+    4003,
+    4004,
+    7101,
+    7201,
+    7301,
+    7401,
+    8001,
+    8002,
+    8004,
+    8005,
+    8006,
+    8007,
+    8008,
+    8009,
+    8102,
+    8103,
+    8104,
+    8105,
+    8201,
+    8301,
+    8302,
+    8303,
+    13001,
+    13002,
+    13003,
+    13004,
+    13005,
+    13006,
+    13007,
+    13008,
+    13101,
+    13103,
+    13104,
+    13201,
+    13301,
+    13501,
+    14002,
+    14003,
+    20001,
+    20002,
+    20003,
+]
 
 
 def get_coincidence_count(close_pairs):
@@ -76,8 +160,7 @@ def get_coincidence_count(close_pairs):
         if n_coincidences < 5:
             # Exclude pairs with very few coincidences
             continue
-        n = (len(network.get_station(pair[0]).detectors) +
-             len(network.get_station(pair[1]).detectors))
+        n = len(network.get_station(pair[0]).detectors) + len(network.get_station(pair[1]).detectors)
         distances[n].append(distance)
         # Distance error due to unknown detector locations or moving stations
         if pair[0] in NO_LAYOUT and pair[1] in NO_LAYOUT:
@@ -86,8 +169,7 @@ def get_coincidence_count(close_pairs):
             gps_layout_error = 10
         else:
             gps_layout_error = 3
-        distance_error = [abs(d - distance) + gps_layout_error
-                          for d in min_max_distance_pair(pair)]
+        distance_error = [abs(d - distance) + gps_layout_error for d in min_max_distance_pair(pair)]
         if distance_error[0] > distance:
             distance_error[0] = distance - 1e-15
         distance_errors[n].append(distance_error)
@@ -102,16 +184,14 @@ def get_coincidence_count(close_pairs):
         coincidence_rate_errors[n].append(err)
         pairs[n].append(pair)
 
-    return (distances, coincidence_rates, interval_rates,
-            distance_errors, coincidence_rate_errors, pairs)
+    return (distances, coincidence_rates, interval_rates, distance_errors, coincidence_rate_errors, pairs)
 
 
 def slope(x, N, s):
     return N * exp(-s * x)
 
 
-def expected_rate(distances, coincidence_rates, background,
-                  sim_distances, sim_energies, sim_areas, n=8):
+def expected_rate(distances, coincidence_rates, background, sim_distances, sim_energies, sim_areas, n=8):
     """Rough estimation of expected rate"""
 
     # Differential flux
@@ -121,37 +201,33 @@ def expected_rate(distances, coincidence_rates, background,
     knee = 3e15
     slope1 = -3.0
     bend = (knee / refr) ** slope
-    sim_dif_flux = where(sim_energies <= knee, sim_dif_flux,
-                         (sim_energies / knee) ** slope1 * bend)
+    sim_dif_flux = where(sim_energies <= knee, sim_dif_flux, (sim_energies / knee) ** slope1 * bend)
     knee2 = 3e17
     slope2 = -3.3
     bend *= (knee2 / knee) ** slope1
-    sim_dif_flux = where(sim_energies <= knee2, sim_dif_flux,
-                         (sim_energies / knee2) ** slope2 * bend)
+    sim_dif_flux = where(sim_energies <= knee2, sim_dif_flux, (sim_energies / knee2) ** slope2 * bend)
     ankle = 3e18
     slope3 = -2.6
     bend *= (ankle / knee2) ** slope2
-    sim_dif_flux = where(sim_energies <= ankle, sim_dif_flux,
-                         (sim_energies / ankle) ** slope3 * bend)
+    sim_dif_flux = where(sim_energies <= ankle, sim_dif_flux, (sim_energies / ankle) ** slope3 * bend)
 
     # Simplified flux
-    sim_dif_flux = sim_energies ** slope / sum(sim_energies ** slope)
+    sim_dif_flux = sim_energies**slope / sum(sim_energies**slope)
 
     # Energy dependend scaling, smaller solid angle for low energy showers
     max_zenith = log10(log10(sim_energies) - 12) ** 0.7
 
-#     f = max(0, min(1, 1.205 * log10(E) - 14.76 - 2.52 / cos(theta)))
-# #     solid_angle = 2 * pi * int(0, pi/2) f(theta) * cos(theta) * sin(theta) * dtheta
+    #     f = max(0, min(1, 1.205 * log10(E) - 14.76 - 2.52 / cos(theta)))
+    # #     solid_angle = 2 * pi * int(0, pi/2) f(theta) * cos(theta) * sin(theta) * dtheta
 
     zenith = radians(60)
 
     sim_solid_angle = 2 * pi * (1 - cos(zenith))
 
-    sim_rates = (sim_areas * sim_energies * sim_solid_angle * sim_dif_flux
-                 ).sum(axis=1)
+    sim_rates = (sim_areas * sim_energies * sim_solid_angle * sim_dif_flux).sum(axis=1)
 
     scaling = partial(scale_rate, sim_distances, sim_rates, background)
-    popt, pcov = curve_fit(scaling, distances, log10(coincidence_rates), [1.])
+    popt, pcov = curve_fit(scaling, distances, log10(coincidence_rates), [1.0])
     print(n, popt)
 
     return popt[0] * sim_rates + background
@@ -183,8 +259,7 @@ def plot_coincidence_rate_distance(data, sim_data):
     :param rate_errors: errors on the coincidence rates.
 
     """
-    (distances, coincidence_rates, interval_rates,
-     distance_errors, rate_errors, pairs) = data
+    (distances, coincidence_rates, interval_rates, distance_errors, rate_errors, pairs) = data
     sim_distances, sim_energies, sim_areas = sim_data
     markers = {4: 'o', 6: 'triangle', 8: 'square'}
     colors = {4: 'red', 6: 'black!50!green', 8: 'black!20!blue'}
@@ -192,29 +267,33 @@ def plot_coincidence_rate_distance(data, sim_data):
     coincidence_window = 10e-6  # seconds
     freq_2 = 0.3
     freq_4 = 0.6
-    background = {4: 2 * freq_2 * freq_2 * coincidence_window,
-                  6: 2 * freq_2 * freq_4 * coincidence_window,
-                  8: 2 * freq_4 * freq_4 * coincidence_window}
+    background = {
+        4: 2 * freq_2 * freq_2 * coincidence_window,
+        6: 2 * freq_2 * freq_4 * coincidence_window,
+        8: 2 * freq_4 * freq_4 * coincidence_window,
+    }
 
-    for rates, name in [(coincidence_rates, 'coincidence'),
-                        (interval_rates, 'interval')]:
+    for rates, name in [(coincidence_rates, 'coincidence'), (interval_rates, 'interval')]:
         plot = Plot('loglog')
         for n in list(distances.keys()):
             plot.draw_horizontal_line(background[n], 'dashed,' + colors[n])
 
-#         for n in distances.keys():
+        #         for n in distances.keys():
         for n in [4, 8]:
-            expected_rates = expected_rate(distances[n], rates[n],
-                                           background[n], sim_distances,
-                                           sim_energies, sim_areas[n], n=n)
-            plot.plot(sim_distances, expected_rates, linestyle=colors[n],
-                      mark=None, markstyle='mark size=0.5pt')
+            expected_rates = expected_rate(
+                distances[n], rates[n], background[n], sim_distances, sim_energies, sim_areas[n], n=n
+            )
+            plot.plot(sim_distances, expected_rates, linestyle=colors[n], mark=None, markstyle='mark size=0.5pt')
 
         for n in list(distances.keys()):
-            plot.scatter(distances[n], rates[n],
-                         xerr=distance_errors[n], yerr=rate_errors[n],
-                         mark=markers[n],
-                         markstyle='%s, mark size=.75pt' % colors[n])
+            plot.scatter(
+                distances[n],
+                rates[n],
+                xerr=distance_errors[n],
+                yerr=rate_errors[n],
+                mark=markers[n],
+                markstyle='%s, mark size=.75pt' % colors[n],
+            )
         plot.set_xlabel(r'Distance between stations [\si{\meter}]')
         plot.set_ylabel(r'%s rate [\si{\hertz}]' % name.title())
         plot.set_axis_options('log origin y=infty')
@@ -233,17 +312,20 @@ def plot_coincidence_v_interval_rate(data):
     :param rate_errors: errors on the coincidence rates.
 
     """
-    (distances, coincidence_rates, interval_rates,
-     distance_errors, rate_errors, pairs) = data
+    (distances, coincidence_rates, interval_rates, distance_errors, rate_errors, pairs) = data
     markers = {4: 'o', 6: 'triangle', 8: 'square'}
     colors = {4: 'red', 6: 'black!50!green', 8: 'black!20!blue'}
     plot = Plot('loglog')
 
     plot.plot([1e-7, 1e-1], [1e-7, 1e-1], mark=None)
     for n in list(distances.keys()):
-        plot.scatter(interval_rates[n], coincidence_rates[n],
-                     yerr=rate_errors[n], mark=markers[n],
-                     markstyle='%s, thin, mark size=.75pt' % colors[n])
+        plot.scatter(
+            interval_rates[n],
+            coincidence_rates[n],
+            yerr=rate_errors[n],
+            mark=markers[n],
+            markstyle='%s, thin, mark size=.75pt' % colors[n],
+        )
 
     plot.set_xlabel(r'Rate based on coincidence intervals [\si{\hertz}]')
     plot.set_ylabel(r'Rate based on coincidences and exposure [\si{\hertz}]')
@@ -265,9 +347,7 @@ if __name__ == "__main__":
         except:
             sim_distances = logspace(log10(1), log10(20e3), 200)
             sim_energies = logspace(13, 20, 200)
-            sim_areas = {n: get_pair_distance_energy_array(sim_distances,
-                                                           sim_energies, n=n)
-                         for n in [4, 8]}
+            sim_areas = {n: get_pair_distance_energy_array(sim_distances, sim_energies, n=n) for n in [4, 8]}
             sim_data = (sim_distances, sim_energies, sim_areas)
             savez('simulated_rates.npz', sim_data=sim_data)
 

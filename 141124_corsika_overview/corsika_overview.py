@@ -40,6 +40,7 @@ OVERVIEW = '/Users/arne/Datastore/CORSIKA/corsika_overview.h5'
 # pyplot.show()
 #
 
+
 def plot_energy(energy):
     """Energies"""
     bins = get_unique(energy)
@@ -86,21 +87,19 @@ def plot_energy_zenith(cq, particle=None):
     """Energy, Zenith"""
 
     e_bins = numpy.arange(11, 18.6, 0.5) - 0.25
-#     e_bins = sorted(cq.available_parameters('energy', particle=particle))
-#     e_bins.append(e_bins[-1] + 0.5)
+    #     e_bins = sorted(cq.available_parameters('energy', particle=particle))
+    #     e_bins.append(e_bins[-1] + 0.5)
     z_bins = numpy.arange(0, 67.6, 7.5) - 3.75
-#     z_bins = sorted(cq.available_parameters('zenith', particle=particle))
-#     z_bins.append(z_bins[-1] + 7.5)
+    #     z_bins = sorted(cq.available_parameters('zenith', particle=particle))
+    #     z_bins.append(z_bins[-1] + 7.5)
 
     simulations = cq.simulations(particle=particle)
     energy = numpy.log10(simulations['energy'])
     zenith = numpy.degrees(simulations['zenith'])
 
-    counts, e_bins, z_bins = numpy.histogram2d(energy, zenith,
-                                               bins=[e_bins, z_bins])
+    counts, e_bins, z_bins = numpy.histogram2d(energy, zenith, bins=[e_bins, z_bins])
     graph = artist.Plot()  # axis='semilogx'
-    graph.histogram2d(numpy.sqrt(counts), e_bins, z_bins,
-                      type='area')
+    graph.histogram2d(numpy.sqrt(counts), e_bins, z_bins, type='area')
     graph.set_xlimits(min=10, max=19)
     graph.set_xlabel(r'Energy [Log10 \si{\eV}]')
     graph.set_ylabel(r'Zenith [\si{\degree}]')
@@ -121,8 +120,16 @@ def plot_energy_zenith_per_particle(cq):
 def plot_n_leptons(cq):
     """Energy, Zenith"""
 
-    color_styles = cycle(('black,', 'red,', 'blue,', 'orange,', 'gray,',
-                          'green,',))
+    color_styles = cycle(
+        (
+            'black,',
+            'red,',
+            'blue,',
+            'orange,',
+            'gray,',
+            'green,',
+        )
+    )
 
     n_bins = numpy.linspace(0, 8, 300)
     graph = artist.Plot()
@@ -135,16 +142,14 @@ def plot_n_leptons(cq):
             n_leptons = sims['n_muon'] + sims['n_electron']
             if len(n_leptons) < 200:
                 continue
-            counts, n_bins = numpy.histogram(numpy.log10(n_leptons),
-                                             bins=n_bins, density=True)
-            graph.histogram(counts, n_bins,
-                            linestyle=c + l)
+            counts, n_bins = numpy.histogram(numpy.log10(n_leptons), bins=n_bins, density=True)
+            graph.histogram(counts, n_bins, linestyle=c + l)
     graph.set_xlimits(min=0, max=9)
     graph.set_ylimits(min=0)
     graph.set_xlabel('Number of leptons [N]')
     graph.set_ylabel('Count')
-#     graph.set_title('Distribution of number of leptons per energy and '
-#                     'zenith angle')
+    #     graph.set_title('Distribution of number of leptons per energy and '
+    #                     'zenith angle')
     graph.save_as_pdf('n_leptons')
 
 
@@ -168,8 +173,7 @@ def get_seed_matrix(seeds, particle, energy, zenith):
     for en in unique_energy:
         for zen in unique_zenith:
             seed = get_random_seed(seeds, particle, energy, zenith, en, zen)
-            print('Energy: 10^%d, Zenith: %4.1f: %s' %
-                   (en, numpy.degrees(zen), seed))
+            print('Energy: 10^%d, Zenith: %4.1f: %s' % (en, numpy.degrees(zen), seed))
 
 
 if __name__ == '__main__':

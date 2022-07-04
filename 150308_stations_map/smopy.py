@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from PIL import Image
+
 # -----------------------------------------------------------------------------
 from six.moves.urllib.request import urlopen
 
@@ -57,9 +58,11 @@ def fetch_map(box, z):
     x0, y0, x1, y1 = box
     sx, sy = get_box_size(box)
     if sx * sy >= MAXTILES:
-        raise Exception("You are requesting a very large map, beware of "
-                         "OpenStreetMap tile usage policy "
-                         "(http://wiki.openstreetmap.org/wiki/Tile_usage_policy).")
+        raise Exception(
+            "You are requesting a very large map, beware of "
+            "OpenStreetMap tile usage policy "
+            "(http://wiki.openstreetmap.org/wiki/Tile_usage_policy)."
+        )
     img = Image.new('RGB', (sx * TILE_SIZE, sy * TILE_SIZE))
     for x in range(x0, x1 + 1):
         for y in range(y0, y1 + 1):
@@ -72,9 +75,9 @@ def correct_box(box, z):
     """Get good box limits"""
     x0, y0, x1, y1 = box
     new_x0 = max(0, min(x0, x1))
-    new_x1 = min(2 ** z - 1, max(x0, x1))
+    new_x1 = min(2**z - 1, max(x0, x1))
     new_y0 = max(0, min(y0, y1))
-    new_y1 = min(2 ** z - 1, max(y0, y1))
+    new_y1 = min(2**z - 1, max(y0, y1))
 
     return (new_x0, new_y0, new_x1, new_y1)
 
@@ -99,7 +102,7 @@ def determine_scale(latitude, z):
     # For zoom = 0 at equator
     meter_per_pixel = 156543.03
 
-    resolution = meter_per_pixel * np.cos(latitude) / (2 ** z)
+    resolution = meter_per_pixel * np.cos(latitude) / (2**z)
 
     return resolution
 
@@ -135,14 +138,13 @@ def deg2num(latitude, longitude, zoom, do_round=True):
 
     """
     lat_rad = np.radians(latitude)
-    n = 2.0 ** zoom
+    n = 2.0**zoom
     if do_round:
         f = np.floor
     else:
         f = lambda x: x
-    xtile = f((longitude + 180.) / 360. * n)
-    ytile = f((1.0 - np.log(np.tan(lat_rad) + (1 / np.cos(lat_rad))) / np.pi) /
-              2. * n)
+    xtile = f((longitude + 180.0) / 360.0 * n)
+    ytile = f((1.0 - np.log(np.tan(lat_rad) + (1 / np.cos(lat_rad))) / np.pi) / 2.0 * n)
     if do_round:
         if isinstance(xtile, np.ndarray):
             xtile = xtile.astype(np.int32)
@@ -161,8 +163,8 @@ def num2deg(xtile, ytile, zoom):
     Source: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Python
 
     """
-    n = 2.0 ** zoom
-    longitude = xtile / n * 360. - 180.
+    n = 2.0**zoom
+    longitude = xtile / n * 360.0 - 180.0
     latitude = np.degrees(np.arctan(np.sinh(np.pi * (1 - 2 * ytile / n))))
 
     return (latitude, longitude)
@@ -232,15 +234,14 @@ def _box(*args):
     return (pos0[0], pos0[1], pos1[0], pos1[1])
 
 
-def extend_box(box_latlon, margin=.1):
+def extend_box(box_latlon, margin=0.1):
     """Extend a box in geographical coordinates with a relative margin."""
     (lat0, lon0, lat1, lon1) = box_latlon
     lat0, lat1 = min(lat0, lat1), max(lat0, lat1)
     lon0, lon1 = min(lon0, lon1), max(lon0, lon1)
     dlat = max((lat1 - lat0) * margin, 0.0002)
     dlon = max((lon1 - lon0) * margin, 0.0002 / np.cos(np.radians(lat0)))
-    return (lat0 - dlat, lon0 - dlon,
-            lat1 + dlat, lon1 + dlon)
+    return (lat0 - dlat, lon0 - dlon, lat1 + dlat, lon1 + dlon)
 
 
 # -----------------------------------------------------------------------------
@@ -273,7 +274,7 @@ class Map:
 
         """
         z = kwargs.get('z', 18)
-        margin = kwargs.get('margin', .05)
+        margin = kwargs.get('margin', 0.05)
 
         box = _box(*args)
         if margin is not None:

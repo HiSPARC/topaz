@@ -28,8 +28,8 @@ def determine_rate(path):
     pair = tuple(int(s) for s in file[:-3].split('_'))
 
     net = HiSPARCNetwork(force_stale=True)
-#     if net.calc_distance_between_stations(*pair) > 1e3:
-#         print pair, 'far apart'
+    #     if net.calc_distance_between_stations(*pair) > 1e3:
+    #         print pair, 'far apart'
 
     with tables.open_file(path, 'r') as data:
         ets = data.root.coincidences.coincidences.col('ext_timestamp')
@@ -44,7 +44,7 @@ def determine_rate(path):
 
     bins = linspace(0, 1.5 * expected_interval, 10)
     c, b = histogram(dts, bins=bins)
-    x = (bins[1:] + bins[:-1]) / 2.
+    x = (bins[1:] + bins[:-1]) / 2.0
     filter = c > 0
     slope, intercept, r_value, _, _ = linregress(x[filter], log(c[filter]))
     # print pair, expected_interval, 1e9 / expected_interval, r_value ** 2

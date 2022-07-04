@@ -21,8 +21,7 @@ class CoinDirRecDetOff(CoincidenceDirectionReconstruction):
 
     @memoize
     def determine_best_offsets(self, station_numbers, ts0, offsets):
-        off = {sn: offsets[sn].detector_timing_offset(ts0)
-               for sn in station_numbers}
+        off = {sn: offsets[sn].detector_timing_offset(ts0) for sn in station_numbers}
         return off
 
 
@@ -33,9 +32,10 @@ class CoinDirRecDirRef(CoincidenceDirectionReconstruction):
     def determine_best_offsets(self, station_numbers, ts0, offsets):
         ref_sn = 501
 
-        off = {sn: [o + offsets[sn].station_timing_offset(ref_sn, ts0)[0]
-                    for o in offsets[sn].detector_timing_offset(ts0)]
-               for sn in station_numbers}
+        off = {
+            sn: [o + offsets[sn].station_timing_offset(ref_sn, ts0)[0] for o in offsets[sn].detector_timing_offset(ts0)]
+            for sn in station_numbers
+        }
         return off
 
 
@@ -58,19 +58,16 @@ def reconstruct_coincidences():
 
     with tables.open_file(PATH, 'a') as data:
         # Use default
-        rec = ReconstructESDCoincidences(data, destination='recs',
-                                         overwrite=True, force_stale=True)
+        rec = ReconstructESDCoincidences(data, destination='recs', overwrite=True, force_stale=True)
         rec.reconstruct_and_store(station_numbers)
 
         # Use direct, not intermediate stations
-        rec = ReconstructESDCoincidences(data, destination='recs_direct_offsets',
-                                         overwrite=True, force_stale=True)
+        rec = ReconstructESDCoincidences(data, destination='recs_direct_offsets', overwrite=True, force_stale=True)
         rec.direction = CoinDirRecDirRef(frec.cluster)
         rec.reconstruct_and_store(station_numbers)
 
         # Only detector offsets
-        rec = ReconstructESDCoincidences(data, destination='recs_detector_offsets',
-                                         overwrite=True, force_stale=True)
+        rec = ReconstructESDCoincidences(data, destination='recs_detector_offsets', overwrite=True, force_stale=True)
         rec.direction = CoinDirRecDetOff(drec.cluster)
         rec.reconstruct_and_store(station_numbers)
 

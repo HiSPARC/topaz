@@ -28,7 +28,7 @@ def plot_interaction_height(cq):
                 max_altitude.append(percentile(interaction_altitudes, 98))
                 zeniths.append(z)
         if len(zeniths):
-            plot.plot(zeniths + (e - 12) / 3., median_altitude)
+            plot.plot(zeniths + (e - 12) / 3.0, median_altitude)
             # plot.shade_region(zeniths, min_altitude, max_altitude,
             #                   color='lightgray,semitransparent')
             plot.add_pin('%.1f' % e, relative_position=0)
@@ -56,15 +56,12 @@ def plot_interaction_altitude_size(cq):
             sims = cq.simulations(zenith=z, particle=p)
             altitudes = sims['first_interaction_altitude'] / 1e3
             size = sims['n_electron'] + sims['n_muon']
-            alt_size_hist = histogram2d(altitudes, size,
-                                        bins=[linspace(0, 70, 100),
-                                              logspace(0, 9, 100)])
+            alt_size_hist = histogram2d(altitudes, size, bins=[linspace(0, 70, 100), logspace(0, 9, 100)])
             plot = Plot('semilogy')
             plot.histogram2d(*alt_size_hist, bitmap=True, type='color')
             plot.set_xlabel(r'First interaction altitude [m]')
             plot.set_ylabel(r'Shower size')
-            plot.save_as_pdf('plots/interaction_altitude_v_size_%s_%.1f.pdf' %
-                             (p if p is not None else 'all', z))
+            plot.save_as_pdf('plots/interaction_altitude_v_size_%s_%.1f.pdf' % (p if p is not None else 'all', z))
 
 
 if __name__ == "__main__":

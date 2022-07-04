@@ -42,7 +42,7 @@ class OffsetAzimuthFlatFrontSimulation(FlatFrontSimulation):
         The other 50% have a sin(phi)**2 distribution.
 
         """
-        if random.choice([True, False], p=[.4, .6]):
+        if random.choice([True, False], p=[0.4, 0.6]):
             x = random.uniform(0, pi / 2)
             y = random.uniform(0, 1)
             if not sin(x) ** 2 > y:
@@ -61,19 +61,18 @@ class OffsetAzimuthFlatFrontSimulation(FlatFrontSimulation):
 
         """
         observables = super().simulate_detector_response(detector, shower_parameters)
-        observables.update({'n': 1.})
+        observables.update({'n': 1.0})
 
         return observables
 
     def simulate_detector_offset(self):
-        return 0.
+        return 0.0
 
 
 def run_simulation():
     with tables.open_file(RESULT_PATH, 'w') as data:
         cluster = HiSPARCStations([501])  # , 502, 503, 504, 505, 506, 508, 509])
-        sim = OffsetAzimuthFlatFrontSimulation(
-            cluster=cluster, datafile=data, output_path='/', N=60000)
+        sim = OffsetAzimuthFlatFrontSimulation(cluster=cluster, datafile=data, output_path='/', N=60000)
         sim.run()
 
 
@@ -83,14 +82,14 @@ def reconstruct_simulations():
 
         for station in cluster.stations:
             station_group = '/cluster_simulations/station_%d' % station.number
-            rec_events = ReconstructESDEvents(data, station_group, station,
-                                              overwrite=True, progress=True,
-                                              destination='reconstructions_offset')
+            rec_events = ReconstructESDEvents(
+                data, station_group, station, overwrite=True, progress=True, destination='reconstructions_offset'
+            )
             rec_events.reconstruct_and_store()
             print(rec_events.offsets)
-            rec_events = ReconstructESDEvents(data, station_group, station,
-                                              overwrite=True, progress=True,
-                                              destination='reconstructions_no_offset')
+            rec_events = ReconstructESDEvents(
+                data, station_group, station, overwrite=True, progress=True, destination='reconstructions_no_offset'
+            )
             rec_events.prepare_output()
             rec_events.store_offsets()
             rec_events.reconstruct_directions()
@@ -115,10 +114,10 @@ def plot_azimuth(azimuth, name=''):
 def plot_zenith(zenith, name=''):
 
     graph = Plot()
-    n, bins = histogram(zenith, bins=linspace(0, pi / 2., 41))
+    n, bins = histogram(zenith, bins=linspace(0, pi / 2.0, 41))
     graph.histogram(n, bins)
     graph.set_title('Zenith distribution')
-    graph.set_xlimits(0, pi / 2.)
+    graph.set_xlimits(0, pi / 2.0)
     graph.set_ylimits(min=0)
     graph.set_xlabel('Zenith [rad]')
     graph.set_ylabel('Counts')

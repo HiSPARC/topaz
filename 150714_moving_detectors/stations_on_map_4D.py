@@ -38,13 +38,11 @@ def get_station_locations(station):
 
 def make_map(station=None, label='map', detectors=False):
 
-    get_locations = (get_detector_locations if detectors
-                     else get_station_locations)
+    get_locations = get_detector_locations if detectors else get_station_locations
 
     latitudes, longitudes = get_locations(station)
 
-    bounds = (min(latitudes), min(longitudes),
-              max(latitudes), max(longitudes))
+    bounds = (min(latitudes), min(longitudes), max(latitudes), max(longitudes))
 
     map = Map(bounds, margin=0, z=18)
     image = map.to_pil()
@@ -57,8 +55,7 @@ def make_map(station=None, label='map', detectors=False):
 
     width = 0.67
     height = width / aspect
-    plot = Plot(width=r'%.2f\linewidth' % width,
-                height=r'%.2f\linewidth' % height)
+    plot = Plot(width=r'%.2f\linewidth' % width, height=r'%.2f\linewidth' % height)
 
     plot.draw_image(image, 0, 0, map_w, map_h)
     plot.set_axis_equal()
@@ -72,9 +69,7 @@ def make_map(station=None, label='map', detectors=False):
     colors = cycle(['black', 'red', 'green', 'blue'])
     if detectors:
         for xi, yi in zip(x, y):
-            plot.scatter([xi], [map_h - yi],
-                         markstyle="%s, thick" % next(colors),
-                         mark=next(marks))
+            plot.scatter([xi], [map_h - yi], markstyle="%s, thick" % next(colors), mark=next(marks))
     else:
         plot.scatter(x, map_h - y, markstyle="black!50!green")
 
@@ -85,7 +80,7 @@ def make_map(station=None, label='map', detectors=False):
     plot.set_ylabel(r'Latitude [$^\circ$]')
     plot.set_yticks([map_h - ymin, map_h - ymax])
     plot.set_ytick_labels(['%.4f' % x for x in (map.box[0], map.box[2])])
-#     plot.set_title(label)
+    #     plot.set_title(label)
 
     # save plot to file
     plot.save_as_pdf(label.replace(' ', '-'))
@@ -93,11 +88,12 @@ def make_map(station=None, label='map', detectors=False):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('number', type=int,
-                        help=("Number of the country, cluster, subcluster, "
-                              "or station (set to 0 when choosing network)"))
-    parser.add_argument('--detectors', action='store_true',
-                        help='Show each detector')
+    parser.add_argument(
+        'number',
+        type=int,
+        help=("Number of the country, cluster, subcluster, " "or station (set to 0 when choosing network)"),
+    )
+    parser.add_argument('--detectors', action='store_true', help='Show each detector')
     args = parser.parse_args()
 
     label = 'station_%d' % args.number

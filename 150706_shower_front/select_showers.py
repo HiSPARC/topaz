@@ -19,10 +19,8 @@ LOCAL_STORE = '/Users/arne/Datastore/corsika_thickness/'
 def select_showers():
     with tables.open_file(OVERVIEW, 'r') as overview:
         sims = overview.get_node('/simulations')
-        for e in arange(13, 17.5, .5):
-            selection = sims.read_where('(log10(energy) == e) & '
-                                        '(zenith == 0.) & '
-                                        '(particle_id == 14)')
+        for e in arange(13, 17.5, 0.5):
+            selection = sims.read_where('(log10(energy) == e) & ' '(zenith == 0.) & ' '(particle_id == 14)')
             sorted_selection = sorted(selection, key=itemgetter('n_electron'))
             small_shower = sorted_selection[0]
             median_shower = sorted_selection[len(sorted_selection) / 2]
@@ -33,9 +31,9 @@ def select_showers():
 
 
 def copy_shower(seeds):
-    cmd = ('rsync -qavz --exclude "DAT000000" '
-           'adelaat@login.nikhef.nl:/data/hisparc/corsika/data/{seeds} '
-           '{local}').format(seeds=seeds, local=LOCAL_STORE)
+    cmd = (
+        'rsync -qavz --exclude "DAT000000" ' 'adelaat@login.nikhef.nl:/data/hisparc/corsika/data/{seeds} ' '{local}'
+    ).format(seeds=seeds, local=LOCAL_STORE)
     result = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
     if not result == '':
         print('Error occured: %s' % seeds)
@@ -54,8 +52,7 @@ def plot_thickness(seed):
         particles = data.get_node('/groundparticles')
         header = data.get_node_attr('/', 'event_header')
         end = data.get_node_attr('/', 'event_end')
-        time_first_interaction = (header.first_interaction_altitude -
-                                  header.observation_heights[0]) / .2998
+        time_first_interaction = (header.first_interaction_altitude - header.observation_heights[0]) / 0.2998
         core_distances = logspace(0, 4, 31)
         min_t = []
         lower_t = []
@@ -69,9 +66,9 @@ def plot_thickness(seed):
         xerr = []
         yerr = []
         for r_inner, r_outer in zip(core_distances[:-1], core_distances[1:]):
-            t = particles.read_where('(r >= %f) & (r <= %f) & '
-                                     '(particle_id >= 2) & (particle_id <= 6)' %
-                                     (r_inner, r_outer), field='t')
+            t = particles.read_where(
+                '(r >= %f) & (r <= %f) & ' '(particle_id >= 2) & (particle_id <= 6)' % (r_inner, r_outer), field='t'
+            )
 
             if len(t) < 1:
                 continue
@@ -94,19 +91,18 @@ def plot_thickness(seed):
 
         energy = log10(header.energy)
         shower_size = log10(end.n_electrons_levels + end.n_muons_levels)
-    plot.set_label('E=$10^{{{:.1f}}}$eV, size=$10^{{{:.1f}}}$'.format(energy, shower_size),
-                   location='upper left')
+    plot.set_label('E=$10^{{{:.1f}}}$eV, size=$10^{{{:.1f}}}$'.format(energy, shower_size), location='upper left')
 
     plot.plot(distances, median_t, mark=None)
     plot.plot(distances, min_t, linestyle='dashed', mark=None)
     plot.draw_horizontal_line(1500)
-    plot.set_xlimits(min=.5, max=1e4)
+    plot.set_xlimits(min=0.5, max=1e4)
     plot.set_xlabel(r'core distance [m]')
     plot.set_ylabel(r'time after first [ns]')
     plot.set_ylimits(min=-10, max=1000)
     plot.save_as_pdf('plots/{:.1f}_{:.1f}_{}_front.pdf'.format(energy, shower_size, seed))
 
-    plot2.set_xlimits(min=.5, max=1e5)
+    plot2.set_xlimits(min=0.5, max=1e5)
     plot2.set_xlabel(r'core distance')
     plot2.set_ylabel(r'particle density')
     plot2.plot(distances, density, xerr=xerr, yerr=yerr, mark=None, markstyle='transparent', linestyle=None)

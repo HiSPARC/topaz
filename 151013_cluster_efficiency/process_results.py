@@ -38,15 +38,13 @@ def get_combined_results():
             azimuth_in.extend(degrees(filtered_recs['reference_azimuth']))
             energy_in.extend(log10(filtered_recs['reference_energy']))
             size_in.extend(log10(filtered_recs['reference_size']))
-            r_in.extend(sqrt(filtered_recs['reference_x'] ** 2 +
-                             filtered_recs['reference_y'] ** 2))
+            r_in.extend(sqrt(filtered_recs['reference_x'] ** 2 + filtered_recs['reference_y'] ** 2))
 
             zenith_init.extend(degrees(recs.col('reference_zenith')))
             azimuth_init.extend(degrees(recs.col('reference_azimuth')))
             energy_init.extend(log10(recs.col('reference_energy')))
             size_init.extend(log10(recs.col('reference_size')))
-            r_init.extend(sqrt(recs.col('reference_x') ** 2 +
-                               recs.col('reference_y') ** 2))
+            r_init.extend(sqrt(recs.col('reference_x') ** 2 + recs.col('reference_y') ** 2))
 
     zenith = array(zenith)
     filter = ~isnan(zenith)
@@ -67,8 +65,20 @@ def get_combined_results():
 
     print(sum(filter), len(filter))
 
-    return (zenith, zenith_in, azimuth, azimuth_in, energy_in, size_in, r_in,
-            zenith_init, azimuth_init, energy_init, size_init, r_init)
+    return (
+        zenith,
+        zenith_in,
+        azimuth,
+        azimuth_in,
+        energy_in,
+        size_in,
+        r_in,
+        zenith_init,
+        azimuth_init,
+        energy_init,
+        size_init,
+        r_init,
+    )
 
 
 def make_plots():
@@ -87,9 +97,9 @@ def plot_input_v_reconstructed_zenith():
 
     for i, e in enumerate([16, 16.5, 17, 17.5]):
         splot = plot.get_subplot_at(int(i / 2), int(i % 2))
-        c, xb, yb = histogram2d(zenith_in.compress(energy_in == e),
-                                zenith.compress(energy_in == e),
-                                bins=(z_in_bins, z_out_bins))
+        c, xb, yb = histogram2d(
+            zenith_in.compress(energy_in == e), zenith.compress(energy_in == e), bins=(z_in_bins, z_out_bins)
+        )
         splot.histogram2d(c, xb, yb, bitmap=True, type='reverse_bw')
         splot.plot([0, 60], [0, 60], linestyle='red', mark=None)
 
@@ -107,9 +117,7 @@ def plot_input_v_reconstructed_azimuth():
 
     for i, e in enumerate([16, 16.5, 17, 17.5]):
         splot = plot.get_subplot_at(int(i / 2), int(i % 2))
-        c, xb, yb = histogram2d(azimuth_in.compress(energy_in == e),
-                                azimuth.compress(energy_in == e),
-                                bins=a_bins)
+        c, xb, yb = histogram2d(azimuth_in.compress(energy_in == e), azimuth.compress(energy_in == e), bins=a_bins)
         splot.histogram2d(c, xb, yb, bitmap=True, type='reverse_bw')
         splot.plot([-180, 180], [-180, 180], linestyle='red', mark=None)
 
@@ -173,8 +181,7 @@ def plot_detected_zenith_distribution():
 def plot_detected_v_energy():
     plot = Plot(width=r'.6\textwidth')
     # plot.set_title('Detected core distances vs shower energy')
-    c, xb, yb = histogram2d(r_in, energy_in,
-                            bins=(arange(0, 600, 40), arange(15.75, 17.76, .5)))
+    c, xb, yb = histogram2d(r_in, energy_in, bins=(arange(0, 600, 40), arange(15.75, 17.76, 0.5)))
     plot.histogram2d(c, xb, yb, bitmap=True)
     plot.set_yticks([16, 16.5, 17, 17.5])
     plot.set_ytick_labels(['$10^{%.1f}$' % e for e in [16, 16.5, 17, 17.5]])
@@ -184,7 +191,7 @@ def plot_detected_v_energy():
 
     plot = Plot(width=r'.6\textwidth')
     # plot.set_title('Detected core distances vs shower energy, scaled to bin area')
-    counts, xbins, ybins = histogram2d(r_in, energy_in, bins=(arange(0, 600, 40), arange(15.75, 17.76, .5)))
+    counts, xbins, ybins = histogram2d(r_in, energy_in, bins=(arange(0, 600, 40), arange(15.75, 17.76, 0.5)))
     plot.histogram2d((-counts.T / (pi * (xbins[:-1] ** 2 - xbins[1:] ** 2))).T, xbins, ybins, type='area')
     plot.set_yticks([16, 16.5, 17, 17.5])
     plot.set_ytick_labels(['$10^{%.1f}$' % e for e in [16, 16.5, 17, 17.5]])
@@ -196,7 +203,18 @@ def plot_detected_v_energy():
 
 if __name__ == "__main__":
     if not 'zenith' in globals():
-        zenith, zenith_in, azimuth, azimuth_in, energy_in, size_in, r_in, \
-            zenith_init, azimuth_init, energy_init, size_init, \
-            r_init = get_combined_results()
+        (
+            zenith,
+            zenith_in,
+            azimuth,
+            azimuth_in,
+            energy_in,
+            size_in,
+            r_in,
+            zenith_init,
+            azimuth_init,
+            energy_init,
+            size_init,
+            r_init,
+        ) = get_combined_results()
     make_plots()

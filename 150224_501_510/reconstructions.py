@@ -4,7 +4,7 @@ from sapphire import HiSPARCStations, ReconstructESDEvents
 
 STATIONS = [501, 510]
 COINDATA_PATH = '/Users/arne/Datastore/501_510/c_501_510_141101_150201.h5'
-#COINDATA_PATH = '/Users/arne/Datastore/501_510/c_501_510_150120_150201.h5'
+# COINDATA_PATH = '/Users/arne/Datastore/501_510/c_501_510_150120_150201.h5'
 
 
 def reconstruct_events(data):
@@ -21,8 +21,7 @@ def reconstruct_events(data):
     for number in STATIONS:
         station = cluster.get_station(number)
         station_group = '/hisparc/cluster_amsterdam/station_%d' % number
-        rec_events = ReconstructESDEvents(data, station_group, station,
-                                          overwrite=True, progress=True)
+        rec_events = ReconstructESDEvents(data, station_group, station, overwrite=True, progress=True)
         rec_events.offsets = offset(number)
         rec_events.store_offsets()
         rec_events.reconstruct_directions()
@@ -35,9 +34,9 @@ def offset(station):
     """Offsets determined from event data (before filtering coincidences)"""
 
     if station == 501:
-        return [-1.064884, 0., 6.217017, 4.851398]
+        return [-1.064884, 0.0, 6.217017, 4.851398]
     elif station == 510:
-        return [9.416971, 0., 9.298256, 8.447724]
+        return [9.416971, 0.0, 9.298256, 8.447724]
 
 
 def get_cluster():

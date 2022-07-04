@@ -3,9 +3,11 @@
 try:
     from django_publicdb.histograms.models import Configuration
     from django_publicdb.inforecords.models import Station
+
     DJANGO = True
 except ImportError:
     from sapphire import Station, Network
+
     DJANGO = False
 
 

@@ -15,9 +15,7 @@ ENERGIES = arange(15, 18, 1)
 def select_showers(e):
     with tables.open_file(OVERVIEW, 'r') as overview:
         sims = overview.get_node('/simulations')
-        selection = sims.read_where('(log10(energy) == e) & '
-                                    '(zenith == 0.) & '
-                                    '(particle_id == 14)')
+        selection = sims.read_where('(log10(energy) == e) & ' '(zenith == 0.) & ' '(particle_id == 14)')
         for shower in selection:
             yield '%d_%d' % (shower['seed1'], shower['seed2'])
 
@@ -25,15 +23,16 @@ def select_showers(e):
 def get_first_median_particles(seed, x):
     path = LOCAL_STORE.format(seed=seed)
     detector_boundary = 2
-    query = ('(x >= %f) & (x <= %f) & (y >= %f) & (y <= %f)'
-             ' & (particle_id >= 2) & (particle_id <= 6)' %
-             (x - detector_boundary, x + detector_boundary,
-              -detector_boundary, detector_boundary))
+    query = '(x >= %f) & (x <= %f) & (y >= %f) & (y <= %f)' ' & (particle_id >= 2) & (particle_id <= 6)' % (
+        x - detector_boundary,
+        x + detector_boundary,
+        -detector_boundary,
+        detector_boundary,
+    )
     try:
         with tables.open_file(path, 'r') as data:
             header = data.get_node_attr('/', 'event_header')
-            time_first_interaction = (header.first_interaction_altitude -
-                                      header.observation_heights[0]) / .2998
+            time_first_interaction = (header.first_interaction_altitude - header.observation_heights[0]) / 0.2998
             t = data.root.groundparticles.read_where(query, field='t')
             if not len(t):
                 return nan, nan
@@ -46,16 +45,13 @@ def get_first_median_particles(seed, x):
 def get_times():
     for e in ENERGIES:
         for core_distance in CORE_DISTANCES:
-            times = [get_first_median_particles(seed, core_distance)
-                     for seed in select_showers(e)]
+            times = [get_first_median_particles(seed, core_distance) for seed in select_showers(e)]
             first_times, median_times = list(zip(*times))
             first_times = [t for t in first_times if not isnan(t)]
             median_times = [t for t in median_times if not isnan(t)]
-            first_path = ('/data/hisparc/adelaat/first_particle/first_{e}_{r}'
-                          .format(e=e, r=core_distance))
+            first_path = '/data/hisparc/adelaat/first_particle/first_{e}_{r}'.format(e=e, r=core_distance)
             save(first_path, first_times)
-            median_path = ('/data/hisparc/adelaat/first_particle/median_{e}_{r}'
-                           .format(e=e, r=core_distance))
+            median_path = '/data/hisparc/adelaat/first_particle/median_{e}_{r}'.format(e=e, r=core_distance)
             save(median_path, median_times)
 
 
@@ -67,10 +63,8 @@ def plot_distribution():
         median_t = []
         median_t_std = []
         for core_distance in distances:
-            first_path = ('/Users/arne/Datastore/first_particle/first_{e}_{r}.npy'
-                          .format(e=e, r=core_distance))
-            median_path = ('/Users/arne/Datastore/first_particle/median_{e}_{r}.npy'
-                           .format(e=e, r=core_distance))
+            first_path = '/Users/arne/Datastore/first_particle/first_{e}_{r}.npy'.format(e=e, r=core_distance)
+            median_path = '/Users/arne/Datastore/first_particle/median_{e}_{r}.npy'.format(e=e, r=core_distance)
             first_times = load(first_path)
             first_t.append(mean(first_times))
             first_t_std.append(std(first_times))

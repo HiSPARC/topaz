@@ -21,7 +21,7 @@ def detect_problems(station):
 
     for p1, p2 in itertools.combinations(gps_locations, 2):
         d = distance(p1, p2)
-        if d > .25:
+        if d > 0.25:
             print(station.station, d)
             break
 
@@ -33,8 +33,12 @@ def distance(s1, s2):
     R = 6371  # km Radius of earth
     d_lat = numpy.radians(s2['latitude'] - s1['latitude'])
     d_lon = numpy.radians(s2['longitude'] - s1['longitude'])
-    a = (numpy.sin(d_lat / 2) ** 2 + numpy.cos(numpy.radians(s1['latitude'])) *
-         numpy.cos(numpy.radians(s2['latitude'])) * numpy.sin(d_lon / 2) ** 2)
+    a = (
+        numpy.sin(d_lat / 2) ** 2
+        + numpy.cos(numpy.radians(s1['latitude']))
+        * numpy.cos(numpy.radians(s2['latitude']))
+        * numpy.sin(d_lon / 2) ** 2
+    )
     c = 2 * numpy.arctan2(numpy.sqrt(a), numpy.sqrt(1 - a))
     distance = R * c
     return distance
