@@ -42,7 +42,7 @@ def determine_detector_timing_offsets(d, s, events):
     graph.set_label('%s' % d.replace('_', ' '))
     graph.set_xlimits(-100, 100)
     graph.set_ylimits(min=0)
-    graph.set_xlabel('$\Delta t$')
+    graph.set_xlabel(r'$\Delta t$')
     graph.set_ylabel('Counts')
     graph.save_as_pdf('%s_%d' % (d, s))
 
@@ -86,7 +86,7 @@ def determine_station_timing_offsets(d, data):
     c_events = cq.events_from_stations(coincidences, stations)
     for events in c_events:
         # Filter for possibility of same station twice in coincidence
-        if len(events) is not 2:
+        if len(events) != 2:
             continue
         if events[0][0] == ref_station:
             ref_event = events[0][1]
@@ -96,12 +96,12 @@ def determine_station_timing_offsets(d, data):
             event = events[0][1]
 
         try:
-            ref_t = min([ref_event['t%d' % (i + 1)] - ref_d_off[i]
+            ref_t = min(ref_event['t%d' % (i + 1)] - ref_d_off[i]
                          for i in range(4)
-                         if ref_event['t%d' % (i + 1)] not in ERR])
-            t = min([event['t%d' % (i + 1)] - d_off[i]
+                         if ref_event['t%d' % (i + 1)] not in ERR)
+            t = min(event['t%d' % (i + 1)] - d_off[i]
                      for i in range(4)
-                     if event['t%d' % (i + 1)] not in ERR])
+                     if event['t%d' % (i + 1)] not in ERR)
         except ValueError:
             continue
         if (ref_event['t_trigger'] in ERR or event['t_trigger'] in ERR):
@@ -121,14 +121,14 @@ def determine_station_timing_offsets(d, data):
         station_offset = 0.
     offsets[station] = [detector_offset + station_offset
                         for detector_offset in offsets[station]]
-    print('Station 501 - 510: %f (%f)' % (popt[1], popt[2]))
+    print('Station 501 - 510: {:f} ({:f})'.format(popt[1], popt[2]))
     graph = Plot()
     graph.histogram(y, bins)
     graph.set_title('Time difference, between station 501-510')
     graph.set_label('%s' % d.replace('_', ' '))
     graph.set_xlimits(-150, 150)
     graph.set_ylimits(min=0)
-    graph.set_xlabel('$\Delta t$')
+    graph.set_xlabel(r'$\Delta t$')
     graph.set_ylabel('Counts')
     graph.save_as_pdf('%s' % d)
 

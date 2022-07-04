@@ -89,7 +89,7 @@ def plot_shower_profile(seeds):
             plot_statistics(seeds, splot, muons['r'], muons['t'] - min_t, 'solid', correction=correction)
 
             plot.set_xlimits_for_all(None, 1e0, 1e3)
-            if correction is 'median_self':
+            if correction == 'median_self':
                 plot.set_ylimits_for_all(None, -120, 120)
             else:
                 plot.set_ylimits_for_all(None, 0, 120)
@@ -155,15 +155,15 @@ def plot_time_profile_for_bin(seeds, gamma_t, electrons_t, muons_t):
 def plot_energy_profile_for_bin(seeds, gamma_e, electrons_e, muons_e):
 
     plot = MultiPlot(3, 1, 'semilogx', height=r'.4\linewidth')
-    print(('Min gamma/electron energy: %d MeV,  %d MeV' %
-           (gamma_e.min() * 1e-6, electrons_e.min() * 1e-6)))
+    print('Min gamma/electron energy: %d MeV,  %d MeV' %
+           (gamma_e.min() * 1e-6, electrons_e.min() * 1e-6))
     print('Min muon energy: %d MeV' % (muons_e.min() * 1e-6, ))
     bins = logspace(6, 12, 40)
     for splot, data, particle_name in zip(plot.subplots,
                                           [gamma_e, electrons_e, muons_e],
                                           ['Gamma', 'Electrons', 'Muons']):
         splot.set_ylabel(particle_name)
-        splot.draw_vertical_line(300e6 if particle_name is 'Muons' else 3e6, 'red')
+        splot.draw_vertical_line(300e6 if particle_name == 'Muons' else 3e6, 'red')
         splot.histogram(*histogram(data, bins=bins))
 
     plot.set_xlimits_for_all(None, bins[0], bins[-1])
@@ -193,7 +193,7 @@ def plot_energy_v_time_for_bin(seeds, gamma_t, electrons_t, muons_t,
         counts, e_bins, t_bins = histogram2d(e_data, t_data, bins=[e_bins, t_bins])
         splot.histogram2d(counts, e_bins, t_bins, type='color',
                           colormap='viridis', bitmap=True)
-        splot.draw_vertical_line(300e6 if particle_name is 'Muons' else 3e6, 'red')
+        splot.draw_vertical_line(300e6 if particle_name == 'Muons' else 3e6, 'red')
 
 #         plot.set_xlimits_for_all(None, bins[0], bins[-1])
 #         plot.set_ylimits_for_all(None, 0, 120)
@@ -236,7 +236,7 @@ def plot_energy_v_time(seeds):
         counts, e_bins, t_bins = histogram2d(e_data, t_data, bins=[e_bins, t_bins])
         splot.histogram2d(counts, e_bins, t_bins, type='color',
                           colormap='viridis', bitmap=True)
-        splot.draw_vertical_line(300e6 if particle_name is 'Muons' else 3e6, 'red')
+        splot.draw_vertical_line(300e6 if particle_name == 'Muons' else 3e6, 'red')
 
 #         plot.set_xlimits_for_all(None, bins[0], bins[-1])
 #         plot.set_ylimits_for_all(None, 0, 120)
@@ -277,7 +277,7 @@ def plot_energy_v_distance(seeds):
             counts, r_bins, e_bins = histogram2d(r_data, e_data, bins=[r_bins, e_bins])
             splot.histogram2d(counts, r_bins, e_bins, type='color',
                               colormap='viridis', bitmap=True)
-            splot.draw_horizontal_line(300e6 if particle_name is 'Muons' else 3e6, 'red')
+            splot.draw_horizontal_line(300e6 if particle_name == 'Muons' else 3e6, 'red')
 
 #         plot.set_xlimits_for_all(None, bins[0], bins[-1])
 #         plot.set_ylimits_for_all(None, 0, 120)

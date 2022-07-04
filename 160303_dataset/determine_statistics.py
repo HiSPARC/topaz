@@ -193,7 +193,7 @@ def get_station_stats(station):
     try:
         stats = {field_name: get_stat(station, field_name)
                  for field_name in FIELD_NAMES}
-    except (TypeError, IOError, AssertionError):
+    except (TypeError, OSError, AssertionError):
         print('Determining stats for %d' % station)
         with tables.open_file(DATA_PATH) as data:
             stats = determine_station_stats(data, station)

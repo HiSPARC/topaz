@@ -57,9 +57,9 @@ def fetch_map(box, z):
     x0, y0, x1, y1 = box
     sx, sy = get_box_size(box)
     if sx * sy >= MAXTILES:
-        raise Exception(("You are requesting a very large map, beware of "
+        raise Exception("You are requesting a very large map, beware of "
                          "OpenStreetMap tile usage policy "
-                         "(http://wiki.openstreetmap.org/wiki/Tile_usage_policy)."))
+                         "(http://wiki.openstreetmap.org/wiki/Tile_usage_policy).")
     img = Image.new('RGB', (sx * TILE_SIZE, sy * TILE_SIZE))
     for x in range(x0, x1 + 1):
         for y in range(y0, y1 + 1):
@@ -246,7 +246,7 @@ def extend_box(box_latlon, margin=.1):
 # -----------------------------------------------------------------------------
 # Main Map class
 # -----------------------------------------------------------------------------
-class Map(object):
+class Map:
 
     """Represent an OpenStreetMap image.
 

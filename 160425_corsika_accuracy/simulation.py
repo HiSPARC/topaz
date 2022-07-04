@@ -27,8 +27,8 @@ class ModGroundParticlesSimulation(GroundParticlesSimulation):
     """Require three detection points in a station"""
 
     def simulate_trigger(self, detector_observables):
-        detectors_low = sum([True for observables in detector_observables
-                             if observables['n'] > 0.3])
+        detectors_low = sum(True for observables in detector_observables
+                             if observables['n'] > 0.3)
         if detectors_low >= 3:
             return True
         else:

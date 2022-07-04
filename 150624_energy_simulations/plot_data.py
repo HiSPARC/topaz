@@ -101,7 +101,7 @@ def analyse_reconstructions(path):
         zenith = np.degrees(zen_in[0])
 #
         plotc.set_label(r'$E=10^{%d}$eV, $\theta={%.1f}^{\circ}$, 67\%% '
-                        'within \SI{%.1f}{\meter}' % (energy, zenith, sigma))
+                        r'within \SI{%.1f}{\meter}' % (energy, zenith, sigma))
         plotc.set_xlabel(r'Distance between cores [\si{\meter}]')
         plotc.set_ylabel('Counts')
         plotc.set_xlimits(bins[0], bins[-1])

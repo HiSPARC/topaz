@@ -43,9 +43,9 @@ def plot_data_and_fit(x, y, popt, plot):
 def plot_and_fit_offsets(x, y, popt, d, id):
     plot = Plot()
     plot_data_and_fit(x, y, popt, plot)
-    plot.set_label('$\mu$: %.2f, $\sigma$: %.2f' % (popt[1], popt[2]))
+    plot.set_label(r'$\mu$: {:.2f}, $\sigma$: {:.2f}'.format(popt[1], popt[2]))
     plot.set_ylabel('Occurrence')
-    plot.set_xlabel('$\Delta t$ [ns]')
+    plot.set_xlabel(r'$\Delta t$ [ns]')
     plot.set_ylimits(min=0)
     plot.save_as_pdf('api_detector_offset_distribution_%s_' % id +
                      d.strftime('%Y%m%d'))
@@ -65,4 +65,4 @@ if __name__ == '__main__':
                 mu.append(popt[1])
                 sigma.append(popt[2])
         print(['Master', 'Reference', 'Slave', 'Slave'][id])
-        print('mean: %.3f +/- %.3f, std:  %.3f +/- %.3f ' % (mean(mu), std(mu), mean(sigma), std(sigma)))
+        print('mean: {:.3f} +/- {:.3f}, std:  {:.3f} +/- {:.3f} '.format(mean(mu), std(mu), mean(sigma), std(sigma)))

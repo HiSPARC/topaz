@@ -46,7 +46,7 @@ if __name__ == '__main__':
                                        bins=(arange(t_start, t_end, XWEEK),
                                              linspace(-max_dt, max_dt, 150)))
             graph.histogram2d(counts, x, y, bitmap=True, type='color')
-            graph.set_ylabel('$\Delta t$ [ns]')
+            graph.set_ylabel(r'$\Delta t$ [ns]')
             graph.set_xlabel('Timestamp [s]')
             graph.set_xlimits(t_start, t_end)
             graph.set_ylimits(-max_dt, max_dt)

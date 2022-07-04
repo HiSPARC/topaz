@@ -65,7 +65,7 @@ def plot_distributions(distances, name=''):
     plot.set_xlimits(min=0, max=10)
     plot.set_ylabel('Counts')
     plot.set_xlabel(r'Distance to center mass location [\si{\meter}]')
-    plot.set_label('67\%% within %.1fm' % percentile(distances, 67))
+    plot.set_label(r'67\%% within %.1fm' % percentile(distances, 67))
     plot.save_as_pdf('gps_distance_cm' + name)
 
 

@@ -69,7 +69,7 @@ def plot_offset_timeline(ref_station, station):
 #         graph.plot(d_off['timestamp'], d_off['d3'], markstyle='mark size=.5pt', linestyle='blue')
     graph.plot(s_off['timestamp'], s_off['offset'], mark='*',
                markstyle='mark size=1.25pt', linestyle=None)
-    graph.set_ylabel('$\Delta t$ [ns]')
+    graph.set_ylabel(r'$\Delta t$ [ns]')
     graph.set_xlabel('Date')
     graph.set_xticks([datetime_to_gps(date(y, 1, 1)) for y in range(2010, 2016)])
     graph.set_xtick_labels(['%d' % y for y in range(2010, 2016)])

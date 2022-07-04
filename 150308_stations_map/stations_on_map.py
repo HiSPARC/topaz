@@ -178,11 +178,11 @@ def make_map(country=None, cluster=None, subcluster=None, station=None,
         x, y = map.to_pixels(array(weather_latitudes), array(weather_longitudes))
         plot.scatter(x, map_h - y, markstyle="mark size=1.5pt, black!30!red, thick, opacity=0.9")
 
-    plot.set_xlabel('Longitude [$^\circ$]')
+    plot.set_xlabel(r'Longitude [$^\circ$]')
     plot.set_xticks([xmin, xmax])
     plot.set_xtick_labels(['%.4f' % x for x in (map.box[1], map.box[3])])
 
-    plot.set_ylabel('Latitude [$^\circ$]')
+    plot.set_ylabel(r'Latitude [$^\circ$]')
     plot.set_yticks([map_h - ymin, map_h - ymax])
     plot.set_ytick_labels(['%.4f' % x for x in (map.box[0], map.box[2])])
 #     plot.set_title(label)

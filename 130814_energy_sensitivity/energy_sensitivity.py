@@ -35,7 +35,7 @@ def multi_find_min_energy(cls, xy):
     return cls.find_min_energy(xy[0], xy[1])
 
 
-class EnergySensitivity(object):
+class EnergySensitivity:
 
     def __init__(self):
         # Detectors
@@ -253,7 +253,7 @@ class EnergySensitivity(object):
 class SingleStationSensitivity(EnergySensitivity):
 
     def __init__(self):
-        super(SingleStationSensitivity, self).__init__()
+        super().__init__()
 
         # Detectors
         self.cluster = SingleStation()
@@ -265,7 +265,7 @@ class SingleStationSensitivity(EnergySensitivity):
 class SingleTwoEnergySensitivity(SingleStationSensitivity):
 
     def __init__(self):
-        super(SingleTwoEnergySensitivity, self).__init__()
+        super().__init__()
 
         # Detectors
         self.cluster = SingleTwoDetectorStation()
@@ -274,7 +274,7 @@ class SingleTwoEnergySensitivity(SingleStationSensitivity):
 class SingleDiamondEnergySensitivity(SingleStationSensitivity):
 
     def __init__(self):
-        super(SingleDiamondEnergySensitivity, self).__init__()
+        super().__init__()
 
         # Detectors
         self.cluster = SingleDiamondStation()
@@ -283,7 +283,7 @@ class SingleDiamondEnergySensitivity(SingleStationSensitivity):
 class StationPairEnergySensitivity(EnergySensitivity):
 
     def __init__(self, pair):
-        super(StationPairEnergySensitivity, self).__init__()
+        super().__init__()
 
         # Detectors
         self.cluster = HiSPARCStations(pair)
@@ -302,7 +302,7 @@ class StationPairEnergySensitivityQuarter(EnergySensitivity):
     """
 
     def __init__(self, pair):
-        super(StationPairEnergySensitivityQuarter, self).__init__()
+        super().__init__()
 
         # Detectors
         self.cluster = HiSPARCStations(pair, force_stale=True)
@@ -352,7 +352,7 @@ class StationPairAreaEnergySensitivity(StationPairEnergySensitivity):
     """
 
     def __init__(self, pair):
-        super(StationPairAreaEnergySensitivity, self).__init__(pair)
+        super().__init__(pair)
 
         # Shower parameters
         self.max_radius = 25e3
@@ -424,7 +424,7 @@ class StationPairAreaEnergySensitivity(StationPairEnergySensitivity):
 class DistancePairAreaEnergySensitivity(StationPairAreaEnergySensitivity):
 
     def __init__(self, distance, n):
-        super(DistancePairAreaEnergySensitivity, self).__init__([102, 103])
+        super().__init__([102, 103])
 
         self.cluster = BaseCluster()
         if n == 8:

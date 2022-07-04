@@ -78,11 +78,11 @@ def make_map(station=None, label='map', detectors=False):
     else:
         plot.scatter(x, map_h - y, markstyle="black!50!green")
 
-    plot.set_xlabel('Longitude [$^\circ$]')
+    plot.set_xlabel(r'Longitude [$^\circ$]')
     plot.set_xticks([xmin, xmax])
     plot.set_xtick_labels(['%.4f' % x for x in (map.box[1], map.box[3])])
 
-    plot.set_ylabel('Latitude [$^\circ$]')
+    plot.set_ylabel(r'Latitude [$^\circ$]')
     plot.set_yticks([map_h - ymin, map_h - ymax])
     plot.set_ytick_labels(['%.4f' % x for x in (map.box[0], map.box[2])])
 #     plot.set_title(label)

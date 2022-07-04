@@ -298,7 +298,7 @@ def plot_multi_box(ids1, ids2, **kwargs):
         splot.scatter(x, low, mark='x', markstyle="mark size=.75pt")
         splot.scatter(x, high, mark='x', markstyle="mark size=.75pt")
         splot.set_axis_options(r'height=.67\textwidth, width=%.2f\textwidth' %
-                               ((len(ids) * .67 / li)))
+                               (len(ids) * .67 / li))
         splot.set_xlimits(-0.5, len(ids) - 0.5)
         splot.set_xticks(x)
 

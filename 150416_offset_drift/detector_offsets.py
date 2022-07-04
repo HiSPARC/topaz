@@ -52,7 +52,7 @@ def plot_detector_offsets(offsets, type='month'):
     graph.plot(x, d2, markstyle='mark size=.5pt', linestyle='red')
     graph.plot(x, d3, markstyle='mark size=.5pt', linestyle='green')
     graph.plot(x, d4, markstyle='mark size=.5pt', linestyle='blue')
-    graph.set_ylabel('$\Delta t$ [ns]')
+    graph.set_ylabel(r'$\Delta t$ [ns]')
     graph.set_xlabel('Date')
     graph.set_xlimits(0, max(x))
     graph.set_ylimits(-LIMITS, LIMITS)

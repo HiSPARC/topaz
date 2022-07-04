@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import numpy
 import tables
 
@@ -54,7 +52,7 @@ def plot_number_of_particles(sims):
             weights = numpy.ones(len(rows)) / float(len(rows))
             ax1.hist([r['n_electron'] for r in rows], bins=ne_bins,
                      histtype='step', weights=weights,
-                     label='%4.1f deg, %.g eV' % (numpy.degrees(zenith), energy))
+                     label='{:4.1f} deg, {:.g} eV'.format(numpy.degrees(zenith), energy))
     ax1.set_xscale('log')
     ax1.set_xlabel('Number of electrons')
     ax1.legend(loc=2)
@@ -67,7 +65,7 @@ def plot_number_of_particles(sims):
             weights = numpy.ones(len(rows)) / float(len(rows))
             ax2.hist([r['n_muon'] for r in rows], bins=ne_bins,
                      histtype='step', weights=weights,
-                     label='%4.1f deg, %.g eV' % (numpy.degrees(zenith), energy))
+                     label='{:4.1f} deg, {:.g} eV'.format(numpy.degrees(zenith), energy))
     ax2.set_xscale('log')
     ax2.set_xlabel('Number of electrons')
     ax2.legend(loc=2)

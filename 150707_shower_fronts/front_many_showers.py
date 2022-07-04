@@ -84,8 +84,8 @@ def plot_distribution():
         plot.set_ylabel('Time after first [ns]')
         plot.set_ylimits(min=-10)
         plot.set_xlimits(0, 1e3)
-        plot.set_label('E=$10^{{{e}}}$eV'.format(e=e), location='upper left')
-        plot.save_as_pdf('plots/first_particle_{e}'.format(e=e))
+        plot.set_label(f'E=$10^{{{e}}}$eV', location='upper left')
+        plot.save_as_pdf(f'plots/first_particle_{e}')
 
 
 if __name__ == "__main__":

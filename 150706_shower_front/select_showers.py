@@ -94,7 +94,7 @@ def plot_thickness(seed):
 
         energy = log10(header.energy)
         shower_size = log10(end.n_electrons_levels + end.n_muons_levels)
-    plot.set_label('E=$10^{%.1f}$eV, size=$10^{%.1f}$' % (energy, shower_size),
+    plot.set_label('E=$10^{{{:.1f}}}$eV, size=$10^{{{:.1f}}}$'.format(energy, shower_size),
                    location='upper left')
 
     plot.plot(distances, median_t, mark=None)
@@ -104,7 +104,7 @@ def plot_thickness(seed):
     plot.set_xlabel(r'core distance [m]')
     plot.set_ylabel(r'time after first [ns]')
     plot.set_ylimits(min=-10, max=1000)
-    plot.save_as_pdf('plots/%.1f_%.1f_%s_front.pdf' % (energy, shower_size, seed))
+    plot.save_as_pdf('plots/{:.1f}_{:.1f}_{}_front.pdf'.format(energy, shower_size, seed))
 
     plot2.set_xlimits(min=.5, max=1e5)
     plot2.set_xlabel(r'core distance')
@@ -112,7 +112,7 @@ def plot_thickness(seed):
     plot2.plot(distances, density, xerr=xerr, yerr=yerr, mark=None, markstyle='transparent', linestyle=None)
     plot2.draw_horizontal_line(2.46)
     # plot2.draw_horizontal_line(0.6813)
-    plot2.save_as_pdf('plots/%.1f_%.1f_%s_dens.pdf' % (energy, shower_size, seed))
+    plot2.save_as_pdf('plots/{:.1f}_{:.1f}_{}_dens.pdf'.format(energy, shower_size, seed))
 
 
 if __name__ == "__main__":

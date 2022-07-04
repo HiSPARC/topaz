@@ -5,7 +5,7 @@ from numpy import ones_like, sum
 from determine_statistics import get_all_stats
 
 
-class DayFilter(object):
+class DayFilter:
 
     """Remove days of data not satisfying requirements
 
@@ -79,7 +79,7 @@ class DayFilter(object):
         return sum(self.stats['mpv'] < 5000, axis=0) == 4
 
 
-class EventFilter(object):
+class EventFilter:
 
     """Remove station events not satisfying requirements
 

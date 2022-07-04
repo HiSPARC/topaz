@@ -70,7 +70,7 @@ def display_offsets(map):
             pp.append(pv)
 
     plot.scatter_table(xx, yy, tt, pp)
-    plot.set_colorbar('$\Delta$t [\si{n\second}]')
+    plot.set_colorbar(r'$\Delta$t [\si{n\second}]')
     plot.set_axis_equal()
 
     nw = num2deg(map.xmin, map.ymin, map.z)
@@ -82,11 +82,11 @@ def display_offsets(map):
     x0, y0, _ = transform.lla_to_enu((nw[0], nw[1], 0))
     x1, y1, _ = transform.lla_to_enu((se[0], se[1], 0))
 
-    plot.set_xlabel('x [\si{\meter}]')
+    plot.set_xlabel(r'x [\si{\meter}]')
     plot.set_xticks([0, image.size[0]])
     plot.set_xtick_labels([int(x0), int(x1)])
 
-    plot.set_ylabel('y [\si{\meter}]')
+    plot.set_ylabel(r'y [\si{\meter}]')
     plot.set_yticks([0, image.size[1]])
     plot.set_ytick_labels([int(y1), int(y0)])
 

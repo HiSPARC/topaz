@@ -28,8 +28,8 @@ def main(station_number=501, date=datetime.date(2016, 2, 1)):
     ext_timestamps.sort()
     difs = ext_timestamps[1:] - ext_timestamps[:-1]
 
-    print(('Minimum: %d. Maximum: %d. n(diff < 100 us): %d' %
-           (min(difs), max(difs), len(numpy.where(difs < 1e5)[0]))))
+    print('Minimum: %d. Maximum: %d. n(diff < 100 us): %d' %
+           (min(difs), max(difs), len(numpy.where(difs < 1e5)[0])))
 
     bins = numpy.logspace(2, 11)
     plot = Plot('semilogx')

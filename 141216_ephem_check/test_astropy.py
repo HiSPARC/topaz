@@ -82,7 +82,7 @@ def test_against_hor2eq():
     ra, dec = celestial.zenithazimuth_to_equatorial(longitude, latitude,
                                                     gps, zenith, azimuth)
 
-    print('SAPPHiRE: ra=%f, dec=%f' % (np.degrees(ra), np.degrees(dec)))
+    print('SAPPHiRE: ra={:f}, dec={:f}'.format(np.degrees(ra), np.degrees(dec)))
 
 
 def test_against_pyephem():
@@ -131,7 +131,7 @@ def test_against_pyephem():
     ra, dec = celestial.zenithazimuth_to_equatorial(longitude, latitude,
                                                     gps, zenith, azimuth)
 
-    print('SAPPHiRE: ra=%f, dec=%f' % (np.degrees(ra), np.degrees(dec)))
+    print('SAPPHiRE: ra={:f}, dec={:f}'.format(np.degrees(ra), np.degrees(dec)))
 
 
 def test_against_jpl_horizons():
@@ -168,7 +168,7 @@ def test_against_jpl_horizons():
     ra, dec = celestial.zenithazimuth_to_equatorial(longitude, latitude,
                                                     gps, zenith, azimuth)
 
-    print('SAPPHiRE: ra=%f, dec=%f' % (np.degrees(ra), np.degrees(dec)))
+    print('SAPPHiRE: ra={:f}, dec={:f}'.format(np.degrees(ra), np.degrees(dec)))
 
 
 if __name__ == '__main__':

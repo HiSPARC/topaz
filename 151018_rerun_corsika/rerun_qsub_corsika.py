@@ -40,7 +40,7 @@ class CorsikaRerun(CorsikaBatch):
     def copy_input(self):
         input = 'DATDIR    /data/hisparc/corsika/corsika-74000/run/\n'
         old_path = os.path.join(DATADIR, self.rundir, 'input-hisparc')
-        with open(old_path, 'r') as prev_input:
+        with open(old_path) as prev_input:
             input += prev_input.read()
 
         new_path = os.path.join(self.get_rundir(), 'input-hisparc')
@@ -68,6 +68,6 @@ def multiple_jobs(seeds_list, progress=True):
 
 
 if __name__ == "__main__":
-    with open('seeds_list.txt', 'r') as data:
+    with open('seeds_list.txt') as data:
         seeds_list = [seeds for seeds in data.read().split('\n') if seeds]
     multiple_jobs(seeds_list)

@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
     dx = x1 - x0
     dy = y1 - y0
-    print('GPS position moved by: %.3f m, %.3f m.' % (dx, dy))
+    print('GPS position moved by: {:.3f} m, {:.3f} m.'.format(dx, dy))
 
     print('New relative detector coordinates')
     cluster.set_timestamp(OTHER_GPS)

@@ -78,7 +78,7 @@ def residuals(yfit, ydata):
     return ((yfit - ydata) ** 2 / ydata)
 
 
-class KascadeDensity(object):
+class KascadeDensity:
 
     def __init__(self, data_path=DATA_PATH):
         self.lin_bins = linspace(0.5, 200.5, 201)

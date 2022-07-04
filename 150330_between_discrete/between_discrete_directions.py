@@ -48,8 +48,8 @@ def reconstruct_for_detectors(ids):
     x, y, z = list(zip(*detectors))
 
     angles = (dirrec.reconstruct_common((0,) + t, x, y, z) for t in times)
-    angles = set([(round(t, 5), round(p, 5)) for t, p in angles
-                  if not np.isnan(t) and not np.isnan(p)])
+    angles = {(round(t, 5), round(p, 5)) for t, p in angles
+                  if not np.isnan(t) and not np.isnan(p)}
     return angles
 
 
@@ -74,7 +74,7 @@ def angles_between_discrete(angles):
     plotd = Plot()
     plotd.histogram(counts, np.degrees(bins))
     # plotd.set_title('Distance between reconstructed angles for station and cluster')
-    plotd.set_xlabel('Angle between reconstructions [\si{\degree}]')
+    plotd.set_xlabel(r'Angle between reconstructions [\si{\degree}]')
     plotd.set_ylabel('Counts')
     plotd.set_xlimits(min=0, max=90)
     plotd.set_ylimits(min=0)
@@ -87,7 +87,7 @@ def angles_between_discrete(angles):
     counts, bins = np.histogram(distances, bins=np.linspace(0, np.pi, 361))
     plotd.histogram(counts, np.degrees(bins))
     # plotd.set_title('Distance between reconstructed angles for station and cluster')
-    plotd.set_xlabel('Angle between reconstructions [\si{\degree}]')
+    plotd.set_xlabel(r'Angle between reconstructions [\si{\degree}]')
     plotd.set_ylabel('Counts')
     plotd.set_xlimits(min=0, max=90)
     plotd.set_ylimits(min=0)

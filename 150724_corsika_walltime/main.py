@@ -25,7 +25,7 @@ def copy_time_logs():
 
 
 def extract_seeds_and_times():
-    cmd = "grep -roE '^[0-9]+\.[0-9]+' " + LOCAL_STORE + " > " + TIME_LOG
+    cmd = r"grep -roE '^[0-9]+\.[0-9]+' " + LOCAL_STORE + " > " + TIME_LOG
     run_cmd(cmd)
     cmd1 = "sed -i '' 's;time_logs/;;g' " + TIME_LOG
     run_cmd(cmd1)

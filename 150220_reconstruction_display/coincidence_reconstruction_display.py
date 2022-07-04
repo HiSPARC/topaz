@@ -76,13 +76,13 @@ def display_coincidences(coincidence_events, reconstruction, c_id):
 
     plot.set_scalebar(location="lower left")
     plot.set_slimits(min=1, max=60)
-    plot.set_colorbar('$\Delta$t [\si{n\second}]')
+    plot.set_colorbar(r'$\Delta$t [\si{n\second}]')
     plot.set_axis_equal()
     plot.set_xlimits(min=-250, max=350)
     plot.set_ylimits(min=-250, max=250)
 
-    plot.set_xlabel('x [\si{\meter}]')
-    plot.set_ylabel('y [\si{\meter}]')
+    plot.set_xlabel(r'x [\si{\meter}]')
+    plot.set_ylabel(r'y [\si{\meter}]')
 
     plot.save_as_pdf('event_display_%d' % c_id)
 

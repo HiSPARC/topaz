@@ -30,7 +30,7 @@ def plot_traces(event, station):
     n_peaks = event['n_peaks']
     plot.set_title('%d - %d' % (station, event['ext_timestamp']))
     plot.set_label('%d ' * 4 % tuple(n_peak for n_peak in n_peaks))
-    plot.set_xlabel('t [\si{n\second}]')
+    plot.set_xlabel(r't [\si{n\second}]')
     plot.set_ylabel('Signal strength')
     plot.set_xlimits(min=0, max=2.5 * len(traces[0]))
     plot.set_ylimits(min=150, max=500)  # max=2 ** 12

@@ -20,13 +20,13 @@ def submit_job(seed):
     """Submit job to Stoomboot"""
 
     script = SCRIPT_TEMPLATE.format(seed=seed)
-    name = 'spa_sim_{name}'.format(name=seed)
+    name = f'spa_sim_{seed}'
 
     qsub.submit_job(script, name, queue='long')
 
 
 if __name__ == "__main__":
-    with open('seed_list.txt', 'r') as seed_list:
+    with open('seed_list.txt') as seed_list:
         seeds = seed_list.read().split('\n')
 
     for seed in seeds:

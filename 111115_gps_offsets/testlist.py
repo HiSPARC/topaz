@@ -281,21 +281,21 @@ def get_tests(id=None, hisparc=None, gps=None, trigger=None, group=None,
 
 
 if __name__ in ('__main__'):
-    print(("Number of tests: %s (unique: %s)" %
+    print("Number of tests: %s (unique: %s)" %
            (len(get_tests(subset='ALL', unique=False)),
-            len(get_tests(subset='ALL', unique=True)))))
-    print(("Number of boxes: %s" %
-           len(get_tests(part='hisparc', unique=True))))
-    print(('HII:074:  %s' % ", ".join(get_tests(hisparc='074', part='group'))))
-    print(('GPS:test: %s' % ", ".join(get_tests(gps='test', part='group'))))
-    print(('TRG:EXT:  %s' % ", ".join(get_tests(trigger='EXT', part='group'))))
-    print(('HII:053, TRG:EXT: %s' %
-           ", ".join(get_tests(hisparc='053', trigger='EXT', part='group'))))
-    print(('GRP:018/501/PMT2: %s' %
-           ", ".join(get_tests(group='018/501/PMT2', part='group'))))
-    print(("GPS:test +comp: %s" %
-           ", ".join(get_tests(subset='GPS', part='hisparc'))))
-    print(("BadGPS: %s" %
-           ", ".join(get_tests(subset='Bad', part='hisparc'))))
-    print(("TRG:EXT +comp: %s" %
-           ", ".join(get_tests(subset='EXT', part='group', complement=True))))
+            len(get_tests(subset='ALL', unique=True))))
+    print("Number of boxes: %s" %
+           len(get_tests(part='hisparc', unique=True)))
+    print('HII:074:  %s' % ", ".join(get_tests(hisparc='074', part='group')))
+    print('GPS:test: %s' % ", ".join(get_tests(gps='test', part='group')))
+    print('TRG:EXT:  %s' % ", ".join(get_tests(trigger='EXT', part='group')))
+    print('HII:053, TRG:EXT: %s' %
+           ", ".join(get_tests(hisparc='053', trigger='EXT', part='group')))
+    print('GRP:018/501/PMT2: %s' %
+           ", ".join(get_tests(group='018/501/PMT2', part='group')))
+    print("GPS:test +comp: %s" %
+           ", ".join(get_tests(subset='GPS', part='hisparc')))
+    print("BadGPS: %s" %
+           ", ".join(get_tests(subset='Bad', part='hisparc')))
+    print("TRG:EXT +comp: %s" %
+           ", ".join(get_tests(subset='EXT', part='group', complement=True)))

@@ -45,7 +45,7 @@ def determine_detector_timing_offsets(s, events):
     graph.set_title('Time difference, station %d' % (s))
     graph.set_xlimits(-100, 100)
     graph.set_ylimits(min=0)
-    graph.set_xlabel('$\Delta t$')
+    graph.set_xlabel(r'$\Delta t$')
     graph.set_ylabel('Counts')
     graph.save_as_pdf('detector_offsets_%s' % s)
 

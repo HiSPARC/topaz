@@ -1,5 +1,3 @@
-
-
 import glob
 import os
 
@@ -114,7 +112,7 @@ def plot_effiencies():
         plot.set_ylimits(min=0, max=1.02)
         plot.set_xlimits(min=2, max=500)
         plot.set_xlabel('Core distance')
-        plot.save_as_pdf('efficiency_%s_%.1f.pdf' % (STATION_TYPE[STATION_NUMBER], energy))
+        plot.save_as_pdf('efficiency_{}_{:.1f}.pdf'.format(STATION_TYPE[STATION_NUMBER], energy))
 
 
 def plot_david_data(plot):

@@ -80,7 +80,7 @@ def analyse_reconstructions(data):
         sigma = np.degrees(np.percentile(distances[np.isfinite(distances)], 67))
         plotd.set_label(r'67\%% within \SI{%.1f}{\degree}' % sigma)
         # plotd.set_title('Distance between reconstructed angles for station and cluster')
-        plotd.set_xlabel('Angle between reconstructions [\si{\degree}]')
+        plotd.set_xlabel(r'Angle between reconstructions [\si{\degree}]')
         plotd.set_ylabel('Counts')
         plotd.set_xlimits(min=0, max=90)
         plotd.set_ylimits(min=0)

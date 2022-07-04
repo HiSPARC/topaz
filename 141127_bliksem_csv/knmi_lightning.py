@@ -53,7 +53,7 @@ def data_file(date):
     try:
         datafile = tables.open_file(filepath, 'r')
         return datafile
-    except IOError:
+    except OSError:
         print("No datefile for %s." % date.strftime('%Y_%-m_%-d'))
         raise
 

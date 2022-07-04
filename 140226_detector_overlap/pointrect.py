@@ -49,10 +49,10 @@ class Point:
         return Point(self.x / scalar, self.y / scalar)
 
     def __str__(self):
-        return "(%s, %s)" % (self.x, self.y)
+        return "({}, {})".format(self.x, self.y)
 
     def __repr__(self):
-        return "%s(%r, %r)" % (self.__class__.__name__, self.x, self.y)
+        return "{}({!r}, {!r})".format(self.__class__.__name__, self.x, self.y)
 
     def length(self):
         return math.sqrt(self.x**2 + self.y**2)
@@ -113,7 +113,7 @@ class Point:
 
         The new position is returned as a new Point.
         """
-        s, c = [f(rad) for f in (math.sin, math.cos)]
+        s, c = (f(rad) for f in (math.sin, math.cos))
         x, y = (c * self.x - s * self.y, s * self.x + c * self.y)
         return Point(x, y)
 
@@ -196,10 +196,10 @@ class Rect:
         return Rect(p1, p2)
 
     def __str__(self):
-        return "<Rect (%s,%s)-(%s,%s)>" % (self.left, self.top,
+        return "<Rect ({},{})-({},{})>".format(self.left, self.top,
                                            self.right, self.bottom)
 
     def __repr__(self):
-        return "%s(%r, %r)" % (self.__class__.__name__,
+        return "{}({!r}, {!r})".format(self.__class__.__name__,
                                Point(self.left, self.top),
                                Point(self.right, self.bottom))

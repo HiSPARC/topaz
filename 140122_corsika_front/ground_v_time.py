@@ -26,7 +26,7 @@ def plot_time_slices(data):
         detectable_x = groundparticles.read_coordinates(filtered_particles, field='x')
         detectable_y = groundparticles.read_coordinates(filtered_particles, field='y')
         plt.figure()
-        plt.title('Energy: %g eV, Zenith: %.1f' % (header.energy, header.theta_max))
+        plt.title('Energy: {:g} eV, Zenith: {:.1f}'.format(header.energy, header.theta_max))
         plt.xlabel('x (m)')
         plt.ylabel('y (m)')
         plt.annotate('%d < t < %d ns' % (t - times.min(), t - times.min() + step),

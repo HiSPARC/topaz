@@ -27,7 +27,7 @@ def analyse(name):
     plot.plot(timestamps, moving_average[::skip], mark=None)
     plot.set_xlimits(min=0)
     plot.set_ylabel(r'time delta [\si{\nano\second}]')
-    plot.set_xlabel('timestamp [\si{\hour}]')
+    plot.set_xlabel(r'timestamp [\si{\hour}]')
     plot.save_as_pdf('moving_average_%s' % name)
 
 

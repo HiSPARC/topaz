@@ -168,8 +168,8 @@ def get_seed_matrix(seeds, particle, energy, zenith):
     for en in unique_energy:
         for zen in unique_zenith:
             seed = get_random_seed(seeds, particle, energy, zenith, en, zen)
-            print(('Energy: 10^%d, Zenith: %4.1f: %s' %
-                   (en, numpy.degrees(zen), seed)))
+            print('Energy: 10^%d, Zenith: %4.1f: %s' %
+                   (en, numpy.degrees(zen), seed))
 
 
 if __name__ == '__main__':

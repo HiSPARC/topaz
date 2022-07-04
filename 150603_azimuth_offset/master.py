@@ -60,8 +60,7 @@ class OffsetAzimuthFlatFrontSimulation(FlatFrontSimulation):
         the detector.
 
         """
-        observables = super(OffsetAzimuthFlatFrontSimulation,
-                            self).simulate_detector_response(detector, shower_parameters)
+        observables = super().simulate_detector_response(detector, shower_parameters)
         observables.update({'n': 1.})
 
         return observables

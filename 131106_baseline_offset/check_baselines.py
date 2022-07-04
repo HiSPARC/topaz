@@ -40,8 +40,8 @@ def get_baseline_offsets(date):
 
 def stations_with_large_offset(offsets):
     """Get stations where an average baseline has a large offset"""
-    stations = sorted([station for station, baselines in offsets.items()
-                       if numpy.max(numpy.abs(baselines)) > 5])
+    stations = sorted(station for station, baselines in offsets.items()
+                       if numpy.max(numpy.abs(baselines)) > 5)
     return stations
 
 

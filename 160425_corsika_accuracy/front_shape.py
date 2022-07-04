@@ -1,4 +1,4 @@
-"""
+r"""
 
 Extracted points from the tex file:
 
@@ -27,7 +27,7 @@ def plot_front_shapes():
     fit_r = arange(0, 510, 5)
     for particle in ['gamma', 'proton', 'iron']:
         for energy in ['15.0', '15.5', '16.0', '16.5', '17.0']:
-            files = glob(PATH + '%s_E_%s*' % (particle, energy))
+            files = glob(PATH + '{}_E_{}*'.format(particle, energy))
             if not len(files):
                 continue
 
@@ -63,7 +63,7 @@ def plot_front_shapes():
             plot.set_xlimits(-10, 510)
             plot.set_ylabel(r'Delay [\si{\ns}]')
             plot.set_xlabel(r'Core distance [\si{\meter}]')
-            plot.save_as_pdf('plots/front_shape/%s_%s.pdf' % (particle, energy))
+            plot.save_as_pdf('plots/front_shape/{}_{}.pdf'.format(particle, energy))
 
 
 if __name__ == "__main__":

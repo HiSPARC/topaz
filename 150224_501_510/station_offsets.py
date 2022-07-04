@@ -67,7 +67,7 @@ def determine_station_timing_offsets(data):
     plot.set_title('Time difference, station 510-501')
     plot.set_xlimits(-50, 50)
     plot.set_ylimits(min=0)
-    plot.set_xlabel('$\Delta t$ [ns]')
+    plot.set_xlabel(r'$\Delta t$ [ns]')
     plot.set_ylabel('Counts')
     plot.save_as_pdf('station_offsets')
 

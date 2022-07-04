@@ -71,9 +71,9 @@ if __name__ == '__main__':
         graph = Plot()
         x, y, popt = fit_offsets(offsets)
         plot_fit(x, y, popt, graph)
-        graph.set_label('$\mu$: %.2f, $\sigma$: %.2f' % (popt[1], popt[2]))
+        graph.set_label(r'$\mu$: {:.2f}, $\sigma$: {:.2f}'.format(popt[1], popt[2]))
         graph.set_ylabel('Occurrence')
-        graph.set_xlabel('$\Delta t$ [ns]')
+        graph.set_xlabel(r'$\Delta t$ [ns]')
         graph.set_ylimits(min=0)
         graph.save_as_pdf('detector_offset_distribution_' +
                           f.strftime('%Y%m%d'))

@@ -25,7 +25,7 @@ def determine_rates():
 
 def determine_rate(path):
     file = os.path.basename(path)
-    pair = tuple([int(s) for s in file[:-3].split('_')])
+    pair = tuple(int(s) for s in file[:-3].split('_'))
 
     net = HiSPARCNetwork(force_stale=True)
 #     if net.calc_distance_between_stations(*pair) > 1e3:

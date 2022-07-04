@@ -97,8 +97,8 @@ def mod_ciampa_conv_full(a, b, d):
     """
     x = arange(0.1, 85, 0.1)
     rx = radians(x)
-    result = sum([gauss(rx, mod_ciampa(xi, a, b), rxi, radians(d / cos(rxi)))
-                  for xi, rxi in zip(x, rx)], axis=0)
+    result = sum((gauss(rx, mod_ciampa(xi, a, b), rxi, radians(d / cos(rxi)))
+                  for xi, rxi in zip(x, rx)), axis=0)
     return rx, result
 
 

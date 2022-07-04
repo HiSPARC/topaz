@@ -58,7 +58,7 @@ def determine_time_differences(coin_events, ref_station, station, ref_d_off, d_o
         ref_ets = events[0][1]['ext_timestamp']
         ref_ts = ref_ets / int(1e9)
         # Filter for possibility of same station twice in coincidence
-        if len(events) is not 2:
+        if len(events) != 2:
             continue
         if events[0][0] == ref_station:
             ref_id = 0

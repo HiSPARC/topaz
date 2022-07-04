@@ -30,7 +30,7 @@ def plot_fits(plot, counts, bins):
         plot.plot(x - popt[offset_idx], fit_f(x, *popt), mark=None,
                   linestyle=next(colors))
         if fit_f == norm.pdf:
-            plot.set_label('$\mu$: %.2f, $\sigma$: %.2f' % (popt[0], popt[1]))
+            plot.set_label(r'$\mu$: {:.2f}, $\sigma$: {:.2f}'.format(popt[0], popt[1]))
             offset = popt[0]
     return offset
 
@@ -58,7 +58,7 @@ def plot_offset_distributions():
             plot.set_ylabel('Counts')
             plot.set_ylimits(min=0)
             plot.set_xlimits(-2000, 2000)
-            plot.save_as_pdf('plots/pair_dt_%s_%s' % (ref_s, s))
+            plot.save_as_pdf('plots/pair_dt_{}_{}'.format(ref_s, s))
 
 
 if __name__ == "__main__":

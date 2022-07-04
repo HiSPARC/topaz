@@ -1,5 +1,3 @@
-
-
 import os
 
 from numpy.random import choice
@@ -82,7 +80,7 @@ def perform_simulations():
             for seeds in choice(selected_seeds, n, replace=False):
                 if seeds in s:
                     continue
-                if not os.path.exists('/data/hisparc/corsika/data/{seeds}/corsika.h5'.format(seeds=seeds)):
+                if not os.path.exists(f'/data/hisparc/corsika/data/{seeds}/corsika.h5'):
                     continue
                 s.add(seeds)
                 if energy >= 16:

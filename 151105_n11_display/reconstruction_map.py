@@ -93,7 +93,7 @@ def display_coincidences(coincidence_events, c_id, map):
 
     plot.set_scalebar(location="lower left")
     plot.set_slimits(min=1, max=60)
-    plot.set_colorbar('$\Delta$t [\si{n\second}]')
+    plot.set_colorbar(r'$\Delta$t [\si{n\second}]')
     plot.set_axis_equal()
 
     nw = num2deg(map.xmin, map.ymin, map.z)
@@ -104,11 +104,11 @@ def display_coincidences(coincidence_events, c_id, map):
     x0, y0, _ = transform.lla_to_enu((nw[0], nw[1], 0))
     x1, y1, _ = transform.lla_to_enu((se[0], se[1], 0))
 
-    plot.set_xlabel('x [\si{\meter}]')
+    plot.set_xlabel(r'x [\si{\meter}]')
     plot.set_xticks([0, map_w])
     plot.set_xtick_labels([int(x0), int(x1)])
 
-    plot.set_ylabel('y [\si{\meter}]')
+    plot.set_ylabel(r'y [\si{\meter}]')
     plot.set_yticks([0, map_h])
     plot.set_ytick_labels([int(y1), int(y0)])
 
@@ -151,7 +151,7 @@ def plot_traces(coincidence_events):
     plot.set_yticks(tick_positions)
     plot.set_ytick_labels(tick_labels)
     plot.set_xlimits(min=-250, max=1300)
-    plot.set_xlabel('t [\si{n\second}]')
+    plot.set_xlabel(r't [\si{n\second}]')
     plot.set_ylabel('Signal strength')
 
     plot.save_as_pdf('traces_%d' % t0)

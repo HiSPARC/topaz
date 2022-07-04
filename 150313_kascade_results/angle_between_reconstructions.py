@@ -60,7 +60,7 @@ def plot_angles(data):
         plotd.set_title(r'$N_\textrm{MIP} \geq %d$' % minn)
         plotd.set_label(r'67\%% within \SI{%.1f}{\degree}' % sigma)
         # plotd.set_title('Distance between reconstructed angles for station events')
-        plotd.set_xlabel('Angle between reconstructions [\si{\degree}]')
+        plotd.set_xlabel(r'Angle between reconstructions [\si{\degree}]')
         plotd.set_ylabel('Counts')
         plotd.set_xlimits(min=0, max=90)
         plotd.set_ylimits(min=0)
