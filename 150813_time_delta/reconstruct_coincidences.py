@@ -21,8 +21,8 @@ def download_dataset():
         delta_data = genfromtxt(
             'data/time_delta_%d.tsv' % station, delimiter='\t', dtype=None, names=['ext_timestamp', 'time_delta']
         )
-        start = gps_to_datetime(delta_data['ext_timestamp'][0] / int(1e9))
-        end = gps_to_datetime(delta_data['ext_timestamp'][-1] / int(1e9))
+        start = gps_to_datetime(delta_data['ext_timestamp'][0] / 1_000_000_000)
+        end = gps_to_datetime(delta_data['ext_timestamp'][-1] / 1_000_000_000)
 
         with tables.open_file(DATA, 'a') as data:
             download_data(data, '/s%d' % station, station, start, end)

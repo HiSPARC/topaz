@@ -139,7 +139,7 @@ def plot_ns_histogram(ids, **kwargs):
 
     # Define Bins
     low = 0
-    high = int(1e9)
+    high = 1_000_000_000
     bin_size = 5e6  # 1e7 = 10ms, 1e6 = 1 ms, 1e3 = 1 us
     bins = np.arange(low, high + bin_size, bin_size)
 

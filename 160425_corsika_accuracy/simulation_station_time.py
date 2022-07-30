@@ -137,7 +137,7 @@ def plot_arrival_time_distribution_v_distance(data, seeds):
 
         # Round ts to seconds because it is the ts for first event, not the shower
         t = [
-            station_arrival_time(event, int(cets['ext_timestamp'] / int(1e9)) * int(1e9), detector_ids=[0, 1, 2, 3])
+            station_arrival_time(event, int(cets['ext_timestamp'] / 1_000_000_000) * 1_000_000_000, detector_ids=[0, 1, 2, 3])
             - cor_t
             for event, cets in zip(events[:], coincidences.read_where('N == 1'))
         ]

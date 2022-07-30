@@ -56,7 +56,7 @@ def determine_time_differences(coin_events, ref_station, station, ref_d_off, d_o
     ets = []
     for events in coin_events:
         ref_ets = events[0][1]['ext_timestamp']
-        ref_ts = ref_ets / int(1e9)
+        ref_ts = ref_ets / 1_000_000_000
         # Filter for possibility of same station twice in coincidence
         if len(events) != 2:
             continue
@@ -86,8 +86,8 @@ def store_dt(ref_station, station, ext_timestamps, deltats):
         for ets, deltat in zip(ext_timestamps, deltats):
             delta_row = table.row
             delta_row['ext_timestamp'] = ets
-            delta_row['timestamp'] = int(ets) / int(1e9)
-            delta_row['nanoseconds'] = int(ets) - ((int(ets) / int(1e9)) * int(1e9))
+            delta_row['timestamp'] = int(ets) / 1_000_000_000
+            delta_row['nanoseconds'] = int(ets) - ((int(ets) / 1_000_000_000) * 1_000_000_000)
             delta_row['delta'] = deltat
             delta_row.append()
         table.flush()
