@@ -23,7 +23,7 @@ cable lengths.
   confirm David's earlier tests (Fokkema 2012 fig 2.22).
 - Try manually shifting the GPS position of one of the GPSs by 100
   meters and see what happens.
-- Try connecting a Slave to a Master and then triggering via the Slave.
+- Try connecting a Secondary to a Primary and then triggering via the Secondary.
 - Try swapping the GPSs, the trigger cables, ..
 - Measure the cable delays of those used for triggering
 

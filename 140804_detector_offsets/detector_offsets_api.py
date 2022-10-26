@@ -61,5 +61,5 @@ if __name__ == '__main__':
                 # plot_and_fit_offsets(xx, yy, popt, d, id)
                 mu.append(popt[1])
                 sigma.append(popt[2])
-        print(['Master', 'Reference', 'Slave', 'Slave'][id])
+        print(['Primary', 'Reference', 'Secondary', 'Secondary'][id])
         print('mean: {:.3f} +/- {:.3f}, std:  {:.3f} +/- {:.3f} '.format(mean(mu), std(mu), mean(sigma), std(sigma)))

@@ -152,7 +152,7 @@ def get_tests(
     the reference used the 501 gps (r501)
     the GPS position of the reference was set incorrectly by # m (rbgps#)
     the GPS position of the swap was set incorrectly by # m (sbgps#)
-    the swap was a slave connected to master # (slv###)
+    the swap was a secondary connected to master # (slv###)
     a longer gps cable was used for the swap box (longgps)
     the PPS offset in DSPMon was set for the swap at # ns (ppsoff#)
     the swap lost the GPS connection was lost during the test (gpslost)

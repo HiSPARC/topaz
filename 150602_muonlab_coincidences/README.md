@@ -48,7 +48,7 @@ Number of events not in coincidence: 467 (~28%) -> ~1.4 per hour
 ### Test 3
 
 Two additional detectors were placed on the roof, connected to the same
-HiSPARC station, using a Slave unit. This allows the stations to check
+HiSPARC station, using a Secondary unit. This allows the stations to check
 for showers by itself and increase the number of possible paths for
 muons to be detected. This test was started on 2015/06/18 14:00 and ran
 until 2015/06/25 15:00.
