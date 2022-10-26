@@ -33,4 +33,4 @@ cable lengths.
 
 - Using a [GPSSource S14-A GPS
 Splitter](http://www.gpssource.com/products/gps-splitter/46) to split
-the GPS signal from one antenna to multiple cables/HiSPARC Masters.
+the GPS signal from one antenna to multiple cables/HiSPARC Primaries.
