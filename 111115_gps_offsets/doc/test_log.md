@@ -24,9 +24,9 @@ Table 1 | Stations
 ------------------
 
     Station   Name         Data link
-    95        Tijd Test    http://data.hisparc.nl/django/show/stations/95/
+    95        Tijd Test    https://data.hisparc.nl/django/show/stations/95/
     ----------------------------------------------------------------------
-    94        Tijd Test 2  http://data.hisparc.nl/django/show/stations/94/
+    94        Tijd Test 2  https://data.hisparc.nl/django/show/stations/94/
 
 
 Table 2 | GPS coords
